@@ -420,7 +420,7 @@ class Description2:
             else:
                 self.text.append(str(item["cation"]) + str(key) + " has a " + str(
                     self._coordination_environment_to_text(item["env"]))
-                                 + " coordination environment. It has " + str(bonds) + 'bonds.')
+                                 + " coordination environment. It has " + str(bonds) + ' bonds.')
 
     def plot_cohps(self, set_cohps, set_inequivalent_cations,
                    set_labels_cohps, structure):
@@ -437,6 +437,8 @@ class Description2:
             plot = cp.get_plot(integrated=False)
             plot.ylim([-4, 2])
             plot.show()
+
+
 
     @staticmethod
     def _coordination_environment_to_text(ce):
@@ -579,3 +581,4 @@ class Description2:
     def write_description(self):
         for textpart in self.text:
             print(textpart)
+

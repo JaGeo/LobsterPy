@@ -1,4 +1,5 @@
 import collections
+import csv
 
 import numpy as np
 from pymatgen.core.structure import Structure
@@ -132,6 +133,59 @@ class Analysis:
 
         return dict_antibd
 
+    def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels, cohps, namecation):
+        dict_antibd = {}
+        for label, cohp in zip(labels, cohps):
+            new = label.split(' ')[2].split('-')
+            sorted_new = self._sort_name(new, namecation)
+            new_label = sorted_new[0] + '-' + sorted_new[1]
+            integral = self._integrate_antbdstates_below_efermi(cohp)
+
+            dict_antibd[new_label] = integral
+        return dict_antibd
+
+    def _integrate_antbdstates_below_efermi(self, cohp, start=-2):
+
+        def abstrapz_positive(y, x=None, dx=1.0):
+            y = np.asanyarray(y)
+            if x is None:
+                d = dx
+            else:
+                x = np.asanyarray(x)
+                d = np.diff(x)
+            ret = (d * (y[1:] + y[:-1]) / 2.0)
+            return ret[ret > 0.0].sum()  # The important line
+
+        def abstrapz_negative(y, x=None, dx=1.0):
+            y = np.asanyarray(y)
+            if x is None:
+                d = dx
+            else:
+                x = np.asanyarray(x)
+                d = np.diff(x)
+            ret = (d * (y[1:] + y[:-1]) / 2.0)
+            return ret[ret < 0.0].sum()  # The important line
+
+        from scipy.interpolate import InterpolatedUnivariateSpline
+        # will integrate spin.up and spin.down only below efermi and only below curve
+        energies_corrected = cohp.energies - cohp.efermi
+        if Spin.down in cohp.cohp:
+            summedcohp = cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
+        else:
+            summedcohp = cohp.cohp[Spin.up]
+
+        print(len(energies_corrected))
+        print(len(summedcohp))
+        spl = InterpolatedUnivariateSpline(energies_corrected, summedcohp, ext=0)
+        # integrate only below curve
+        integrate = abstrapz_negative([spl(energy) for energy in energies_corrected if start <= energy <= cohp.efermi],
+                                      [energy for energy in energies_corrected if start <= energy <= cohp.efermi])
+
+        integrate2 = abstrapz_positive([spl(energy) for energy in energies_corrected if start <= energy <= cohp.efermi],
+                                       [energy for energy in energies_corrected if start <= energy <= cohp.efermi])
+
+        return integrate2  # abs(integrate2)/abs(integrate2)+integrate
+
     @staticmethod
     def _get_bond_dict(atoms, antbd):
         bond_dict = {}
@@ -181,6 +235,8 @@ class Analysis:
             mean_icohps = self._get_strenghts_for_each_bond(cation_anion_infos[4], cation_anion_infos[1], namecation)
 
             antbdg = self._get_antibdg_states(cohps, labels, namecation)
+            #print(self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, namecation))
+
             bond_dict = self._get_bond_dict(mean_icohps, antbdg)
 
             site_dict[ication] = {"env": ce, "bonds": bond_dict, "cation": namecation, "charge": charge_list[ication]}
@@ -193,3 +249,31 @@ class Analysis:
 
     def get_condensed_bonding_analysis(self):
         return self.condensed_bonding_analysis
+
+
+class CSVWriter:
+    """
+    will write a description text of all relevant bonds. It will analyse all coordination environments.
+    Furthermore, it will analyse which kind of bonds contribute to the valence band close to the Fermi level
+
+    """
+
+    def __init__(self, analysis_object):
+        self.analysis_object = analysis_object
+
+
+
+    def write_CN_mean_ICOHP(self, name_csv="icohp_CN.csv"):
+        self.condensed_bonding_analysis = self.analysis_object.get_condensed_bonding_analysis()
+        relevant_cations = ', '.join([str(site.specie) + str(isite) for isite, site in enumerate(
+            self.analysis_object.structure) if isite in
+                                      self.analysis_object.set_inequivalent_cations])
+
+
+        with open(name_csv, 'a', newline='') as file:
+            writer = csv.writer(file)
+            bond_info = []
+            for key, item in self.condensed_bonding_analysis["sites"].items():
+                for type, properties in item['bonds'].items():
+                    writer.writerow([key,item["cation"], str(type), properties["number_of_bonds"],properties[
+                        "ICOHP_mean"]])
