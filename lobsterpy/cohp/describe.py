@@ -422,10 +422,43 @@ class Description2:
                     self._coordination_environment_to_text(item["env"]))
                                  + " coordination environment. It has " + str(bonds) + ' bonds.')
 
-    def plot_cohps(self, set_cohps, set_inequivalent_cations,
-                   set_labels_cohps, structure):
+    def set_dict(self):
+        # produce a dict with mean values for all kinds of different bonds in the structure
+        self.condensed_bonding_analysis = self.analysis_object.get_condensed_bonding_analysis()
+        relevant_cation_ids = [isite for isite in
+                               self.analysis_object.list_equivalent_sites if
+                               isite in self.analysis_object.set_inequivalent_cations]
+        print(relevant_cation_ids)
+        # self.text = []
+        # self.text.append("The compound " + str(self.condensed_bonding_analysis["formula"]) + " has "
+        #                  + str(self.condensed_bonding_analysis["number_of_considered_cations"])
+        #                  + " symmetry-independent cations with relevant cation-anion interactions: " +
+        #                  str(relevant_cations) + '.')
+        #
+        # output_dict={}
+        final_dict={}
+        for key in relevant_cation_ids:
+            item = self.condensed_bonding_analysis["sites"][key]
+            #print(key)
+            #print(item)
+            for type, properties in item["bonds"].items():
+                label=item["cation"] + '-' + str(type)
+                if not label in final_dict:
+                    final_dict[label]={"number_of_bonds":int(properties["number_of_bonds"]), "ICOHP_sum":float(properties["ICOHP_sum"])}
+                else:
+                    final_dict[label]["number_of_bonds"]+=int(properties["number_of_bonds"])
+                    final_dict[label]["ICOHP_sum"]+=float(properties["ICOHP_sum"])
 
-        # TODO: check if self. can be used to simplify this plotting here
+        for key, item in final_dict.items():
+            final_dict[key]["ICOHP_mean"]=item["ICOHP_sum"]/item["number_of_bonds"]
+        self.final_dict=final_dict
+
+    def plot_cohps(self):
+        set_cohps = self.analysis_object.set_cohps
+        set_inequivalent_cations = self.analysis_object.set_inequivalent_cations
+        set_labels_cohps = self.analysis_object.set_labels_cohps
+        structure = self.analysis_object.structure
+
         for ication, labels, cohps in zip(set_inequivalent_cations, set_labels_cohps,
                                           set_cohps):
 
@@ -433,12 +466,11 @@ class Description2:
 
             cp = CohpPlotter()
             for label, cohp in zip(labels, cohps):
-                cp.add_cohp(namecation + str(ication) + ': ' + label, cohp)
+                if label is not None:
+                    cp.add_cohp(namecation + str(ication) + ': ' + label, cohp)
             plot = cp.get_plot(integrated=False)
             plot.ylim([-4, 2])
             plot.show()
-
-
 
     @staticmethod
     def _coordination_environment_to_text(ce):
@@ -581,4 +613,3 @@ class Description2:
     def write_description(self):
         for textpart in self.text:
             print(textpart)
-
