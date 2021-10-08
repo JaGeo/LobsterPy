@@ -384,6 +384,8 @@ class Description2:
 
     def set_description(self):
         self.condensed_bonding_analysis = self.analysis_object.get_condensed_bonding_analysis()
+        #print(self.condensed_bonding_analysis)
+
         relevant_cations = ', '.join([str(site.specie) + str(isite) for isite, site in enumerate(
             self.analysis_object.structure) if isite in
                                       self.analysis_object.set_inequivalent_cations])
@@ -425,9 +427,13 @@ class Description2:
     def set_dict(self):
         # produce a dict with mean values for all kinds of different bonds in the structure
         self.condensed_bonding_analysis = self.analysis_object.get_condensed_bonding_analysis()
-        relevant_cation_ids = [isite for isite in
+        print(self.analysis_object.list_equivalent_sites)
+        print(self.analysis_object.set_inequivalent_cations)
+        relevant_cation_ids = set([isite for isite in
                                self.analysis_object.list_equivalent_sites if
-                               isite in self.analysis_object.set_inequivalent_cations]
+                               isite in self.analysis_object.set_inequivalent_cations])
+
+        print("relevant IDs:")
         print(relevant_cation_ids)
         # self.text = []
         # self.text.append("The compound " + str(self.condensed_bonding_analysis["formula"]) + " has "
@@ -436,24 +442,39 @@ class Description2:
         #                  str(relevant_cations) + '.')
         #
         # output_dict={}
-        final_dict={}
+        final_dict = {}
         for key in relevant_cation_ids:
             item = self.condensed_bonding_analysis["sites"][key]
-            #print(key)
-            #print(item)
+            # print(key)
+            # print(item)
             for type, properties in item["bonds"].items():
-                label=item["cation"] + '-' + str(type)
+                label = item["cation"] + '-' + str(type)
                 if not label in final_dict:
-                    final_dict[label]={"number_of_bonds":int(properties["number_of_bonds"]), "ICOHP_sum":float(properties["ICOHP_sum"])}
+                    final_dict[label] = {"number_of_bonds": int(properties["number_of_bonds"]),
+                                         "ICOHP_sum": float(properties["ICOHP_sum"]),
+                                         "has_antbdg": properties["has_antibdg_states_below_Efermi"]}
                 else:
-                    final_dict[label]["number_of_bonds"]+=int(properties["number_of_bonds"])
-                    final_dict[label]["ICOHP_sum"]+=float(properties["ICOHP_sum"])
+                    final_dict[label]["number_of_bonds"] += int(properties["number_of_bonds"])
+                    final_dict[label]["ICOHP_sum"] += float(properties["ICOHP_sum"])
+                    final_dict[label]["has_antbdg"] = final_dict[label]["has_antbdg"] or properties["has_antibdg_states_below_Efermi"]
 
         for key, item in final_dict.items():
-            final_dict[key]["ICOHP_mean"]=item["ICOHP_sum"]/item["number_of_bonds"]
-        self.final_dict=final_dict
+            final_dict[key]["ICOHP_mean"] = item["ICOHP_sum"] / item["number_of_bonds"]
+            final_dict[key]["number_of_bonds"] = item["number_of_bonds"]
 
-    def plot_cohps(self):
+        self.final_dict_bonds = final_dict
+
+        final_dict_cations={}
+        for key, item in self.condensed_bonding_analysis["sites"].items():
+
+            if item["cation"] not in final_dict_cations:
+                final_dict_cations[item["cation"]]=[item["env"]]
+            else:
+                final_dict_cations[item["cation"]].append(item["env"])
+        # TODO: add coordination environment
+        self.final_dict_cations=final_dict_cations
+
+    def plot_cohps(self, save=False, filename=None):
         set_cohps = self.analysis_object.set_cohps
         set_inequivalent_cations = self.analysis_object.set_inequivalent_cations
         set_labels_cohps = self.analysis_object.set_labels_cohps
@@ -470,6 +491,8 @@ class Description2:
                     cp.add_cohp(namecation + str(ication) + ': ' + label, cohp)
             plot = cp.get_plot(integrated=False)
             plot.ylim([-4, 2])
+            if save:
+                plot.savefig(filename)
             plot.show()
 
     @staticmethod

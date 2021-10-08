@@ -7,7 +7,8 @@ from pymatgen.electronic_structure.core import Spin
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-#TODO: test this class on FeF2 and FeOF -> could be very interesting systems!
+
+# TODO: test this class on FeF2 and FeOF -> could be very interesting systems!
 
 class Analysis:
     def __init__(self, path_to_poscar, path_to_icohplist, path_to_cohpcar, path_to_charge=None,
@@ -38,7 +39,7 @@ class Analysis:
         symmetry_dataset = sga.get_symmetry_dataset()
         equivalent_sites = symmetry_dataset['equivalent_atoms']
 
-        self.list_equivalent_sites=equivalent_sites
+        self.list_equivalent_sites = equivalent_sites
         self.set_equivalent_sites = list(set(equivalent_sites))
         self.spg = symmetry_dataset['international']
         # What do I need for an automated analysis:
@@ -84,7 +85,7 @@ class Analysis:
                     labels, summedcohps = self.chemv.get_info_cohps_to_neighbors(self.path_to_cohpcar, [ice],
                                                                                  summed_spin_channels=True,
                                                                                  per_bond=False,
-                                                                              only_bonds_to=[str(anion)])
+                                                                                 only_bonds_to=[str(anion)])
 
                     aniontype_labels.append(labels)
                     aniontype_cohps.append(summedcohps)
@@ -143,14 +144,16 @@ class Analysis:
                 new = label.split(' ')[2].split('-')
                 sorted_new = self._sort_name(new, namecation)
                 new_label = sorted_new[0] + '-' + sorted_new[1]
-                integral = self._integrate_antbdstates_below_efermi(cohp)
+                integral, perc = self._integrate_antbdstates_below_efermi(cohp,-1000)
+                dict_antibd[new_label] = {"integral":integral, "perc": perc}
 
-                dict_antibd[new_label] = integral
+
         return dict_antibd
 
     def _integrate_antbdstates_below_efermi(self, cohp, start=-2):
+        #TODO: needs to be fixed!!!!!
 
-        def abstrapz_positive(y, x=None, dx=1.0):
+        def abstrapz_positive(y, x=None, dx=0.01):
             y = np.asanyarray(y)
             if x is None:
                 d = dx
@@ -160,7 +163,7 @@ class Analysis:
             ret = (d * (y[1:] + y[:-1]) / 2.0)
             return ret[ret > 0.0].sum()  # The important line
 
-        def abstrapz_negative(y, x=None, dx=1.0):
+        def abstrapz_negative(y, x=None, dx=0.01):
             y = np.asanyarray(y)
             if x is None:
                 d = dx
@@ -178,8 +181,6 @@ class Analysis:
         else:
             summedcohp = cohp.cohp[Spin.up]
 
-        print(len(energies_corrected))
-        print(len(summedcohp))
         spl = InterpolatedUnivariateSpline(energies_corrected, summedcohp, ext=0)
         # integrate only below curve
         integrate = abstrapz_negative([spl(energy) for energy in energies_corrected if start <= energy <= cohp.efermi],
@@ -188,16 +189,20 @@ class Analysis:
         integrate2 = abstrapz_positive([spl(energy) for energy in energies_corrected if start <= energy <= cohp.efermi],
                                        [energy for energy in energies_corrected if start <= energy <= cohp.efermi])
 
-        return integrate2  # abs(integrate2)/abs(integrate2)+integrate
+        print(integrate)
+        print(integrate2)
+
+        return integrate2, abs(integrate2)/abs(integrate2)+abs(integrate)
 
     @staticmethod
-    def _get_bond_dict(atoms, antbd):
+    def _get_bond_dict(atoms, antbd, antbdg_dict):
         bond_dict = {}
         for key, item in atoms.items():
             bond_dict[key.split("-")[1]] = {"ICOHP_mean": str(round(np.mean(item), 2)),
-                                            "ICOHP_sum": str(round(np.sum(item),2)),
+                                            "ICOHP_sum": str(round(np.sum(item), 2)),
                                             "has_antibdg_states_below_Efermi": antbd[key],
-                                            "number_of_bonds": len(item)}
+                                            "number_of_bonds": len(item),
+                                            "perc_antibdg_states_below_Efermi": antbdg_dict[key]}
 
         return bond_dict
 
@@ -240,11 +245,11 @@ class Analysis:
             mean_icohps = self._get_strenghts_for_each_bond(cation_anion_infos[4], cation_anion_infos[1], namecation)
 
             antbdg = self._get_antibdg_states(cohps, labels, namecation)
-            #print(self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, namecation))
+            dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, namecation)
 
-            bond_dict = self._get_bond_dict(mean_icohps, antbdg)
+            bond_dict = self._get_bond_dict(mean_icohps, antbdg, dict_antibonding)
 
-            site_dict[ication] = {"env": ce, "bonds": bond_dict, "cation": namecation, "charge": charge_list[ication]}
+            site_dict[ication] = {"env": ce, "bonds": bond_dict, "cation": namecation, "charge": charge_list[ication], }
 
         self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
                                            "limit_icohp": limit_icohps, "number_of_considered_cations":
@@ -266,19 +271,16 @@ class CSVWriter:
     def __init__(self, analysis_object):
         self.analysis_object = analysis_object
 
-
-
     def write_CN_mean_ICOHP(self, name_csv="icohp_CN.csv"):
         self.condensed_bonding_analysis = self.analysis_object.get_condensed_bonding_analysis()
         relevant_cations = ', '.join([str(site.specie) + str(isite) for isite, site in enumerate(
             self.analysis_object.structure) if isite in
                                       self.analysis_object.set_inequivalent_cations])
 
-
         with open(name_csv, 'a', newline='') as file:
             writer = csv.writer(file)
             bond_info = []
             for key, item in self.condensed_bonding_analysis["sites"].items():
                 for type, properties in item['bonds'].items():
-                    writer.writerow([key,item["cation"], str(type), properties["number_of_bonds"],properties[
+                    writer.writerow([key, item["cation"], str(type), properties["number_of_bonds"], properties[
                         "ICOHP_mean"]])
