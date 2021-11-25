@@ -1,11 +1,10 @@
 import argparse
 import json
 
-from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.electronic_structure.plotter import CohpPlotter
-
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from pymatgen.electronic_structure.cohp import CompleteCohp
+from pymatgen.electronic_structure.plotter import CohpPlotter
 
 parser = argparse.ArgumentParser(description='Add some integers.')
 
@@ -31,6 +30,7 @@ parser.add_argument('--filename', default="lobsterpy.json", type=str,
                     help='path to ICOHPLIST.lobster. Default is "ICOHPLIST.lobster"')
 
 args = parser.parse_args()
+
 
 def main():
     if args.description or args.automaticplot:

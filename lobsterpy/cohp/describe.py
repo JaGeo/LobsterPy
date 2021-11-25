@@ -28,7 +28,7 @@ class Description:
         """
         self.condensed_bonding_analysis = self.analysis_object.condensed_bonding_analysis
 
-        relevant_cations = ', '.join([str(site.specie) + str(isite) for isite, site in enumerate(
+        relevant_cations = ', '.join([str(site.specie) + str(isite+1) for isite, site in enumerate(
             self.analysis_object.structure) if isite in
                                       self.analysis_object.set_inequivalent_cations])
         self.text = []

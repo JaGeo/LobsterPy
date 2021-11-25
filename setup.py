@@ -24,7 +24,7 @@ setup(
         'Programming Language :: Python :: 3.10',
     ],
 
-entry_points={
+    entry_points={
         "console_scripts": [
             "lobsterpy = lobsterpy.cli:main",
 

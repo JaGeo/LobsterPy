@@ -179,7 +179,7 @@ class Analysis:
                     for anion in self.anion_types:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(self.path_to_cohpcar, [ice],
-                                                                               summed_spin_channels=True,
+                                                                                       summed_spin_channels=True,
                                                                                        per_bond=False,
                                                                                        only_bonds_to=[str(anion)])
 
