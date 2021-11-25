@@ -137,8 +137,10 @@ class Analysis:
                                             additional_condition=1,
                                             perc_strength_ICOHP=self.cutoff_icohp,
                                             filename_CHARGE=self.path_to_charge,
-                                            valences_from_charges=True
+                                            valences_from_charges=True,
+                                            adapt_extremum_to_add_cond=True,
                                             )
+
 
         else:
             raise ValueError("only cation anion bonds implemented so far")
@@ -425,7 +427,8 @@ class Analysis:
 
         self.condensed_bonding_analysis = {}
         # which icohps are considered
-        limit_icohps = self.chemenv._get_limit_from_extremum(self.chemenv.Icohpcollection, self.cutoff_icohp)
+        if self.whichbonds == "cation-anion":
+            limit_icohps = self.chemenv._get_limit_from_extremum(self.chemenv.Icohpcollection, self.cutoff_icohp, adapt_extremum_to_add_cond=True, additional_condition=1)
 
         # formula of the compound
         formula = str(self.structure.composition.reduced_formula)
