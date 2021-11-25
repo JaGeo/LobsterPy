@@ -1,11 +1,9 @@
 import unittest
 import tmp
-from lobsterpy.lobsterpy.cohp.describe import Description
-from lobsterpy.lobsterpy.cohp.analyze import Analysis
+from lobsterpy.cohp.describe import Description
+from lobsterpy.cohp.analyze import Analysis
 import os
 
-# from numpy.testing import assert_array_almost_equal
-# from numpy.testing import assert_array_almost_equal
 
 
 class TestDescribe(unittest.TestCase):

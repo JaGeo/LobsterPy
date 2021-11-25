@@ -1,7 +1,6 @@
 import unittest
-from lobsterpy.lobsterpy.cohp.analyze import Analysis
-#from numpy.testing import assert_array_almost_equal
-#from numpy.testing import assert_array_almost_equal
+from lobsterpy.cohp.analyze import Analysis
+
 
 
 class TestAnalyse(unittest.TestCase):
