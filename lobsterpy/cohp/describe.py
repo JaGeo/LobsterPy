@@ -67,7 +67,8 @@ class Description:
                                  + " coordination environment. It has " + str(bonds) + ' bonds.')
 
 
-    def plot_cohps(self, save=False, filename=None, ylim=[-4, 2], xlim=None, integrated=False):
+    def plot_cohps(self, save=False, filename=None, ylim=[-4, 2], xlim=None, integrated=False, summed=True):
+        #TODO: solve problem with spin channel!?
         """
         Automatic plots of the most relevant COHP will be determined
         Args:
@@ -76,6 +77,7 @@ class Description:
             ylim (list of float): energy scale that is shown in plot (eV)
             xlim(list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
+            summed (bool): both spin cannels will be summed
 
         Returns:
 

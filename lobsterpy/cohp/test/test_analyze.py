@@ -17,6 +17,14 @@ class TestAnalyse(unittest.TestCase):
                                               path_to_charge=None, whichbonds="cation-anion", \
                                               cutoff_icohp=0.1)
 
+        self.analyse_NaCl_madelung= Analysis(path_to_poscar="TestData/NaCl/POSCAR",
+                                              path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
+                                              path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+                                              path_to_charge="TestData/NaCl/CHARGE.lobster",
+                                              path_to_madelung="TestData/NaCl/MadelungEnergies.lobster",
+                                              whichbonds="cation-anion", \
+                                              cutoff_icohp=0.1)
+
         self.analyse_BaTiO3 = Analysis(path_to_poscar="TestData/BaTiO3/POSCAR",
                                        path_to_cohpcar="TestData/BaTiO3/COHPCAR.lobster",
                                        path_to_icohplist="TestData/BaTiO3/ICOHPLIST.lobster",
@@ -61,6 +69,14 @@ class TestAnalyse(unittest.TestCase):
                                              path_to_charge="TestData/BaTaO2N1/CHARGE.lobster.gz",
                                              whichbonds="cation-cation", \
                                              cutoff_icohp=0.1)
+        with self.assertRaises(ValueError):
+            self.analyse_BaTaO2N1 = Analysis(path_to_poscar="TestData/BaTaO2N1/POSCAR.gz",
+                                             path_to_cohpcar="TestData/BaTaO2N1/COHPCAR.lobster.gz",
+                                             path_to_icohplist="TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
+                                             path_to_charge="TestData/BaTaO2N1/CHARGE.lobster.gz",
+                                             whichbonds="all", \
+                                             cutoff_icohp=0.1)
+
 
     def test_all_attributes_NaCl_Mulliken(self):
         self.assertEqual(self.analyse_NaCl.condensed_bonding_analysis["formula"], "NaCl")
@@ -80,6 +96,7 @@ class TestAnalyse(unittest.TestCase):
         self.assertListEqual(self.analyse_NaCl.condensed_bonding_analysis["sites"][0]["relevant_bonds"],
                              ['21', '23', '24', '27', '28', '30'])
         self.assertEqual(self.analyse_NaCl.condensed_bonding_analysis["type_charges"], "Mulliken")
+        self.assertAlmostEqual(self.analyse_NaCl_madelung.condensed_bonding_analysis["madelung_energy"], -5.40)
 
     def test_all_attributes_NaCl_valences(self):
         self.assertEqual(self.analyse_NaCl_valences.condensed_bonding_analysis["formula"], "NaCl")

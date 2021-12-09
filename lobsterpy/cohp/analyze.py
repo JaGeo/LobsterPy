@@ -8,6 +8,7 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 
 # TODO: reduce the number of attributes
+# TODO add additional tests
 
 class Analysis:
     """
@@ -84,8 +85,10 @@ class Analysis:
 
     def __init__(self, path_to_poscar: str, path_to_icohplist: str, path_to_cohpcar: str,
                  path_to_charge: Optional[str] = None,
+                 path_to_madelung: Optional[str] = None,
                  whichbonds: str = "cation-anion", \
-                 cutoff_icohp: float = 0.1):
+                 cutoff_icohp: float = 0.1,
+                 summed_spins=True):
         """
         This is a class to analyse bonding information automatically
         Args:
@@ -93,8 +96,10 @@ class Analysis:
             path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster")
             path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster")
             path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster")
+            path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
             whichbonds: selects which kind of bonds are analyzed. "cation-anion" is the default
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
+            summed_spins: if true, spins will be summed
         """
 
         self.path_to_poscar = path_to_poscar
@@ -103,8 +108,9 @@ class Analysis:
         self.whichbonds = whichbonds
         self.cutoff_icohp = cutoff_icohp
         self.path_to_charge = path_to_charge
+        self.path_to_madelung = path_to_madelung
         self.setup_env()
-        self.get_information_all_bonds()
+        self.get_information_all_bonds(summed_spins=summed_spins)
 
         # This determines how cations and anions
         if path_to_charge is None:
@@ -114,6 +120,8 @@ class Analysis:
 
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
+
+        self.path_to_madelung=path_to_madelung
 
     def setup_env(self):
         """
@@ -140,6 +148,16 @@ class Analysis:
                                             valences_from_charges=True,
                                             adapt_extremum_to_add_cond=True,
                                             )
+        elif self.whichbonds=="all":
+            raise ValueError("only cation anion bonds implemented so far")
+            # self.chemenv = LobsterNeighbors(filename_ICOHP=self.path_to_icohplist,
+            #                                 structure=Structure.from_file(self.path_to_poscar),
+            #                                 additional_condition=0,
+            #                                 perc_strength_ICOHP=self.cutoff_icohp,
+            #                                 filename_CHARGE=self.path_to_charge,
+            #                                 valences_from_charges=True,
+            #                                 adapt_extremum_to_add_cond=True,
+            #                                 )
 
 
         else:
@@ -148,7 +166,7 @@ class Analysis:
         # determine cations and anions
         self.lse = self.chemenv.get_light_structure_environment(only_cation_environments=True)
 
-    def get_information_all_bonds(self):
+    def get_information_all_bonds(self, summed_spins=True):
         """
         This method will gather all information on the bonds within the compound
         Returns:
@@ -177,11 +195,12 @@ class Analysis:
 
                 # go through all anions in the structure
                 # TODO: add options for other bonds as well
+                #TODO: add options to not sum spin channels!
                 if self.whichbonds == "cation-anion":
                     for anion in self.anion_types:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(self.path_to_cohpcar, [ice],
-                                                                                       summed_spin_channels=True,
+                                                                                       summed_spin_channels=summed_spins,
                                                                                        per_bond=False,
                                                                                        only_bonds_to=[str(anion)])
 
@@ -270,6 +289,7 @@ class Analysis:
 
     def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels, cohps, namecation):
         """
+                WARNING: NEEDS MORE TESTS
                 will return a dictionary including information on antibonding states
                 important is however that only the energy range can be considered that has been computed
                 (i.e., this might not be all)
@@ -297,6 +317,7 @@ class Analysis:
     def _integrate_antbdstates_below_efermi(self, cohp, start=-30):
 
         """
+        WARNING: NEEDS MORE TESTS
         This integrates the whole COHP curve that has been computed. The energy range might be very important
         Args:
             cohp: cohp object
@@ -428,7 +449,9 @@ class Analysis:
         self.condensed_bonding_analysis = {}
         # which icohps are considered
         if self.whichbonds == "cation-anion":
-            limit_icohps = self.chemenv._get_limit_from_extremum(self.chemenv.Icohpcollection, self.cutoff_icohp, adapt_extremum_to_add_cond=True, additional_condition=1)
+            limit_icohps = self.chemenv._get_limit_from_extremum(self.chemenv.Icohpcollection, self.cutoff_icohp,
+                                                                 adapt_extremum_to_add_cond=True,
+                                                                 additional_condition=1)
 
         # formula of the compound
         formula = str(self.structure.composition.reduced_formula)
@@ -466,13 +489,23 @@ class Analysis:
             site_dict[ication] = {"env": ce, "bonds": bond_dict, "cation": namecation, "charge": charge_list[ication],
                                   "relevant_bonds": cation_anion_infos[3]}
 
-        # This sets the dictionary including the most important information on the compound
-        self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
-                                           "limit_icohp": limit_icohps, "number_of_considered_cations":
-                                               number_considered_cations, "sites": site_dict,
-                                           "type_charges": self.type_charge
-                                           }
-
+        if self.path_to_madelung is None:
+            # This sets the dictionary including the most important information on the compound
+            self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
+                                               "limit_icohp": limit_icohps, "number_of_considered_cations":
+                                                   number_considered_cations, "sites": site_dict,
+                                               "type_charges": self.type_charge
+                                               }
+        else:
+            from pymatgen.io.lobster import MadelungEnergies
+            madelung=MadelungEnergies(self.path_to_madelung)
+            # This sets the dictionary including the most important information on the compound
+            self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
+                                               "limit_icohp": limit_icohps, "number_of_considered_cations":
+                                                   number_considered_cations, "sites": site_dict,
+                                               "type_charges": self.type_charge,
+                                               "madelung_energy": madelung.madelungenergies_Mulliken
+                                               }
     def set_summary_dicts(self):
         """
         sets summary dicts that can be used for correlations

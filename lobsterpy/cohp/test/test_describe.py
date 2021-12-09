@@ -4,6 +4,7 @@ import unittest
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 
+#TODO: Add example without antibonding states
 
 class TestDescribe(unittest.TestCase):
 
@@ -14,6 +15,7 @@ class TestDescribe(unittest.TestCase):
                                      path_to_charge="TestData/NaCl/CHARGE.lobster", whichbonds="cation-anion", \
                                      cutoff_icohp=0.1)
         self.describe_NaCl = Description(self.analyse_NaCl)
+
 
         self.analyse_NaCl_valences = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
                                               path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
@@ -62,7 +64,7 @@ class TestDescribe(unittest.TestCase):
                                           path_to_icohplist="TestData/NaCl_spin/ICOHPLIST.lobster",
                                           path_to_charge="TestData/NaCl_spin/CHARGE.lobster",
                                           whichbonds="cation-anion", \
-                                          cutoff_icohp=0.1)
+                                          cutoff_icohp=0.1, summed_spins=False)
         self.describe_NaCl_spin = Description(self.analyse_NaCl_spin)
 
     def test_coordination_environment_to_text(self):
@@ -142,6 +144,10 @@ class TestDescribe(unittest.TestCase):
         import tempfile
         with tempfile.NamedTemporaryFile() as tmp:
             self.describe_NaCl.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
+            self.assertTrue(os.path.exists(tmp.name))
+        import tempfile
+        with tempfile.NamedTemporaryFile() as tmp:
+            self.describe_NaCl_spin.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
             self.assertTrue(os.path.exists(tmp.name))
 
     def test_write_descritoin(self):
