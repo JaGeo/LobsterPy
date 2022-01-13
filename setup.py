@@ -6,7 +6,7 @@ setup(
     description='Package for autmatic bonding analysis with Lobster/VASP',
     url='https://github.com/jageo/lobsterpy',
     author='Janine George',
-    author_email='shudson@anl.gov',
+    author_email='janine.george@bam.de',
     license='BSD 2-clause',
     packages=['lobsterpy'],
     install_requires=['pymatgen>=2022.0.15',

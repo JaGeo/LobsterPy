@@ -6,6 +6,9 @@ from pymatgen.electronic_structure.core import Spin
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
+from contextlib import contextmanager
+
+
 
 # TODO: reduce the number of attributes
 # TODO add additional tests
@@ -148,6 +151,17 @@ class Analysis:
                                             valences_from_charges=True,
                                             adapt_extremum_to_add_cond=True,
                                             )
+
+        # elif self.whichbonds =="no cation-anion":
+        #     raise ValueError("only cation anion bonds implemented so far")
+        #     self.chemenv = LobsterNeighbors(filename_ICOHP=self.path_to_icohplist,
+        #                                     structure=Structure.from_file(self.path_to_poscar),
+        #                                     additional_condition=5,
+        #                                     perc_strength_ICOHP=self.cutoff_icohp,
+        #                                     filename_CHARGE=self.path_to_charge,
+        #                                     valences_from_charges=True,
+        #                                     adapt_extremum_to_add_cond=True,
+        #                                     )
         elif self.whichbonds=="all":
             raise ValueError("only cation anion bonds implemented so far")
             # self.chemenv = LobsterNeighbors(filename_ICOHP=self.path_to_icohplist,
