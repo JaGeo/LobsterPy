@@ -9,7 +9,7 @@ directory = "NaCl"
 analyse = Analysis(path_to_poscar=os.path.join(directory, "POSCAR"),
                    path_to_icohplist=os.path.join(directory, "ICOHPLIST.lobster"),
                    path_to_cohpcar=os.path.join(directory, "COHPCAR.lobster"),
-                   path_to_charge=os.path.join(directory, "CHARGE.lobster"))
+                   path_to_charge=os.path.join(directory, "CHARGE.lobster"), whichbonds="cation-anion")
 
 # Setup Desciption dict
 describe = Description(analysis_object=analyse)

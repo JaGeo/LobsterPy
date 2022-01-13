@@ -7,7 +7,7 @@ setup(
     url='https://github.com/jageo/lobsterpy',
     author='Janine George',
     author_email='janine.george@bam.de',
-    license='BSD 2-clause',
+    license='BSD 3-clause',
     packages=['lobsterpy'],
     install_requires=['pymatgen>=2022.0.15',
                       'numpy',
