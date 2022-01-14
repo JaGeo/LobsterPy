@@ -21,4 +21,4 @@ describe.plot_cohps(ylim=[-10, 2], xlim=[-4, 4])
 # different dicts that summarize the results
 print(analyse.condensed_bonding_analysis)
 print(analyse.final_dict_bonds)
-print(analyse.final_dict_cations)
+print(analyse.final_dict_ions)

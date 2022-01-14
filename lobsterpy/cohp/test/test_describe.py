@@ -4,7 +4,8 @@ import unittest
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 
-#TODO: Add example without antibonding states
+
+# TODO: Add example without antibonding states
 
 class TestDescribe(unittest.TestCase):
 
@@ -15,7 +16,6 @@ class TestDescribe(unittest.TestCase):
                                      path_to_charge="TestData/NaCl/CHARGE.lobster", whichbonds="cation-anion", \
                                      cutoff_icohp=0.1)
         self.describe_NaCl = Description(self.analyse_NaCl)
-
 
         self.analyse_NaCl_valences = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
                                               path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
@@ -66,6 +66,35 @@ class TestDescribe(unittest.TestCase):
                                           whichbonds="cation-anion", \
                                           cutoff_icohp=0.1, summed_spins=False)
         self.describe_NaCl_spin = Description(self.analyse_NaCl_spin)
+
+        self.analyse_NaCl_all = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
+                                         path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
+                                         path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+                                         path_to_charge="TestData/NaCl/CHARGE.lobster", whichbonds="all", \
+                                         cutoff_icohp=0.1)
+
+        self.describe_Nacl_all = Description(self.analyse_NaCl_all)
+
+        self.analyse_NaCl_madelung_all = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
+                                                  path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
+                                                  path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+                                                  path_to_charge="TestData/NaCl/CHARGE.lobster",
+                                                  path_to_madelung="TestData/NaCl/MadelungEnergies.lobster",
+                                                  whichbonds="all", \
+                                                  cutoff_icohp=0.1)
+
+        self.describe_Nacl_madelung_all = Description(self.analyse_NaCl_madelung_all)
+
+        self.analyse_NaSi_madelung_all = Analysis(path_to_poscar="TestData/NaSi/POSCAR",
+                                                  path_to_cohpcar="TestData/NaSi/COHPCAR.lobster",
+                                                  path_to_icohplist="TestData/NaSi/ICOHPLIST.lobster",
+                                                  path_to_charge="TestData/NaSi/CHARGE.lobster",
+                                                  path_to_madelung="TestData/NaSi/MadelungEnergies.lobster",
+                                                  whichbonds="all", \
+                                                  cutoff_icohp=0.1)
+
+        self.describe_NaSi_madelung_all = Description(self.analyse_NaSi_madelung_all)
+
 
     def test_coordination_environment_to_text(self):
         results_dict = {
@@ -135,7 +164,37 @@ class TestDescribe(unittest.TestCase):
             "HP:12": "Hexagonal prismatic (CN=12)",
             "HA:12": "Hexagonal antiprismatic (CN=12)",
             "SH:13": "Square-face capped hexagonal prismatic (CN=13)",
-            "H:5": "H:5"
+            "H:5": "H:5",
+            "1": "1-fold",
+            "2": "2-fold",
+            "3": "3-fold",
+            "4": "4-fold",
+            "5": "5-fold",
+            "6": "6-fold",
+            "7": "7-fold",
+            "8": "8-fold",
+            "9": "9-fold",
+            "10": "10-fold",
+            "11": "11-fold",
+            "12": "12-fold",
+            "13": "13-fold",
+            "14": "14-fold",
+            "15": "15-fold",
+            "16": "16-fold",
+            "17": "17-fold",
+            "18": "18-fold",
+            "19": "19-fold",
+            "20": "20-fold",
+            "21": "21-fold",
+            "22": "22-fold",
+            "23": "23-fold",
+            "24": "24-fold",
+            "25": "25-fold",
+            "26": "26-fold",
+            "27": "27-fold",
+            "28": "28-fold",
+            "29": "29-fold",
+            "30": "30-fold",
         }
         for key, items in results_dict.items():
             self.assertEqual(Description._coordination_environment_to_text(key), items)
@@ -150,19 +209,25 @@ class TestDescribe(unittest.TestCase):
             self.describe_NaCl_spin.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
             self.assertTrue(os.path.exists(tmp.name))
 
+        import tempfile
+        with tempfile.NamedTemporaryFile() as tmp:
+            self.describe_Nacl_all.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
+            self.assertTrue(os.path.exists(tmp.name))
+
     def test_write_descritoin(self):
         self.describe_NaCl.write_description()
+        self.describe_NaSi_madelung_all.write_description()
 
     def test_text(self):
         self.assertEqual(self.describe_CdF.text, [
             'The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.',
-            'Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding  interaction below EFermi) bonds.'])
+            'Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.'])
         self.assertEqual(self.describe_NaCl.text, [
             'The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.',
-            'Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding  interaction below EFermi) bonds.'])
+            'Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.'])
         self.assertEqual(self.describe_NaCl.text, [
             'The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.',
-            'Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding  interaction below EFermi) bonds.'])
+            'Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.'])
 
 
 if __name__ == '__main__':

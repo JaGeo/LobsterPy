@@ -27,45 +27,84 @@ class Description:
 
         """
         self.condensed_bonding_analysis = self.analysis_object.condensed_bonding_analysis
+        if self.analysis_object.whichbonds=="cation-anion":
+            relevant_cations = ', '.join([str(site.specie) + str(isite+1) for isite, site in enumerate(
+                self.analysis_object.structure) if isite in
+                                          self.analysis_object.set_inequivalent_ions])
+            self.text = []
+            self.text.append("The compound " + str(self.condensed_bonding_analysis["formula"]) + " has "
+                             + str(self.condensed_bonding_analysis["number_of_considered_ions"])
+                             + " symmetry-independent cation(s) with relevant cation-anion interactions: " +
+                             str(relevant_cations) + '.')
 
-        relevant_cations = ', '.join([str(site.specie) + str(isite+1) for isite, site in enumerate(
-            self.analysis_object.structure) if isite in
-                                      self.analysis_object.set_inequivalent_cations])
-        self.text = []
-        self.text.append("The compound " + str(self.condensed_bonding_analysis["formula"]) + " has "
-                         + str(self.condensed_bonding_analysis["number_of_considered_cations"])
-                         + " symmetry-independent cation(s) with relevant cation-anion interactions: " +
-                         str(relevant_cations) + '.')
+            for key, item in self.condensed_bonding_analysis["sites"].items():
 
-        for key, item in self.condensed_bonding_analysis["sites"].items():
+                # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
+                bond_info = []
+                for type, properties in item['bonds'].items():
+                    if not properties["has_antibdg_states_below_Efermi"]:
+                        bond_info.append(
+                            str(properties['number_of_bonds']) + ' ' + item["ion"] + '-' + str(type) + ' (mean ICOHP: '
+                                                                                                          '' + properties[
+                                "ICOHP_mean"] + ' eV, no antibonding interaction below EFermi)')
+                    else:
+                        bond_info.append(
+                            str(properties['number_of_bonds']) + ' ' + item["ion"] + '-' + str(type) + ' (mean ICOHP: '
+                                                                                                          '' + properties[
+                                "ICOHP_mean"] + ' eV, antibonding interaction below EFermi)')
 
-            # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
-            bond_info = []
-            for type, properties in item['bonds'].items():
-                if not properties["has_antibdg_states_below_Efermi"]:
-                    bond_info.append(
-                        str(properties['number_of_bonds']) + ' ' + item["cation"] + '-' + str(type) + ' (mean ICOHP: '
-                                                                                                      '' + properties[
-                            "ICOHP_mean"] + ' eV, no antibonding  interaction below EFermi)')
+                if len(bond_info) > 1:
+                    bonds = ','.join(bond_info[0:-1]) + ', and ' + bond_info[-1]
                 else:
-                    bond_info.append(
-                        str(properties['number_of_bonds']) + ' ' + item["cation"] + '-' + str(type) + ' (mean ICOHP: '
-                                                                                                      '' + properties[
-                            "ICOHP_mean"] + ' eV, antibonding  interaction below EFermi)')
+                    bonds = bond_info[0]
+                if item["env"] == "O:6":
+                    self.text.append(str(item["ion"]) + str(key+1) + " has an " + str(
+                        self._coordination_environment_to_text(item["env"]))
+                                     + " coordination environment. It has " + str(bonds) + ' bonds.')
+                else:
+                    self.text.append(str(item["ion"]) + str(key+1) + " has a " + str(
+                        self._coordination_environment_to_text(item["env"]))
+                                     + " coordination environment. It has " + str(bonds) + ' bonds.')
+        elif self.analysis_object.whichbonds=="all":
+            relevant_ions = ', '.join([str(site.specie) + str(isite + 1) for isite, site in enumerate(
+                self.analysis_object.structure) if isite in
+                                          self.analysis_object.set_inequivalent_ions])
+            self.text = []
+            self.text.append("The compound " + str(self.condensed_bonding_analysis["formula"]) + " has "
+                             + str(self.condensed_bonding_analysis["number_of_considered_ions"])
+                             + " symmetry-independent atoms(s) with relevant bonds: " +
+                             str(relevant_ions) + '.')
 
-            if len(bond_info) > 1:
-                bonds = ','.join(bond_info[0:-1]) + ', and ' + bond_info[-1]
-            else:
-                bonds = bond_info[0]
-            if item["env"] == "O:6":
-                self.text.append(str(item["cation"]) + str(key+1) + " has an " + str(
-                    self._coordination_environment_to_text(item["env"]))
-                                 + " coordination environment. It has " + str(bonds) + ' bonds.')
-            else:
-                self.text.append(str(item["cation"]) + str(key+1) + " has a " + str(
-                    self._coordination_environment_to_text(item["env"]))
-                                 + " coordination environment. It has " + str(bonds) + ' bonds.')
+            for key, item in self.condensed_bonding_analysis["sites"].items():
 
+                # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
+                bond_info = []
+                for type, properties in item['bonds'].items():
+                    if not properties["has_antibdg_states_below_Efermi"]:
+                        bond_info.append(
+                            str(properties['number_of_bonds']) + ' ' + item["ion"] + '-' + str(
+                                type) + ' (mean ICOHP: '
+                                        '' + properties[
+                                "ICOHP_mean"] + ' eV, no antibonding interaction below EFermi)')
+                    else:
+                        bond_info.append(
+                            str(properties['number_of_bonds']) + ' ' + item["ion"] + '-' + str(
+                                type) + ' (mean ICOHP: '
+                                        '' + properties[
+                                "ICOHP_mean"] + ' eV, antibonding interaction below EFermi)')
+
+                if len(bond_info) > 1:
+                    bonds = ','.join(bond_info[0:-1]) + ', and ' + bond_info[-1]
+                else:
+                    bonds = bond_info[0]
+                if item["env"] == "O:6":
+                    self.text.append(str(item["ion"]) + str(key + 1) + " has an " + str(
+                        self._coordination_environment_to_text(item["env"]))
+                                     + " coordination environment. It has " + str(bonds) + ' bonds.')
+                else:
+                    self.text.append(str(item["ion"]) + str(key + 1) + " has a " + str(
+                        self._coordination_environment_to_text(item["env"]))
+                                     + " coordination environment. It has " + str(bonds) + ' bonds.')
 
     def plot_cohps(self, save=False, filename=None, ylim=[-4, 2], xlim=None, integrated=False, summed=True):
         #TODO: solve problem with spin channel!?
@@ -83,7 +122,10 @@ class Description:
 
         """
         set_cohps = self.analysis_object.set_cohps
-        set_inequivalent_cations = self.analysis_object.set_inequivalent_cations
+        if self.analysis_object.whichbonds=="cation-anion":
+            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
+        elif self.analysis_object.whichbonds=="all":
+            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
         set_labels_cohps = self.analysis_object.set_labels_cohps
         structure = self.analysis_object.structure
 
@@ -110,7 +152,7 @@ class Description:
         """
         transfers a coordination environment str into a text description of the environment
         Args:
-            ce (str): output from ChemEnv package (e.g., "O:6"
+            ce (str): output from ChemEnv package (e.g., "O:6")
 
         Returns:
             text description of coordination environment
@@ -248,7 +290,67 @@ class Description:
             return "Hexagonal antiprismatic (CN=12)"
         if ce == "SH:13":
             return "Square-face capped hexagonal prismatic (CN=13)"
-
+        #TODO: add the rest
+        if ce =="1":
+            return "1-fold"
+        if ce =="2":
+            return "2-fold"
+        if ce =="3":
+            return "3-fold"
+        if ce =="4":
+            return "4-fold"
+        if ce =="5":
+            return "5-fold"
+        if ce =="6":
+            return "6-fold"
+        if ce =="7":
+            return "7-fold"
+        if ce =="8":
+            return "8-fold"
+        if ce =="9":
+            return "9-fold"
+        if ce =="10":
+            return "10-fold"
+        if ce =="11":
+            return "11-fold"
+        if ce =="12":
+            return "12-fold"
+        if ce =="13":
+            return "13-fold"
+        if ce =="14":
+            return "14-fold"
+        if ce =="15":
+            return "15-fold"
+        if ce =="16":
+            return "16-fold"
+        if ce =="17":
+            return "17-fold"
+        if ce =="18":
+            return "18-fold"
+        if ce =="19":
+            return "19-fold"
+        if ce =="20":
+            return "20-fold"
+        if ce =="21":
+            return "21-fold"
+        if ce =="22":
+            return "22-fold"
+        if ce =="23":
+            return "23-fold"
+        if ce =="24":
+            return "24-fold"
+        if ce =="25":
+            return "25-fold"
+        if ce =="26":
+            return "26-fold"
+        if ce =="27":
+            return "27-fold"
+        if ce =="28":
+            return "28-fold"
+        if ce =="29":
+            return "29-fold"
+        if ce =="30":
+            return "30-fold"
         return ce
 
     def write_description(self):
