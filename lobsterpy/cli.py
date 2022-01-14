@@ -45,8 +45,6 @@ def main():
     if args.description or args.automaticplot:
         describe = Description(analysis_object=analyse)
         describe.write_description()
-        print(analyse.final_dict_ions)
-        print(analyse.final_dict_bonds)
 
     if args.automaticplot:
         plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integratecohp)
