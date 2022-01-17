@@ -9,7 +9,7 @@ setup(
     author_email='janine.george@bam.de',
     license='BSD 3-clause',
     packages=['lobsterpy'],
-    install_requires=['pymatgen>=2022.0.15',
+    install_requires=['pymatgen>=2022.1.9',
                       'numpy',
                       'typing'],
 

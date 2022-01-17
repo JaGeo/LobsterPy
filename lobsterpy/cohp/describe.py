@@ -290,7 +290,6 @@ class Description:
             return "Hexagonal antiprismatic (CN=12)"
         if ce == "SH:13":
             return "Square-face capped hexagonal prismatic (CN=13)"
-        #TODO: add the rest
         if ce =="1":
             return "1-fold"
         if ce =="2":
