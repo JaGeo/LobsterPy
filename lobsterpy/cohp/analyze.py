@@ -50,6 +50,9 @@ class Analysis:
     .. attribute:: path_to_poscar
         str that describes path to POSCAR
 
+    .. attribute:: path_to_madelung
+        str that describes path to POSCAR
+
     .. attribute:: set_cohps
         list of cohps
 

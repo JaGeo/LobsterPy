@@ -106,6 +106,10 @@ class Description:
                         self._coordination_environment_to_text(item["env"]))
                                      + " coordination environment. It has " + str(bonds) + ' bonds.')
 
+        if "madelung_energy" in self.analysis_object.condensed_bonding_analysis:
+            self.text.append("The Madelung energy of this crystal structure per unit cell is: "+ str(self.analysis_object.condensed_bonding_analysis["madelung_energy"])+' eV.')
+
+
     def plot_cohps(self, save=False, filename=None, ylim=[-4, 2], xlim=None, integrated=False, summed=True):
         #TODO: solve problem with spin channel!?
         """
