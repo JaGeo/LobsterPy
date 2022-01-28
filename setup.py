@@ -9,7 +9,7 @@ setup(
     author_email='janine.george@bam.de',
     license='BSD 3-clause',
     packages=find_packages(),
-    install_requires=['pymatgen>=2022.1.9',
+    install_requires=['pymatgen>=2022.1.24',
                       'numpy',
                       'typing'],
 
