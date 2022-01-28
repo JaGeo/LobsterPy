@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup,find_packages
 
 setup(
     name='lobsterpy',
@@ -8,7 +8,7 @@ setup(
     author='Janine George',
     author_email='janine.george@bam.de',
     license='BSD 3-clause',
-    packages=['lobsterpy'],
+    packages=find_packages(),
     install_requires=['pymatgen>=2022.1.9',
                       'numpy',
                       'typing'],
