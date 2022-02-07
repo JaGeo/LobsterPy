@@ -88,7 +88,8 @@ class Analysis:
                  path_to_madelung: Optional[str] = None,
                  whichbonds: str = "cation-anion", \
                  cutoff_icohp: float = 0.1,
-                 summed_spins=True):
+                 summed_spins=True,
+                 type_charge=None):
         """
         This is a class to analyse bonding information automatically
         Args:
@@ -100,6 +101,8 @@ class Analysis:
             whichbonds: selects which kind of bonds are analyzed. "cation-anion" is the default
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             summed_spins: if true, spins will be summed
+            type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
+                        Löwdin charges can be selected by using the keyword "Löwdin"
         """
 
         self.path_to_poscar = path_to_poscar
@@ -116,7 +119,15 @@ class Analysis:
         if path_to_charge is None:
             self.type_charge = "Valences"
         else:
-            self.type_charge = "Mulliken"
+            if type_charge==None:
+                self.type_charge = "Mulliken"
+            elif type_charge=="Mulliken":
+                self.type_charge="Mulliken"
+            elif type_charge=="Löwdin":
+                raise ValueError("Only Mulliken charges can be used here at the moment. Implementation will follow.")
+            else:
+                self.type_charge="Valences"
+                print("type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences")
 
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
@@ -599,6 +610,10 @@ class Analysis:
         else:
             from pymatgen.io.lobster import MadelungEnergies
             madelung = MadelungEnergies(self.path_to_madelung)
+            if self.type_charge=="Mulliken":
+                madelung_energy=madelung.madelungenergies_Mulliken
+            elif self.type_charge=="Löwdin":
+                madelung_energy=madelung.madelungenergies_Loewdin
             # This sets the dictionary including the most important information on the compound
             if self.whichbonds == "cation-anion":
 
@@ -606,14 +621,14 @@ class Analysis:
                                                    "limit_icohp": limit_icohps, "number_of_considered_ions":
                                                        number_considered_ions, "sites": site_dict,
                                                    "type_charges": self.type_charge,
-                                                   "madelung_energy": madelung.madelungenergies_Mulliken
+                                                   "madelung_energy": madelung_energy
                                                    }
             elif self.whichbonds == "all":
                 self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
                                                    "limit_icohp": limit_icohps, "number_of_considered_ions":
                                                        number_considered_ions, "sites": site_dict,
                                                    "type_charges": self.type_charge,
-                                                   "madelung_energy": madelung.madelungenergies_Mulliken
+                                                   "madelung_energy": madelung_energy
                                                    }
 
     def set_summary_dicts(self):
