@@ -36,8 +36,6 @@ parser.add_argument('--cohpcar', default="COHPCAR.lobster", type=Path,
                     help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument will also be read when COBICARs or COOPCARs are plotted.')
 parser.add_argument('--json', action="store_true",
                     help='will produce a lobsterpy.json with the most important informations')
-parser.add_argument('--filename', default="lobsterpy.json", type=str,
-                    help='path to ICOHPLIST.lobster. Default is "ICOHPLIST.lobster"')
 parser.add_argument('--allbonds', action="store_true", default=False,
                     help='will consider all bonds, not only cation-anion bonds (default) ')
 
