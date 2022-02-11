@@ -1,5 +1,6 @@
 import argparse
 import json
+from pathlib import Path
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
@@ -31,7 +32,7 @@ parser.add_argument('--charge', default="CHARGE.lobster", type=str,
                     help='path to Charge.lobster. Default is "CHARGE.lobster"')
 parser.add_argument('--icohplist', default="ICOHPLIST.lobster", type=str,
                     help='path to ICOHPLIST.lobster. Default is "ICOHPLIST.lobster"')
-parser.add_argument('--cohpcar', default="COHPCAR.lobster", type=str,
+parser.add_argument('--cohpcar', default="COHPCAR.lobster", type=Path,
                     help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument will also be read when COBICARs or COOPCARs are plotted.')
 parser.add_argument('--json', action="store_true",
                     help='will produce a lobsterpy.json with the most important informations')
@@ -71,11 +72,11 @@ def main():
         if (not args.cobis) and (not args.coops):
             completecohp = CompleteCohp.from_file(fmt="LOBSTER", filename=args.cohpcar, structure_file=args.poscar)
         else:
-            if args.cohpcar == "COHPCAR.lobster":
+            if args.cohpcar.name == "COHPCAR.lobster":
                 if args.cobis:
-                    filename = "COBICAR.lobster"
+                    filename = args.cohpcar.parent / "COBICAR.lobster"
                 elif args.coops:
-                    filename = "COOPCAR.lobster"
+                    filename = args.cohpcar.parent / "COOPCAR.lobster"
             if args.cobis:
                 completecohp = CompleteCohp.from_file(fmt="LOBSTER", filename=filename, structure_file=args.poscar,
                                                       are_cobis=True)
