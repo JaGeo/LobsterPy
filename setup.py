@@ -30,4 +30,6 @@ setup(
 
         ]
     },
+    package_data={'lobsterpy': ['plotting/lobsterpy_base.mplstyle',]}
+
 )

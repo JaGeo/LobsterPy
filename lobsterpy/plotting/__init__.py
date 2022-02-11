@@ -1,6 +1,8 @@
+import matplotlib
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 from pymatgen.electronic_structure.plotter import CohpPlotter
+from pymatgen.electronic_structure.core import Spin
 
 base_style = resource_filename('lobsterpy.plotting', 'lobsterpy_base.mplstyle')
 
@@ -63,9 +65,7 @@ class PlainCohpPlotter(CohpPlotter):
         ncolors = len(colors)
 
         if ax is None:
-            fig, ax = plt.subplots()
-        else:
-            fig = ax.get_figure()
+            _, ax = plt.subplots()
 
         allpts = []
         keys = self._cohps.keys()
@@ -85,52 +85,47 @@ class PlainCohpPlotter(CohpPlotter):
                         y = -populations[spin] if plot_negative else populations[spin]
                     allpts.extend(list(zip(x, y)))
                     if spin == Spin.up:
-                        plt.plot(
+                        ax.plot(
                             x,
                             y,
                             color=colors[i % ncolors],
                             linestyle="-",
                             label=str(key),
-                            linewidth=3,
                         )
                     else:
-                        plt.plot(x, y, color=colors[i % ncolors], linestyle="--", linewidth=3)
+                        ax.plot(x, y, color=colors[i % ncolors], linestyle="--")
 
         if xlim:
-            plt.xlim(xlim)
+            ax.set_xlim(xlim)
+        xlim = ax.get_xlim()
+
         if ylim:
-            plt.ylim(ylim)
+            ax.set_ylim(ylim)
         else:
-            xlim = plt.xlim()
             relevanty = [p[1] for p in allpts if xlim[0] < p[0] < xlim[1]]
             plt.ylim((min(relevanty), max(relevanty)))
 
-        xlim = plt.xlim()
-        ylim = plt.ylim()
         if not invert_axes:
-            plt.plot(xlim, [0, 0], "k-", linewidth=2)
+            ax.axhline(color='k', linewidth=2)
+
             if self.zero_at_efermi:
-                plt.plot([0, 0], ylim, "k--", linewidth=2)
+                ax.axvline(color='k', linestyle='--', linewidth=2)
+
             else:
-                plt.plot(
-                    [self._cohps[key]["efermi"], self._cohps[key]["efermi"]],
-                    ylim,
-                    color=colors[i % ncolors],
-                    linestyle="--",
-                    linewidth=2,
-                )
+                ax.axvline(self._cohps[key]["efermi"],
+                           color=colors[i % ncolors],
+                           linestyle="--",
+                           linewidth=2)
         else:
-            plt.plot([0, 0], ylim, "k-", linewidth=2)
+            ax.axvline(color='k', linewidth=2, linestyle='-')
+
             if self.zero_at_efermi:
-                plt.plot(xlim, [0, 0], "k--", linewidth=2)
+                ax.axhline(color='k', linewidth=2, linestyle='--')
             else:
-                plt.plot(
-                    xlim,
-                    [self._cohps[key]["efermi"], self._cohps[key]["efermi"]],
-                    color=colors[i % ncolors],
-                    linestyle="--",
-                    linewidth=2,
-                )
+                ax.axhline(self._cohps[key]["efermi"],
+                           color=colors[i % ncolors],
+                           linestyle="--",
+                           linewidth=2)
 
         if invert_axes:
             plt.xlabel(cohp_label)
@@ -139,9 +134,5 @@ class PlainCohpPlotter(CohpPlotter):
             plt.xlabel(energy_label)
             plt.ylabel(cohp_label)
 
-        plt.legend()
-        leg = plt.gca().get_legend()
-        ltext = leg.get_texts()
-        plt.setp(ltext, fontsize=30)
-        plt.tight_layout()
+        _ = ax.legend()
         return plt

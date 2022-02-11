@@ -2,10 +2,13 @@ import argparse
 import json
 from pathlib import Path
 
+import matplotlib.style
+
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from lobsterpy.plotting import base_style, PlainCohpPlotter
 from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.electronic_structure.plotter import CohpPlotter
+# from pymatgen.electronic_structure.plotter import CohpPlotter
 
 parser = argparse.ArgumentParser(description='Analyze Lobster runs.')
 
@@ -82,12 +85,12 @@ def main():
                 completecohp = CompleteCohp.from_file(fmt="LOBSTER", filename=filename, structure_file=args.poscar,
                                                       are_coops=True)
         if (not args.cobis) and (not args.coops):
-            cp = CohpPlotter()
+            cp = PlainCohpPlotter()
         else:
             if args.cobis:
-                cp = CohpPlotter(are_cobis=True)
+                cp = PlainCohpPlotter(are_cobis=True)
             elif args.coops:
-                cp = CohpPlotter(are_coops=True)
+                cp = PlainCohpPlotter(are_coops=True)
         # get a nicer plot label
 
         if not args.summed:
@@ -109,9 +112,9 @@ def main():
             cp.add_cohp(str(args.plot),
                         completecohp.get_summed_cohp_by_label_list(label_list=[str(label) for label in args.plot]))
 
-        x = cp.get_plot(integrated=args.integrated)
-        x.ylim(args.ylim)
-        x.xlim(args.xlim)
+        matplotlib.style.use(base_style)
+        x = cp.get_plot(integrated=args.integrated,
+                        xlim=args.xlim, ylim=args.ylim)
 
         x.show()
 
