@@ -58,7 +58,7 @@ def main():
         describe.write_description()
 
     if args.automaticplot:
-        plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integratecohp)
+        plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
 
     if args.json:
         analysedict = analyse.condensed_bonding_analysis
