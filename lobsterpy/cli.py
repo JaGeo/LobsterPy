@@ -24,7 +24,7 @@ parser.add_argument('--orbitalwise', dest="orbitalwise", nargs='+', default=None
 
 parser.add_argument('--integrated', action="store_true", help='integrate plots of most important interactions')
 
-parser.add_argument('--POSCAR', dest="poscar", default="POSCAR", type=str, help='path to POSCAR. Default is "POSCAR"')
+parser.add_argument('--POSCAR', '--poscar', dest="poscar", default="POSCAR", type=str, help='path to POSCAR. Default is "POSCAR"')
 parser.add_argument('--ylim', dest="ylim", nargs='+', default=None, type=float, help='energy lim for plots')
 parser.add_argument('--xlim', dest="xlim", nargs='+', default=None, type=float, help='COHP lim for plots')
 parser.add_argument('--charge', default="CHARGE.lobster", type=str,
