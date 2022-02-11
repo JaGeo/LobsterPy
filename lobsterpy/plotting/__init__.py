@@ -1,3 +1,5 @@
+from typing import List, Optional, Union
+
 import matplotlib
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
@@ -5,6 +7,29 @@ from pymatgen.electronic_structure.plotter import CohpPlotter
 from pymatgen.electronic_structure.core import Spin
 
 base_style = resource_filename('lobsterpy.plotting', 'lobsterpy_base.mplstyle')
+
+
+def get_style_list(no_base_style: bool = False,
+                   styles: Optional[List[str]] = None
+                   ) -> List[Union[str, dict]]:
+    """Get *args for matplotlib.style from user input
+
+    Args:
+        no_base_style: If true, do not include lobsterpy_base.mplstyle
+        styles: User-requested styles. These can be paths to mplstyle files, or
+                the names of known (matplotlib-supplied) styles
+
+    """
+
+    if no_base_style:
+        base = []
+    else:
+        base = [base_style]
+
+    if styles is None:
+        styles = []
+
+    return base + styles
 
 
 class PlainCohpPlotter(CohpPlotter):

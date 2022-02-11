@@ -1,4 +1,4 @@
-from pymatgen.electronic_structure.plotter import CohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter
 
 
 class Description:
@@ -138,7 +138,7 @@ class Description:
 
             namecation = str(structure[ication].specie)
 
-            cp = CohpPlotter()
+            cp = PlainCohpPlotter()
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication+1) + ': ' + label, cohp)

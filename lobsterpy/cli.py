@@ -6,9 +6,8 @@ import matplotlib.style
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import base_style, PlainCohpPlotter
+from lobsterpy.plotting import get_style_list, PlainCohpPlotter
 from pymatgen.electronic_structure.cohp import CompleteCohp
-# from pymatgen.electronic_structure.plotter import CohpPlotter
 
 parser = argparse.ArgumentParser(description='Analyze Lobster runs.')
 
@@ -41,6 +40,11 @@ parser.add_argument('--json', action="store_true",
                     help='will produce a lobsterpy.json with the most important informations')
 parser.add_argument('--allbonds', action="store_true", default=False,
                     help='will consider all bonds, not only cation-anion bonds (default) ')
+parser.add_argument('--style', type=str, nargs='+', default=None,
+                    help='Matplotlib style sheet(s) for plot appearance')
+parser.add_argument('--no-base-style', action="store_true", dest='no_base_style',
+                    help=('Disable inbuilt style entirely. This may prevent interference with external '
+                          'stylesheets when using --style.'))
 
 args = parser.parse_args()
 
@@ -58,6 +62,11 @@ def main():
     if args.description or args.automaticplot:
         describe = Description(analysis_object=analyse)
         describe.write_description()
+
+    if args.plot or args.automaticplot:
+        style_list = get_style_list(no_base_style=args.no_base_style,
+                                    styles=args.style)
+        matplotlib.style.use(style_list)
 
     if args.automaticplot:
         plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
@@ -112,7 +121,6 @@ def main():
             cp.add_cohp(str(args.plot),
                         completecohp.get_summed_cohp_by_label_list(label_list=[str(label) for label in args.plot]))
 
-        matplotlib.style.use(base_style)
         x = cp.get_plot(integrated=args.integrated,
                         xlim=args.xlim, ylim=args.ylim)
 
