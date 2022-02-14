@@ -1,115 +1,118 @@
 import unittest
+from pathlib import Path
 
 from lobsterpy.cohp.analyze import Analysis
+
+TestDir = Path(__file__).absolute().parent
 
 
 class TestAnalyse(unittest.TestCase):
     def setUp(self):
         self.analyse_NaCl = Analysis(
-            path_to_poscar="TestData/NaCl/POSCAR",
-            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge="TestData/NaCl/CHARGE.lobster",
+            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.analyse_NaCl_valences = Analysis(
-            path_to_poscar="TestData/NaCl/POSCAR",
-            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
             path_to_charge=None,
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
         self.analyse_NaCl_madelung = Analysis(
-            path_to_poscar="TestData/NaCl/POSCAR",
-            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge="TestData/NaCl/CHARGE.lobster",
-            path_to_madelung="TestData/NaCl/MadelungEnergies.lobster",
+            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
+            path_to_madelung=TestDir / "TestData/NaCl/MadelungEnergies.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
         self.analyse_BaTiO3 = Analysis(
-            path_to_poscar="TestData/BaTiO3/POSCAR",
-            path_to_cohpcar="TestData/BaTiO3/COHPCAR.lobster",
-            path_to_icohplist="TestData/BaTiO3/ICOHPLIST.lobster",
-            path_to_charge="TestData/BaTiO3/CHARGE.lobster",
+            path_to_poscar=TestDir / "TestData/BaTiO3/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/BaTiO3/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/BaTiO3/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
         self.analyse_BaTaO2N1 = Analysis(
-            path_to_poscar="TestData/BaTaO2N1/POSCAR.gz",
-            path_to_cohpcar="TestData/BaTaO2N1/COHPCAR.lobster.gz",
-            path_to_icohplist="TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
-            path_to_charge="TestData/BaTaO2N1/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "TestData/BaTaO2N1/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/BaTaO2N1/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/BaTaO2N1/CHARGE.lobster.gz",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
         self.analyse_BaTiO3_differentcutoff = Analysis(
-            path_to_poscar="TestData/BaTiO3/POSCAR",
-            path_to_cohpcar="TestData/BaTiO3/COHPCAR.lobster",
-            path_to_icohplist="TestData/BaTiO3/ICOHPLIST.lobster",
-            path_to_charge="TestData/BaTiO3/CHARGE.lobster",
+            path_to_poscar=TestDir / "TestData/BaTiO3/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/BaTiO3/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/BaTiO3/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.001,
         )
 
         self.analyse_NaCl_distorted = Analysis(
-            path_to_poscar="TestData/NaCl_distorted/POSCAR",
-            path_to_cohpcar="TestData/NaCl_distorted/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaCl_distorted/ICOHPLIST.lobster",
-            path_to_charge="TestData/NaCl_distorted/CHARGE.lobster",
+            path_to_poscar=TestDir / "TestData/NaCl_distorted/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl_distorted/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl_distorted/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl_distorted/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
         self.analyse_NaCl_spin = Analysis(
-            path_to_poscar="TestData/NaCl_spin/POSCAR",
-            path_to_cohpcar="TestData/NaCl_spin/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaCl_spin/ICOHPLIST.lobster",
-            path_to_charge="TestData/NaCl_spin/CHARGE.lobster",
+            path_to_poscar=TestDir / "TestData/NaCl_spin/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl_spin/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl_spin/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl_spin/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
         self.analyse_NaCl_all = Analysis(
-            path_to_poscar="TestData/NaCl/POSCAR",
-            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge="TestData/NaCl/CHARGE.lobster",
+            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
             whichbonds="all",
             cutoff_icohp=0.1,
         )
 
         self.analyse_NaCl_madelung_all = Analysis(
-            path_to_poscar="TestData/NaCl/POSCAR",
-            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge="TestData/NaCl/CHARGE.lobster",
-            path_to_madelung="TestData/NaCl/MadelungEnergies.lobster",
+            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
+            path_to_madelung=TestDir / "TestData/NaCl/MadelungEnergies.lobster",
             whichbonds="all",
             cutoff_icohp=0.1,
         )
         self.analyse_NaSi_madelung_all = Analysis(
-            path_to_poscar="TestData/NaSi/POSCAR",
-            path_to_cohpcar="TestData/NaSi/COHPCAR.lobster",
-            path_to_icohplist="TestData/NaSi/ICOHPLIST.lobster",
-            path_to_charge="TestData/NaSi/CHARGE.lobster",
-            path_to_madelung="TestData/NaSi/MadelungEnergies.lobster",
+            path_to_poscar=TestDir / "TestData/NaSi/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaSi/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaSi/CHARGE.lobster",
+            path_to_madelung=TestDir / "TestData/NaSi/MadelungEnergies.lobster",
             whichbonds="all",
             cutoff_icohp=0.1,
         )
 
         self.analyse_BaTaO2N1_cutoff = Analysis(
-            path_to_poscar="TestData/BaTaO2N1/POSCAR.gz",
-            path_to_cohpcar="TestData/BaTaO2N1/COHPCAR.lobster.gz",
-            path_to_icohplist="TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
-            path_to_charge="TestData/BaTaO2N1/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "TestData/BaTaO2N1/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/BaTaO2N1/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/BaTaO2N1/CHARGE.lobster.gz",
             whichbonds="all",
             cutoff_icohp=0.001,
         )
@@ -119,10 +122,10 @@ class TestAnalyse(unittest.TestCase):
     def test_exception(self):
         with self.assertRaises(ValueError):
             self.analyse_BaTaO2N1 = Analysis(
-                path_to_poscar="TestData/BaTaO2N1/POSCAR.gz",
-                path_to_cohpcar="TestData/BaTaO2N1/COHPCAR.lobster.gz",
-                path_to_icohplist="TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
-                path_to_charge="TestData/BaTaO2N1/CHARGE.lobster.gz",
+                path_to_poscar=TestDir / "TestData/BaTaO2N1/POSCAR.gz",
+                path_to_cohpcar=TestDir / "TestData/BaTaO2N1/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
+                path_to_charge=TestDir / "TestData/BaTaO2N1/CHARGE.lobster.gz",
                 whichbonds="cation-cation",
                 cutoff_icohp=0.1,
             )
