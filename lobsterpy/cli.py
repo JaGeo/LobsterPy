@@ -80,7 +80,7 @@ def main():
     if args.automaticplot:
         plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
 
-    if args.json:c
+    if args.json:
         analysedict = analyse.condensed_bonding_analysis
         with open(args.filenamejson, "w") as fd:
             json.dump(analysedict, fd)
@@ -109,7 +109,6 @@ def main():
                 cp = PlainCohpPlotter(are_cobis=True)
             elif args.coops:
                 cp = PlainCohpPlotter(are_coops=True)
-        # get a nicer plot label
 
         if not args.summed:
             if not args.orbitalwise:

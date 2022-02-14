@@ -111,7 +111,7 @@ class Description:
 
 
     def plot_cohps(self, save=False, filename=None, ylim=[-4, 2], xlim=None, integrated=False, summed=True):
-        #TODO: solve problem with spin channel!?
+
         """
         Automatic plots of the most relevant COHP will be determined
         Args:
