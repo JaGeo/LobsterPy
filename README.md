@@ -40,3 +40,4 @@ A citation for lobsterpy will follow at a later stage. For now, please cite [pym
 ## Future plans:
 * Include automatic plotting for COBIs/COOPs
 * Include orbitals into automatic plotting
+* Include more documentation
