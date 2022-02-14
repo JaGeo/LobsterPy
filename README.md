@@ -1,3 +1,5 @@
+![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg)
+ 
 # LobsterPy
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [https://www.cohp.de](https://www.cohp.de). Currently, only VASP/Lobster computations are supported.
