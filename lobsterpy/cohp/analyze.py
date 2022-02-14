@@ -83,13 +83,18 @@ class Analysis:
 
     """
 
-    def __init__(self, path_to_poscar: str, path_to_icohplist: str, path_to_cohpcar: str,
-                 path_to_charge: Optional[str] = None,
-                 path_to_madelung: Optional[str] = None,
-                 whichbonds: str = "cation-anion", \
-                 cutoff_icohp: float = 0.1,
-                 summed_spins=True,
-                 type_charge=None):
+    def __init__(
+        self,
+        path_to_poscar: str,
+        path_to_icohplist: str,
+        path_to_cohpcar: str,
+        path_to_charge: Optional[str] = None,
+        path_to_madelung: Optional[str] = None,
+        whichbonds: str = "cation-anion",
+        cutoff_icohp: float = 0.1,
+        summed_spins=True,
+        type_charge=None,
+    ):
         """
         This is a class to analyse bonding information automatically
         Args:
@@ -119,15 +124,19 @@ class Analysis:
         if path_to_charge is None:
             self.type_charge = "Valences"
         else:
-            if type_charge==None:
+            if type_charge == None:
                 self.type_charge = "Mulliken"
-            elif type_charge=="Mulliken":
-                self.type_charge="Mulliken"
-            elif type_charge=="Löwdin":
-                raise ValueError("Only Mulliken charges can be used here at the moment. Implementation will follow.")
+            elif type_charge == "Mulliken":
+                self.type_charge = "Mulliken"
+            elif type_charge == "Löwdin":
+                raise ValueError(
+                    "Only Mulliken charges can be used here at the moment. Implementation will follow."
+                )
             else:
-                self.type_charge="Valences"
-                print("type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences")
+                self.type_charge = "Valences"
+                print(
+                    "type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences"
+                )
 
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
@@ -143,32 +152,34 @@ class Analysis:
         self.structure = Structure.from_file(self.path_to_poscar)
         sga = SpacegroupAnalyzer(structure=self.structure)
         symmetry_dataset = sga.get_symmetry_dataset()
-        equivalent_sites = symmetry_dataset['equivalent_atoms']
+        equivalent_sites = symmetry_dataset["equivalent_atoms"]
 
         self.list_equivalent_sites = equivalent_sites
         self.set_equivalent_sites = list(set(equivalent_sites))
-        self.spg = symmetry_dataset['international']
+        self.spg = symmetry_dataset["international"]
 
         if self.whichbonds == "cation-anion":
-            self.chemenv = LobsterNeighbors(filename_ICOHP=self.path_to_icohplist,
-                                            structure=Structure.from_file(self.path_to_poscar),
-                                            additional_condition=1,
-                                            perc_strength_ICOHP=self.cutoff_icohp,
-                                            filename_CHARGE=self.path_to_charge,
-                                            valences_from_charges=True,
-                                            adapt_extremum_to_add_cond=True,
-                                            )
+            self.chemenv = LobsterNeighbors(
+                filename_ICOHP=self.path_to_icohplist,
+                structure=Structure.from_file(self.path_to_poscar),
+                additional_condition=1,
+                perc_strength_ICOHP=self.cutoff_icohp,
+                filename_CHARGE=self.path_to_charge,
+                valences_from_charges=True,
+                adapt_extremum_to_add_cond=True,
+            )
 
         elif self.whichbonds == "all":
             # raise ValueError("only cation anion bonds implemented so far")
-            self.chemenv = LobsterNeighbors(filename_ICOHP=self.path_to_icohplist,
-                                            structure=Structure.from_file(self.path_to_poscar),
-                                            additional_condition=0,
-                                            perc_strength_ICOHP=self.cutoff_icohp,
-                                            filename_CHARGE=self.path_to_charge,
-                                            valences_from_charges=True,
-                                            adapt_extremum_to_add_cond=True,
-                                            )
+            self.chemenv = LobsterNeighbors(
+                filename_ICOHP=self.path_to_icohplist,
+                structure=Structure.from_file(self.path_to_poscar),
+                additional_condition=0,
+                perc_strength_ICOHP=self.cutoff_icohp,
+                filename_CHARGE=self.path_to_charge,
+                valences_from_charges=True,
+                adapt_extremum_to_add_cond=True,
+            )
 
         else:
             raise ValueError("only cation anion bonds implemented so far")
@@ -176,13 +187,20 @@ class Analysis:
         # determine cations and anions
         try:
             if self.whichbonds == "cation-anion":
-                self.lse = self.chemenv.get_light_structure_environment(only_cation_environments=True)
+                self.lse = self.chemenv.get_light_structure_environment(
+                    only_cation_environments=True
+                )
             elif self.whichbonds == "all":
-                self.lse = self.chemenv.get_light_structure_environment(only_cation_environments=False)
+                self.lse = self.chemenv.get_light_structure_environment(
+                    only_cation_environments=False
+                )
         except ValueError:
+
             class Lse:
                 def __init__(self, chemenv):
-                    self.coordination_environments = [[{"ce_symbol": str(len(coord))}] for coord in chemenv]
+                    self.coordination_environments = [
+                        [{"ce_symbol": str(len(coord))}] for coord in chemenv
+                    ]
 
             self.lse = Lse(self.chemenv.list_coords)
 
@@ -206,11 +224,13 @@ class Analysis:
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if ice in self.set_equivalent_sites and ce[0]['ce_symbol'] is not None:
+                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.set_inequivalent_ions.append(ice)
-                    ce = ce[0]['ce_symbol']
+                    ce = ce[0]["ce_symbol"]
                     self.set_coordination_ions.append(ce)
-                    cation_anion_infos = self.chemenv.get_info_icohps_to_neighbors([ice])
+                    cation_anion_infos = self.chemenv.get_info_icohps_to_neighbors(
+                        [ice]
+                    )
                     self.set_infos_bonds.append(cation_anion_infos)
 
                     aniontype_labels = []
@@ -219,10 +239,13 @@ class Analysis:
                     # go through all anions in the structure!
                     for anion in self.anion_types:
                         # get labels and summed cohp objects
-                        labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(self.path_to_cohpcar, [ice],
-                                                                                       summed_spin_channels=summed_spins,
-                                                                                       per_bond=False,
-                                                                                       only_bonds_to=[str(anion)])
+                        labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
+                            self.path_to_cohpcar,
+                            [ice],
+                            summed_spin_channels=summed_spins,
+                            per_bond=False,
+                            only_bonds_to=[str(anion)],
+                        )
 
                         aniontype_labels.append(labels)
                         aniontype_cohps.append(summedcohps)
@@ -244,9 +267,9 @@ class Analysis:
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if ice in self.set_equivalent_sites and ce[0]['ce_symbol'] is not None:
+                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.set_inequivalent_ions.append(ice)
-                    ce = ce[0]['ce_symbol']
+                    ce = ce[0]["ce_symbol"]
                     self.set_coordination_ions.append(ce)
                     bonds_infos = self.chemenv.get_info_icohps_to_neighbors([ice])
                     self.set_infos_bonds.append(bonds_infos)
@@ -256,11 +279,14 @@ class Analysis:
 
                     for element in self.elements:
                         # get labels and summed cohp objects
-                        labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(self.path_to_cohpcar, [ice],
-                                                                                       onlycation_isites=False,
-                                                                                       summed_spin_channels=summed_spins,
-                                                                                       per_bond=False,
-                                                                                       only_bonds_to=[str(element)])
+                        labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
+                            self.path_to_cohpcar,
+                            [ice],
+                            onlycation_isites=False,
+                            summed_spin_channels=summed_spins,
+                            per_bond=False,
+                            only_bonds_to=[str(element)],
+                        )
 
                         type_labels.append(labels)
                         type_cohps.append(summedcohps)
@@ -286,11 +312,17 @@ class Analysis:
 
         for pair, strength in zip(pairs, strengths):
             if nameion is not None:
-                new = [LobsterNeighbors._split_string(pair[0])[0], LobsterNeighbors._split_string(pair[1])[0]]
+                new = [
+                    LobsterNeighbors._split_string(pair[0])[0],
+                    LobsterNeighbors._split_string(pair[1])[0],
+                ]
                 new = Analysis._sort_name(new, nameion)
                 string_here = new[0] + "-" + new[1]
             else:
-                new = [LobsterNeighbors._split_string(pair[0])[0], LobsterNeighbors._split_string(pair[1])[0]]
+                new = [
+                    LobsterNeighbors._split_string(pair[0])[0],
+                    LobsterNeighbors._split_string(pair[1])[0],
+                ]
                 new.sort()
                 string_here = new[0] + "-" + new[1]
 
@@ -320,7 +352,6 @@ class Analysis:
                 new.append(pair[1])
                 new.append(pair[0])
 
-
         return new
 
     def _get_antibdg_states(self, cohps, labels, nameion=None, limit=0.01):
@@ -344,14 +375,14 @@ class Analysis:
             # print(labels)
             if label is not None:
                 if nameion is not None:
-                    new = label.split(' ')[2].split('-')
+                    new = label.split(" ")[2].split("-")
                     sorted_new = self._sort_name(new, nameion)
-                    new_label = sorted_new[0] + '-' + sorted_new[1]
+                    new_label = sorted_new[0] + "-" + sorted_new[1]
                 else:
-                    new = label.split(' ')[2].split('-')
+                    new = label.split(" ")[2].split("-")
                     sorted_new = new.copy()
                     sorted_new.sort()
-                    new_label = sorted_new[0] + '-' + sorted_new[1]
+                    new_label = sorted_new[0] + "-" + sorted_new[1]
 
                 antbd = cohp.has_antibnd_states_below_efermi(limit=limit)
                 if Spin.down in antbd:
@@ -363,26 +394,26 @@ class Analysis:
 
     def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels, cohps, nameion):
         """
-                WARNING: NEEDS MORE TESTS
-                will return a dictionary including information on antibonding states
-                important is however that only the energy range can be considered that has been computed
-                (i.e., this might not be all)
-                e.g., similar to: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
-                Args:
-                    cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects
-                    labels: ['2 x Cu-O', '4 x Cu-F']
-                    nameion: string of the cation name, e.g. "Cu"
+        WARNING: NEEDS MORE TESTS
+        will return a dictionary including information on antibonding states
+        important is however that only the energy range can be considered that has been computed
+        (i.e., this might not be all)
+        e.g., similar to: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
+        Args:
+            cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects
+            labels: ['2 x Cu-O', '4 x Cu-F']
+            nameion: string of the cation name, e.g. "Cu"
 
-                Returns:    dict including in formation on whether antibonding interactions exist,
-                            e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
+        Returns:    dict including in formation on whether antibonding interactions exist,
+                    e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
         """
 
         dict_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
-                new = label.split(' ')[2].split('-')
+                new = label.split(" ")[2].split("-")
                 sorted_new = self._sort_name(new, nameion)
-                new_label = sorted_new[0] + '-' + sorted_new[1]
+                new_label = sorted_new[0] + "-" + sorted_new[1]
                 integral, perc = self._integrate_antbdstates_below_efermi(cohp, -2)
                 dict_antibd[new_label] = {"integral": integral, "perc": perc}
 
@@ -421,7 +452,7 @@ class Analysis:
             else:
                 x = np.asanyarray(x)
                 d = np.diff(x)
-            ret = (d * (y[1:] + y[:-1]) / 2.0)
+            ret = d * (y[1:] + y[:-1]) / 2.0
             return ret[ret > 0.0].sum()  # The important line
 
         def abstrapz_negative(y, x=None, dx=0.001):
@@ -441,10 +472,11 @@ class Analysis:
             else:
                 x = np.asanyarray(x)
                 d = np.diff(x)
-            ret = (d * (y[1:] + y[:-1]) / 2.0)
+            ret = d * (y[1:] + y[:-1]) / 2.0
             return ret[ret < 0.0].sum()  # The important line
 
         from scipy.interpolate import InterpolatedUnivariateSpline
+
         # will integrate spin.up and spin.down only below efermi and only below curve
         energies_corrected = cohp.energies - cohp.efermi
         if Spin.down in cohp.cohp:
@@ -455,16 +487,22 @@ class Analysis:
         spl = InterpolatedUnivariateSpline(energies_corrected, summedcohp, ext=0)
         # integrate only below curve
         # TODO: has to be tested again!
-        integrate = abstrapz_negative([spl(energy) for energy in energies_corrected if start <= energy <= 0],
-                                      [energy for energy in energies_corrected if start <= energy <= 0])
+        integrate = abstrapz_negative(
+            [spl(energy) for energy in energies_corrected if start <= energy <= 0],
+            [energy for energy in energies_corrected if start <= energy <= 0],
+        )
 
-        integrate2 = abstrapz_positive([spl(energy) for energy in energies_corrected if start <= energy <= 0],
-                                       [energy for energy in energies_corrected if start <= energy <= 0])
+        integrate2 = abstrapz_positive(
+            [spl(energy) for energy in energies_corrected if start <= energy <= 0],
+            [energy for energy in energies_corrected if start <= energy <= 0],
+        )
 
         return integrate2, abs(integrate2) / (abs(integrate2) + abs(integrate))
 
     @staticmethod
-    def _get_bond_dict(bond_strength_dict, small_antbd_dict, nameion=None, large_antbd_dict=None):
+    def _get_bond_dict(
+        bond_strength_dict, small_antbd_dict, nameion=None, large_antbd_dict=None
+    ):
         """
         will return a bond_dict incluing information for each site
         Args:
@@ -499,17 +537,20 @@ class Analysis:
                     key_here = a
 
             if large_antbd_dict is None:
-                bond_dict[key_here] = {"ICOHP_mean": str(round(np.mean(item), 2)),
-                                       "ICOHP_sum": str(round(np.sum(item), 2)),
-                                       "has_antibdg_states_below_Efermi": small_antbd_dict[key],
-                                       "number_of_bonds": len(item),
-                                       }
+                bond_dict[key_here] = {
+                    "ICOHP_mean": str(round(np.mean(item), 2)),
+                    "ICOHP_sum": str(round(np.sum(item), 2)),
+                    "has_antibdg_states_below_Efermi": small_antbd_dict[key],
+                    "number_of_bonds": len(item),
+                }
             else:
-                bond_dict[key_here] = {"ICOHP_mean": str(round(np.mean(item), 2)),
-                                       "ICOHP_sum": str(round(np.sum(item), 2)),
-                                       "has_antibdg_states_below_Efermi": small_antbd_dict[key],
-                                       "number_of_bonds": len(item),
-                                       "perc_antibdg_states_below_Efermi": large_antbd_dict[key]}
+                bond_dict[key_here] = {
+                    "ICOHP_mean": str(round(np.mean(item), 2)),
+                    "ICOHP_sum": str(round(np.sum(item), 2)),
+                    "has_antibdg_states_below_Efermi": small_antbd_dict[key],
+                    "number_of_bonds": len(item),
+                    "perc_antibdg_states_below_Efermi": large_antbd_dict[key],
+                }
 
         return bond_dict
 
@@ -523,13 +564,19 @@ class Analysis:
         self.condensed_bonding_analysis = {}
         # which icohps are considered
         if self.whichbonds == "cation-anion":
-            limit_icohps = self.chemenv._get_limit_from_extremum(self.chemenv.Icohpcollection, self.cutoff_icohp,
-                                                                 adapt_extremum_to_add_cond=True,
-                                                                 additional_condition=1)
+            limit_icohps = self.chemenv._get_limit_from_extremum(
+                self.chemenv.Icohpcollection,
+                self.cutoff_icohp,
+                adapt_extremum_to_add_cond=True,
+                additional_condition=1,
+            )
         elif self.whichbonds == "all":
-            limit_icohps = self.chemenv._get_limit_from_extremum(self.chemenv.Icohpcollection, self.cutoff_icohp,
-                                                                 adapt_extremum_to_add_cond=True,
-                                                                 additional_condition=0)
+            limit_icohps = self.chemenv._get_limit_from_extremum(
+                self.chemenv.Icohpcollection,
+                self.cutoff_icohp,
+                adapt_extremum_to_add_cond=True,
+                additional_condition=0,
+            )
             # formula of the compound
         formula = str(self.structure.composition.reduced_formula)
 
@@ -548,17 +595,21 @@ class Analysis:
         # dictionary including bonding information for each site
         site_dict = {}
         if self.whichbonds == "cation-anion":
-            for ication, ce, cation_anion_infos, labels, cohps in zip(self.set_inequivalent_ions,
-                                                                      self.set_coordination_ions,
-                                                                      self.set_infos_bonds,
-                                                                      self.set_labels_cohps,
-                                                                      self.set_cohps
-                                                                      ):
+            for ication, ce, cation_anion_infos, labels, cohps in zip(
+                self.set_inequivalent_ions,
+                self.set_coordination_ions,
+                self.set_infos_bonds,
+                self.set_labels_cohps,
+                self.set_cohps,
+            ):
                 namecation = str(self.structure[ication].specie)
 
                 # This will compute the mean strengths of ICOHPs
-                mean_icohps = self._get_strenghts_for_each_bond(pairs=cation_anion_infos[4],
-                                                                strengths=cation_anion_infos[1], nameion=namecation)
+                mean_icohps = self._get_strenghts_for_each_bond(
+                    pairs=cation_anion_infos[4],
+                    strengths=cation_anion_infos[1],
+                    nameion=namecation,
+                )
                 # pairs, strengths, nameion
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, namecation)
@@ -566,21 +617,27 @@ class Analysis:
                 # dict_antibonding,
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation)
 
-                site_dict[ication] = {"env": ce, "bonds": bond_dict, "ion": namecation,
-                                      "charge": charge_list[ication],
-                                      "relevant_bonds": cation_anion_infos[3]}
+                site_dict[ication] = {
+                    "env": ce,
+                    "bonds": bond_dict,
+                    "ion": namecation,
+                    "charge": charge_list[ication],
+                    "relevant_bonds": cation_anion_infos[3],
+                }
         elif self.whichbonds == "all":
-            for iion, ce, bond_infos, labels, cohps in zip(self.set_inequivalent_ions,
-                                                           self.set_coordination_ions,
-                                                           self.set_infos_bonds,
-                                                           self.set_labels_cohps,
-                                                           self.set_cohps
-                                                           ):
+            for iion, ce, bond_infos, labels, cohps in zip(
+                self.set_inequivalent_ions,
+                self.set_coordination_ions,
+                self.set_infos_bonds,
+                self.set_labels_cohps,
+                self.set_cohps,
+            ):
                 nameion = str(self.structure[iion].specie)
 
                 # This will compute the mean strengths of ICOHPs
-                mean_icohps = self._get_strenghts_for_each_bond(pairs=bond_infos[4],
-                                                                strengths=bond_infos[1], nameion=None)
+                mean_icohps = self._get_strenghts_for_each_bond(
+                    pairs=bond_infos[4], strengths=bond_infos[1], nameion=None
+                )
                 # pairs, strengths, nameion
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, nameion=None)
@@ -589,47 +646,64 @@ class Analysis:
                 # dict_antibonding,
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
 
-                site_dict[iion] = {"env": ce, "bonds": bond_dict, "ion": nameion,
-                                   "charge": charge_list[iion],
-                                   "relevant_bonds": bond_infos[3]}
+                site_dict[iion] = {
+                    "env": ce,
+                    "bonds": bond_dict,
+                    "ion": nameion,
+                    "charge": charge_list[iion],
+                    "relevant_bonds": bond_infos[3],
+                }
 
         if self.path_to_madelung is None:
             if self.whichbonds == "cation-anion":
                 # This sets the dictionary including the most important information on the compound
-                self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
-                                                   "limit_icohp": limit_icohps, "number_of_considered_ions":
-                                                       number_considered_ions, "sites": site_dict,
-                                                   "type_charges": self.type_charge
-                                                   }
+                self.condensed_bonding_analysis = {
+                    "formula": formula,
+                    "max_considered_bond_length": max_bond_lengths,
+                    "limit_icohp": limit_icohps,
+                    "number_of_considered_ions": number_considered_ions,
+                    "sites": site_dict,
+                    "type_charges": self.type_charge,
+                }
             elif self.whichbonds == "all":
-                self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
-                                                   "limit_icohp": limit_icohps, "number_of_considered_ions":
-                                                       number_considered_ions, "sites": site_dict,
-                                                   "type_charges": self.type_charge
-                                                   }
+                self.condensed_bonding_analysis = {
+                    "formula": formula,
+                    "max_considered_bond_length": max_bond_lengths,
+                    "limit_icohp": limit_icohps,
+                    "number_of_considered_ions": number_considered_ions,
+                    "sites": site_dict,
+                    "type_charges": self.type_charge,
+                }
         else:
             from pymatgen.io.lobster import MadelungEnergies
+
             madelung = MadelungEnergies(self.path_to_madelung)
-            if self.type_charge=="Mulliken":
-                madelung_energy=madelung.madelungenergies_Mulliken
-            elif self.type_charge=="Löwdin":
-                madelung_energy=madelung.madelungenergies_Loewdin
+            if self.type_charge == "Mulliken":
+                madelung_energy = madelung.madelungenergies_Mulliken
+            elif self.type_charge == "Löwdin":
+                madelung_energy = madelung.madelungenergies_Loewdin
             # This sets the dictionary including the most important information on the compound
             if self.whichbonds == "cation-anion":
 
-                self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
-                                                   "limit_icohp": limit_icohps, "number_of_considered_ions":
-                                                       number_considered_ions, "sites": site_dict,
-                                                   "type_charges": self.type_charge,
-                                                   "madelung_energy": madelung_energy
-                                                   }
+                self.condensed_bonding_analysis = {
+                    "formula": formula,
+                    "max_considered_bond_length": max_bond_lengths,
+                    "limit_icohp": limit_icohps,
+                    "number_of_considered_ions": number_considered_ions,
+                    "sites": site_dict,
+                    "type_charges": self.type_charge,
+                    "madelung_energy": madelung_energy,
+                }
             elif self.whichbonds == "all":
-                self.condensed_bonding_analysis = {"formula": formula, "max_considered_bond_length": max_bond_lengths,
-                                                   "limit_icohp": limit_icohps, "number_of_considered_ions":
-                                                       number_considered_ions, "sites": site_dict,
-                                                   "type_charges": self.type_charge,
-                                                   "madelung_energy": madelung_energy
-                                                   }
+                self.condensed_bonding_analysis = {
+                    "formula": formula,
+                    "max_considered_bond_length": max_bond_lengths,
+                    "limit_icohp": limit_icohps,
+                    "number_of_considered_ions": number_considered_ions,
+                    "sites": site_dict,
+                    "type_charges": self.type_charge,
+                    "madelung_energy": madelung_energy,
+                }
 
     def set_summary_dicts(self):
         """
@@ -651,9 +725,11 @@ class Analysis:
 
 
         """
-        relevant_ion_ids = [isite for isite in
-                            self.list_equivalent_sites if
-                            isite in self.set_inequivalent_ions]
+        relevant_ion_ids = [
+            isite
+            for isite in self.list_equivalent_sites
+            if isite in self.set_inequivalent_ions
+        ]
 
         # formula_units = self.structure.composition.num_atoms / self.structure.composition.reduced_composition.num_atoms
 
@@ -665,32 +741,47 @@ class Analysis:
                 label_list = [item["ion"], str(type)]
                 new_label = label_list.copy()
                 new_label.sort()
-                label = str(new_label[0]) + '-' + str(new_label[1])
+                label = str(new_label[0]) + "-" + str(new_label[1])
 
                 if not label in final_dict_bonds:
-                    final_dict_bonds[label] = {"number_of_bonds": int(properties["number_of_bonds"]),
-                                               "ICOHP_sum": float(properties["ICOHP_sum"]),
-                                               "has_antbdg": properties["has_antibdg_states_below_Efermi"]}
+                    final_dict_bonds[label] = {
+                        "number_of_bonds": int(properties["number_of_bonds"]),
+                        "ICOHP_sum": float(properties["ICOHP_sum"]),
+                        "has_antbdg": properties["has_antibdg_states_below_Efermi"],
+                    }
                 else:
-                    final_dict_bonds[label]["number_of_bonds"] += int(properties["number_of_bonds"])
-                    final_dict_bonds[label]["ICOHP_sum"] += float(properties["ICOHP_sum"])
-                    final_dict_bonds[label]["has_antbdg"] = final_dict_bonds[label]["has_antbdg"] or properties[
-                        "has_antibdg_states_below_Efermi"]
+                    final_dict_bonds[label]["number_of_bonds"] += int(
+                        properties["number_of_bonds"]
+                    )
+                    final_dict_bonds[label]["ICOHP_sum"] += float(
+                        properties["ICOHP_sum"]
+                    )
+                    final_dict_bonds[label]["has_antbdg"] = (
+                        final_dict_bonds[label]["has_antbdg"]
+                        or properties["has_antibdg_states_below_Efermi"]
+                    )
         self.final_dict_bonds = {}
         for key, item in final_dict_bonds.items():
             self.final_dict_bonds[key] = {}
-            self.final_dict_bonds[key]["ICOHP_mean"] = item["ICOHP_sum"] / (item["number_of_bonds"])
+            self.final_dict_bonds[key]["ICOHP_mean"] = item["ICOHP_sum"] / (
+                item["number_of_bonds"]
+            )
             self.final_dict_bonds[key]["has_antbdg"] = item["has_antbdg"]
 
         # rework, add all environments!
         final_dict_ions = {}
         for key in relevant_ion_ids:
-            if self.condensed_bonding_analysis["sites"][key]["ion"] not in final_dict_ions:
-                final_dict_ions[self.condensed_bonding_analysis["sites"][key]["ion"]] = [
-                    self.condensed_bonding_analysis["sites"][key]["env"]]
+            if (
+                self.condensed_bonding_analysis["sites"][key]["ion"]
+                not in final_dict_ions
+            ):
+                final_dict_ions[
+                    self.condensed_bonding_analysis["sites"][key]["ion"]
+                ] = [self.condensed_bonding_analysis["sites"][key]["env"]]
             else:
-                final_dict_ions[self.condensed_bonding_analysis["sites"][key]["ion"]].append(
-                    self.condensed_bonding_analysis["sites"][key]["env"])
+                final_dict_ions[
+                    self.condensed_bonding_analysis["sites"][key]["ion"]
+                ].append(self.condensed_bonding_analysis["sites"][key]["env"])
 
         self.final_dict_ions = {}
         for key, item in final_dict_ions.items():

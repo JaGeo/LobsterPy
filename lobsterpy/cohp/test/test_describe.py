@@ -7,94 +7,118 @@ from lobsterpy.cohp.describe import Description
 
 # TODO: Add example without antibonding states
 
-class TestDescribe(unittest.TestCase):
 
+class TestDescribe(unittest.TestCase):
     def setUp(self):
-        self.analyse_NaCl = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
-                                     path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-                                     path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-                                     path_to_charge="TestData/NaCl/CHARGE.lobster", whichbonds="cation-anion", \
-                                     cutoff_icohp=0.1)
+        self.analyse_NaCl = Analysis(
+            path_to_poscar="TestData/NaCl/POSCAR",
+            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge="TestData/NaCl/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
         self.describe_NaCl = Description(self.analyse_NaCl)
 
-        self.analyse_NaCl_valences = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
-                                              path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-                                              path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-                                              path_to_charge=None, whichbonds="cation-anion", \
-                                              cutoff_icohp=0.1)
+        self.analyse_NaCl_valences = Analysis(
+            path_to_poscar="TestData/NaCl/POSCAR",
+            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge=None,
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
         self.describe_NaCl_valences = Description(self.analyse_NaCl_valences)
 
-        self.analyse_BaTiO3 = Analysis(path_to_poscar="TestData/BaTiO3/POSCAR",
-                                       path_to_cohpcar="TestData/BaTiO3/COHPCAR.lobster",
-                                       path_to_icohplist="TestData/BaTiO3/ICOHPLIST.lobster",
-                                       path_to_charge="TestData/BaTiO3/CHARGE.lobster", whichbonds="cation-anion", \
-                                       cutoff_icohp=0.1)
+        self.analyse_BaTiO3 = Analysis(
+            path_to_poscar="TestData/BaTiO3/POSCAR",
+            path_to_cohpcar="TestData/BaTiO3/COHPCAR.lobster",
+            path_to_icohplist="TestData/BaTiO3/ICOHPLIST.lobster",
+            path_to_charge="TestData/BaTiO3/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
 
         self.describe_BaTiO3 = Description(self.analyse_BaTiO3)
 
-        self.analyse_BaTaO2N1 = Analysis(path_to_poscar="TestData/BaTaO2N1/POSCAR.gz",
-                                         path_to_cohpcar="TestData/BaTaO2N1/COHPCAR.lobster.gz",
-                                         path_to_icohplist="TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
-                                         path_to_charge="TestData/BaTaO2N1/CHARGE.lobster.gz",
-                                         whichbonds="cation-anion", \
-                                         cutoff_icohp=0.1)
+        self.analyse_BaTaO2N1 = Analysis(
+            path_to_poscar="TestData/BaTaO2N1/POSCAR.gz",
+            path_to_cohpcar="TestData/BaTaO2N1/COHPCAR.lobster.gz",
+            path_to_icohplist="TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
+            path_to_charge="TestData/BaTaO2N1/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
         self.describe_BaTaO2N1 = Description(self.analyse_BaTaO2N1)
 
         self.describe_BaTiO3 = Description(self.analyse_BaTiO3)
 
-        self.analyse_CdF = Analysis(path_to_poscar="TestData/CdF/POSCAR",
-                                    path_to_cohpcar="TestData/CdF/COHPCAR.lobster",
-                                    path_to_icohplist="TestData/CdF/ICOHPLIST.lobster",
-                                    path_to_charge="TestData/CdF/CHARGE.lobster",
-                                    whichbonds="cation-anion", \
-                                    cutoff_icohp=0.1)
+        self.analyse_CdF = Analysis(
+            path_to_poscar="TestData/CdF/POSCAR",
+            path_to_cohpcar="TestData/CdF/COHPCAR.lobster",
+            path_to_icohplist="TestData/CdF/ICOHPLIST.lobster",
+            path_to_charge="TestData/CdF/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
         self.describe_CdF = Description(self.analyse_CdF)
 
-        self.analyse_NaCl_distorted = Analysis(path_to_poscar="TestData/NaCl_distorted/POSCAR",
-                                               path_to_cohpcar="TestData/NaCl_distorted/COHPCAR.lobster",
-                                               path_to_icohplist="TestData/NaCl_distorted/ICOHPLIST.lobster",
-                                               path_to_charge="TestData/NaCl_distorted/CHARGE.lobster",
-                                               whichbonds="cation-anion", \
-                                               cutoff_icohp=0.1)
+        self.analyse_NaCl_distorted = Analysis(
+            path_to_poscar="TestData/NaCl_distorted/POSCAR",
+            path_to_cohpcar="TestData/NaCl_distorted/COHPCAR.lobster",
+            path_to_icohplist="TestData/NaCl_distorted/ICOHPLIST.lobster",
+            path_to_charge="TestData/NaCl_distorted/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
 
         self.describe_NaCl_distorted = Description(self.analyse_NaCl_distorted)
 
-        self.analyse_NaCl_spin = Analysis(path_to_poscar="TestData/NaCl_spin/POSCAR",
-                                          path_to_cohpcar="TestData/NaCl_spin/COHPCAR.lobster",
-                                          path_to_icohplist="TestData/NaCl_spin/ICOHPLIST.lobster",
-                                          path_to_charge="TestData/NaCl_spin/CHARGE.lobster",
-                                          whichbonds="cation-anion", \
-                                          cutoff_icohp=0.1, summed_spins=False)
+        self.analyse_NaCl_spin = Analysis(
+            path_to_poscar="TestData/NaCl_spin/POSCAR",
+            path_to_cohpcar="TestData/NaCl_spin/COHPCAR.lobster",
+            path_to_icohplist="TestData/NaCl_spin/ICOHPLIST.lobster",
+            path_to_charge="TestData/NaCl_spin/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            summed_spins=False,
+        )
         self.describe_NaCl_spin = Description(self.analyse_NaCl_spin)
 
-        self.analyse_NaCl_all = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
-                                         path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-                                         path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-                                         path_to_charge="TestData/NaCl/CHARGE.lobster", whichbonds="all", \
-                                         cutoff_icohp=0.1)
+        self.analyse_NaCl_all = Analysis(
+            path_to_poscar="TestData/NaCl/POSCAR",
+            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge="TestData/NaCl/CHARGE.lobster",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+        )
 
         self.describe_Nacl_all = Description(self.analyse_NaCl_all)
 
-        self.analyse_NaCl_madelung_all = Analysis(path_to_poscar="TestData/NaCl/POSCAR",
-                                                  path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
-                                                  path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
-                                                  path_to_charge="TestData/NaCl/CHARGE.lobster",
-                                                  path_to_madelung="TestData/NaCl/MadelungEnergies.lobster",
-                                                  whichbonds="all", \
-                                                  cutoff_icohp=0.1)
+        self.analyse_NaCl_madelung_all = Analysis(
+            path_to_poscar="TestData/NaCl/POSCAR",
+            path_to_cohpcar="TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist="TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge="TestData/NaCl/CHARGE.lobster",
+            path_to_madelung="TestData/NaCl/MadelungEnergies.lobster",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+        )
 
         self.describe_Nacl_madelung_all = Description(self.analyse_NaCl_madelung_all)
 
-        self.analyse_NaSi_madelung_all = Analysis(path_to_poscar="TestData/NaSi/POSCAR",
-                                                  path_to_cohpcar="TestData/NaSi/COHPCAR.lobster",
-                                                  path_to_icohplist="TestData/NaSi/ICOHPLIST.lobster",
-                                                  path_to_charge="TestData/NaSi/CHARGE.lobster",
-                                                  path_to_madelung="TestData/NaSi/MadelungEnergies.lobster",
-                                                  whichbonds="all", \
-                                                  cutoff_icohp=0.1)
+        self.analyse_NaSi_madelung_all = Analysis(
+            path_to_poscar="TestData/NaSi/POSCAR",
+            path_to_cohpcar="TestData/NaSi/COHPCAR.lobster",
+            path_to_icohplist="TestData/NaSi/ICOHPLIST.lobster",
+            path_to_charge="TestData/NaSi/CHARGE.lobster",
+            path_to_madelung="TestData/NaSi/MadelungEnergies.lobster",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+        )
 
         self.describe_NaSi_madelung_all = Description(self.analyse_NaSi_madelung_all)
-
 
     def test_coordination_environment_to_text(self):
         results_dict = {
@@ -201,17 +225,24 @@ class TestDescribe(unittest.TestCase):
 
     def test_plot(self):
         import tempfile
+
         with tempfile.NamedTemporaryFile() as tmp:
             self.describe_NaCl.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
             self.assertTrue(os.path.exists(tmp.name))
         import tempfile
+
         with tempfile.NamedTemporaryFile() as tmp:
-            self.describe_NaCl_spin.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
+            self.describe_NaCl_spin.plot_cohps(
+                save=True, filename=tmp.name, xlim=[-4, 4]
+            )
             self.assertTrue(os.path.exists(tmp.name))
 
         import tempfile
+
         with tempfile.NamedTemporaryFile() as tmp:
-            self.describe_Nacl_all.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
+            self.describe_Nacl_all.plot_cohps(
+                save=True, filename=tmp.name, xlim=[-4, 4]
+            )
             self.assertTrue(os.path.exists(tmp.name))
 
     def test_write_descritoin(self):
@@ -219,16 +250,28 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaSi_madelung_all.write_description()
 
     def test_text(self):
-        self.assertEqual(self.describe_CdF.text, [
-            'The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.',
-            'Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.'])
-        self.assertEqual(self.describe_NaCl.text, [
-            'The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.',
-            'Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.'])
-        self.assertEqual(self.describe_NaCl.text, [
-            'The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.',
-            'Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.'])
+        self.assertEqual(
+            self.describe_CdF.text,
+            [
+                "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_NaCl.text,
+            [
+                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_NaCl.text,
+            [
+                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.",
+            ],
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
