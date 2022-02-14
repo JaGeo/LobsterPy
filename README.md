@@ -19,7 +19,7 @@ You can pip install the package by writing "pip install -e ." in the main packag
 * **Command line plotter**:
     
     We included options to plot COHPs/COBIs/COOPs from the command line.
-    ``lobsterpy --plot 1 2`` will plot COHPs of the first and second bond from COHPCAR.lobster. It is possible to sum the COHPs as well. You can switch to COBIs or COOPs by using --cobis or --coops, respectively.
+    ``lobsterpy --plot 1 2`` will plot COHPs of the first and second bond from ``COHPCAR.lobster``. It is possible to sum or integrate the COHPs as well (``--summed``, ``--integrated``). You can switch to COBIs or COOPs by using ``--cobis`` or ``--coops``, respectively.
 
 
 * **Further help?**
@@ -27,5 +27,10 @@ You can pip install the package by writing "pip install -e ." in the main packag
     You can get further information by using ``lobsterpy --help``
 
 
+## License
+Lobsterpy is released under a BSD 3-Clause "New" or "Revised" License. 
 
-Furthermore, we have some examples included where one can use Python scripts to arrive at results.
+
+## How to cite?
+A citation for lobsterpy will follow at a later stage. For now, please cite [pymatgen](https://github.com/materialsproject/pymatgen) and [Lobster](https://www.cohp.de) correctly .
+
