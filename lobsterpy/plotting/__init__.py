@@ -13,12 +13,10 @@ from pkg_resources import resource_filename
 from pymatgen.electronic_structure.plotter import CohpPlotter
 from pymatgen.electronic_structure.core import Spin
 
-base_style = resource_filename('lobsterpy.plotting', 'lobsterpy_base.mplstyle')
+base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
-def get_style_list(no_base_style: bool = False,
-                   styles: Optional[List[str]] = None
-                   ):
+def get_style_list(no_base_style: bool = False, styles: Optional[List[str]] = None):
     """Get *args for matplotlib.style from user input
 
     Args:
@@ -93,7 +91,7 @@ class PlainCohpPlotter(CohpPlotter):
         else:
             energy_label = "$E$ (eV)"
 
-        colors = matplotlib.rcParams['axes.prop_cycle'].by_key()['color']
+        colors = matplotlib.rcParams["axes.prop_cycle"].by_key()["color"]
         ncolors = len(colors)
 
         if ax is None:
@@ -138,26 +136,30 @@ class PlainCohpPlotter(CohpPlotter):
             plt.ylim((min(relevanty), max(relevanty)))
 
         if not invert_axes:
-            ax.axhline(color='k', linewidth=2)
+            ax.axhline(color="k", linewidth=2)
 
             if self.zero_at_efermi:
-                ax.axvline(color='k', linestyle='--', linewidth=2)
+                ax.axvline(color="k", linestyle="--", linewidth=2)
 
             else:
-                ax.axvline(self._cohps[key]["efermi"],
-                           color=colors[i % ncolors],
-                           linestyle="--",
-                           linewidth=2)
+                ax.axvline(
+                    self._cohps[key]["efermi"],
+                    color=colors[i % ncolors],
+                    linestyle="--",
+                    linewidth=2,
+                )
         else:
-            ax.axvline(color='k', linewidth=2, linestyle='-')
+            ax.axvline(color="k", linewidth=2, linestyle="-")
 
             if self.zero_at_efermi:
-                ax.axhline(color='k', linewidth=2, linestyle='--')
+                ax.axhline(color="k", linewidth=2, linestyle="--")
             else:
-                ax.axhline(self._cohps[key]["efermi"],
-                           color=colors[i % ncolors],
-                           linestyle="--",
-                           linewidth=2)
+                ax.axhline(
+                    self._cohps[key]["efermi"],
+                    color=colors[i % ncolors],
+                    linestyle="--",
+                    linewidth=2,
+                )
 
         if invert_axes:
             plt.xlabel(cohp_label)
