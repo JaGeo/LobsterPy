@@ -124,7 +124,7 @@ class Analysis:
         if path_to_charge is None:
             self.type_charge = "Valences"
         else:
-            if type_charge == None:
+            if type_charge is None:
                 self.type_charge = "Mulliken"
             elif type_charge == "Mulliken":
                 self.type_charge = "Mulliken"
@@ -743,7 +743,7 @@ class Analysis:
                 new_label.sort()
                 label = str(new_label[0]) + "-" + str(new_label[1])
 
-                if not label in final_dict_bonds:
+                if label not in final_dict_bonds:
                     final_dict_bonds[label] = {
                         "number_of_bonds": int(properties["number_of_bonds"]),
                         "ICOHP_sum": float(properties["ICOHP_sum"]),

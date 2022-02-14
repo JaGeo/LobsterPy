@@ -150,7 +150,7 @@ def main():
         describe.write_description()
 
     if args.automaticplot:
-        plt = describe.plot_cohps(
+        describe.plot_cohps(
             ylim=args.ylim, xlim=args.xlim, integrated=args.integrated
         )
 
