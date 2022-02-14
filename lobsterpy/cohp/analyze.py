@@ -333,7 +333,7 @@ class Analysis:
                 new.sort()
                 string_here = new[0] + "-" + new[1]
 
-            if not string_here in dict_strenghts:
+            if string_here not in dict_strenghts:
                 dict_strenghts[string_here] = []
             dict_strenghts[string_here].append(strength)
         return dict_strenghts
