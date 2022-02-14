@@ -1,3 +1,10 @@
+# Copyright (c) lobsterpy development team
+# Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
+
+"""
+Script to analyze Lobster outputs from the command line
+"""
+
 import argparse
 import json
 from pathlib import Path
@@ -131,7 +138,9 @@ args = parser.parse_args()
 
 # TODO: add automatic functionality for COBIs, COOPs
 def main():
-
+    """
+    main of cli
+    """
     if args.description or args.automaticplot:
         if args.allbonds:
             whichbonds = "all"

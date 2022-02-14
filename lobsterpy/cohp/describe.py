@@ -1,3 +1,10 @@
+# Copyright (c) lobsterpy development team
+# Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
+
+"""
+This module defines classes to describe the COHPs automatically
+"""
+
 from pymatgen.electronic_structure.plotter import CohpPlotter
 
 

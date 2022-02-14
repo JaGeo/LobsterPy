@@ -1,3 +1,10 @@
+# Copyright (c) lobsterpy development team
+# Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
+
+"""
+This module defines classes to analyze the COHPs automatically
+"""
+
 from collections import Counter
 from typing import Optional
 
