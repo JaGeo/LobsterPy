@@ -132,7 +132,6 @@ parser.add_argument(
     help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument will also be read when COBICARs or COOPCARs are plotted.',
 )
 
-
 args = parser.parse_args()
 
 
@@ -159,9 +158,7 @@ def main():
         describe.write_description()
 
     if args.automaticplot:
-        describe.plot_cohps(
-            ylim=args.ylim, xlim=args.xlim, integrated=args.integrated
-        )
+        describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
 
     if args.json:
         analysedict = analyse.condensed_bonding_analysis
