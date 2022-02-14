@@ -11,7 +11,8 @@ setup(
     packages=find_packages(),
     install_requires=['pymatgen>=2022.1.24',
                       'numpy',
-                      'typing'],
+                      'typing',
+                      'pkg_resources'],
 
     classifiers=[
         'Development Status :: 1 - Planning',
