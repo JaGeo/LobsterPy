@@ -11,7 +11,7 @@ base_style = resource_filename('lobsterpy.plotting', 'lobsterpy_base.mplstyle')
 
 def get_style_list(no_base_style: bool = False,
                    styles: Optional[List[str]] = None
-                   ) -> List[Union[str, dict]]:
+                   ):
     """Get *args for matplotlib.style from user input
 
     Args:
