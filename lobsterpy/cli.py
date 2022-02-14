@@ -8,9 +8,10 @@ from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import get_style_list, PlainCohpPlotter
 from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.electronic_structure.plotter import CohpPlotter
+
 
 parser = argparse.ArgumentParser(description='Analyze and plot results from Lobster runs.')
+
 #Options for Automatic Analysis
 parser.add_argument('--description', action="store_true", default=False,
                     help='This will deliver a text description of the COHP results from Lobster and VASP. Implementation of COBIs and COOPs will follow.')
@@ -79,7 +80,7 @@ def main():
     if args.automaticplot:
         plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
 
-    if args.json:
+    if args.json:c
         analysedict = analyse.condensed_bonding_analysis
         with open(args.filenamejson, "w") as fd:
             json.dump(analysedict, fd)
