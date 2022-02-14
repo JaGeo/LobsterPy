@@ -79,7 +79,7 @@ class PlainCohpPlotter(CohpPlotter):
             cohp_label = "I" + cohp_label + " (eV)"
 
         if plot_negative:
-            cohp_label = "-" + cohp_label
+            cohp_label = "$-$" + cohp_label
 
         if self.zero_at_efermi:
             energy_label = "$E - E_f$ (eV)"
