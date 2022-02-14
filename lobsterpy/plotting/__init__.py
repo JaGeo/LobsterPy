@@ -1,3 +1,10 @@
+# Copyright (c) lobsterpy development team
+# Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
+
+"""
+Here classes and functions to plot Lobster outputs are provided
+"""
+
 from typing import List, Optional, Union
 
 import matplotlib
