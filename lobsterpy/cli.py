@@ -1,5 +1,6 @@
 import argparse
 import json
+from pathlib import Path
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
@@ -24,19 +25,17 @@ parser.add_argument('--orbitalwise', dest="orbitalwise", nargs='+', default=None
 
 parser.add_argument('--integrated', action="store_true", help='integrate plots of most important interactions')
 
-parser.add_argument('--POSCAR', dest="poscar", default="POSCAR", type=str, help='path to POSCAR. Default is "POSCAR"')
+parser.add_argument('--POSCAR', '--poscar', dest="poscar", default="POSCAR", type=str, help='path to POSCAR. Default is "POSCAR"')
 parser.add_argument('--ylim', dest="ylim", nargs='+', default=None, type=float, help='energy lim for plots')
 parser.add_argument('--xlim', dest="xlim", nargs='+', default=None, type=float, help='COHP lim for plots')
 parser.add_argument('--charge', default="CHARGE.lobster", type=str,
                     help='path to Charge.lobster. Default is "CHARGE.lobster"')
 parser.add_argument('--icohplist', default="ICOHPLIST.lobster", type=str,
                     help='path to ICOHPLIST.lobster. Default is "ICOHPLIST.lobster"')
-parser.add_argument('--cohpcar', default="COHPCAR.lobster", type=str,
+parser.add_argument('--cohpcar', default="COHPCAR.lobster", type=Path,
                     help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument will also be read when COBICARs or COOPCARs are plotted.')
 parser.add_argument('--json', action="store_true",
                     help='will produce a lobsterpy.json with the most important informations')
-parser.add_argument('--filename', default="lobsterpy.json", type=str,
-                    help='path to ICOHPLIST.lobster. Default is "ICOHPLIST.lobster"')
 parser.add_argument('--allbonds', action="store_true", default=False,
                     help='will consider all bonds, not only cation-anion bonds (default) ')
 
@@ -58,7 +57,7 @@ def main():
         describe.write_description()
 
     if args.automaticplot:
-        plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integratecohp)
+        plt = describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
 
     if args.json:
         analysedict = analyse.condensed_bonding_analysis
@@ -71,11 +70,11 @@ def main():
         if (not args.cobis) and (not args.coops):
             completecohp = CompleteCohp.from_file(fmt="LOBSTER", filename=args.cohpcar, structure_file=args.poscar)
         else:
-            if args.cohpcar == "COHPCAR.lobster":
+            if args.cohpcar.name == "COHPCAR.lobster":
                 if args.cobis:
-                    filename = "COBICAR.lobster"
+                    filename = args.cohpcar.parent / "COBICAR.lobster"
                 elif args.coops:
-                    filename = "COOPCAR.lobster"
+                    filename = args.cohpcar.parent / "COOPCAR.lobster"
             if args.cobis:
                 completecohp = CompleteCohp.from_file(fmt="LOBSTER", filename=filename, structure_file=args.poscar,
                                                       are_cobis=True)
