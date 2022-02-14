@@ -5,7 +5,7 @@ name: Testing Linux
 
 on:
   push:
-    branches: [ main, develop_plots ]
+    branches: [ main, develop_plots, styled-plots ]
   pull_request:
     branches: [ main ]
 
