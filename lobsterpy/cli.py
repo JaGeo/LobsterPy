@@ -26,9 +26,9 @@ parser.add_argument('--plot', dest="plot", nargs='+', default=None, type=int,
 parser.add_argument('--cobis', '--cobi', action="store_true", help='if --plot is used as well, it will plot cobis')
 parser.add_argument('--coops','--coop', action="store_true", help='if --plot is used as well, it will plot coops')
 parser.add_argument('--summed', action="store_true",
-                    help='if --plot is used as well, then a summed COHP is shown. Usage: "--plot 1 2 --summed')
+                    help='if --plot is used as well, then a summed COHP is shown. Usage: "--plot 1 2 --summed. Cannot be used together with --orbitalwise')
 parser.add_argument('--orbitalwise', dest="orbitalwise", nargs='+', default=None, type=str,
-                    help='plots cohps of specific orbitals. To plot 2s-2s interaction of bond with label 1, you have to type "lobterpy --plot 1 --orbitalwise 2s-2s". To plot all orbitalwise cohps of one bond, you can use "all" instead of "2s-2s"')
+                    help='plots cohps of specific orbitals. To plot 2s-2s interaction of bond with label 1, you have to type "lobterpy --plot 1 --orbitalwise 2s-2s". To plot all orbitalwise cohps of one bond, you can use "all" instead of "2s-2s". It cannot be used together with summed at the moment.')
 
 #Options for plots
 parser.add_argument('--ylim', dest="ylim", nargs='+', default=None, type=float, help='energy limit for plots')
