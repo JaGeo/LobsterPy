@@ -155,7 +155,12 @@ parser.add_argument(
 )
 parser.add_argument("--title", type=str, default="", help="Plot title")
 parser.add_argument(
-    "--save-plot", type=str, default=None, dest="save_plot", help="Save plot to file"
+    "--save-plot",
+    "-s",
+    type=str,
+    default=None,
+    dest="save_plot",
+    help="Save plot to file",
 )
 parser.add_argument("--width", type=float, default=None, help="Plot width in inches")
 parser.add_argument("--height", type=float, default=None, help="Plot height in inches")
