@@ -19,6 +19,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 
 
 def get_parser() -> argparse.ArgumentParser:
+    """Construct argumentparser with subcommands and sections"""
     parser = argparse.ArgumentParser(
         description="Analyze and plot results from Lobster runs."
     )
@@ -140,7 +141,7 @@ def get_parser() -> argparse.ArgumentParser:
         required=True,
         help="Use -h/--help after the chosen subcommand to see further options.",
     )
-    description_parser = subparsers.add_parser(
+    subparsers.add_parser(
         "description",
         parents=[base_parent, auto_parent],
         help=(
@@ -149,7 +150,7 @@ def get_parser() -> argparse.ArgumentParser:
         ),
     )
 
-    autoplot_parser = subparsers.add_parser(
+    subparsers.add_parser(
         "automatic-plot",
         parents=[base_parent, auto_parent, plotting_parent],
         help=(
@@ -203,6 +204,7 @@ def get_parser() -> argparse.ArgumentParser:
         ),
     )
     return parser
+
 
 def _user_figsize(width, height, aspect=None):
     """Get figsize options from user input, if any
