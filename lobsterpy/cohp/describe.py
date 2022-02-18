@@ -200,6 +200,7 @@ class Description:
         xlim=None,
         integrated=False,
         summed=True,
+        title="",
     ):
         """
         Automatic plots of the most relevant COHP will be determined
@@ -237,9 +238,10 @@ class Description:
             if xlim is not None:
                 plot.xlim(xlim)
 
-            if save:
-                plot.savefig(filename)
-            plot.show()
+        plot.title(title)
+        if save:
+            plot.savefig(filename)
+        plot.show()
 
     @staticmethod
     def _coordination_environment_to_text(ce):

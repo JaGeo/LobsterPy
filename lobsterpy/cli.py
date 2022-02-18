@@ -224,7 +224,13 @@ def main():
         matplotlib.style.use(style_list)
 
     if args.automaticplot:
-        describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
+        describe.plot_cohps(
+            ylim=args.ylim,
+            xlim=args.xlim,
+            integrated=args.integrated,
+            save=args.save_plot,
+            title=args.title
+        )
 
     if args.json:
         analysedict = analyse.condensed_bonding_analysis
