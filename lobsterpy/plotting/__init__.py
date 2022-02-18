@@ -16,13 +16,17 @@ from pymatgen.electronic_structure.core import Spin
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
-def get_style_list(no_base_style: bool = False, styles: Optional[List[str]] = None):
+def get_style_list(
+    no_base_style: bool = False, styles: Optional[List[str]] = None, **kwargs
+):
     """Get *args for matplotlib.style from user input
 
     Args:
         no_base_style: If true, do not include lobsterpy_base.mplstyle
         styles: User-requested styles. These can be paths to mplstyle files, or
                 the names of known (matplotlib-supplied) styles
+
+    Remaining kwargs are collected as a dict and take highest priority.
 
     """
 
@@ -34,7 +38,7 @@ def get_style_list(no_base_style: bool = False, styles: Optional[List[str]] = No
     if styles is None:
         styles = []
 
-    return base + styles
+    return base + styles + [kwargs]
 
 
 class PlainCohpPlotter(CohpPlotter):
@@ -140,7 +144,7 @@ class PlainCohpPlotter(CohpPlotter):
             "linewidth": matplotlib.rcParams["grid.linewidth"],
             "linestyle": matplotlib.rcParams["grid.linestyle"],
             "alpha": matplotlib.rcParams["grid.alpha"],
-            "zorder": 0
+            "zorder": 0,
         }
 
         if not invert_axes:

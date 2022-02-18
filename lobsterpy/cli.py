@@ -7,8 +7,10 @@ Script to analyze Lobster outputs from the command line
 
 import argparse
 import json
+from math import sqrt
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import matplotlib.style
 
 from lobsterpy.cohp.analyze import Analysis
@@ -135,7 +137,6 @@ parser.add_argument(
     type=Path,
     help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument will also be read when COBICARs or COOPCARs are plotted.',
 )
-
 parser.add_argument(
     "--style",
     type=str,
@@ -152,8 +153,36 @@ parser.add_argument(
         "stylesheets when using --style."
     ),
 )
+parser.add_argument("--title", type=str, default="", help="Plot title")
+parser.add_argument(
+    "--save-plot", type=str, default=None, dest="save_plot", help="Save plot to file"
+)
+parser.add_argument("--width", type=float, default=None, help="Plot width in inches")
+parser.add_argument("--height", type=float, default=None, help="Plot height in inches")
 
 args = parser.parse_args()
+
+
+def _user_figsize(width, height, aspect=None):
+    """Get figsize options from user input, if any
+
+    If only width xor height is provided, use a target aspect ratio to derive
+    the other one.
+
+    Returns a dict which can be merged into style kwargs
+    """
+
+    if width is None and height is None:
+        return {}
+    elif width is not None and height is not None:
+        return {"figure.figsize": (width, height)}
+    else:
+        if aspect is None:
+            aspect = (sqrt(5) + 1) / 2  # Golden ratio
+        if width is None:
+            return {"figure.figsize": (height * aspect, height)}
+        else:
+            return {"figure.figsize": (width, width / aspect)}
 
 
 # TODO: add automatic functionality for COBIs, COOPs
@@ -179,7 +208,12 @@ def main():
         describe.write_description()
 
     if args.plot or args.automaticplot:
-        style_list = get_style_list(no_base_style=args.no_base_style, styles=args.style)
+        style_kwargs = {}
+        style_kwargs.update(_user_figsize(args.width, args.height))
+
+        style_list = get_style_list(
+            no_base_style=args.no_base_style, styles=args.style, **style_kwargs
+        )
         matplotlib.style.use(style_list)
 
     if args.automaticplot:
@@ -258,7 +292,14 @@ def main():
 
         x = cp.get_plot(integrated=args.integrated, xlim=args.xlim, ylim=args.ylim)
 
+    ax = x.gca()
+    ax.set_title(args.title)
+
+    if args.save_plot is None:
         x.show()
+    else:
+        fig = x.gcf()
+        fig.savefig(args.save_plot)
 
 
 if __name__ == "__main__":
