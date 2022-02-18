@@ -135,31 +135,29 @@ class PlainCohpPlotter(CohpPlotter):
             relevanty = [p[1] for p in allpts if xlim[0] < p[0] < xlim[1]]
             plt.ylim((min(relevanty), max(relevanty)))
 
+        grid_like_line_kwargs = {
+            "color": matplotlib.rcParams["grid.color"],
+            "linewidth": matplotlib.rcParams["grid.linewidth"],
+            "linestyle": matplotlib.rcParams["grid.linestyle"],
+            "alpha": matplotlib.rcParams["grid.alpha"],
+            "zorder": 0
+        }
+
         if not invert_axes:
-            ax.axhline(color="k", linewidth=2)
+            ax.axhline(**grid_like_line_kwargs)
 
             if self.zero_at_efermi:
-                ax.axvline(color="k", linestyle="--", linewidth=2)
+                ax.axvline(**grid_like_line_kwargs)
 
             else:
-                ax.axvline(
-                    self._cohps[key]["efermi"],
-                    color=colors[i % ncolors],
-                    linestyle="--",
-                    linewidth=2,
-                )
+                ax.axvline(self._cohps[key]["efermi"], **grid_like_line_kwargs)
         else:
-            ax.axvline(color="k", linewidth=2, linestyle="-")
+            ax.axvline(**grid_like_line_kwargs)
 
             if self.zero_at_efermi:
-                ax.axhline(color="k", linewidth=2, linestyle="--")
+                ax.axhline(**grid_like_line_kwargs)
             else:
-                ax.axhline(
-                    self._cohps[key]["efermi"],
-                    color=colors[i % ncolors],
-                    linestyle="--",
-                    linewidth=2,
-                )
+                ax.axhline(self._cohps[key]["efermi"], **grid_like_line_kwargs)
 
         if invert_axes:
             plt.xlabel(cohp_label)
