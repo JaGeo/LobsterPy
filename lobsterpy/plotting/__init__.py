@@ -5,7 +5,7 @@
 Here classes and functions to plot Lobster outputs are provided
 """
 
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import matplotlib
 from matplotlib import pyplot as plt
@@ -17,21 +17,24 @@ base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
 def get_style_list(
-    no_base_style: bool = False, styles: Optional[List[str]] = None, **kwargs
-):
+    no_base_style: bool = False,
+    styles: Optional[List[Union[str, Dict[str, Any]]]] = None,
+    **kwargs
+) -> List[Union[str, Dict[str, Any]]]:
     """Get *args for matplotlib.style from user input
 
     Args:
         no_base_style: If true, do not include lobsterpy_base.mplstyle
-        styles: User-requested styles. These can be paths to mplstyle files, or
-                the names of known (matplotlib-supplied) styles
+        styles: User-requested styles. These can be paths to mplstyle files,
+                the names of known (matplotlib-supplied) styles,
+                or dicts of rcParam options.
 
     Remaining kwargs are collected as a dict and take highest priority.
 
     """
 
     if no_base_style:
-        base = []
+        base = []  # type: List[Union[str, Dict[str, Any]]]
     else:
         base = [base_style]
 
@@ -49,12 +52,12 @@ class PlainCohpPlotter(CohpPlotter):
 
     def get_plot(
         self,
-        ax=None,
-        xlim=None,
-        ylim=None,
-        plot_negative=None,
-        integrated=False,
-        invert_axes=True,
+        ax: matplotlib.axes.Axes = None,
+        xlim: Tuple[float, float] = None,
+        ylim: Tuple[float, float] = None,
+        plot_negative: bool = None,
+        integrated: bool = False,
+        invert_axes: bool = True,
     ):
         """
         Get a matplotlib plot showing the COHP.
@@ -132,6 +135,7 @@ class PlainCohpPlotter(CohpPlotter):
         if xlim:
             ax.set_xlim(xlim)
         xlim = ax.get_xlim()
+        assert isinstance(xlim, tuple)
 
         if ylim:
             ax.set_ylim(ylim)
