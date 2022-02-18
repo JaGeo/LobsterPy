@@ -3,8 +3,9 @@ figure.figsize : 12., 8.
 lines.linewidth : 3
 
 font.size : 30
-axes.titlesize : 30
-legend.fontsize : 30
+axes.labelsize: medium
+axes.titlesize : large
+legend.fontsize : medium
 
 # In LobsterPy, axis lines through origin use grid settings.
 # This should avoid clutter when grid is also enabled

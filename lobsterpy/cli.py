@@ -10,7 +10,6 @@ import json
 from math import sqrt
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import matplotlib.style
 
 from lobsterpy.cohp.analyze import Analysis
@@ -164,6 +163,7 @@ parser.add_argument(
 )
 parser.add_argument("--width", type=float, default=None, help="Plot width in inches")
 parser.add_argument("--height", type=float, default=None, help="Plot height in inches")
+parser.add_argument("--fontsize", type=float, default=None, help="Base font size")
 
 args = parser.parse_args()
 
@@ -215,6 +215,8 @@ def main():
     if args.plot or args.automaticplot:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
+        if args.fontsize:
+            style_kwargs.update({"font.size": args.fontsize})
 
         style_list = get_style_list(
             no_base_style=args.no_base_style, styles=args.style, **style_kwargs
@@ -295,16 +297,16 @@ def main():
                 ),
             )
 
-        x = cp.get_plot(integrated=args.integrated, xlim=args.xlim, ylim=args.ylim)
+        plt = cp.get_plot(integrated=args.integrated, xlim=args.xlim, ylim=args.ylim)
 
-    ax = x.gca()
-    ax.set_title(args.title)
+        ax = plt.gca()
+        ax.set_title(args.title)
 
-    if args.save_plot is None:
-        x.show()
-    else:
-        fig = x.gcf()
-        fig.savefig(args.save_plot)
+        if args.save_plot is None:
+            plt.show()
+        else:
+            fig = plt.gcf()
+            fig.savefig(args.save_plot)
 
 
 if __name__ == "__main__":
