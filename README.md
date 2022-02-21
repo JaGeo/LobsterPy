@@ -13,7 +13,7 @@ You can pip install the package by writing ``pip install -e .`` in the main pack
 
 * **Automatic analysis and plotting of COHPs:**
     
-    You can use ``lobsterpy --description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy --automaticplot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy --automaticplot --all`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen.
+    You can use ``lobsterpy description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy --automaticplot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot --allbonds`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen.
   
     It is also possible to start this automatic analysis from Python script. See "examples" for scripts.
 
@@ -21,12 +21,12 @@ You can pip install the package by writing ``pip install -e .`` in the main pack
 * **Command line plotter**:
     
     We included options to plot COHPs/COBIs/COOPs from the command line.
-    ``lobsterpy --plot 1 2`` will plot COHPs of the first and second bond from ``COHPCAR.lobster``. It is possible to sum or integrate the COHPs as well (``--summed``, ``--integrated``). You can switch to COBIs or COOPs by using ``--cobis`` or ``--coops``, respectively.
+    ``lobsterpy plot 1 2`` will plot COHPs of the first and second bond from ``COHPCAR.lobster``. It is possible to sum or integrate the COHPs as well (``--summed``, ``--integrated``). You can switch to COBIs or COOPs by using ``--cobis`` or ``--coops``, respectively.
 
 
 * **Further help?**
   
-    You can get further information by using ``lobsterpy --help``
+    You can get further information by using ``lobsterpy --help`` and also by typing ``lobsterpy description --help``, ``lobsterpy automatic-plot --help``, ``lobsterpy plot --help``
 
 
 ## License
