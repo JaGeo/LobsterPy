@@ -229,7 +229,7 @@ def main():
             xlim=args.xlim,
             integrated=args.integrated,
             save=args.save_plot,
-            title=args.title
+            title=args.title,
         )
 
     if args.json:
