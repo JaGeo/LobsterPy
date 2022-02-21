@@ -7,16 +7,21 @@ Script to analyze Lobster outputs from the command line
 
 import argparse
 import json
+from math import sqrt
 from pathlib import Path
+
+import matplotlib.style
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from lobsterpy.plotting import get_style_list, PlainCohpPlotter
 from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.electronic_structure.plotter import CohpPlotter
+
 
 parser = argparse.ArgumentParser(
     description="Analyze and plot results from Lobster runs."
 )
+
 # Options for Automatic Analysis
 parser.add_argument(
     "--description",
@@ -131,8 +136,58 @@ parser.add_argument(
     type=Path,
     help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument will also be read when COBICARs or COOPCARs are plotted.',
 )
+parser.add_argument(
+    "--style",
+    type=str,
+    nargs="+",
+    default=None,
+    help="Matplotlib style sheet(s) for plot appearance",
+)
+parser.add_argument(
+    "--no-base-style",
+    action="store_true",
+    dest="no_base_style",
+    help=(
+        "Disable inbuilt style entirely. This may prevent interference with external "
+        "stylesheets when using --style."
+    ),
+)
+parser.add_argument("--title", type=str, default="", help="Plot title")
+parser.add_argument(
+    "--save-plot",
+    "-s",
+    type=str,
+    default=None,
+    dest="save_plot",
+    help="Save plot to file",
+)
+parser.add_argument("--width", type=float, default=None, help="Plot width in inches")
+parser.add_argument("--height", type=float, default=None, help="Plot height in inches")
+parser.add_argument("--fontsize", type=float, default=None, help="Base font size")
 
 args = parser.parse_args()
+
+
+def _user_figsize(width, height, aspect=None):
+    """Get figsize options from user input, if any
+
+    If only width xor height is provided, use a target aspect ratio to derive
+    the other one.
+
+    Returns a dict which can be merged into style kwargs
+    """
+
+    if width is None and height is None:
+        return {}
+    elif width is not None and height is not None:
+        return {"figure.figsize": (width, height)}
+    else:
+        if aspect is None:
+            aspect = (sqrt(5) + 1) / 2  # Golden ratio
+        if width is None:
+            return {"figure.figsize": (height * aspect, height)}
+        else:
+            return {"figure.figsize": (width, width / aspect)}
 
 
 # TODO: add automatic functionality for COBIs, COOPs
@@ -157,8 +212,25 @@ def main():
         describe = Description(analysis_object=analyse)
         describe.write_description()
 
+    if args.plot or args.automaticplot:
+        style_kwargs = {}
+        style_kwargs.update(_user_figsize(args.width, args.height))
+        if args.fontsize:
+            style_kwargs.update({"font.size": args.fontsize})
+
+        style_list = get_style_list(
+            no_base_style=args.no_base_style, styles=args.style, **style_kwargs
+        )
+        matplotlib.style.use(style_list)
+
     if args.automaticplot:
-        describe.plot_cohps(ylim=args.ylim, xlim=args.xlim, integrated=args.integrated)
+        describe.plot_cohps(
+            ylim=args.ylim,
+            xlim=args.xlim,
+            integrated=args.integrated,
+            save=args.save_plot,
+            title=args.title,
+        )
 
     if args.json:
         analysedict = analyse.condensed_bonding_analysis
@@ -193,12 +265,12 @@ def main():
                     are_coops=True,
                 )
         if (not args.cobis) and (not args.coops):
-            cp = CohpPlotter()
+            cp = PlainCohpPlotter()
         else:
             if args.cobis:
-                cp = CohpPlotter(are_cobis=True)
+                cp = PlainCohpPlotter(are_cobis=True)
             elif args.coops:
-                cp = CohpPlotter(are_coops=True)
+                cp = PlainCohpPlotter(are_coops=True)
 
         if not args.summed:
             if not args.orbitalwise:
@@ -231,11 +303,16 @@ def main():
                 ),
             )
 
-        x = cp.get_plot(integrated=args.integrated)
-        x.ylim(args.ylim)
-        x.xlim(args.xlim)
+        plt = cp.get_plot(integrated=args.integrated, xlim=args.xlim, ylim=args.ylim)
 
-        x.show()
+        ax = plt.gca()
+        ax.set_title(args.title)
+
+        if args.save_plot is None:
+            plt.show()
+        else:
+            fig = plt.gcf()
+            fig.savefig(args.save_plot)
 
 
 if __name__ == "__main__":

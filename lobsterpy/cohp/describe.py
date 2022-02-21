@@ -5,7 +5,7 @@
 This module defines classes to describe the COHPs automatically
 """
 
-from pymatgen.electronic_structure.plotter import CohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter
 
 
 class Description:
@@ -200,8 +200,8 @@ class Description:
         xlim=None,
         integrated=False,
         summed=True,
+        title="",
     ):
-        # TODO: solve problem with spin channel!?
         """
         Automatic plots of the most relevant COHP will be determined
         Args:
@@ -229,7 +229,7 @@ class Description:
 
             namecation = str(structure[ication].specie)
 
-            cp = CohpPlotter()
+            cp = PlainCohpPlotter()
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
@@ -238,9 +238,10 @@ class Description:
             if xlim is not None:
                 plot.xlim(xlim)
 
-            if save:
-                plot.savefig(filename)
-            plot.show()
+        plot.title(title)
+        if save:
+            plot.savefig(filename)
+        plot.show()
 
     @staticmethod
     def _coordination_environment_to_text(ce):

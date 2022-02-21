@@ -11,14 +11,14 @@ setup(
     packages=find_packages(),
     install_requires=['pymatgen>=2022.1.24',
                       'numpy',
-                      'typing'],
+                      'typing',
+                      ],
 
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
         'Operating System :: POSIX :: Linux',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
@@ -30,4 +30,6 @@ setup(
 
         ]
     },
+    package_data={'lobsterpy': ['plotting/lobsterpy_base.mplstyle',]}
+
 )
