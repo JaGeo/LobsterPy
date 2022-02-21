@@ -117,7 +117,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
-    auto_group = plotting_parent.add_argument_group("Automatic analysis")
+    auto_group = auto_parent.add_argument_group("Automatic analysis")
     auto_group.add_argument(
         "--json",
         action="store_true",
@@ -267,7 +267,7 @@ def main():
         )
         matplotlib.style.use(style_list)
 
-    if args.action == "automaticplot":
+    if args.action == "automatic-plot":
         describe.plot_cohps(
             ylim=args.ylim,
             xlim=args.xlim,
