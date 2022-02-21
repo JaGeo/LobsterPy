@@ -242,7 +242,7 @@ def main():
     if args.action == "automaticplot":
         args.action = "automatic-plot"
 
-    if args.action in ("description", "automatic-plot"):
+    if args.action in ["description", "automatic-plot"]:
         if args.allbonds:
             whichbonds = "all"
         else:
@@ -263,7 +263,7 @@ def main():
             with open(args.filenamejson, "w") as fd:
                 json.dump(analysedict, fd)
 
-    if args.action in ("plot", "automatic-plot"):
+    if args.action in ["plot", "automatic-plot"]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
         if args.fontsize:
@@ -274,7 +274,7 @@ def main():
         )
         matplotlib.style.use(style_list)
 
-    if args.action in ("automatic-plot"):
+    if args.action in ["automatic-plot"]:
         describe.plot_cohps(
             ylim=args.ylim,
             xlim=args.xlim,
@@ -305,8 +305,12 @@ def main():
                     cp.add_cohp(label, completecohp.get_cohp_by_label(label=str(label)))
             else:
                 for ilabel, label in enumerate(args.bond_numbers):
-
-                    orbitals = args.orbitalwise[ilabel]
+                    try:
+                        orbitals = args.orbitalwise[ilabel]
+                    except IndexError as err:
+                        raise IndexError(
+                            'You need to identify the orbitals for each bond listed after plot, e.g., lobsterpy plot 1 1 --orbitalwise "3s-3s" "2px-3s"\n'
+                        )
                     if orbitals != "all":
                         cp.add_cohp(
                             str(label) + ": " + orbitals,
