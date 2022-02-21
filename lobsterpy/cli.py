@@ -302,17 +302,46 @@ def main():
         cp = PlainCohpPlotter(**options)
 
         if not args.summed:
+            # TODO: add checks for label in allewod labels -> print all labels
+            # TODO: add check if args.oribtalwise is exactly as long as labels
+            # TODO: add check if orbital is in args.orbitalwise
+
+            for label in args.bond_numbers:
+                if not str(label) in completecohp.bonds.keys():
+                    raise IndexError(
+                        "The provided bond label "
+                        + str(label)
+                        + " is not available in ICO**LIST.lobster.\n "
+                        "Allowed options are in this list: \n"
+                        + str([int(listi) for listi in list(completecohp.bonds.keys())])
+                    )
+
             if not args.orbitalwise:
                 for label in args.bond_numbers:
                     cp.add_cohp(label, completecohp.get_cohp_by_label(label=str(label)))
             else:
+                if len(args.bond_numbers) != len(args.orbitalwise):
+                    raise IndexError(
+                        "Please provide as mainy orbitals as bond labels, e.g., lobsterpy plot 1 1 --orbitalwise '2s-2s' '2s-2px'"
+                    )
+
                 for ilabel, label in enumerate(args.bond_numbers):
-                    try:
-                        orbitals = args.orbitalwise[ilabel]
-                    except IndexError:
+                    orbitals = args.orbitalwise[ilabel]
+
+                    availableorbitals = list(
+                        completecohp.orb_res_cohp[str(label)].keys()
+                    )
+                    orbitaloptions = availableorbitals + ["all"]
+
+                    if orbitals not in orbitaloptions:
                         raise IndexError(
-                            'You need to identify the orbitals for each bond listed after plot, e.g., lobsterpy plot 1 1 --orbitalwise "3s-3s" "2px-3s"\n'
+                            "Orbital in not available for current bond. \n"
+                            "For bond "
+                            + str(label)
+                            + " only the following orbital options are available: \n"
+                            + str(orbitaloptions)
                         )
+
                     if orbitals != "all":
                         cp.add_cohp(
                             str(label) + ": " + orbitals,
@@ -321,7 +350,7 @@ def main():
                             ),
                         )
                     else:
-                        for orbitals in completecohp.orb_res_cohp[str(label)].keys():
+                        for orbitals in availableorbitals:
                             cp.add_cohp(
                                 str(label) + ": " + orbitals,
                                 completecohp.get_orbital_resolved_cohp(
