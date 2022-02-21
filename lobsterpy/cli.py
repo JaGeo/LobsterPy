@@ -90,6 +90,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
     plotting_group.add_argument(
         "--no-base-style",
+        "--nobasestyle",
         action="store_true",
         dest="no_base_style",
         help=(
@@ -100,6 +101,7 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument("--title", type=str, default="", help="Plot title")
     plotting_group.add_argument(
         "--save-plot",
+        "--saveplot",
         "-s",
         type=str,
         default=None,
@@ -113,7 +115,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--height", type=float, default=None, help="Plot height in inches"
     )
     plotting_group.add_argument(
-        "--fontsize", type=float, default=None, help="Base font size"
+        "--fontsize", "--font-size", type=float, default=None, help="Base font size"
     )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
@@ -125,12 +127,14 @@ def get_parser() -> argparse.ArgumentParser:
     )
     auto_group.add_argument(
         "--filenamejson",
+        "--filename-json",
         default="lobsterpy.json",
         type=Path,
         help="Path to json file storing the most important bonding information from the automatic analysis. Default is lobsterpy.json",
     )
     auto_group.add_argument(
         "--allbonds",
+        "--all-bonds",
         action="store_true",
         default=False,
         help="This option will force the automatc analysis to consider all bonds, not only cation-anion bonds (default) ",
@@ -152,10 +156,11 @@ def get_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser(
         "automatic-plot",
+        aliases=["automaticplot"],
         parents=[base_parent, auto_parent, plotting_parent],
         help=(
             "Plot most important COHPs automatically. Implementation "
-            "of COBIs and COOPs will follow."
+            "of COBIs and COOPs will follow. This option also includes an automatic description."
         ),
     )
 
@@ -235,7 +240,7 @@ def main():
     """
     args = get_parser().parse_args()
 
-    if args.action in ("description", "automatic-plot"):
+    if args.action in ("description", "automatic-plot", "automaticplot"):
         if args.allbonds:
             whichbonds = "all"
         else:
@@ -256,7 +261,7 @@ def main():
             with open(args.filenamejson, "w") as fd:
                 json.dump(analysedict, fd)
 
-    if args.action in ("plot", "automatic-plot"):
+    if args.action in ("plot", "automatic-plot", "automaticplot"):
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
         if args.fontsize:
@@ -267,7 +272,7 @@ def main():
         )
         matplotlib.style.use(style_list)
 
-    if args.action == "automatic-plot":
+    if args.action in ("automatic-plot", "automaticplot"):
         describe.plot_cohps(
             ylim=args.ylim,
             xlim=args.xlim,
