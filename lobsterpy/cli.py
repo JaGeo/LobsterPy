@@ -205,7 +205,9 @@ def get_parser() -> argparse.ArgumentParser:
         help=(
             "Plot cohps of specific orbitals. e.g. to plot 2s-2s interaction of "
             'bond with label 1, use "lobsterpy plot 1 --orbitalwise 2s-2s". '
-            'To plot all orbitalwise cohps of one bond, you can use "all" instead of "2s-2s".'
+            'To plot all orbitalwise cohps of one bond, you can use "all" instead of "2s-2s". '
+            "To plot orbitalwise interactions of more than one bond, use, for example, "
+            '"lobsterpy plot 1 1 --orbitalwise "3s-3s" "2px-3s"'
         ),
     )
     return parser
