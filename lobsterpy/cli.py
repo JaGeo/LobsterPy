@@ -239,8 +239,10 @@ def main():
     main of cli
     """
     args = get_parser().parse_args()
+    if args.action == "automaticplot":
+        args.action = "automatic-plot"
 
-    if args.action in ("description", "automatic-plot", "automaticplot"):
+    if args.action in ("description", "automatic-plot"):
         if args.allbonds:
             whichbonds = "all"
         else:
@@ -261,7 +263,7 @@ def main():
             with open(args.filenamejson, "w") as fd:
                 json.dump(analysedict, fd)
 
-    if args.action in ("plot", "automatic-plot", "automaticplot"):
+    if args.action in ("plot", "automatic-plot"):
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
         if args.fontsize:
@@ -272,7 +274,7 @@ def main():
         )
         matplotlib.style.use(style_list)
 
-    if args.action in ("automatic-plot", "automaticplot"):
+    if args.action in ("automatic-plot"):
         describe.plot_cohps(
             ylim=args.ylim,
             xlim=args.xlim,
