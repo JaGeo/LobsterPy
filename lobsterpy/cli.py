@@ -309,7 +309,7 @@ def main():
                 for ilabel, label in enumerate(args.bond_numbers):
                     try:
                         orbitals = args.orbitalwise[ilabel]
-                    except IndexError as err:
+                    except IndexError:
                         raise IndexError(
                             'You need to identify the orbitals for each bond listed after plot, e.g., lobsterpy plot 1 1 --orbitalwise "3s-3s" "2px-3s"\n'
                         )
