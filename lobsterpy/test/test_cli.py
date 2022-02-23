@@ -101,7 +101,6 @@ class TestDescribe(unittest.TestCase):
 
     def test_json(self):
         with TemporaryDirectory() as d:
-            temp_file_name = os.path.join(d, "test.json")
             test = get_parser().parse_args(["automatic-plot", "--json"])
             run(test)
 
