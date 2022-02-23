@@ -8,7 +8,8 @@ from lobsterpy.cli import get_parser, run
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
 
-#TODO: check if text outputs and plots are really generated
+# TODO: check if text outputs and plots are really generated
+
 
 class TestDescribe(unittest.TestCase):
     def setUp(self):
