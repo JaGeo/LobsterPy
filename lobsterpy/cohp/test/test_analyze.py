@@ -3,7 +3,8 @@ from pathlib import Path
 
 from lobsterpy.cohp.analyze import Analysis
 
-TestDir = Path(__file__).absolute().parent
+CurrentDir = Path(__file__).absolute().parent
+TestDir = CurrentDir / "../../"
 
 
 class TestAnalyse(unittest.TestCase):

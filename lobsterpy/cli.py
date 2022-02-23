@@ -236,11 +236,13 @@ def _user_figsize(width, height, aspect=None):
 
 
 # TODO: add automatic functionality for COBIs, COOPs
-def main():
+def run(args):
     """
-    main of cli
+    function that runs with arguments and can be tested
+    :param args:
+    :return:
     """
-    args = get_parser().parse_args()
+
     if args.action == "automaticplot":
         args.action = "automatic-plot"
 
@@ -378,4 +380,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    args = get_parser().parse_args()
+    run(args)
