@@ -1,7 +1,7 @@
 import os
 import unittest
 from pathlib import Path
-
+from tempfile import TemporaryDirectory
 from lobsterpy.cli import get_parser, run
 
 CurrentDir = Path(__file__).absolute().parent
@@ -35,12 +35,33 @@ class TestDescribe(unittest.TestCase):
         test = get_parser().parse_args(["plot", "1", "2"])
         plot = run(test)
 
+    def test_plot_cobis(self):
+        test = get_parser().parse_args(["plot", "1", "--cobis"])
+        plot = run(test)
+
+    def test_plot_coops(self):
+        test = get_parser().parse_args(["plot", "1", "--coops"])
+        plot = run(test)
+
     def test_plot_summed(self):
-        test = get_parser().parse_args(["plot", "--summed", "1", "2", ])
+        test = get_parser().parse_args(
+            [
+                "plot",
+                "--summed",
+                "1",
+                "2",
+            ]
+        )
         plot = run(test)
 
     def test_plot_orbitalwise(self):
-        test = get_parser().parse_args(["plot", "1", "2", "--orbitalwise", "3s-3s", "3s-3s"])
+        test = get_parser().parse_args(
+            ["plot", "1", "2", "--orbitalwise", "3s-3s", "3s-3s"]
+        )
+        plot = run(test)
+
+    def test_plot_orbitalwise_all(self):
+        test = get_parser().parse_args(["plot", "1", "--orbitalwise", "all"])
         plot = run(test)
 
     def test_plot_errors(self):
@@ -56,7 +77,33 @@ class TestDescribe(unittest.TestCase):
             test = get_parser().parse_args(["plot", "1", "--orbitalwise", "1s-1s"])
             plot = run(test)
 
+    def test_plot_fontsize(self):
+        test = get_parser().parse_args(["plot", "1", "--fontsize", "20"])
+        plot = run(test)
 
+    def test_plot_width_height(self):
+        test = get_parser().parse_args(["plot", "1", "--width", "20", "--height", "20"])
+        plot = run(test)
+
+    def test_plot_width(self):
+        test = get_parser().parse_args(["plot", "1", "--width", "20"])
+        plot = run(test)
+
+    def test_plot_height(self):
+        test = get_parser().parse_args(["plot", "1", "--height", "20"])
+        plot = run(test)
+
+    def test_plot_save(self):
+        with TemporaryDirectory() as d:
+            temp_file_name = os.path.join(d, "test.pdf")
+            test = get_parser().parse_args(["plot", "1", "--saveplot", temp_file_name])
+            plot = run(test)
+
+    def test_json(self):
+        with TemporaryDirectory() as d:
+            temp_file_name = os.path.join(d, "test.json")
+            test = get_parser().parse_args(["automatic-plot", "--json"])
+            plot = run(test)
 
     def tearDown(self) -> None:
         os.chdir(CurrentDir)
