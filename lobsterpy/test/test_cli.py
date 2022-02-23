@@ -18,7 +18,7 @@ class TestDescribe(unittest.TestCase):
         test = get_parser().parse_args(["automatic-plot"])
         run(test)
 
-    def test_automaticplot(self):
+    def test_automaticplot_allbonds(self):
         test = get_parser().parse_args(["automaticplot", "--allbonds"])
         run(test)
 
