@@ -18,6 +18,11 @@ from lobsterpy.plotting import get_style_list, PlainCohpPlotter
 from pymatgen.electronic_structure.cohp import CompleteCohp
 
 
+def main() -> None:
+    args = get_parser().parse_args()
+    run(args)
+
+
 def get_parser() -> argparse.ArgumentParser:
     """Construct argumentparser with subcommands and sections"""
     parser = argparse.ArgumentParser(
@@ -382,5 +387,4 @@ def run(args):
 
 
 if __name__ == "__main__":
-    args = get_parser().parse_args()
-    run(args)
+    main()
