@@ -53,7 +53,7 @@ class TestCLI:
     def clean_plot(self):
         yield
         plt.close("all")
-        matplotlib.style.use('default')
+        matplotlib.style.use("default")
 
     with open(ref_data_file, "r") as fd:
         ref_results = json.load(fd)
@@ -98,7 +98,7 @@ class TestCLI:
 
         for args in test_cases:
             plt.close("all")
-            matplotlib.style.use('default')
+            matplotlib.style.use("default")
 
             with redirect_stdout(io.StringIO()) as stdout:
                 test = get_parser().parse_args(args)
