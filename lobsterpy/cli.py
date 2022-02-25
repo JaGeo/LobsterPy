@@ -19,6 +19,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 
 
 def main() -> None:
+    """Entry point for setup.py installer"""
     args = get_parser().parse_args()
     run(args)
 
