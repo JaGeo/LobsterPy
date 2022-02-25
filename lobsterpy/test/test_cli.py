@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Union
 
 import numpy as np
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.style
 import pytest
@@ -15,7 +16,7 @@ from lobsterpy.cli import get_parser, run
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
 ref_data_file = TestDir / "TestData/cli-reference.json"
-test_args = [
+test_cases = [
     ["automatic-plot"],
     ["automaticplot", "--allbonds"],
     ["automatic-plot", "--style", "ggplot"],
@@ -41,11 +42,10 @@ error_test_cases = [
 ]
 
 
-# TODO: check if plots are really generated
 class TestCLI:
     @pytest.fixture
     def inject_mocks(self, mocker):
-        # Prevent calls to show so we can get the current figure using gcf()
+        # Disable calls to show() so we can get the current figure using gcf()
         mocker.patch("matplotlib.pyplot.show")
         mocker.resetall()
 
@@ -62,7 +62,7 @@ class TestCLI:
     def setup_class(cls):
         os.chdir(TestDir / "TestData/NaCl")
 
-    @pytest.mark.parametrize("args", test_args)
+    @pytest.mark.parametrize("args", test_cases)
     def test_cli_results(self, args, capsys, inject_mocks, clean_plot):
         test = get_parser().parse_args(args)
         run(test)
@@ -96,7 +96,7 @@ class TestCLI:
     def test_generate_ref_data(self, inject_mocks):
         json_data = {}
 
-        for args in test_args:
+        for args in test_cases:
             plt.close("all")
             matplotlib.style.use('default')
 
@@ -114,7 +114,7 @@ class TestCLI:
             json.dump(json_data, fd, indent=4, sort_keys=True)
 
     @staticmethod
-    def get_plot_attributes(fig: "Figure") -> Union[dict, None]:
+    def get_plot_attributes(fig: Figure) -> Union[dict, None]:
         if fig.axes:
             ax = fig.gca()
 
@@ -125,17 +125,6 @@ class TestCLI:
             }
         else:
             return None
-
-    # def test_plot_save(self):
-    #     with TemporaryDirectory() as d:
-    #         temp_file_name = os.path.join(d, "test.pdf")
-    #         test = get_parser().parse_args(["plot", "1", "--saveplot", temp_file_name])
-    #         run(test)
-
-    # def test_json(self):
-    #     with TemporaryDirectory():
-    #         test = get_parser().parse_args(["automatic-plot", "--json"])
-    #         run(test)
 
     def teardown_class(self) -> None:
         os.chdir(CurrentDir)
