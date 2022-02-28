@@ -5,9 +5,8 @@ from pathlib import Path
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 
-TestDir = Path(__file__).absolute().parent
-
-
+CurrentDir = Path(__file__).absolute().parent
+TestDir = CurrentDir / "../../"
 # TODO: Add example without antibonding states
 
 
