@@ -73,7 +73,7 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument(
         "--ylim",
         dest="ylim",
-        nargs="+",
+        nargs=2,
         default=None,
         type=float,
         help="Energy range for plots",
@@ -81,7 +81,7 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument(
         "--xlim",
         dest="xlim",
-        nargs="+",
+        nargs=2,
         default=None,
         type=float,
         help="COHP/COBI/COOP range for plots",
@@ -110,6 +110,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--saveplot",
         "-s",
         type=str,
+        metavar="FILENAME",
         default=None,
         dest="save_plot",
         help="Save plot to file",
@@ -128,15 +129,12 @@ def get_parser() -> argparse.ArgumentParser:
     auto_group = auto_parent.add_argument_group("Automatic analysis")
     auto_group.add_argument(
         "--json",
-        action="store_true",
-        help="This will produce a lobsterpy.json with the most important information",
-    )
-    auto_group.add_argument(
-        "--filenamejson",
-        "--filename-json",
-        default="lobsterpy.json",
+        nargs="?",
         type=Path,
-        help="Path to json file storing the most important bonding information from the automatic analysis. Default is lobsterpy.json",
+        default=None,
+        metavar="FILENAME",
+        const=Path("lobsterpy.json"),
+        help="Write a JSON file with the most important information",
     )
     auto_group.add_argument(
         "--allbonds",
@@ -270,9 +268,9 @@ def run(args):
         describe = Description(analysis_object=analyse)
         describe.write_description()
 
-        if args.json:
+        if args.json is not None:
             analysedict = analyse.condensed_bonding_analysis
-            with open(args.filenamejson, "w") as fd:
+            with open(args.json, "w") as fd:
                 json.dump(analysedict, fd)
 
     if args.action in ["plot", "automatic-plot"]:

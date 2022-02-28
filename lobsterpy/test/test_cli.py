@@ -101,7 +101,7 @@ class TestCLI:
 
     def test_json_saved(self, tmp_path, inject_mocks, clean_plot):
         json_path = tmp_path / "data.json"
-        args = ["automatic-plot", "--json", "--filename-json", str(json_path)]
+        args = ["automatic-plot", "--json", str(json_path)]
         test = get_parser().parse_args(args)
         run(test)
         self.assert_is_finite_file(json_path)
