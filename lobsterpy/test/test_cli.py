@@ -92,6 +92,25 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
+    def test_plot_saved(self, tmp_path, inject_mocks, clean_plot):
+        plot_path = tmp_path / "plot.png"
+        args = ["plot", "1", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+    def test_json_saved(self, tmp_path, inject_mocks, clean_plot):
+        json_path = tmp_path / "data.json"
+        args = ["automatic-plot", "--json", "--filename-json", str(json_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(json_path)
+
+    @staticmethod
+    def assert_is_finite_file(path: Path) -> None:
+        assert path.is_file()
+        assert path.stat().st_size > 0
+
     @pytest.mark.skip(reason="Only enable this test to regenerate test data")
     def test_generate_ref_data(self, inject_mocks):
         json_data = {}
