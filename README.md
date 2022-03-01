@@ -1,4 +1,4 @@
-![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg)
+![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg) [![DOI](https://zenodo.org/badge/343384088.svg)](https://zenodo.org/badge/latestdoi/343384088)
  
 # LobsterPy
 
