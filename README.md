@@ -42,3 +42,6 @@ A citation for lobsterpy will follow at a later stage. For now, please cite [pym
 * Include orbitals into automatic plotting
 * Include more documentation
 * Include lobsterin generation
+
+## Contributions
+* Contributions and suggestions for features are also welcome. Please write an Issue to describe your potential contribution or feature request.
