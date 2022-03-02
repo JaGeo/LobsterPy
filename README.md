@@ -5,8 +5,9 @@ This is a package that enables automatic plotting of Lobster outputs. You can do
 
 ## Installation
 
+You can now use ``pip install lobsterpy`` to install it.
 
-You can pip install the package by writing ``pip install -e .`` in the main package. It will then use setup.py to install the package. One requirement of this package is [pymatgen](https://github.com/materialsproject/pymatgen).
+You can also pip install the package in development mode by writing ``pip install -e .``. It will then use setup.py to install the package. One requirement of this package is [pymatgen](https://github.com/materialsproject/pymatgen).
 
 ## Basic usage
 
