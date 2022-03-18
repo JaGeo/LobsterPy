@@ -7,6 +7,7 @@ Here classes and functions to plot Lobster outputs are provided
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
@@ -50,6 +51,43 @@ class PlainCohpPlotter(CohpPlotter):
     This allows the styling to be manipulated more easily using matplotlib
     style sheets."""
 
+    @staticmethod
+    def _broaden(energies: np.ndarray, population: np.ndarray, sigma=None, cutoff=4.0):
+        """Broaden the spectrum with a given standard deviation
+
+        The population is convolved with a normalised Gaussian kernel. This
+        requires the energy grid to be regularly-spaced.
+
+        Args:
+            energies: Regularly-spaced energy series
+            population: Population data for broadening
+            sigma: Standard deviation for Gaussian broadening. If sigma is None
+                then the input data is returned without any processing.
+            cutoff: Range cutoff for broadening kernel, as a multiple of sigma.
+
+        Return:
+            Broadened population
+        """
+        from scipy.signal import convolve
+        from scipy.stats import norm
+
+        if sigma is None:
+            return population
+
+        spacing = np.mean(np.diff(energies))
+        if not np.allclose(np.diff(energies), spacing, atol=1e-5):
+            raise ValueError(
+                "Energy grid is not regular, cannot broaden with "
+                "discrete convolution."
+            )
+
+        # Obtain symmetric mesh for broadening kernel, centered on zero
+        kernel_x = np.arange(0, cutoff * sigma + 0.5 * spacing, spacing)
+        kernel_x = np.concatenate([-kernel_x[-1:1:-1], kernel_x])
+
+        kernel = norm.pdf(kernel_x, scale=sigma)
+        return convolve(population, kernel, mode="same")
+
     def get_plot(
         self,
         ax: matplotlib.axes.Axes = None,
@@ -58,6 +96,7 @@ class PlainCohpPlotter(CohpPlotter):
         plot_negative: bool = None,
         integrated: bool = False,
         invert_axes: bool = True,
+        sigma: float = None,
     ):
         """
         Get a matplotlib plot showing the COHP.
@@ -74,6 +113,9 @@ class PlainCohpPlotter(CohpPlotter):
             integrated: Switch to plot ICOHPs. Defaults to False.
             invert_axes: Put the energies onto the y-axis, which is
                 common in chemistry.
+            sigma: Standard deviation of Gaussian broadening applied to
+                population data. If this is unset (None) no broadening will be
+                added.
         Returns:
             A matplotlib object.
         """
@@ -117,9 +159,11 @@ class PlainCohpPlotter(CohpPlotter):
                     if invert_axes:
                         x = -populations[spin] if plot_negative else populations[spin]
                         y = energies
+                        x = self._broaden(y, x, sigma=sigma)
                     else:
                         x = energies
                         y = -populations[spin] if plot_negative else populations[spin]
+                        y = self._broaden(x, y, sigma=sigma)
                     allpts.extend(list(zip(x, y)))
                     if spin == Spin.up:
                         ax.plot(
