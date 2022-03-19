@@ -1,3 +1,6 @@
+# Unreleased
+- Fix error message fwhen LobsterPy is used in cation-anion mode for materials that are not ionic.
+
 # v0.1.0
 - First LobsterPy release
 - Automatic COHP analysis (description and plots)
