@@ -31,7 +31,7 @@ jobs:
         pydocstyle --count lobsterpy
     - name: pylint
       run: |
-        pylint pymatgen
+        pylint lobsterpy
     - name: black
       run: |
         black --version
