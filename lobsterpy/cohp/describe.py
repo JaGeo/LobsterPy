@@ -240,7 +240,9 @@ class Description:
 
             plot.title(title)
             if save:
-                filename_new = filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                filename_new = (
+                    filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                )
                 plot.savefig(filename_new)
         plot.show()
 
