@@ -223,8 +223,8 @@ class Description:
         set_labels_cohps = self.analysis_object.set_labels_cohps
         structure = self.analysis_object.structure
 
-        for ication, labels, cohps in zip(
-            set_inequivalent_cations, set_labels_cohps, set_cohps
+        for iplot, (ication, labels, cohps) in enumerate(
+            zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
 
             namecation = str(structure[ication].specie)
