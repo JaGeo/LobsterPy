@@ -130,6 +130,19 @@ class TestAnalyse(unittest.TestCase):
                 whichbonds="cation-cation",
                 cutoff_icohp=0.1,
             )
+        with self.assertRaises(ValueError) as err:
+            self.analyse_C = Analysis(
+                path_to_poscar=TestDir / "TestData/C/POSCAR",
+                path_to_cohpcar=TestDir / "TestData/C/COHPCAR.lobster",
+                path_to_icohplist=TestDir / "TestData/C/ICOHPLIST.lobster",
+                path_to_charge=TestDir / "TestData/C/CHARGE.lobster",
+                whichbonds="cation-anion",
+                cutoff_icohp=0.1,
+            )
+        self.assertEqual(
+            err.exception.__str__(),
+            "Consider switching to an analysis of all bonds and not only cation-anion bonds. It looks like no cations are detected.",
+        )
 
     def test_all_attributes_NaCl_Mulliken(self):
         self.assertEqual(
