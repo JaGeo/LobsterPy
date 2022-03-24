@@ -238,9 +238,10 @@ class Description:
             if xlim is not None:
                 plot.xlim(xlim)
 
-        plot.title(title)
-        if save:
-            plot.savefig(filename)
+            plot.title(title)
+            if save:
+                filename_new = filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                plot.savefig(filename_new)
         plot.show()
 
     @staticmethod
