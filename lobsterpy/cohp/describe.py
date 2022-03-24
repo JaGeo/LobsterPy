@@ -82,7 +82,7 @@ class Description:
                             + " (mean ICOHP: "
                             ""
                             + properties["ICOHP_mean"]
-                            + " eV, antibonding interaction below EFermi)"
+                            + " eV," + str(round(properties["antibonding"]["perc"]*100,3)) + " percent antibonding interaction below EFermi)"
                         )
 
                 if len(bond_info) > 1:
@@ -155,7 +155,7 @@ class Description:
                             + " (mean ICOHP: "
                             ""
                             + properties["ICOHP_mean"]
-                            + " eV, antibonding interaction below EFermi)"
+                            + " eV," + str(round(properties["antibonding"]["perc"]*100,3)) + " percent antibonding interaction below EFermi)"
                         )
 
                 if len(bond_info) > 1:

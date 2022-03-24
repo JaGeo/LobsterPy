@@ -13,6 +13,7 @@ from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+import warnings
 
 
 class Analysis:
@@ -407,7 +408,7 @@ class Analysis:
     def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels, cohps, nameion):
         """
         WARNING: NEEDS MORE TESTS
-        will return a dictionary including information on antibonding states
+        will return a dictionary including information on bonding, antibonding states
         important is however that only the energy range can be considered that has been computed
         (i.e., this might not be all)
         e.g., similar to: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
@@ -419,75 +420,69 @@ class Analysis:
         Returns:    dict including in formation on whether antibonding interactions exist,
                     e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
         """
-
+        
         dict_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
                 new = label.split(" ")[2].split("-")
                 sorted_new = self._sort_name(new, nameion)
                 new_label = sorted_new[0] + "-" + sorted_new[1]
-                integral, perc = self._integrate_antbdstates_below_efermi(cohp, -2)
-                dict_antibd[new_label] = {"integral": integral, "perc": perc}
+                integral, perc, integral2, perc2 = self._integrate_antbdstates_below_efermi(cohp)
+                dict_antibd[new_label] = {"bonding":{"integral": integral2, "perc": perc2},"antibonding":{"integral": integral, "perc": perc}}
 
-        return dict_antibd
+        return dict_antibd[new_label]
 
-    def _integrate_antbdstates_below_efermi(self, cohp, start=-30):
+    def _integrate_antbdstates_below_efermi(self, cohp):
 
         """
         WARNING: NEEDS MORE TESTS
-        This integrates the whole COHP curve that has been computed. The energy range might be very important
+        This integrates the whole COHP curve that has been computed. The energy range is very important. At present the energy range considered is dependent on COHPstartEnergy set during lobster runs 
         Args:
             cohp: cohp object
             start: where does the integration start
 
         Returns:
-            absolute value of antibonding interactions, percentage value of antibonding interaction
+            absolute value of antibonding, percentage value of antibonding, absolute value of bonding and percentage value of bonding interactions
         """
 
-        # This integrates the whole COHP curve that has been computed. Just be aware that you might be
-        # neglecting some low-lying interactions due to the energy range
-
-        def abstrapz_positive(y, x=None, dx=0.001):
-            """
-            will integrate only one side of the COHP
-            Args:
-                y: Energy values
-                x: COHP values
-                dx: how fine should the integration steps be
-            Returns:
-                integrated value
-            """
-
-            y = np.asanyarray(y)
-            if x is None:
-                d = dx
-            else:
-                x = np.asanyarray(x)
-                d = np.diff(x)
-            ret = d * (y[1:] + y[:-1]) / 2.0
-            return ret[ret > 0.0].sum()  # The important line
-
-        def abstrapz_negative(y, x=None, dx=0.001):
-            """
-            will integrate only one side of the COHP
-            Args:
-                y: Energy values
-                x: COHP values
-                dx: how fine should the integration steps be
-
-            Returns:
-                integrated value
-            """
-            y = np.asanyarray(y)
-            if x is None:
-                d = dx
-            else:
-                x = np.asanyarray(x)
-                d = np.diff(x)
-            ret = d * (y[1:] + y[:-1]) / 2.0
-            return ret[ret < 0.0].sum()  # The important line
-
+        warnings.warn('The bonding, antibonding integral/percent values are numerical estimate. And at present the energy range considered is dependent on COHPstartEnergy set during lobster runs')
+        #from scipy.integrate import simpson, trapezoid
         from scipy.interpolate import InterpolatedUnivariateSpline
+
+        def abstrapz_positive(y, x):
+            """
+            will integrate only bonding interactions of the COHP
+            Args:
+                y: COHP values
+                x: Energy values
+            Returns:
+                integrated value of bonding interactions
+            """
+            y = np.asanyarray(y)
+            x = np.asanyarray(x)
+            
+            #bonding = trapezoid(y,x,dx=0.001) discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
+            bonding_fit = InterpolatedUnivariateSpline(x,y)
+            bonding = bonding_fit.integral(min(x),max(x)) # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
+            return bonding 
+
+        def abstrapz_negative(y, x):
+            """
+            will integrate only one side of the COHP
+            Args:
+                y: COHP values
+                x: Energy values
+            Returns:
+                integrated value of antibonding interactions
+            """
+            y = np.asanyarray(y)
+            x = np.asanyarray(x)
+            #antibonding = trapezoid(y,x,dx=0.001) discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
+            antibonding_fit = InterpolatedUnivariateSpline(x,y)
+            antibonding = antibonding_fit.integral(min(x),max(x))   # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
+            
+            return antibonding 
+
 
         # will integrate spin.up and spin.down only below efermi and only below curve
         energies_corrected = cohp.energies - cohp.efermi
@@ -495,21 +490,36 @@ class Analysis:
             summedcohp = cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
         else:
             summedcohp = cohp.cohp[Spin.up]
+        
+        cohp_bf=[]
+        en_bf=[]
 
-        spl = InterpolatedUnivariateSpline(energies_corrected, summedcohp, ext=0)
-        # integrate only below curve
-        # TODO: has to be tested again!
-        integrate = abstrapz_negative(
-            [spl(energy) for energy in energies_corrected if start <= energy <= 0],
-            [energy for energy in energies_corrected if start <= energy <= 0],
-        )
+        for i, en in enumerate(energies_corrected):
+            if en<=0:
+                en_bf.append(en)
+                cohp_bf.append(-1*summedcohp[i])
+        
+        #Seperate the bonding and antibonding COHP values in seperate lists	
+        pos=[]
+        en_pos=[]
+        neg=[]
+        en_neg=[]
+        for i,cohp in enumerate(cohp_bf):
+        	if cohp>=0:
+        		pos.append(cohp)
+        		en_pos.append(energies_corrected[i])
+        		
+        for i,cohp in enumerate(cohp_bf):
+        	if cohp<=0:
+        		neg.append(-1*cohp)
+        		en_neg.append(energies_corrected[i])
+        
+        
+        antibonding = abstrapz_negative(y=neg,x=en_neg)
 
-        integrate2 = abstrapz_positive(
-            [spl(energy) for energy in energies_corrected if start <= energy <= 0],
-            [energy for energy in energies_corrected if start <= energy <= 0],
-        )
+        bonding = abstrapz_positive(y=pos,x=en_pos)
 
-        return integrate2, abs(integrate2) / (abs(integrate2) + abs(integrate))
+        return antibonding, abs(antibonding) / (abs(bonding) + abs(antibonding)), bonding, abs(bonding) / (abs(bonding) + abs(antibonding))
 
     @staticmethod
     def _get_bond_dict(
@@ -625,9 +635,13 @@ class Analysis:
                 # pairs, strengths, nameion
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, namecation)
-                # dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)
+                dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion=namecation)
                 # dict_antibonding,
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation)
+                
+                for k,val in bond_dict.items():
+                	bond_dict[k]["bonding"]=dict_antibonding["bonding"]
+                	bond_dict[k]["antibonding"]=dict_antibonding["antibonding"]
 
                 site_dict[ication] = {
                     "env": ce,
@@ -654,9 +668,14 @@ class Analysis:
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, nameion=None)
 
-                # dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)
+                dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)
                 # dict_antibonding,
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
+                
+                for k,val in bond_dict.items():
+                	bond_dict[k]["bonding"]=dict_antibonding["bonding"]
+                	bond_dict[k]["antibonding"]=dict_antibonding["antibonding"]
+
 
                 site_dict[iion] = {
                     "env": ce,
