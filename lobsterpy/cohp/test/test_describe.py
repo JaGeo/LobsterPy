@@ -256,21 +256,21 @@ class TestDescribe(unittest.TestCase):
             self.describe_CdF.text,
             [
                 "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.",
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV,44.218 percent antibonding interaction below EFermi) bonds.",
             ],
         )
         self.assertEqual(
             self.describe_NaCl.text,
             [
                 "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.",
             ],
         )
         self.assertEqual(
             self.describe_NaCl.text,
             [
                 "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.",
             ],
         )
 
