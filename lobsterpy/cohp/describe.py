@@ -6,6 +6,7 @@ This module defines classes to describe the COHPs automatically
 """
 
 from lobsterpy.plotting import PlainCohpPlotter
+from pathlib import Path
 
 
 class Description:
@@ -210,7 +211,7 @@ class Description:
         Automatic plots of the most relevant COHP will be determined
         Args:
             save (bool): will save the plot to a file
-            filename (str):
+            filename (str/Path):
             ylim (list of float): energy scale that is shown in plot (eV)
             xlim(list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
@@ -227,8 +228,8 @@ class Description:
         set_labels_cohps = self.analysis_object.set_labels_cohps
         structure = self.analysis_object.structure
 
-        for ication, labels, cohps in zip(
-            set_inequivalent_cations, set_labels_cohps, set_cohps
+        for iplot, (ication, labels, cohps) in enumerate(
+            zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
 
             namecation = str(structure[ication].specie)
@@ -242,9 +243,17 @@ class Description:
             if xlim is not None:
                 plot.xlim(xlim)
 
-        plot.title(title)
-        if save:
-            plot.savefig(filename)
+            plot.title(title)
+            if save:
+                if len(set_inequivalent_cations) > 1:
+                    if type(filename) == str:
+                        filename = Path(filename)
+                    filename_new = (
+                        filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                    )
+                else:
+                    filename_new = filename
+                plot.savefig(filename_new)
         plot.show()
 
     @staticmethod
