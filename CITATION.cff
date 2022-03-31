@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+title: >-
+  Automated Bonding Analysis with Crystal Orbital
+  Hamilton Populations
+message: >-
+  We would like to ask you to cite this article if
+  you use our software
+authors:
+  - given-names: Janine
+    family-names: George
+    email: janine.george@bam.de
+    orcid: 'https://orcid.org/0000-0001-8907-0336'
+    affiliation: >-
+      Federal Institute for Materials Research and
+      Testing, Germany & Friedrich Schiller
+      University Jena
+  - given-names: Guido
+    family-names: Petretto
+  - given-names: 'Aakash '
+    family-names: Naik
+  - given-names: Marco
+    family-names: Esters
+  - given-names: Adam J.
+    family-names: Jackson
+  - given-names: Ryky
+    family-names: Nelson
+  - given-names: Richard
+    family-names: Dronskowski
+  - given-names: Gian-Marco
+    family-names: Rignanese
+  - given-names: Geoffroy
+    family-names: Hautier
+doi: 10.26434/chemrxiv-2022-2v424
+url: https://github.com/JaGeo/LobsterPy
+journal: ChemRxiv
+year: 2022
