@@ -20,6 +20,7 @@ test_cases = [
     ["automatic-plot"],
     ["automaticplot", "--allbonds"],
     ["automatic-plot", "--style", "ggplot"],
+    ["automatic-plot", "--sigma", "1.2"],
     ["description"],
     ["description", "--all-bonds"],
     ["plot", "1", "2"],
@@ -33,6 +34,8 @@ test_cases = [
     ["plot", "1", "--width", "20"],
     ["plot", "1", "--height", "20"],
     ["plot", "1", "--style", "dark_background"],
+    ["plot", "1", "--sigma", "1.2"],
+    ["plot", "1", "--fwhm", "1"],
 ]
 
 error_test_cases = [
