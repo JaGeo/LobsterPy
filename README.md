@@ -1,6 +1,7 @@
 ![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg)  [![PyPI version](https://badge.fury.io/py/lobsterpy.svg)](https://badge.fury.io/py/lobsterpy) [![PyPI downloads](https://img.shields.io/pypi/dm/lobsterpy?style=flat&color=blue&label=pypi%20downloads)](https://pypi.org/project/lobsterpy) [![DOI](https://zenodo.org/badge/343384088.svg)](https://zenodo.org/badge/latestdoi/343384088)
 
 # LobsterPy
+<img src="LobsterPyLogo.png" alt="LobsterPy Logo" width="200"/>
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
 
@@ -35,7 +36,8 @@ Lobsterpy is released under a BSD 3-Clause "New" or "Revised" License.
 
 
 ## How to cite?
-A citation for lobsterpy will follow at a later stage. For now, please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly.
+Please cite our preprint: [https://doi.org/10.26434/chemrxiv-2022-2v424](https://doi.org/10.26434/chemrxiv-2022-2v424). 
+Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
 
 ## Future plans:

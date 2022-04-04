@@ -29,9 +29,6 @@ jobs:
     - name: pydocstyle
       run: |
         pydocstyle --count lobsterpy
-    - name: pylint
-      run: |
-        pylint pymatgen
     - name: black
       run: |
         black --version

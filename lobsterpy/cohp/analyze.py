@@ -166,16 +166,21 @@ class Analysis:
         self.spg = symmetry_dataset["international"]
 
         if self.whichbonds == "cation-anion":
-            self.chemenv = LobsterNeighbors(
-                filename_ICOHP=self.path_to_icohplist,
-                structure=Structure.from_file(self.path_to_poscar),
-                additional_condition=1,
-                perc_strength_ICOHP=self.cutoff_icohp,
-                filename_CHARGE=self.path_to_charge,
-                valences_from_charges=True,
-                adapt_extremum_to_add_cond=True,
-            )
-
+            try:
+                self.chemenv = LobsterNeighbors(
+                    filename_ICOHP=self.path_to_icohplist,
+                    structure=Structure.from_file(self.path_to_poscar),
+                    additional_condition=1,
+                    perc_strength_ICOHP=self.cutoff_icohp,
+                    filename_CHARGE=self.path_to_charge,
+                    valences_from_charges=True,
+                    adapt_extremum_to_add_cond=True,
+                )
+            except ValueError as err:
+                if str(err) == "min() arg is an empty sequence":
+                    raise ValueError(
+                        "Consider switching to an analysis of all bonds and not only cation-anion bonds. It looks like no cations are detected."
+                    )
         elif self.whichbonds == "all":
             # raise ValueError("only cation anion bonds implemented so far")
             self.chemenv = LobsterNeighbors(

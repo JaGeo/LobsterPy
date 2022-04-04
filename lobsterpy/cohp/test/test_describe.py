@@ -1,4 +1,3 @@
-import os
 import unittest
 from pathlib import Path
 
@@ -7,6 +6,8 @@ from lobsterpy.cohp.describe import Description
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
+
+
 # TODO: Add example without antibonding states
 
 
@@ -228,24 +229,30 @@ class TestDescribe(unittest.TestCase):
     def test_plot(self):
         import tempfile
 
-        with tempfile.NamedTemporaryFile() as tmp:
-            self.describe_NaCl.plot_cohps(save=True, filename=tmp.name, xlim=[-4, 4])
-            self.assertTrue(os.path.exists(tmp.name))
-        import tempfile
+        with tempfile.TemporaryDirectory() as tmp0:
+            filename_test = Path(tmp0) / "test.pdf"
+            self.describe_NaCl.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
+            self.assertTrue(Path(filename_test).exists())
 
-        with tempfile.NamedTemporaryFile() as tmp:
+        with tempfile.TemporaryDirectory() as tmp1:
+            filename_test = Path(tmp1) / "test.pdf"
             self.describe_NaCl_spin.plot_cohps(
-                save=True, filename=tmp.name, xlim=[-4, 4]
+                save=True, filename=filename_test, xlim=[-4, 4]
             )
-            self.assertTrue(os.path.exists(tmp.name))
+            self.assertTrue(Path(filename_test).exists())
 
-        import tempfile
-
-        with tempfile.NamedTemporaryFile() as tmp:
+        with tempfile.TemporaryDirectory() as tmp2:
+            filename_test = Path(tmp2) / "test.pdf"
             self.describe_Nacl_all.plot_cohps(
-                save=True, filename=tmp.name, xlim=[-4, 4]
+                save=True, filename=filename_test, xlim=[-4, 4]
             )
-            self.assertTrue(os.path.exists(tmp.name))
+            filename_test_1 = Path(tmp2) / "test-0.pdf"
+            filename_test_2 = Path(tmp2) / "test-1.pdf"
+            self.assertFalse(Path(filename_test).exists())
+            self.assertTrue(Path(filename_test_1).exists())
+            self.assertTrue(Path(filename_test_2).exists())
 
     def test_write_descritoin(self):
         self.describe_NaCl.write_description()
