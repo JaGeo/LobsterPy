@@ -219,4 +219,5 @@ class PlainCohpPlotter(CohpPlotter):
         kernel_x = np.concatenate([-kernel_x[-1:1:-1], kernel_x])
 
         kernel = norm.pdf(kernel_x, scale=sigma)
-        return convolve(population, kernel, mode="same")
+
+        return convolve(population, kernel, mode="same") / sum(kernel)
