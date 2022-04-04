@@ -331,10 +331,12 @@ class Analysis:
                 new = Analysis._sort_name(new, nameion)
                 string_here = new[0] + "-" + new[1]
             else:
-                new = sorted([
-                    LobsterNeighbors._split_string(pair[0])[0],
-                    LobsterNeighbors._split_string(pair[1])[0],
-                ])
+                new = sorted(
+                    [
+                        LobsterNeighbors._split_string(pair[0])[0],
+                        LobsterNeighbors._split_string(pair[1])[0],
+                    ]
+                )
                 string_here = new[0] + "-" + new[1]
 
             if string_here not in dict_strenghts:
