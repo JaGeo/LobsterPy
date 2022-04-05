@@ -202,6 +202,7 @@ class Description:
         integrated=False,
         summed=True,
         title="",
+        sigma=None,
     ):
         """
         Automatic plots of the most relevant COHP will be determined
@@ -212,7 +213,8 @@ class Description:
             xlim(list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
             summed (bool): both spin cannels will be summed
-
+            sigma: Standard deviation of Gaussian broadening applied to
+                population data. If None, no broadening will be added.
         Returns:
 
         """
@@ -234,7 +236,7 @@ class Description:
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
-            plot = cp.get_plot(integrated=integrated)
+            plot = cp.get_plot(integrated=integrated, sigma=sigma)
             plot.ylim(ylim)
             if xlim is not None:
                 plot.xlim(xlim)

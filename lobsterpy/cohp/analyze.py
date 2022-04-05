@@ -331,11 +331,12 @@ class Analysis:
                 new = Analysis._sort_name(new, nameion)
                 string_here = new[0] + "-" + new[1]
             else:
-                new = [
-                    LobsterNeighbors._split_string(pair[0])[0],
-                    LobsterNeighbors._split_string(pair[1])[0],
-                ]
-                new.sort()
+                new = sorted(
+                    [
+                        LobsterNeighbors._split_string(pair[0])[0],
+                        LobsterNeighbors._split_string(pair[1])[0],
+                    ]
+                )
                 string_here = new[0] + "-" + new[1]
 
             if string_here not in dict_strenghts:
@@ -392,8 +393,7 @@ class Analysis:
                     new_label = sorted_new[0] + "-" + sorted_new[1]
                 else:
                     new = label.split(" ")[2].split("-")
-                    sorted_new = new.copy()
-                    sorted_new.sort()
+                    sorted_new = sorted(new.copy())
                     new_label = sorted_new[0] + "-" + sorted_new[1]
 
                 antbd = cohp.has_antibnd_states_below_efermi(limit=limit)
@@ -432,7 +432,6 @@ class Analysis:
         return dict_antibd
 
     def _integrate_antbdstates_below_efermi(self, cohp, start=-30):
-
         """
         WARNING: NEEDS MORE TESTS
         This integrates the whole COHP curve that has been computed. The energy range might be very important
@@ -751,8 +750,7 @@ class Analysis:
             item = self.condensed_bonding_analysis["sites"][key]
             for type, properties in item["bonds"].items():
                 label_list = [item["ion"], str(type)]
-                new_label = label_list.copy()
-                new_label.sort()
+                new_label = sorted(label_list.copy())
                 label = str(new_label[0]) + "-" + str(new_label[1])
 
                 if label not in final_dict_bonds:

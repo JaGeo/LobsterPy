@@ -7,7 +7,7 @@ Script to analyze Lobster outputs from the command line
 
 import argparse
 import json
-from math import sqrt
+from math import log, sqrt
 from pathlib import Path
 
 import matplotlib.style
@@ -70,6 +70,22 @@ def get_parser() -> argparse.ArgumentParser:
 
     plotting_parent = argparse.ArgumentParser(add_help=False)
     plotting_group = plotting_parent.add_argument_group("Plotting")
+
+    broadening_group = plotting_group.add_mutually_exclusive_group()
+    broadening_group.add_argument(
+        "--sigma",
+        type=float,
+        default=None,
+        help="Standard deviation of Gaussian broadening.",
+    )
+
+    broadening_group.add_argument(
+        "--fwhm",
+        type=float,
+        default=None,
+        help="Full-width-half-maximum of Gaussian broadening.",
+    )
+
     plotting_group.add_argument(
         "--ylim",
         dest="ylim",
@@ -284,6 +300,13 @@ def run(args):
         )
         matplotlib.style.use(style_list)
 
+        if args.sigma:
+            sigma = args.sigma
+        elif args.fwhm:
+            sigma = args.fwhm / (2 * sqrt(2 * log(2)))
+        else:
+            sigma = None
+
     if args.action in ["automatic-plot"]:
         describe.plot_cohps(
             ylim=args.ylim,
@@ -291,6 +314,7 @@ def run(args):
             integrated=args.integrated,
             save=args.save_plot,
             title=args.title,
+            sigma=sigma,
         )
 
     if args.action == "plot":
@@ -373,7 +397,9 @@ def run(args):
                 ),
             )
 
-        plt = cp.get_plot(integrated=args.integrated, xlim=args.xlim, ylim=args.ylim)
+        plt = cp.get_plot(
+            integrated=args.integrated, xlim=args.xlim, ylim=args.ylim, sigma=sigma
+        )
 
         ax = plt.gca()
         ax.set_title(args.title)
