@@ -484,6 +484,7 @@ def run(args):
                     incar_input=args.incar,
                     incar_output=incar_path,
                     poscar_input=args.poscar,
+                    isym=0,
                 )
             else:
                 raise ValueError(
