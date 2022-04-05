@@ -25,6 +25,9 @@ You can also pip install the package in development mode by writing ``pip instal
     We included options to plot COHPs/COBIs/COOPs from the command line.
     ``lobsterpy plot 1 2`` will plot COHPs of the first and second bond from ``COHPCAR.lobster``. It is possible to sum or integrate the COHPs as well (``--summed``, ``--integrated``). You can switch to COBIs or COOPs by using ``--cobis`` or ``--coops``, respectively.
 
+* **Other command line tools**: 
+    
+    ``lobsterpy create-inputs`` will create standard inputs based on existing POSCAR, POTCAR, INCAR files. It will allow to test for different basis sets that are available in Lobster. Currently only available for PBE_54 POTCARs.
 
 * **Further help?**
   
