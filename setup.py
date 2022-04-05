@@ -5,7 +5,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text("utf-8")
 setup(
     name="lobsterpy",
-    version="0.1.0",
+    version="0.2.0",
     description="Package for autmatic bonding analysis with Lobster/VASP",
     long_description=long_description,
     long_description_content_type="text/markdown",
