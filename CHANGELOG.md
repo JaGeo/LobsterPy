@@ -1,4 +1,4 @@
-# v0.2.0
+# v0.2.1
 - Fix error message when LobsterPy is used in cation-anion mode for materials that are not ionic.
 - automatic plots are now saved correctly. Before only the last plot was saved.
 - Additional Gaussian broadening available for COHPs
