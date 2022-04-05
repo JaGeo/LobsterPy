@@ -109,6 +109,73 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(json_path)
 
+    def test_lobsterin_generation(self, tmp_path):
+        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
+        lobsterinpath = tmp_path / "lobsterin.lobsterpy"
+        INCARpath = tmp_path / "INCAR.lobsterpy"
+        args = [
+            "create-inputs",
+            "--lobsterin-out",
+            str(lobsterinpath),
+            "--incar-out",
+            str(INCARpath),
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+        for filepath in [
+            tmp_path / "lobsterin.lobsterpy-0",
+            tmp_path / "lobsterin.lobsterpy-1",
+            tmp_path / "INCAR.lobsterpy-0",
+            tmp_path / "INCAR.lobsterpy-1",
+        ]:
+            self.assert_is_finite_file(filepath)
+
+        args = [
+            "create-inputs",
+            "--lobsterin-out",
+            str(lobsterinpath),
+            "--incar-out",
+            str(INCARpath),
+            "--overwrite",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+
+        os.chdir(TestDir / "TestData/NaCl")
+
+    def test_lobsterin_generation_error(self, tmp_path):
+        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
+        lobsterinpath = tmp_path / "lobsterin.lobsterpy"
+        INCARpath = tmp_path / "INCAR.lobsterpy"
+        args = [
+            "create-inputs",
+            "--lobsterin-out",
+            str(lobsterinpath),
+            "--incar-out",
+            str(INCARpath),
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+        for filepath in [
+            tmp_path / "lobsterin.lobsterpy-0",
+            tmp_path / "lobsterin.lobsterpy-1",
+            tmp_path / "INCAR.lobsterpy-0",
+            tmp_path / "INCAR.lobsterpy-1",
+        ]:
+            self.assert_is_finite_file(filepath)
+
+        args = [
+            "create-inputs",
+            "--lobsterin-out",
+            str(lobsterinpath),
+            "--incar-out",
+            str(INCARpath),
+        ]
+        test = get_parser().parse_args(args)
+        with pytest.raises(ValueError):
+            run(test)
+        os.chdir(TestDir / "TestData/NaCl")
+
     @staticmethod
     def assert_is_finite_file(path: Path) -> None:
         assert path.is_file()
