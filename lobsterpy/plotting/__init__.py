@@ -220,4 +220,4 @@ class PlainCohpPlotter(CohpPlotter):
 
         kernel = norm.pdf(kernel_x, scale=sigma)
 
-        return convolve(population, kernel, mode="same") / sum(kernel)
+        return convolve(population, kernel, mode="same") / kernel.sum()
