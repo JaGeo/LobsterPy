@@ -108,9 +108,8 @@ def get_parser() -> argparse.ArgumentParser:
         default=None,
         type=_element_basis,
         nargs="+",
-        help="This setting will rely on a specific basis provided by the user (e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). Default is None."
+        help="This setting will rely on a specific basis provided by the user (e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). Default is None.",
     )
-
 
     plotting_parent = argparse.ArgumentParser(add_help=False)
     plotting_group = plotting_parent.add_argument_group("Plotting")
@@ -238,7 +237,9 @@ def get_parser() -> argparse.ArgumentParser:
         "create-inputs",
         aliases=["createinputs"],
         parents=[input_parent, output_parent],
-        help=("Will create inputs for lobster computation. It only works with PBE POTCARs."),
+        help=(
+            "Will create inputs for lobster computation. It only works with PBE POTCARs."
+        ),
     )
 
     # Mode for normal plotting (without automatic detection of relevant COHPs)
@@ -290,17 +291,16 @@ def get_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _element_basis(string:str):
+def _element_basis(string: str):
     """
     Parse element and basis from string
     Args: str
     Returns: element, basis
     """
-    cut_list=string.split(".")
-    element=cut_list[0]
-    basis=" ".join(cut_list[1:])
-    return element,basis
-
+    cut_list = string.split(".")
+    element = cut_list[0]
+    basis = " ".join(cut_list[1:])
+    return element, basis
 
 
 def _user_figsize(width, height, aspect=None):
@@ -519,11 +519,10 @@ def run(args):
                         'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                     )
         else:
-            #convert list userbasis to dict
+            # convert list userbasis to dict
             userbasis = {}
             for userbasis_single in args.userbasis:
                 userbasis[userbasis_single[0]] = userbasis_single[1]
-
 
             lobsterinput = Lobsterin.standard_calculations_from_vasp_files(
                 args.poscar,
@@ -537,16 +536,20 @@ def run(args):
             incar_path = Path(str(args.incarout) + "-" + str(0))
 
             if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
-                    args.overwrite
+                args.overwrite
             ):
 
                 lobsterinput.write_lobsterin(lobsterin_path)
-                lobsterinput.write_INCAR(incar_input=args.incar, incar_output=incar_path, poscar_input=args.poscar, isym=0)
+                lobsterinput.write_INCAR(
+                    incar_input=args.incar,
+                    incar_output=incar_path,
+                    poscar_input=args.poscar,
+                    isym=0,
+                )
             else:
                 raise ValueError(
                     'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                 )
-
 
 
 if __name__ == "__main__":

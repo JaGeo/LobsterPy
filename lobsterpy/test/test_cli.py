@@ -181,15 +181,25 @@ class TestCLI:
         os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
         INCARpath = tmp_path / "INCAR.lobsterpy"
-        args = ["create-inputs", "--lobsterin-out", str(lobsterinpath), "--incar-out", str(INCARpath), "--userbasis",
-                "Na.3s.3p Cl.3s.3p"]
+        args = [
+            "create-inputs",
+            "--lobsterin-out",
+            str(lobsterinpath),
+            "--incar-out",
+            str(INCARpath),
+            "--userbasis",
+            "Na.3s.3p Cl.3s.3p",
+        ]
         test = get_parser().parse_args(args)
         run(test)
 
         for basis in ["Na 3s 3p", "Cl 3s 3p"]:
             assert basis in open(tmp_path / "lobsterin.lobsterpy-0").read()
 
-        for filepath in [tmp_path / "lobsterin.lobsterpy-0", tmp_path / "INCAR.lobsterpy-0"]:
+        for filepath in [
+            tmp_path / "lobsterin.lobsterpy-0",
+            tmp_path / "INCAR.lobsterpy-0",
+        ]:
             self.assert_is_finite_file(filepath)
 
         os.chdir(TestDir / "TestData/NaCl")
