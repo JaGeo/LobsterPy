@@ -79,6 +79,7 @@ def get_parser() -> argparse.ArgumentParser:
     output_file_group = output_parent.add_argument_group("Output files")
     output_file_group.add_argument(
         "--incar-out",
+        "--incarout",
         dest="incarout",
         default="INCAR.lobsterpy",
         type=Path,
@@ -86,6 +87,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
     output_file_group.add_argument(
         "--lobsterin-out",
+        "--lobsterinout",
         dest="lobsterinout",
         default="lobsterin.lobsterpy",
         type=Path,
@@ -93,11 +95,22 @@ def get_parser() -> argparse.ArgumentParser:
     )
     output_file_group.add_argument(
         "--overwrite",
+        "--overwrite-files",
+        dest="overwrite",
         default=False,
         action="store_true",
         help="overwrites already created INCARs an lobsterins with the give name.",
     )
     # TODO: Add some output arguments: options to supply your own basis
+    output_file_group.add_argument(
+        "--userbasis",
+        "--user-basis",
+        default=None,
+        type=_element_basis,
+        nargs="+",
+        help="This setting will rely on a specific basis provided by the user (e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). Default is None."
+    )
+
 
     plotting_parent = argparse.ArgumentParser(add_help=False)
     plotting_group = plotting_parent.add_argument_group("Plotting")
@@ -225,7 +238,7 @@ def get_parser() -> argparse.ArgumentParser:
         "create-inputs",
         aliases=["createinputs"],
         parents=[input_parent, output_parent],
-        help=("Will create inputs for lobster computation"),
+        help=("Will create inputs for lobster computation. It only works with PBE POTCARs."),
     )
 
     # Mode for normal plotting (without automatic detection of relevant COHPs)
@@ -275,6 +288,19 @@ def get_parser() -> argparse.ArgumentParser:
         ),
     )
     return parser
+
+
+def _element_basis(string:str):
+    """
+    Parse element and basis from string
+    Args: str
+    Returns: element, basis
+    """
+    cut_list=string.split(".")
+    element=cut_list[0]
+    basis=" ".join(cut_list[1:])
+    return element,basis
+
 
 
 def _user_figsize(width, height, aspect=None):
@@ -454,42 +480,73 @@ def run(args):
             fig = plt.gcf()
             fig.savefig(args.save_plot)
     if args.action == "create-inputs":
-        # This will rely on standard basis files as stored in pymatgen
         from pymatgen.io.lobster import Lobsterin
         from pymatgen.core.structure import Structure
 
-        potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=args.potcar)
+        if args.userbasis is None:
+            # This will rely on standard basis files as stored in pymatgen
 
-        list_basis_dict = Lobsterin.get_all_possible_basis_functions(
-            structure=Structure.from_file(args.poscar), potcar_symbols=potcar_names
-        )
+            potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=args.potcar)
 
-        for ibasis, basis_dict in enumerate(list_basis_dict):
+            list_basis_dict = Lobsterin.get_all_possible_basis_functions(
+                structure=Structure.from_file(args.poscar), potcar_symbols=potcar_names
+            )
+
+            for ibasis, basis_dict in enumerate(list_basis_dict):
+                lobsterinput = Lobsterin.standard_calculations_from_vasp_files(
+                    args.poscar,
+                    args.incar,
+                    None,
+                    option="standard",
+                    dict_for_basis=basis_dict,
+                )
+
+                lobsterin_path = Path(str(args.lobsterinout) + "-" + str(ibasis))
+                incar_path = Path(str(args.incarout) + "-" + str(ibasis))
+
+                if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
+                    args.overwrite
+                ):
+                    lobsterinput.write_lobsterin(lobsterin_path)
+                    lobsterinput.write_INCAR(
+                        incar_input=args.incar,
+                        incar_output=incar_path,
+                        poscar_input=args.poscar,
+                        isym=0,
+                    )
+                else:
+                    raise ValueError(
+                        'please use "--overwrite" if you would like to overwrite existing lobster inputs'
+                    )
+        else:
+            #convert list userbasis to dict
+            userbasis = {}
+            for userbasis_single in args.userbasis:
+                userbasis[userbasis_single[0]] = userbasis_single[1]
+
+
             lobsterinput = Lobsterin.standard_calculations_from_vasp_files(
                 args.poscar,
                 args.incar,
                 None,
                 option="standard",
-                dict_for_basis=basis_dict,
+                dict_for_basis=userbasis,
             )
 
-            lobsterin_path = Path(str(args.lobsterinout) + "-" + str(ibasis))
-            incar_path = Path(str(args.incarout) + "-" + str(ibasis))
+            lobsterin_path = Path(str(args.lobsterinout) + "-" + str(0))
+            incar_path = Path(str(args.incarout) + "-" + str(0))
 
             if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
-                lobsterin_path.is_file() and incar_path.is_file() and args.overwrite
+                    args.overwrite
             ):
+
                 lobsterinput.write_lobsterin(lobsterin_path)
-                lobsterinput.write_INCAR(
-                    incar_input=args.incar,
-                    incar_output=incar_path,
-                    poscar_input=args.poscar,
-                    isym=0,
-                )
+                lobsterinput.write_INCAR(incar_input=args.incar, incar_output=incar_path, poscar_input=args.poscar, isym=0)
             else:
                 raise ValueError(
                     'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                 )
+
 
 
 if __name__ == "__main__":
