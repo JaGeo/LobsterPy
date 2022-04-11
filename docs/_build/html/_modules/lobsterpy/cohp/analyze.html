@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lobsterpy.cohp.analyze &mdash; Lobsterpy  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Lobsterpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">LobsterPy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Lobsterpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>lobsterpy.cohp.analyze</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lobsterpy.cohp.analyze</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) lobsterpy development team</span>
+<span class="c1"># Distributed under the terms of a BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines classes to analyze the COHPs automatically</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span> <span class="nn">pymatgen.electronic_structure.core</span> <span class="kn">import</span> <span class="n">Spin</span>
+<span class="kn">from</span> <span class="nn">pymatgen.io.lobster.lobsterenv</span> <span class="kn">import</span> <span class="n">LobsterNeighbors</span>
+<span class="kn">from</span> <span class="nn">pymatgen.symmetry.analyzer</span> <span class="kn">import</span> <span class="n">SpacegroupAnalyzer</span>
+
+
+<div class="viewcode-block" id="Analysis"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis">[docs]</a><span class="k">class</span> <span class="nc">Analysis</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analysis class of COHP data from Lobster</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        condensed_bonding_analysis: dict including a summary of the most important bonding properties</span>
+<span class="sd">        final_dict_bonds: dict including information on ICOHPs per bond type</span>
+<span class="sd">        final_dict_ions: dict including information on environments of cations</span>
+<span class="sd">        chemenv: pymatgen.io.lobster.lobsterenv.LobsterNeighbors object</span>
+<span class="sd">        lse: LightStructureEnvironment from pymatgen</span>
+<span class="sd">        cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values. cutoff_icohp*max_icohp limits the number of considered environments</span>
+<span class="sd">        anion_types: Set of Element objects from pymatgen</span>
+<span class="sd">        list_equivalent_sites: list of site indices of sites that indicate which sites are equivalent e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other</span>
+<span class="sd">        path_to_charge: str that describes the path to CHARGE.lobster</span>
+<span class="sd">        path_to_cohpcar: str that describes the path to COHPCAR.lobster</span>
+<span class="sd">        path_to_icohplist: str that describes the path to ICOHPLIST.lobster</span>
+<span class="sd">        path_to_poscar: str that describes path to POSCAR</span>
+<span class="sd">        path_to_madelung: str that describes path to POSCAR</span>
+<span class="sd">        set_cohps: list of cohps</span>
+<span class="sd">        set_coordination_ions: list of coodination environment strings for each cation</span>
+<span class="sd">        set_equivalent_sites: set of inequivalent sites</span>
+<span class="sd">        set_inequivalent_ions: set of inequivalent cations/sites in the structure</span>
+<span class="sd">        set_infos_bonds: information on cation anion bonds</span>
+<span class="sd">        spg: space group information</span>
+<span class="sd">        structure: Structure object</span>
+<span class="sd">        type_charge: which charges are considered here</span>
+<span class="sd">        whichbonds: which bonds will be considered in analysis</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path_to_poscar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">path_to_icohplist</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">path_to_cohpcar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">path_to_charge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">path_to_madelung</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">whichbonds</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">,</span>
+        <span class="n">cutoff_icohp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">summed_spins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">type_charge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a class to analyse bonding information automatically</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path_to_poscar: path to POSCAR (e.g., &quot;POSCAR&quot;)</span>
+<span class="sd">            path_to_icohplist: path to ICOHPLIST.lobster (e.g., &quot;ICOHPLIST.lobster&quot;)</span>
+<span class="sd">            path_to_cohpcar: path to COHPCAR.lobster (e.g., &quot;COHPCAR.lobster&quot;)</span>
+<span class="sd">            path_to_charge: path to CHARGE.lobster (e.g., &quot;CHARGE.lobster&quot;)</span>
+<span class="sd">            path_to_madelung: path to MadelungEnergies.lobster (e.g., &quot;MadelungEnergies.lobster&quot;)</span>
+<span class="sd">            whichbonds: selects which kind of bonds are analyzed. &quot;cation-anion&quot; is the default</span>
+<span class="sd">            cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered</span>
+<span class="sd">            summed_spins: if true, spins will be summed</span>
+<span class="sd">            type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.</span>
+<span class="sd">                        Löwdin charges cannot be selected at the moment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_poscar</span> <span class="o">=</span> <span class="n">path_to_poscar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_icohplist</span> <span class="o">=</span> <span class="n">path_to_icohplist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_cohpcar</span> <span class="o">=</span> <span class="n">path_to_cohpcar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">=</span> <span class="n">whichbonds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_icohp</span> <span class="o">=</span> <span class="n">cutoff_icohp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_charge</span> <span class="o">=</span> <span class="n">path_to_charge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_madelung</span> <span class="o">=</span> <span class="n">path_to_madelung</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_env</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_information_all_bonds</span><span class="p">(</span><span class="n">summed_spins</span><span class="o">=</span><span class="n">summed_spins</span><span class="p">)</span>
+
+        <span class="c1"># This determines how cations and anions</span>
+        <span class="k">if</span> <span class="n">path_to_charge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span> <span class="o">=</span> <span class="s2">&quot;Valences&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">type_charge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span> <span class="o">=</span> <span class="s2">&quot;Mulliken&quot;</span>
+            <span class="k">elif</span> <span class="n">type_charge</span> <span class="o">==</span> <span class="s2">&quot;Mulliken&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span> <span class="o">=</span> <span class="s2">&quot;Mulliken&quot;</span>
+            <span class="k">elif</span> <span class="n">type_charge</span> <span class="o">==</span> <span class="s2">&quot;Löwdin&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Only Mulliken charges can be used here at the moment. Implementation will follow.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span> <span class="o">=</span> <span class="s2">&quot;Valences&quot;</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences&quot;</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_condensed_bonding_analysis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_summary_dicts</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_madelung</span> <span class="o">=</span> <span class="n">path_to_madelung</span>
+
+<div class="viewcode-block" id="Analysis.setup_env"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis.setup_env">[docs]</a>    <span class="k">def</span> <span class="nf">setup_env</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method helps setting up the light structure environments based on COHPs</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_poscar</span><span class="p">)</span>
+        <span class="n">sga</span> <span class="o">=</span> <span class="n">SpacegroupAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+        <span class="n">symmetry_dataset</span> <span class="o">=</span> <span class="n">sga</span><span class="o">.</span><span class="n">get_symmetry_dataset</span><span class="p">()</span>
+        <span class="n">equivalent_sites</span> <span class="o">=</span> <span class="n">symmetry_dataset</span><span class="p">[</span><span class="s2">&quot;equivalent_atoms&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_equivalent_sites</span> <span class="o">=</span> <span class="n">equivalent_sites</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_equivalent_sites</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">equivalent_sites</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spg</span> <span class="o">=</span> <span class="n">symmetry_dataset</span><span class="p">[</span><span class="s2">&quot;international&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span> <span class="o">=</span> <span class="n">LobsterNeighbors</span><span class="p">(</span>
+                    <span class="n">filename_ICOHP</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_icohplist</span><span class="p">,</span>
+                    <span class="n">structure</span><span class="o">=</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_poscar</span><span class="p">),</span>
+                    <span class="n">additional_condition</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">perc_strength_ICOHP</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff_icohp</span><span class="p">,</span>
+                    <span class="n">filename_CHARGE</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_charge</span><span class="p">,</span>
+                    <span class="n">valences_from_charges</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">adapt_extremum_to_add_cond</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;min() arg is an empty sequence&quot;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Consider switching to an analysis of all bonds and not only cation-anion bonds. It looks like no cations are detected.&quot;</span>
+                    <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="c1"># raise ValueError(&quot;only cation anion bonds implemented so far&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span> <span class="o">=</span> <span class="n">LobsterNeighbors</span><span class="p">(</span>
+                <span class="n">filename_ICOHP</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_icohplist</span><span class="p">,</span>
+                <span class="n">structure</span><span class="o">=</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_poscar</span><span class="p">),</span>
+                <span class="n">additional_condition</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">perc_strength_ICOHP</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutoff_icohp</span><span class="p">,</span>
+                <span class="n">filename_CHARGE</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_charge</span><span class="p">,</span>
+                <span class="n">valences_from_charges</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">adapt_extremum_to_add_cond</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;only cation anion bonds implemented so far&quot;</span><span class="p">)</span>
+
+        <span class="c1"># determine cations and anions</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">get_light_structure_environment</span><span class="p">(</span>
+                    <span class="n">only_cation_environments</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">get_light_structure_environment</span><span class="p">(</span>
+                    <span class="n">only_cation_environments</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+
+            <span class="k">class</span> <span class="nc">Lse</span><span class="p">:</span>
+                <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chemenv</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">coordination_environments</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">[{</span><span class="s2">&quot;ce_symbol&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">))}]</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">chemenv</span>
+                    <span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">lse</span> <span class="o">=</span> <span class="n">Lse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">list_coords</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Analysis.get_information_all_bonds"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis.get_information_all_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">get_information_all_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summed_spins</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will gather all information on the bonds within the compound</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+            <span class="c1"># this will only analyze cation anion bonds which simplifies the analysis</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_coordination_ions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_infos_bonds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_labels_cohps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_cohps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># only_bonds_to</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">anion_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">get_anion_types</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">ice</span><span class="p">,</span> <span class="n">ce</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lse</span><span class="o">.</span><span class="n">coordination_environments</span><span class="p">):</span>
+                <span class="c1"># only look at inequivalent sites (use of symmetry to speed everything up!)!</span>
+                <span class="c1"># only look at those cations that have cation-anion bonds</span>
+                <span class="k">if</span> <span class="n">ice</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_equivalent_sites</span> <span class="ow">and</span> <span class="n">ce</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;ce_symbol&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ice</span><span class="p">)</span>
+                    <span class="n">ce</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;ce_symbol&quot;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_coordination_ions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ce</span><span class="p">)</span>
+                    <span class="n">cation_anion_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">get_info_icohps_to_neighbors</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">ice</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_infos_bonds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cation_anion_infos</span><span class="p">)</span>
+
+                    <span class="n">aniontype_labels</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">aniontype_cohps</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="c1"># go through all anions in the structure!</span>
+                    <span class="k">for</span> <span class="n">anion</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">anion_types</span><span class="p">:</span>
+                        <span class="c1"># get labels and summed cohp objects</span>
+                        <span class="n">labels</span><span class="p">,</span> <span class="n">summedcohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">get_info_cohps_to_neighbors</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">path_to_cohpcar</span><span class="p">,</span>
+                            <span class="p">[</span><span class="n">ice</span><span class="p">],</span>
+                            <span class="n">summed_spin_channels</span><span class="o">=</span><span class="n">summed_spins</span><span class="p">,</span>
+                            <span class="n">per_bond</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">only_bonds_to</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">anion</span><span class="p">)],</span>
+                        <span class="p">)</span>
+
+                        <span class="n">aniontype_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+                        <span class="n">aniontype_cohps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summedcohps</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_labels_cohps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aniontype_labels</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_cohps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aniontype_cohps</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="c1"># this will only analyze all bonds</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_coordination_ions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_infos_bonds</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_labels_cohps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_cohps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># only_bonds_to</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">elements</span>
+            <span class="c1"># self.anion_types = self.chemenv.get_anion_types()</span>
+            <span class="k">for</span> <span class="n">ice</span><span class="p">,</span> <span class="n">ce</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lse</span><span class="o">.</span><span class="n">coordination_environments</span><span class="p">):</span>
+                <span class="c1"># only look at inequivalent sites (use of symmetry to speed everything up!)!</span>
+                <span class="c1"># only look at those cations that have cation-anion bonds</span>
+                <span class="k">if</span> <span class="n">ice</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_equivalent_sites</span> <span class="ow">and</span> <span class="n">ce</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;ce_symbol&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ice</span><span class="p">)</span>
+                    <span class="n">ce</span> <span class="o">=</span> <span class="n">ce</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;ce_symbol&quot;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_coordination_ions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ce</span><span class="p">)</span>
+                    <span class="n">bonds_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">get_info_icohps_to_neighbors</span><span class="p">([</span><span class="n">ice</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_infos_bonds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bonds_infos</span><span class="p">)</span>
+
+                    <span class="n">type_labels</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">type_cohps</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+                        <span class="c1"># get labels and summed cohp objects</span>
+                        <span class="n">labels</span><span class="p">,</span> <span class="n">summedcohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">get_info_cohps_to_neighbors</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">path_to_cohpcar</span><span class="p">,</span>
+                            <span class="p">[</span><span class="n">ice</span><span class="p">],</span>
+                            <span class="n">onlycation_isites</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">summed_spin_channels</span><span class="o">=</span><span class="n">summed_spins</span><span class="p">,</span>
+                            <span class="n">per_bond</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">only_bonds_to</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="p">)],</span>
+                        <span class="p">)</span>
+
+                        <span class="n">type_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+                        <span class="n">type_cohps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">summedcohps</span><span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_labels_cohps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_labels</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_cohps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_cohps</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Analysis._get_strenghts_for_each_bond"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis._get_strenghts_for_each_bond">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_strenghts_for_each_bond</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">strengths</span><span class="p">,</span> <span class="n">nameion</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pairs: list of list including labels for the atoms, e.g., [[&#39;O3&#39;, &#39;Cu1&#39;], [&#39;O3&#39;, &#39;Cu1&#39;]]</span>
+<span class="sd">            strengths (list of float): list that gives the icohp strenghts as a float, [-1.86287, -1.86288]</span>
+<span class="sd">            nameion: string including the name of the cation in the list, e.g Cu1</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict including inormation on icohps for each bond type, e.g.</span>
+<span class="sd">            {&#39;Yb-Sb&#39;: [-1.59769, -2.14723, -1.7925, -1.60773, -1.80149, -2.14335]}</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dict_strenghts</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">pair</span><span class="p">,</span> <span class="n">strength</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">strengths</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">nameion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">LobsterNeighbors</span><span class="o">.</span><span class="n">_split_string</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">LobsterNeighbors</span><span class="o">.</span><span class="n">_split_string</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="p">]</span>
+                <span class="n">new</span> <span class="o">=</span> <span class="n">Analysis</span><span class="o">.</span><span class="n">_sort_name</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">nameion</span><span class="p">)</span>
+                <span class="n">string_here</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">new</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">LobsterNeighbors</span><span class="o">.</span><span class="n">_split_string</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">LobsterNeighbors</span><span class="o">.</span><span class="n">_split_string</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">string_here</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">new</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">string_here</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_strenghts</span><span class="p">:</span>
+                <span class="n">dict_strenghts</span><span class="p">[</span><span class="n">string_here</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">dict_strenghts</span><span class="p">[</span><span class="n">string_here</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strength</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dict_strenghts</span></div>
+
+<div class="viewcode-block" id="Analysis._sort_name"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis._sort_name">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_sort_name</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="n">nameion</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        will place the cation first in a list of name strings</span>
+<span class="sd">        Args:</span>
+<span class="sd">            pair: [&quot;O&quot;,&quot;Cu&quot;]</span>
+<span class="sd">            nameion: &quot;Cu&quot;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            will return list of str, e.g. [&quot;Cu&quot;, &quot;O&quot;]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nameion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">nameion</span><span class="p">:</span>
+                <span class="n">new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">elif</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">nameion</span><span class="p">:</span>
+                <span class="n">new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">new</span></div>
+
+<div class="viewcode-block" id="Analysis._get_antibdg_states"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis._get_antibdg_states">[docs]</a>    <span class="k">def</span> <span class="nf">_get_antibdg_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cohps</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">nameion</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        will return a dictionary including information on antibonding states</span>
+<span class="sd">        e.g., similar to: {&#39;Cu-O&#39;: True, &#39;Cu-F&#39;: True}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects</span>
+<span class="sd">            labels: [&#39;2 x Cu-O&#39;, &#39;4 x Cu-F&#39;]</span>
+<span class="sd">            nameion: string of the cation name, e.g. &quot;Cu&quot;</span>
+<span class="sd">            limit: limit to detect antibonding states</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict including in formation on whether antibonding interactions exist,</span>
+<span class="sd">            e.g., {&#39;Cu-O&#39;: True, &#39;Cu-F&#39;: True}</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dict_antibd</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">cohp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span><span class="p">):</span>
+            <span class="c1"># print(labels)</span>
+            <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">nameion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">new</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+                    <span class="n">sorted_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_name</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">nameion</span><span class="p">)</span>
+                    <span class="n">new_label</span> <span class="o">=</span> <span class="n">sorted_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">sorted_new</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+                    <span class="n">sorted_new</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+                    <span class="n">new_label</span> <span class="o">=</span> <span class="n">sorted_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">sorted_new</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">antbd</span> <span class="o">=</span> <span class="n">cohp</span><span class="o">.</span><span class="n">has_antibnd_states_below_efermi</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">Spin</span><span class="o">.</span><span class="n">down</span> <span class="ow">in</span> <span class="n">antbd</span><span class="p">:</span>
+                    <span class="n">dict_antibd</span><span class="p">[</span><span class="n">new_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">antbd</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]</span> <span class="ow">or</span> <span class="n">antbd</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">down</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dict_antibd</span><span class="p">[</span><span class="n">new_label</span><span class="p">]</span> <span class="o">=</span> <span class="n">antbd</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">dict_antibd</span></div>
+
+<div class="viewcode-block" id="Analysis._integrate_antbdstates_below_efermi_for_set_cohps"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis._integrate_antbdstates_below_efermi_for_set_cohps">[docs]</a>    <span class="k">def</span> <span class="nf">_integrate_antbdstates_below_efermi_for_set_cohps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span><span class="p">,</span> <span class="n">nameion</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. warning:: NEEDS MORE TESTS</span>
+
+<span class="sd">        This method will return a dictionary including information on antibonding states</span>
+<span class="sd">        important is however that only the energy range can be considered that has been computed</span>
+<span class="sd">        (i.e., this might not be all)</span>
+<span class="sd">        e.g., similar to: {&#39;Cu-O&#39;: {&#39;integral&#39;: 4.24374775705, &#39;perc&#39;: 5.7437713186999995}, &#39;Cu-F&#39;: {&#39;integral&#39;: 3.07098300965, &#39;perc&#39;: 4.25800841445}}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects</span>
+<span class="sd">            labels: [&#39;2 x Cu-O&#39;, &#39;4 x Cu-F&#39;]</span>
+<span class="sd">            nameion: string of the cation name, e.g. &quot;Cu&quot;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict including in formation on whether antibonding interactions exist,</span>
+<span class="sd">            e.g., {&#39;Cu-O&#39;: {&#39;integral&#39;: 4.24374775705, &#39;perc&#39;: 5.7437713186999995}, &#39;Cu-F&#39;: {&#39;integral&#39;: 3.07098300965, &#39;perc&#39;: 4.25800841445}}}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">dict_antibd</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">cohp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+                <span class="n">sorted_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_name</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="n">nameion</span><span class="p">)</span>
+                <span class="n">new_label</span> <span class="o">=</span> <span class="n">sorted_new</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">sorted_new</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">integral</span><span class="p">,</span> <span class="n">perc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_integrate_antbdstates_below_efermi</span><span class="p">(</span><span class="n">cohp</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">dict_antibd</span><span class="p">[</span><span class="n">new_label</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;integral&quot;</span><span class="p">:</span> <span class="n">integral</span><span class="p">,</span> <span class="s2">&quot;perc&quot;</span><span class="p">:</span> <span class="n">perc</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">dict_antibd</span></div>
+
+<div class="viewcode-block" id="Analysis._integrate_antbdstates_below_efermi"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis._integrate_antbdstates_below_efermi">[docs]</a>    <span class="k">def</span> <span class="nf">_integrate_antbdstates_below_efermi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cohp</span><span class="p">,</span> <span class="n">start</span><span class="o">=-</span><span class="mi">30</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. warning:: NEEDS MORE TESTS</span>
+
+<span class="sd">        This method integrates the whole COHP curve that has been computed. The energy range is be very important</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cohp: cohp object</span>
+<span class="sd">            start: where does the integration start</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            absolute value of antibonding interactions, percentage value of antibonding interaction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># This integrates the whole COHP curve that has been computed. Just be aware that you might be</span>
+        <span class="c1"># neglecting some low-lying interactions due to the energy range</span>
+
+        <span class="k">def</span> <span class="nf">abstrapz_positive</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This method will integrate only one side of the COHP</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                y: Energy values</span>
+<span class="sd">                x: COHP values</span>
+<span class="sd">                dx: how fine should the integration steps be</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                integrated value</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">dx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="n">ret</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># The important line</span>
+
+        <span class="k">def</span> <span class="nf">abstrapz_negative</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This method will integrate only one side of the COHP</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                y: Energy values</span>
+<span class="sd">                x: COHP values</span>
+<span class="sd">                dx: how fine should the integration steps be</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                integrated value</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">dx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="n">ret</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># The important line</span>
+
+        <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">InterpolatedUnivariateSpline</span>
+
+        <span class="c1"># will integrate spin.up and spin.down only below efermi and only below curve</span>
+        <span class="n">energies_corrected</span> <span class="o">=</span> <span class="n">cohp</span><span class="o">.</span><span class="n">energies</span> <span class="o">-</span> <span class="n">cohp</span><span class="o">.</span><span class="n">efermi</span>
+        <span class="k">if</span> <span class="n">Spin</span><span class="o">.</span><span class="n">down</span> <span class="ow">in</span> <span class="n">cohp</span><span class="o">.</span><span class="n">cohp</span><span class="p">:</span>
+            <span class="n">summedcohp</span> <span class="o">=</span> <span class="n">cohp</span><span class="o">.</span><span class="n">cohp</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]</span> <span class="o">+</span> <span class="n">cohp</span><span class="o">.</span><span class="n">cohp</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">down</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">summedcohp</span> <span class="o">=</span> <span class="n">cohp</span><span class="o">.</span><span class="n">cohp</span><span class="p">[</span><span class="n">Spin</span><span class="o">.</span><span class="n">up</span><span class="p">]</span>
+
+        <span class="n">spl</span> <span class="o">=</span> <span class="n">InterpolatedUnivariateSpline</span><span class="p">(</span><span class="n">energies_corrected</span><span class="p">,</span> <span class="n">summedcohp</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># integrate only below curve</span>
+        <span class="c1"># TODO: has to be tested again!</span>
+        <span class="n">integrate</span> <span class="o">=</span> <span class="n">abstrapz_negative</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">spl</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span> <span class="k">for</span> <span class="n">energy</span> <span class="ow">in</span> <span class="n">energies_corrected</span> <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">energy</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">energy</span> <span class="k">for</span> <span class="n">energy</span> <span class="ow">in</span> <span class="n">energies_corrected</span> <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">energy</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="n">integrate2</span> <span class="o">=</span> <span class="n">abstrapz_positive</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">spl</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span> <span class="k">for</span> <span class="n">energy</span> <span class="ow">in</span> <span class="n">energies_corrected</span> <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">energy</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">energy</span> <span class="k">for</span> <span class="n">energy</span> <span class="ow">in</span> <span class="n">energies_corrected</span> <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">energy</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">integrate2</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">integrate2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">integrate2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">integrate</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Analysis._get_bond_dict"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis._get_bond_dict">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_bond_dict</span><span class="p">(</span>
+        <span class="n">bond_strength_dict</span><span class="p">,</span> <span class="n">small_antbd_dict</span><span class="p">,</span> <span class="n">nameion</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">large_antbd_dict</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        will return a bond_dict incluing information for each site</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bond_strength_dict (dict): dict with bond names as key and lists of bond strengths as items</span>
+<span class="sd">            small_antbd_dict (dict): dict including if there are antibonding interactions, {&#39;Yb-Sb&#39;: False}</span>
+<span class="sd">            nameion (str): name of the cation, e.g. Yb</span>
+<span class="sd">            large_antbdg_dict: will be implemented later</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict including information on the anion (as label) and the ICOHPs in the item of the dict</span>
+<span class="sd">            ICOHP_mean refers to the mean ICOHP in eV</span>
+<span class="sd">            ICOHP_sum refers to the sum of the ICOHPs in eV</span>
+<span class="sd">            has_antibdg_states_below_Efermi is True if there are antibonding interactions below Efermi</span>
+<span class="sd">            &quot;number_of_bonds&quot; will count the numbers of bonds to the cation</span>
+
+<span class="sd">            example:</span>
+<span class="sd">            {&#39;Sb&#39;: {&#39;ICOHP_mean&#39;: &#39;-1.85&#39;, &#39;ICOHP_sum&#39;: &#39;-11.09&#39;,</span>
+<span class="sd">            &#39;has_antibdg_states_below_Efermi&#39;: False, &#39;number_of_bonds&#39;: 6}}</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bond_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">bond_strength_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">nameion</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">nameion</span><span class="p">:</span>
+                    <span class="n">key_here</span> <span class="o">=</span> <span class="n">b</span>
+                <span class="k">elif</span> <span class="n">b</span> <span class="o">==</span> <span class="n">nameion</span><span class="p">:</span>
+                    <span class="n">key_here</span> <span class="o">=</span> <span class="n">a</span>
+
+            <span class="k">if</span> <span class="n">large_antbd_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">bond_dict</span><span class="p">[</span><span class="n">key_here</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;ICOHP_mean&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span>
+                    <span class="s2">&quot;ICOHP_sum&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span>
+                    <span class="s2">&quot;has_antibdg_states_below_Efermi&quot;</span><span class="p">:</span> <span class="n">small_antbd_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                    <span class="s2">&quot;number_of_bonds&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bond_dict</span><span class="p">[</span><span class="n">key_here</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;ICOHP_mean&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span>
+                    <span class="s2">&quot;ICOHP_sum&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span>
+                    <span class="s2">&quot;has_antibdg_states_below_Efermi&quot;</span><span class="p">:</span> <span class="n">small_antbd_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                    <span class="s2">&quot;number_of_bonds&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">),</span>
+                    <span class="s2">&quot;perc_antibdg_states_below_Efermi&quot;</span><span class="p">:</span> <span class="n">large_antbd_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">bond_dict</span></div>
+
+<div class="viewcode-block" id="Analysis.set_condensed_bonding_analysis"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis.set_condensed_bonding_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">set_condensed_bonding_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets a condensed version of the bonding analysis including a summary dictionary</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># which icohps are considered</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+            <span class="n">limit_icohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">_get_limit_from_extremum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">Icohpcollection</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_icohp</span><span class="p">,</span>
+                <span class="n">adapt_extremum_to_add_cond</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">additional_condition</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">limit_icohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">_get_limit_from_extremum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">Icohpcollection</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cutoff_icohp</span><span class="p">,</span>
+                <span class="n">adapt_extremum_to_add_cond</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">additional_condition</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="c1"># formula of the compound</span>
+        <span class="n">formula</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="o">.</span><span class="n">composition</span><span class="o">.</span><span class="n">reduced_formula</span><span class="p">)</span>
+
+        <span class="c1"># how many inequivalent cations are in the structure</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+            <span class="n">number_considered_ions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">number_considered_ions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span><span class="p">)</span>
+
+        <span class="c1"># what was the maximum bond lengths that was considered</span>
+        <span class="n">max_bond_lengths</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">Icohpcollection</span><span class="o">.</span><span class="n">_list_length</span><span class="p">)</span>
+
+        <span class="c1"># what are the charges for the cations in the structure</span>
+        <span class="n">charge_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">valences</span>
+
+        <span class="c1"># dictionary including bonding information for each site</span>
+        <span class="n">site_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ication</span><span class="p">,</span> <span class="n">ce</span><span class="p">,</span> <span class="n">cation_anion_infos</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_coordination_ions</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_infos_bonds</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_labels_cohps</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_cohps</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">namecation</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">ication</span><span class="p">]</span><span class="o">.</span><span class="n">specie</span><span class="p">)</span>
+
+                <span class="c1"># This will compute the mean strengths of ICOHPs</span>
+                <span class="n">mean_icohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_strenghts_for_each_bond</span><span class="p">(</span>
+                    <span class="n">pairs</span><span class="o">=</span><span class="n">cation_anion_infos</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+                    <span class="n">strengths</span><span class="o">=</span><span class="n">cation_anion_infos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">nameion</span><span class="o">=</span><span class="n">namecation</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="c1"># pairs, strengths, nameion</span>
+                <span class="c1"># will collect if there are antibonding states present</span>
+                <span class="n">antbdg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_antibdg_states</span><span class="p">(</span><span class="n">cohps</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">namecation</span><span class="p">)</span>
+                <span class="c1"># dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)</span>
+                <span class="c1"># dict_antibonding,</span>
+                <span class="n">bond_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bond_dict</span><span class="p">(</span><span class="n">mean_icohps</span><span class="p">,</span> <span class="n">antbdg</span><span class="p">,</span> <span class="n">namecation</span><span class="p">)</span>
+
+                <span class="n">site_dict</span><span class="p">[</span><span class="n">ication</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;env&quot;</span><span class="p">:</span> <span class="n">ce</span><span class="p">,</span>
+                    <span class="s2">&quot;bonds&quot;</span><span class="p">:</span> <span class="n">bond_dict</span><span class="p">,</span>
+                    <span class="s2">&quot;ion&quot;</span><span class="p">:</span> <span class="n">namecation</span><span class="p">,</span>
+                    <span class="s2">&quot;charge&quot;</span><span class="p">:</span> <span class="n">charge_list</span><span class="p">[</span><span class="n">ication</span><span class="p">],</span>
+                    <span class="s2">&quot;relevant_bonds&quot;</span><span class="p">:</span> <span class="n">cation_anion_infos</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                <span class="p">}</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">iion</span><span class="p">,</span> <span class="n">ce</span><span class="p">,</span> <span class="n">bond_infos</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_coordination_ions</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_infos_bonds</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_labels_cohps</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_cohps</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">nameion</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="n">iion</span><span class="p">]</span><span class="o">.</span><span class="n">specie</span><span class="p">)</span>
+
+                <span class="c1"># This will compute the mean strengths of ICOHPs</span>
+                <span class="n">mean_icohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_strenghts_for_each_bond</span><span class="p">(</span>
+                    <span class="n">pairs</span><span class="o">=</span><span class="n">bond_infos</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">strengths</span><span class="o">=</span><span class="n">bond_infos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nameion</span><span class="o">=</span><span class="kc">None</span>
+                <span class="p">)</span>
+                <span class="c1"># pairs, strengths, nameion</span>
+                <span class="c1"># will collect if there are antibonding states present</span>
+                <span class="n">antbdg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_antibdg_states</span><span class="p">(</span><span class="n">cohps</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">nameion</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+                <span class="c1"># dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)</span>
+                <span class="c1"># dict_antibonding,</span>
+                <span class="n">bond_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bond_dict</span><span class="p">(</span><span class="n">mean_icohps</span><span class="p">,</span> <span class="n">antbdg</span><span class="p">,</span> <span class="n">nameion</span><span class="o">=</span><span class="n">nameion</span><span class="p">)</span>
+
+                <span class="n">site_dict</span><span class="p">[</span><span class="n">iion</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;env&quot;</span><span class="p">:</span> <span class="n">ce</span><span class="p">,</span>
+                    <span class="s2">&quot;bonds&quot;</span><span class="p">:</span> <span class="n">bond_dict</span><span class="p">,</span>
+                    <span class="s2">&quot;ion&quot;</span><span class="p">:</span> <span class="n">nameion</span><span class="p">,</span>
+                    <span class="s2">&quot;charge&quot;</span><span class="p">:</span> <span class="n">charge_list</span><span class="p">[</span><span class="n">iion</span><span class="p">],</span>
+                    <span class="s2">&quot;relevant_bonds&quot;</span><span class="p">:</span> <span class="n">bond_infos</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_madelung</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+                <span class="c1"># This sets the dictionary including the most important information on the compound</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;formula&quot;</span><span class="p">:</span> <span class="n">formula</span><span class="p">,</span>
+                    <span class="s2">&quot;max_considered_bond_length&quot;</span><span class="p">:</span> <span class="n">max_bond_lengths</span><span class="p">,</span>
+                    <span class="s2">&quot;limit_icohp&quot;</span><span class="p">:</span> <span class="n">limit_icohps</span><span class="p">,</span>
+                    <span class="s2">&quot;number_of_considered_ions&quot;</span><span class="p">:</span> <span class="n">number_considered_ions</span><span class="p">,</span>
+                    <span class="s2">&quot;sites&quot;</span><span class="p">:</span> <span class="n">site_dict</span><span class="p">,</span>
+                    <span class="s2">&quot;type_charges&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;formula&quot;</span><span class="p">:</span> <span class="n">formula</span><span class="p">,</span>
+                    <span class="s2">&quot;max_considered_bond_length&quot;</span><span class="p">:</span> <span class="n">max_bond_lengths</span><span class="p">,</span>
+                    <span class="s2">&quot;limit_icohp&quot;</span><span class="p">:</span> <span class="n">limit_icohps</span><span class="p">,</span>
+                    <span class="s2">&quot;number_of_considered_ions&quot;</span><span class="p">:</span> <span class="n">number_considered_ions</span><span class="p">,</span>
+                    <span class="s2">&quot;sites&quot;</span><span class="p">:</span> <span class="n">site_dict</span><span class="p">,</span>
+                    <span class="s2">&quot;type_charges&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span><span class="p">,</span>
+                <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pymatgen.io.lobster</span> <span class="kn">import</span> <span class="n">MadelungEnergies</span>
+
+            <span class="n">madelung</span> <span class="o">=</span> <span class="n">MadelungEnergies</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_madelung</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span> <span class="o">==</span> <span class="s2">&quot;Mulliken&quot;</span><span class="p">:</span>
+                <span class="n">madelung_energy</span> <span class="o">=</span> <span class="n">madelung</span><span class="o">.</span><span class="n">madelungenergies_Mulliken</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span> <span class="o">==</span> <span class="s2">&quot;Löwdin&quot;</span><span class="p">:</span>
+                <span class="n">madelung_energy</span> <span class="o">=</span> <span class="n">madelung</span><span class="o">.</span><span class="n">madelungenergies_Loewdin</span>
+            <span class="c1"># This sets the dictionary including the most important information on the compound</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;formula&quot;</span><span class="p">:</span> <span class="n">formula</span><span class="p">,</span>
+                    <span class="s2">&quot;max_considered_bond_length&quot;</span><span class="p">:</span> <span class="n">max_bond_lengths</span><span class="p">,</span>
+                    <span class="s2">&quot;limit_icohp&quot;</span><span class="p">:</span> <span class="n">limit_icohps</span><span class="p">,</span>
+                    <span class="s2">&quot;number_of_considered_ions&quot;</span><span class="p">:</span> <span class="n">number_considered_ions</span><span class="p">,</span>
+                    <span class="s2">&quot;sites&quot;</span><span class="p">:</span> <span class="n">site_dict</span><span class="p">,</span>
+                    <span class="s2">&quot;type_charges&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span><span class="p">,</span>
+                    <span class="s2">&quot;madelung_energy&quot;</span><span class="p">:</span> <span class="n">madelung_energy</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">whichbonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;formula&quot;</span><span class="p">:</span> <span class="n">formula</span><span class="p">,</span>
+                    <span class="s2">&quot;max_considered_bond_length&quot;</span><span class="p">:</span> <span class="n">max_bond_lengths</span><span class="p">,</span>
+                    <span class="s2">&quot;limit_icohp&quot;</span><span class="p">:</span> <span class="n">limit_icohps</span><span class="p">,</span>
+                    <span class="s2">&quot;number_of_considered_ions&quot;</span><span class="p">:</span> <span class="n">number_considered_ions</span><span class="p">,</span>
+                    <span class="s2">&quot;sites&quot;</span><span class="p">:</span> <span class="n">site_dict</span><span class="p">,</span>
+                    <span class="s2">&quot;type_charges&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_charge</span><span class="p">,</span>
+                    <span class="s2">&quot;madelung_energy&quot;</span><span class="p">:</span> <span class="n">madelung_energy</span><span class="p">,</span>
+                <span class="p">}</span></div>
+
+<div class="viewcode-block" id="Analysis.set_summary_dicts"><a class="viewcode-back" href="../../../lobsterpy.cohp.html#lobsterpy.cohp.analyze.Analysis.set_summary_dicts">[docs]</a>    <span class="k">def</span> <span class="nf">set_summary_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets summary dicts that can be used for correlations</span>
+
+<span class="sd">        bond_dict that includes information on each bond</span>
+
+<span class="sd">        &quot;has_antbd&quot; tells if there are antbonding states</span>
+<span class="sd">        &quot;ICOHP_mean&quot; shows the mean of all ICOHPs in EV</span>
+
+<span class="sd">        {&#39;Yb-Sb&#39;: { &#39;has_antbdg&#39;: False, &#39;ICOHP_mean&#39;: -1.7448},</span>
+<span class="sd">        &#39;Mn-Sb&#39;: { &#39;has_antbdg&#39;: True, &#39;ICOHP_mean&#39;: -1.525}}</span>
+
+<span class="sd">        a cation dict that includes all different coordination environments and counts for them</span>
+<span class="sd">        {&#39;Na&#39;: {&#39;T:4&#39;: 4, &#39;A:2&#39;: 4}, &#39;Si&#39;: {&#39;T:6&#39;: 4, &#39;PP:6&#39;: 4}}</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">relevant_ion_ids</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">isite</span>
+            <span class="k">for</span> <span class="n">isite</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_equivalent_sites</span>
+            <span class="k">if</span> <span class="n">isite</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_inequivalent_ions</span>
+        <span class="p">]</span>
+
+        <span class="c1"># formula_units = self.structure.composition.num_atoms / self.structure.composition.reduced_composition.num_atoms</span>
+
+        <span class="n">final_dict_bonds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">relevant_ion_ids</span><span class="p">:</span>
+
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">for</span> <span class="nb">type</span><span class="p">,</span> <span class="n">properties</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;bonds&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">label_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">)]</span>
+                <span class="n">new_label</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">label_list</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_label</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_label</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict_bonds</span><span class="p">:</span>
+                    <span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;number_of_bonds&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">]),</span>
+                        <span class="s2">&quot;ICOHP_sum&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;ICOHP_sum&quot;</span><span class="p">]),</span>
+                        <span class="s2">&quot;has_antbdg&quot;</span><span class="p">:</span> <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;has_antibdg_states_below_Efermi&quot;</span><span class="p">],</span>
+                    <span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span>
+                        <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s2">&quot;ICOHP_sum&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span>
+                        <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;ICOHP_sum&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s2">&quot;has_antbdg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s2">&quot;has_antbdg&quot;</span><span class="p">]</span>
+                        <span class="ow">or</span> <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;has_antibdg_states_below_Efermi&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final_dict_bonds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">final_dict_bonds</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;ICOHP_mean&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ICOHP_sum&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">item</span><span class="p">[</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">final_dict_bonds</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;has_antbdg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;has_antbdg&quot;</span><span class="p">]</span>
+
+        <span class="c1"># rework, add all environments!</span>
+        <span class="n">final_dict_ions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">relevant_ion_ids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;ion&quot;</span><span class="p">]</span>
+                <span class="ow">not</span> <span class="ow">in</span> <span class="n">final_dict_ions</span>
+            <span class="p">):</span>
+                <span class="n">final_dict_ions</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;ion&quot;</span><span class="p">]</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;env&quot;</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">final_dict_ions</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;ion&quot;</span><span class="p">]</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;env&quot;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">final_dict_ions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">final_dict_ions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">final_dict_ions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">item</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Janine George.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

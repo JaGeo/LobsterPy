@@ -1,0 +1,557 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="" lang="" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Lobsterpy package &mdash; Lobsterpy  documentation</title>
+  
+
+  
+
+  
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="_static/css/pdj.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/pdj.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Lobsterpy  documentation" href="index.html"/>
+        <link rel="up" title="LobsterPy" href="modules.html"/>
+        <link rel="next" title="lobsterpy.cohp package" href="lobsterpy.cohp.html"/>
+        <link rel="prev" title="LobsterPy" href="modules.html"/>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="cache-control" content="public" />
+    <meta name="robots" content="follow, all" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Add jQuery library -->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+  </head>
+
+  <body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> Lobsterpy </a>
+        <div role="search">
+	  <form id ="rtd-search-form" class="wy-form"
+		action="search.html" method="get">
+	    <input type="text" name="q" placeholder="Search docs" />
+	    <input type="hidden" name="check_keywords" value="yes" />
+	    <input type="hidden" name="area" value="default" />
+	  </form>
+	</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	
+          
+          
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#basic-usage">Basic usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#how-to-cite">How to cite?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#future-plans">Future plans:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#contributions">Contributions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">LobsterPy</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Lobsterpy package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command line interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#not-released">not released</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#v0-2-1">v0.2.1</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+          
+        
+
+      </div>
+      &nbsp;
+    </nav>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      <nav class="wy-nav-top" id="barra-mobile" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">Porão do Juca</a>
+      </nav>
+
+      <div class="wy-nav-content">
+	<div class="fundo-claro">
+	</div>
+	<div class="fundo-escuro">
+	</div>
+
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+	    
+	    <!-- <ul class="wy-breadcrumbs"> -->
+	    <!--   <li><a href="#">Docs</a> &raquo;</li> -->
+
+	    <!--   <li>Features</li> -->
+	    <!--   <li class="wy-breadcrumbs-aside"> -->
+
+	    <!-- 	<a href="_sources/index.txt" rel="nofollow"> View page source</a> -->
+
+	    <!--   </li> -->
+	    <!-- </ul> -->
+	    <!-- <hr/> -->
+	  </div>
+
+          <div role="main" class="">
+
+	    <div id="content" class="hfeed entry-container hentry">
+  <section id="lobsterpy-package">
+<h1>Lobsterpy package<a class="headerlink" href="#lobsterpy-package" title="Permalink to this headline">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lobsterpy.cohp.html">lobsterpy.cohp package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lobsterpy.cohp.html#module-lobsterpy.cohp.analyze">lobsterpy.cohp.analyze module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lobsterpy.cohp.html#module-lobsterpy.cohp.describe">lobsterpy.cohp.describe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lobsterpy.cohp.html#module-lobsterpy.cohp">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lobsterpy.plotting.html">lobsterpy.plotting package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lobsterpy.plotting.html#module-lobsterpy.plotting">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="command-line-interface">
+<h1>Command line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h1>
+<section id="lobsterpy-cli-module">
+<h2>lobsterpy.cli module<a class="headerlink" href="#lobsterpy-cli-module" title="Permalink to this headline">¶</a></h2>
+<p><p>Analyze and plot results from Lobster runs.</p>
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">cli</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">description</span><span class="p">,</span><span class="n">automatic</span><span class="o">-</span><span class="n">plot</span><span class="p">,</span><span class="n">automaticplot</span><span class="p">,</span><span class="n">create</span><span class="o">-</span><span class="n">inputs</span><span class="p">,</span><span class="n">createinputs</span><span class="p">,</span><span class="n">plot</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h3>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="option-list">
+<dt><kbd>action</kbd></dt>
+<dd><p>Possible choices: description, automatic-plot, automaticplot, create-inputs, createinputs, plot</p>
+<p>Use -h/–help after the chosen subcommand to see further options.</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands:">
+<h3>Sub-commands:<a class="headerlink" href="#Sub-commands:" title="Permalink to this headline">¶</a></h3>
+<section id="description">
+<h4>description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
+<p>Deliver a text description of the COHP results from Lobster and VASP. Implementation of COBIs and COOPs will follow.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cli</span><span class="o">.</span><span class="n">py</span> <span class="n">description</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">poscar</span> <span class="n">POSCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">charge</span> <span class="n">CHARGE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">icohplist</span> <span class="n">ICOHPLIST</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">cohpcar</span> <span class="n">COHPCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">incar</span> <span class="n">INCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">potcar</span> <span class="n">POTCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">json</span> <span class="p">[</span><span class="n">FILENAME</span><span class="p">]]</span> <span class="p">[</span><span class="o">--</span><span class="n">allbonds</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="Input files">
+<h5>Input files<a class="headerlink" href="#Input files" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--poscar, --POSCAR</kbd></dt>
+<dd><p>path to POSCAR. Default is “POSCAR”</p>
+<p>Default: POSCAR</p>
+</dd>
+<dt><kbd>--charge</kbd></dt>
+<dd><p>path to Charge.lobster. Default is “CHARGE.lobster”</p>
+<p>Default: CHARGE.lobster</p>
+</dd>
+<dt><kbd>--icohplist</kbd></dt>
+<dd><p>path to ICOHPLIST.lobster. Default is “ICOHPLIST.lobster”</p>
+<p>Default: ICOHPLIST.lobster</p>
+</dd>
+<dt><kbd>--cohpcar</kbd></dt>
+<dd><p>path to COHPCAR.lobster. Default is “COHPCAR.lobster”. This argument will also be read when COBICARs or COOPCARs are plotted.</p>
+<p>Default: COHPCAR.lobster</p>
+</dd>
+<dt><kbd>--incar</kbd></dt>
+<dd><p>path to INCAR. Default is “INCAR”.</p>
+<p>Default: INCAR</p>
+</dd>
+<dt><kbd>--potcar</kbd></dt>
+<dd><p>path to POTCAR. Default is “POTCAR”.</p>
+<p>Default: POTCAR</p>
+</dd>
+</dl>
+</section>
+<section id="Automatic analysis">
+<h5>Automatic analysis<a class="headerlink" href="#Automatic analysis" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--json</kbd></dt>
+<dd><p>Write a JSON file with the most important information</p>
+</dd>
+<dt><kbd>--allbonds, --all-bonds</kbd></dt>
+<dd><p>This option will force the automatc analysis to consider all bonds, not only cation-anion bonds (default)</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="automatic-plot (automaticplot)">
+<h4>automatic-plot (automaticplot)<a class="headerlink" href="#automatic-plot (automaticplot)" title="Permalink to this headline">¶</a></h4>
+<p>Plot most important COHPs automatically. Implementation of COBIs and COOPs will follow. This option also includes an automatic description.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cli</span><span class="o">.</span><span class="n">py</span> <span class="n">automatic</span><span class="o">-</span><span class="n">plot</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">poscar</span> <span class="n">POSCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">charge</span> <span class="n">CHARGE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">icohplist</span> <span class="n">ICOHPLIST</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">cohpcar</span> <span class="n">COHPCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">incar</span> <span class="n">INCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">potcar</span> <span class="n">POTCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">json</span> <span class="p">[</span><span class="n">FILENAME</span><span class="p">]]</span> <span class="p">[</span><span class="o">--</span><span class="n">allbonds</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">sigma</span> <span class="n">SIGMA</span> <span class="o">|</span> <span class="o">--</span><span class="n">fwhm</span> <span class="n">FWHM</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">integrated</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">ylim</span> <span class="n">YLIM</span> <span class="n">YLIM</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">xlim</span> <span class="n">XLIM</span> <span class="n">XLIM</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">style</span> <span class="n">STYLE</span> <span class="p">[</span><span class="n">STYLE</span> <span class="o">...</span><span class="p">]]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">base</span><span class="o">-</span><span class="n">style</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">title</span> <span class="n">TITLE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">save</span><span class="o">-</span><span class="n">plot</span> <span class="n">FILENAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">width</span> <span class="n">WIDTH</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">height</span> <span class="n">HEIGHT</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">fontsize</span> <span class="n">FONTSIZE</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="Named Arguments">
+<h5>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--sigma</kbd></dt>
+<dd><p>Standard deviation of Gaussian broadening.</p>
+</dd>
+<dt><kbd>--fwhm</kbd></dt>
+<dd><p>Full-width-half-maximum of Gaussian broadening.</p>
+</dd>
+</dl>
+</section>
+<section id="Input files_repeat1">
+<h5>Input files<a class="headerlink" href="#Input files_repeat1" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--poscar, --POSCAR</kbd></dt>
+<dd><p>path to POSCAR. Default is “POSCAR”</p>
+<p>Default: POSCAR</p>
+</dd>
+<dt><kbd>--charge</kbd></dt>
+<dd><p>path to Charge.lobster. Default is “CHARGE.lobster”</p>
+<p>Default: CHARGE.lobster</p>
+</dd>
+<dt><kbd>--icohplist</kbd></dt>
+<dd><p>path to ICOHPLIST.lobster. Default is “ICOHPLIST.lobster”</p>
+<p>Default: ICOHPLIST.lobster</p>
+</dd>
+<dt><kbd>--cohpcar</kbd></dt>
+<dd><p>path to COHPCAR.lobster. Default is “COHPCAR.lobster”. This argument will also be read when COBICARs or COOPCARs are plotted.</p>
+<p>Default: COHPCAR.lobster</p>
+</dd>
+<dt><kbd>--incar</kbd></dt>
+<dd><p>path to INCAR. Default is “INCAR”.</p>
+<p>Default: INCAR</p>
+</dd>
+<dt><kbd>--potcar</kbd></dt>
+<dd><p>path to POTCAR. Default is “POTCAR”.</p>
+<p>Default: POTCAR</p>
+</dd>
+</dl>
+</section>
+<section id="Automatic analysis_repeat1">
+<h5>Automatic analysis<a class="headerlink" href="#Automatic analysis_repeat1" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--json</kbd></dt>
+<dd><p>Write a JSON file with the most important information</p>
+</dd>
+<dt><kbd>--allbonds, --all-bonds</kbd></dt>
+<dd><p>This option will force the automatc analysis to consider all bonds, not only cation-anion bonds (default)</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+<section id="Plotting">
+<h5>Plotting<a class="headerlink" href="#Plotting" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--integrated</kbd></dt>
+<dd><p>Show integrated cohp/cobi/coop plots.</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--ylim</kbd></dt>
+<dd><p>Energy range for plots</p>
+</dd>
+<dt><kbd>--xlim</kbd></dt>
+<dd><p>COHP/COBI/COOP range for plots</p>
+</dd>
+<dt><kbd>--style</kbd></dt>
+<dd><p>Matplotlib style sheet(s) for plot appearance</p>
+</dd>
+<dt><kbd>--no-base-style, --nobasestyle</kbd></dt>
+<dd><p>Disable inbuilt style entirely. This may prevent interference with external stylesheets when using –style.</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--title</kbd></dt>
+<dd><p>Plot title</p>
+<p>Default: “”</p>
+</dd>
+<dt><kbd>--save-plot, --saveplot, -s</kbd></dt>
+<dd><p>Save plot to file</p>
+</dd>
+<dt><kbd>--width</kbd></dt>
+<dd><p>Plot width in inches</p>
+</dd>
+<dt><kbd>--height</kbd></dt>
+<dd><p>Plot height in inches</p>
+</dd>
+<dt><kbd>--fontsize, --font-size</kbd></dt>
+<dd><p>Base font size</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="create-inputs (createinputs)">
+<h4>create-inputs (createinputs)<a class="headerlink" href="#create-inputs (createinputs)" title="Permalink to this headline">¶</a></h4>
+<p>Will create inputs for lobster computation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cli</span><span class="o">.</span><span class="n">py</span> <span class="n">create</span><span class="o">-</span><span class="n">inputs</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">poscar</span> <span class="n">POSCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">charge</span> <span class="n">CHARGE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">icohplist</span> <span class="n">ICOHPLIST</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">cohpcar</span> <span class="n">COHPCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">incar</span> <span class="n">INCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">potcar</span> <span class="n">POTCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">incar</span><span class="o">-</span><span class="n">out</span> <span class="n">INCAROUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">lobsterin</span><span class="o">-</span><span class="n">out</span> <span class="n">LOBSTERINOUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">overwrite</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="Input files_repeat2">
+<h5>Input files<a class="headerlink" href="#Input files_repeat2" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--poscar, --POSCAR</kbd></dt>
+<dd><p>path to POSCAR. Default is “POSCAR”</p>
+<p>Default: POSCAR</p>
+</dd>
+<dt><kbd>--charge</kbd></dt>
+<dd><p>path to Charge.lobster. Default is “CHARGE.lobster”</p>
+<p>Default: CHARGE.lobster</p>
+</dd>
+<dt><kbd>--icohplist</kbd></dt>
+<dd><p>path to ICOHPLIST.lobster. Default is “ICOHPLIST.lobster”</p>
+<p>Default: ICOHPLIST.lobster</p>
+</dd>
+<dt><kbd>--cohpcar</kbd></dt>
+<dd><p>path to COHPCAR.lobster. Default is “COHPCAR.lobster”. This argument will also be read when COBICARs or COOPCARs are plotted.</p>
+<p>Default: COHPCAR.lobster</p>
+</dd>
+<dt><kbd>--incar</kbd></dt>
+<dd><p>path to INCAR. Default is “INCAR”.</p>
+<p>Default: INCAR</p>
+</dd>
+<dt><kbd>--potcar</kbd></dt>
+<dd><p>path to POTCAR. Default is “POTCAR”.</p>
+<p>Default: POTCAR</p>
+</dd>
+</dl>
+</section>
+<section id="Output files">
+<h5>Output files<a class="headerlink" href="#Output files" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--incar-out</kbd></dt>
+<dd><p>path to INCAR that will be generated by lobsterpy. Default is “INCAR.lobsterpy”</p>
+<p>Default: INCAR.lobsterpy</p>
+</dd>
+<dt><kbd>--lobsterin-out</kbd></dt>
+<dd><p>base for path to lobsterins that will be generated by lobsterpy. Default is “lobsterin.lobsterpy”</p>
+<p>Default: lobsterin.lobsterpy</p>
+</dd>
+<dt><kbd>--overwrite</kbd></dt>
+<dd><p>overwrites already created INCARs an lobsterins with the give name.</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="plot">
+<h4>plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h4>
+<p>Plot specific COHPs/COBIs/COOPs based on bond numbers.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cli</span><span class="o">.</span><span class="n">py</span> <span class="n">plot</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">poscar</span> <span class="n">POSCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">charge</span> <span class="n">CHARGE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">icohplist</span> <span class="n">ICOHPLIST</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">cohpcar</span> <span class="n">COHPCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">incar</span> <span class="n">INCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">potcar</span> <span class="n">POTCAR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">sigma</span> <span class="n">SIGMA</span> <span class="o">|</span> <span class="o">--</span><span class="n">fwhm</span> <span class="n">FWHM</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">integrated</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">ylim</span> <span class="n">YLIM</span> <span class="n">YLIM</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">--</span><span class="n">xlim</span> <span class="n">XLIM</span> <span class="n">XLIM</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">style</span> <span class="n">STYLE</span> <span class="p">[</span><span class="n">STYLE</span> <span class="o">...</span><span class="p">]]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">base</span><span class="o">-</span><span class="n">style</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">title</span> <span class="n">TITLE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">save</span><span class="o">-</span><span class="n">plot</span> <span class="n">FILENAME</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">width</span> <span class="n">WIDTH</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">height</span> <span class="n">HEIGHT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">fontsize</span> <span class="n">FONTSIZE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">cobis</span> <span class="o">|</span> <span class="o">--</span><span class="n">coops</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">--</span><span class="n">summed</span> <span class="o">|</span> <span class="o">--</span><span class="n">orbitalwise</span> <span class="n">ORBITALWISE</span> <span class="p">[</span><span class="n">ORBITALWISE</span> <span class="o">...</span><span class="p">]]</span>
+            <span class="n">bond_numbers</span> <span class="p">[</span><span class="n">bond_numbers</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="Positional Arguments_repeat1">
+<h5>Positional Arguments<a class="headerlink" href="#Positional Arguments_repeat1" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>bond_numbers</kbd></dt>
+<dd><p>List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments_repeat1">
+<h5>Named Arguments<a class="headerlink" href="#Named Arguments_repeat1" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--sigma</kbd></dt>
+<dd><p>Standard deviation of Gaussian broadening.</p>
+</dd>
+<dt><kbd>--fwhm</kbd></dt>
+<dd><p>Full-width-half-maximum of Gaussian broadening.</p>
+</dd>
+<dt><kbd>--cobis, --cobi</kbd></dt>
+<dd><p>Plot COBIs</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--coops, --coop</kbd></dt>
+<dd><p>Plot COOPs</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--summed</kbd></dt>
+<dd><p>Show a summed COHP</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--orbitalwise</kbd></dt>
+<dd><p>Plot cohps of specific orbitals. e.g. to plot 2s-2s interaction of bond with label 1, use “lobsterpy plot 1 –orbitalwise 2s-2s”. To plot all orbitalwise cohps of one bond, you can use “all” instead of “2s-2s”. To plot orbitalwise interactions of more than one bond, use, for example, “lobsterpy plot 1 1 –orbitalwise “3s-3s” “2px-3s”</p>
+</dd>
+</dl>
+</section>
+<section id="Input files_repeat3">
+<h5>Input files<a class="headerlink" href="#Input files_repeat3" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--poscar, --POSCAR</kbd></dt>
+<dd><p>path to POSCAR. Default is “POSCAR”</p>
+<p>Default: POSCAR</p>
+</dd>
+<dt><kbd>--charge</kbd></dt>
+<dd><p>path to Charge.lobster. Default is “CHARGE.lobster”</p>
+<p>Default: CHARGE.lobster</p>
+</dd>
+<dt><kbd>--icohplist</kbd></dt>
+<dd><p>path to ICOHPLIST.lobster. Default is “ICOHPLIST.lobster”</p>
+<p>Default: ICOHPLIST.lobster</p>
+</dd>
+<dt><kbd>--cohpcar</kbd></dt>
+<dd><p>path to COHPCAR.lobster. Default is “COHPCAR.lobster”. This argument will also be read when COBICARs or COOPCARs are plotted.</p>
+<p>Default: COHPCAR.lobster</p>
+</dd>
+<dt><kbd>--incar</kbd></dt>
+<dd><p>path to INCAR. Default is “INCAR”.</p>
+<p>Default: INCAR</p>
+</dd>
+<dt><kbd>--potcar</kbd></dt>
+<dd><p>path to POTCAR. Default is “POTCAR”.</p>
+<p>Default: POTCAR</p>
+</dd>
+</dl>
+</section>
+<section id="Plotting_repeat1">
+<h5>Plotting<a class="headerlink" href="#Plotting_repeat1" title="Permalink to this headline">¶</a></h5>
+<dl class="option-list">
+<dt><kbd>--integrated</kbd></dt>
+<dd><p>Show integrated cohp/cobi/coop plots.</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--ylim</kbd></dt>
+<dd><p>Energy range for plots</p>
+</dd>
+<dt><kbd>--xlim</kbd></dt>
+<dd><p>COHP/COBI/COOP range for plots</p>
+</dd>
+<dt><kbd>--style</kbd></dt>
+<dd><p>Matplotlib style sheet(s) for plot appearance</p>
+</dd>
+<dt><kbd>--no-base-style, --nobasestyle</kbd></dt>
+<dd><p>Disable inbuilt style entirely. This may prevent interference with external stylesheets when using –style.</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--title</kbd></dt>
+<dd><p>Plot title</p>
+<p>Default: “”</p>
+</dd>
+<dt><kbd>--save-plot, --saveplot, -s</kbd></dt>
+<dd><p>Save plot to file</p>
+</dd>
+<dt><kbd>--width</kbd></dt>
+<dd><p>Plot width in inches</p>
+</dd>
+<dt><kbd>--height</kbd></dt>
+<dd><p>Plot height in inches</p>
+</dd>
+<dt><kbd>--fontsize, --font-size</kbd></dt>
+<dd><p>Base font size</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="module-lobsterpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lobsterpy" title="Permalink to this headline">¶</a></h2>
+<p>This package provides the modules for analyzing Lobster files</p>
+</section>
+</section>
+
+
+	    </div>
+            <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lobsterpy.cohp.html" class="btn btn-neutral float-right" title="lobsterpy.cohp package">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="LobsterPy"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2022, Janine George.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/jucacrispim/sphinx_pdj_theme">theme</a> provided by <a href="http://poraodojuca.net">Porão do Juca</a>.
+
+</footer>
+	</div>
+	</div>
+	  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+    <script type="text/javascript" src="_static/documentation_options.js">
+
+    </script>
+    <script type="text/javascript" src="_static/jquery.js">
+
+    </script>
+    <script type="text/javascript" src="_static/underscore.js">
+
+    </script>
+    <script type="text/javascript" src="_static/doctools.js">
+
+    </script>
+
+  
+
+   <script type="text/javascript"
+           src="_static/js/theme.js"></script>
+
+   <script type="text/javascript"
+           src="_static/js/pdj.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+  </body>
+</html>
