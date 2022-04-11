@@ -11,7 +11,7 @@ from pathlib import Path
 
 class Description:
     """
-    It will write a description text for all relevant bonds. It will analyse all relevant coordination environments in the system based on electronic structure theory.
+    Base class that will write generate a text description for all relevant bonds. It analyses all relevant coordination environments in the system based on electronic structure theory.
 
     """
 
@@ -32,6 +32,7 @@ class Description:
         This means that the numbers will start at 1
 
         Returns:
+            None
 
         """
         self.condensed_bonding_analysis = (
@@ -205,7 +206,8 @@ class Description:
         sigma=None,
     ):
         """
-        Automatic plots of the most relevant COHP will be determined
+        Will automatically generate plots of the most relevant COHP
+
         Args:
             save (bool): will save the plot to a file
             filename (str/Path):
@@ -215,7 +217,9 @@ class Description:
             summed (bool): both spin cannels will be summed
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
+
         Returns:
+            A matplotlib object.
 
         """
         set_cohps = self.analysis_object.set_cohps
@@ -257,12 +261,13 @@ class Description:
     @staticmethod
     def _coordination_environment_to_text(ce):
         """
-        transfers a coordination environment str into a text description of the environment
+        This method transfers a coordination environment str into a text description of the environment
+
         Args:
             ce (str): output from ChemEnv package (e.g., "O:6")
 
         Returns:
-            text description of coordination environment
+            A text description of coordination environment
         """
 
         if ce == "S:1":
@@ -463,7 +468,7 @@ class Description:
 
     def write_description(self):
         """
-        prints the description of the COHPs to the screen
+        This method will print the description of the COHPs to the screen
 
         """
         for textpart in self.text:

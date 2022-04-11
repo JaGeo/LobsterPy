@@ -19,74 +19,29 @@ class Analysis:
     """
     Analysis class of COHP data from Lobster
 
-    .. attribute:: condensed_bonding_analysis
-        dict including a summary of the most important bonding properties
-
-    .. attribute:: final_dict_bonds
-        dict including information on ICOHPs per bond type
-
-    .. attribute:: final_dict_ions
-        dict including information on environments of cations
-
-    .. attribute:: chemenv
-        pymatgen.io.lobster.lobsterenv.LobsterNeighbors object
-
-    .. attribute:: lse
-        LightStructureEnvironment from pymatgen
-
-    .. attribute:: cutoff_icohp
-        Cutoff in percentage for evaluating neighbors based on ICOHP values.
-        cutoff_icohp*max_icohp limits the number of considered environments
-
-    .. attribute:: anion_types
-        Set of Element objects from pymatgen
-
-    .. attribute:: list_equivalent_sites
-        list of site indices of sites that indicate which sites are equivalent
-        e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each ther
-
-    .. attribute:: path_to_charge
-        str that describes the path to CHARGE.lobster
-
-    .. attribute:: path_to_cohpcar
-        str that describes the path to COHPCAR.lobster
-
-    .. attribute:: path_to_icohplist
-        str that describes the path to ICOHPLIST.lobster
-
-    .. attribute:: path_to_poscar
-        str that describes path to POSCAR
-
-    .. attribute:: path_to_madelung
-        str that describes path to POSCAR
-
-    .. attribute:: set_cohps
-        list of cohps
-
-    .. attribute:: set_coordination_ions
-        list of coodination environment strings for each cation
-
-    .. attribute:: set_equivalent_sites
-        set of inequivalent sites
-
-    .. attribute:: set_inequivalent_ions
-        set of inequivalent cations/sites in the structure
-
-    .. attribute:: set_infos_bonds
-        information on cation anion bonds
-
-    .. attribute:: spg
-        space group information
-
-    .. attribute:: structure
-        Structure object
-
-    .. attribute:: type_charge
-        which charges are considered here
-
-    .. attribute:: whichbonds
-        which bonds will be considered in analysis
-
+    Attributes:
+        condensed_bonding_analysis: dict including a summary of the most important bonding properties
+        final_dict_bonds: dict including information on ICOHPs per bond type
+        final_dict_ions: dict including information on environments of cations
+        chemenv: pymatgen.io.lobster.lobsterenv.LobsterNeighbors object
+        lse: LightStructureEnvironment from pymatgen
+        cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values. cutoff_icohp*max_icohp limits the number of considered environments
+        anion_types: Set of Element objects from pymatgen
+        list_equivalent_sites: list of site indices of sites that indicate which sites are equivalent e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other
+        path_to_charge: str that describes the path to CHARGE.lobster
+        path_to_cohpcar: str that describes the path to COHPCAR.lobster
+        path_to_icohplist: str that describes the path to ICOHPLIST.lobster
+        path_to_poscar: str that describes path to POSCAR
+        path_to_madelung: str that describes path to POSCAR
+        set_cohps: list of cohps
+        set_coordination_ions: list of coodination environment strings for each cation
+        set_equivalent_sites: set of inequivalent sites
+        set_inequivalent_ions: set of inequivalent cations/sites in the structure
+        set_infos_bonds: information on cation anion bonds
+        spg: space group information
+        structure: Structure object
+        type_charge: which charges are considered here
+        whichbonds: which bonds will be considered in analysis
 
     """
 
@@ -104,6 +59,7 @@ class Analysis:
     ):
         """
         This is a class to analyse bonding information automatically
+
         Args:
             path_to_poscar: path to POSCAR (e.g., "POSCAR")
             path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster")
@@ -114,7 +70,7 @@ class Analysis:
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             summed_spins: if true, spins will be summed
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
-                        Löwdin charges can be selected by using the keyword "Löwdin"
+                        Löwdin charges cannot be selected at the moment.
         """
 
         self.path_to_poscar = path_to_poscar
@@ -153,7 +109,9 @@ class Analysis:
     def setup_env(self):
         """
         This method helps setting up the light structure environments based on COHPs
+
         Returns:
+            None
 
         """
         self.structure = Structure.from_file(self.path_to_poscar)
@@ -219,7 +177,9 @@ class Analysis:
     def get_information_all_bonds(self, summed_spins=True):
         """
         This method will gather all information on the bonds within the compound
+
         Returns:
+            None
 
         """
 
@@ -315,8 +275,9 @@ class Analysis:
             strengths (list of float): list that gives the icohp strenghts as a float, [-1.86287, -1.86288]
             nameion: string including the name of the cation in the list, e.g Cu1
 
-        Returns: dict including inormation on icohps for each bond type, e.g.
-        {'Yb-Sb': [-1.59769, -2.14723, -1.7925, -1.60773, -1.80149, -2.14335]}
+        Returns:
+            dict including inormation on icohps for each bond type, e.g.
+            {'Yb-Sb': [-1.59769, -2.14723, -1.7925, -1.60773, -1.80149, -2.14335]}
 
 
         """
@@ -352,7 +313,8 @@ class Analysis:
             pair: ["O","Cu"]
             nameion: "Cu"
 
-        Returns: will return list of str, e.g. ["Cu", "O"]
+        Returns:
+            will return list of str, e.g. ["Cu", "O"]
 
         """
         if nameion is not None:
@@ -371,14 +333,16 @@ class Analysis:
         """
         will return a dictionary including information on antibonding states
         e.g., similar to: {'Cu-O': True, 'Cu-F': True}
+
         Args:
             cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects
             labels: ['2 x Cu-O', '4 x Cu-F']
             nameion: string of the cation name, e.g. "Cu"
             limit: limit to detect antibonding states
 
-        Returns:    dict including in formation on whether antibonding interactions exist,
-                    e.g., {'Cu-O': True, 'Cu-F': True}
+        Returns:
+            dict including in formation on whether antibonding interactions exist,
+            e.g., {'Cu-O': True, 'Cu-F': True}
 
 
         """
@@ -406,18 +370,21 @@ class Analysis:
 
     def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels, cohps, nameion):
         """
-        WARNING: NEEDS MORE TESTS
-        will return a dictionary including information on antibonding states
+        .. warning:: NEEDS MORE TESTS
+
+        This method will return a dictionary including information on antibonding states
         important is however that only the energy range can be considered that has been computed
         (i.e., this might not be all)
         e.g., similar to: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
+
         Args:
             cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects
             labels: ['2 x Cu-O', '4 x Cu-F']
             nameion: string of the cation name, e.g. "Cu"
 
-        Returns:    dict including in formation on whether antibonding interactions exist,
-                    e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
+        Returns:
+            dict including in formation on whether antibonding interactions exist,
+            e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
         """
 
         dict_antibd = {}
@@ -433,8 +400,10 @@ class Analysis:
 
     def _integrate_antbdstates_below_efermi(self, cohp, start=-30):
         """
-        WARNING: NEEDS MORE TESTS
-        This integrates the whole COHP curve that has been computed. The energy range might be very important
+        .. warning:: NEEDS MORE TESTS
+
+        This method integrates the whole COHP curve that has been computed. The energy range is be very important
+
         Args:
             cohp: cohp object
             start: where does the integration start
@@ -448,11 +417,13 @@ class Analysis:
 
         def abstrapz_positive(y, x=None, dx=0.001):
             """
-            will integrate only one side of the COHP
+            This method will integrate only one side of the COHP
+
             Args:
                 y: Energy values
                 x: COHP values
                 dx: how fine should the integration steps be
+
             Returns:
                 integrated value
             """
@@ -468,7 +439,8 @@ class Analysis:
 
         def abstrapz_negative(y, x=None, dx=0.001):
             """
-            will integrate only one side of the COHP
+            This method will integrate only one side of the COHP
+
             Args:
                 y: Energy values
                 x: COHP values
@@ -516,6 +488,7 @@ class Analysis:
     ):
         """
         will return a bond_dict incluing information for each site
+
         Args:
             bond_strength_dict (dict): dict with bond names as key and lists of bond strengths as items
             small_antbd_dict (dict): dict including if there are antibonding interactions, {'Yb-Sb': False}
@@ -568,7 +541,9 @@ class Analysis:
     def set_condensed_bonding_analysis(self):
         """
         sets a condensed version of the bonding analysis including a summary dictionary
+
         Returns:
+            None
 
         """
 
@@ -730,10 +705,9 @@ class Analysis:
 
         a cation dict that includes all different coordination environments and counts for them
         {'Na': {'T:4': 4, 'A:2': 4}, 'Si': {'T:6': 4, 'PP:6': 4}}
+
         Returns:
-
-
-
+            None
 
         """
         relevant_ion_ids = [
