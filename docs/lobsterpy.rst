@@ -19,7 +19,7 @@ lobsterpy.cli module
 .. argparse::
    :module: lobsterpy.cli
    :func: get_parser
-   :prog: cli.py
+   :prog: lobsterpy
 
 Module contents
 ---------------
