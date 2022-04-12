@@ -11,3 +11,6 @@ sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.5
 myst-parser==0.17.0
 docutils==0.17.1
+numpy==1.21.4
+matplotlib==3.5.1
+matplotlib-inline==0.1.3
