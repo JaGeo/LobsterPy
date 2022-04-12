@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lobsterpy.cli &mdash; Lobsterpy  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Lobsterpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">LobsterPy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Lobsterpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>lobsterpy.cli</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lobsterpy.cli</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) lobsterpy development team</span>
+<span class="c1"># Distributed under the terms of a BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Script to analyze Lobster outputs from the command line</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.style</span>
+
+<span class="kn">from</span> <span class="nn">lobsterpy.cohp.analyze</span> <span class="kn">import</span> <span class="n">Analysis</span>
+<span class="kn">from</span> <span class="nn">lobsterpy.cohp.describe</span> <span class="kn">import</span> <span class="n">Description</span>
+<span class="kn">from</span> <span class="nn">lobsterpy.plotting</span> <span class="kn">import</span> <span class="n">get_style_list</span><span class="p">,</span> <span class="n">PlainCohpPlotter</span>
+<span class="kn">from</span> <span class="nn">pymatgen.electronic_structure.cohp</span> <span class="kn">import</span> <span class="n">CompleteCohp</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../lobsterpy.html#lobsterpy.cli.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Entry point for setup.py installer&quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">get_parser</span><span class="p">()</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_parser"><a class="viewcode-back" href="../../lobsterpy.html#lobsterpy.cli.get_parser">[docs]</a><span class="k">def</span> <span class="nf">get_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Construct argumentparser with subcommands and sections&quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Analyze and plot results from Lobster runs.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Arguments common to all actions</span>
+    <span class="n">input_parent</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">input_file_group</span> <span class="o">=</span> <span class="n">input_parent</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Input files&quot;</span><span class="p">)</span>
+    <span class="n">input_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--poscar&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--POSCAR&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;poscar&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;POSCAR&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path to POSCAR. Default is &quot;POSCAR&quot;&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">input_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--charge&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;CHARGE.lobster&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path to Charge.lobster. Default is &quot;CHARGE.lobster&quot;&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">input_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--icohplist&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;ICOHPLIST.lobster&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path to ICOHPLIST.lobster. Default is &quot;ICOHPLIST.lobster&quot;&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">input_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--cohpcar&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;COHPCAR.lobster&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s1">&#39;path to COHPCAR.lobster. Default is &quot;COHPCAR.lobster&quot;. This argument &#39;</span>
+            <span class="s2">&quot;will also be read when COBICARs or COOPCARs are plotted.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">input_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--incar&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;INCAR&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;path to INCAR. Default is &quot;INCAR&quot;.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">input_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--potcar&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;POTCAR&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;path to POTCAR. Default is &quot;POTCAR&quot;.&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">output_parent</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">output_file_group</span> <span class="o">=</span> <span class="n">output_parent</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Output files&quot;</span><span class="p">)</span>
+    <span class="n">output_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--incar-out&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;incarout&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;INCAR.lobsterpy&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;path to INCAR that will be generated by lobsterpy. Default is &quot;INCAR.lobsterpy&quot;&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">output_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--lobsterin-out&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;lobsterinout&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;lobsterin.lobsterpy&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;base for path to lobsterins that will be generated by lobsterpy. Default is &quot;lobsterin.lobsterpy&quot;&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">output_file_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--overwrite&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;overwrites already created INCARs an lobsterins with the give name.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># TODO: Add some output arguments: options to supply your own basis</span>
+
+    <span class="n">plotting_parent</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plotting_group</span> <span class="o">=</span> <span class="n">plotting_parent</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Plotting&quot;</span><span class="p">)</span>
+
+    <span class="n">broadening_group</span> <span class="o">=</span> <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">()</span>
+    <span class="n">broadening_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--sigma&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Standard deviation of Gaussian broadening.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">broadening_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--fwhm&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Full-width-half-maximum of Gaussian broadening.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--integrated&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show integrated cohp/cobi/coop plots.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--ylim&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;ylim&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Energy range for plots&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--xlim&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;xlim&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;COHP/COBI/COOP range for plots&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--style&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Matplotlib style sheet(s) for plot appearance&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--no-base-style&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--nobasestyle&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;no_base_style&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Disable inbuilt style entirely. This may prevent interference with external &quot;</span>
+            <span class="s2">&quot;stylesheets when using --style.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--title&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot title&quot;</span><span class="p">)</span>
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--save-plot&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--saveplot&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILENAME&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;save_plot&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Save plot to file&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--width&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot width in inches&quot;</span>
+    <span class="p">)</span>
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--height&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot height in inches&quot;</span>
+    <span class="p">)</span>
+    <span class="n">plotting_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--fontsize&quot;</span><span class="p">,</span> <span class="s2">&quot;--font-size&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Base font size&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">auto_parent</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">auto_group</span> <span class="o">=</span> <span class="n">auto_parent</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Automatic analysis&quot;</span><span class="p">)</span>
+    <span class="n">auto_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--json&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILENAME&quot;</span><span class="p">,</span>
+        <span class="n">const</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;lobsterpy.json&quot;</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Write a JSON file with the most important information&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">auto_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--allbonds&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--all-bonds&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;This option will force the automatc analysis to consider all bonds, not only cation-anion bonds (default) &quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;action&quot;</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use -h/--help after the chosen subcommand to see further options.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">,</span>
+        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">input_parent</span><span class="p">,</span> <span class="n">auto_parent</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Deliver a text description of the COHP results from Lobster &quot;</span>
+            <span class="s2">&quot;and VASP. Implementation of COBIs and COOPs will follow.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;automatic-plot&quot;</span><span class="p">,</span>
+        <span class="n">aliases</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;automaticplot&quot;</span><span class="p">],</span>
+        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">input_parent</span><span class="p">,</span> <span class="n">auto_parent</span><span class="p">,</span> <span class="n">plotting_parent</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Plot most important COHPs automatically. Implementation &quot;</span>
+            <span class="s2">&quot;of COBIs and COOPs will follow. This option also includes an automatic description.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;create-inputs&quot;</span><span class="p">,</span>
+        <span class="n">aliases</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;createinputs&quot;</span><span class="p">],</span>
+        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">input_parent</span><span class="p">,</span> <span class="n">output_parent</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Will create inputs for lobster computation&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Mode for normal plotting (without automatic detection of relevant COHPs)</span>
+    <span class="n">plot_parser</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;plot&quot;</span><span class="p">,</span>
+        <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">input_parent</span><span class="p">,</span> <span class="n">plotting_parent</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot specific COHPs/COBIs/COOPs based on bond numbers.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">plot_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;bond_numbers&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plot_coops_cobis</span> <span class="o">=</span> <span class="n">plot_parser</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">()</span>
+    <span class="n">plot_coops_cobis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--cobis&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--cobi&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot COBIs&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plot_coops_cobis</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--coops&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--coop&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot COOPs&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plot_grouping</span> <span class="o">=</span> <span class="n">plot_parser</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">()</span>
+    <span class="n">plot_grouping</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--summed&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show a summed COHP&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">plot_grouping</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--orbitalwise&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;orbitalwise&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Plot cohps of specific orbitals. e.g. to plot 2s-2s interaction of &quot;</span>
+            <span class="s1">&#39;bond with label 1, use &quot;lobsterpy plot 1 --orbitalwise 2s-2s&quot;. &#39;</span>
+            <span class="s1">&#39;To plot all orbitalwise cohps of one bond, you can use &quot;all&quot; instead of &quot;2s-2s&quot;. &#39;</span>
+            <span class="s2">&quot;To plot orbitalwise interactions of more than one bond, use, for example, &quot;</span>
+            <span class="s1">&#39;&quot;lobsterpy plot 1 1 --orbitalwise &quot;3s-3s&quot; &quot;2px-3s&quot;&#39;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span></div>
+
+
+<div class="viewcode-block" id="_user_figsize"><a class="viewcode-back" href="../../lobsterpy.html#lobsterpy.cli._user_figsize">[docs]</a><span class="k">def</span> <span class="nf">_user_figsize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get figsize options from user input, if any</span>
+
+<span class="sd">    If only width x or height is provided, use a target aspect ratio to derive</span>
+<span class="sd">    the other one.</span>
+
+<span class="sd">    Returns a dict which can be merged into style kwargs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">elif</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">height</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">aspect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">aspect</span> <span class="o">=</span> <span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># Golden ratio</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">height</span> <span class="o">*</span> <span class="n">aspect</span><span class="p">,</span> <span class="n">height</span><span class="p">)}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span> <span class="o">/</span> <span class="n">aspect</span><span class="p">)}</span></div>
+
+
+<span class="c1"># TODO: add automatic functionality for COBIs, COOPs</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../lobsterpy.html#lobsterpy.cli.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args: args for cli</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;automaticplot&quot;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;automatic-plot&quot;</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;automatic-plot&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">allbonds</span><span class="p">:</span>
+            <span class="n">whichbonds</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">whichbonds</span> <span class="o">=</span> <span class="s2">&quot;cation-anion&quot;</span>
+        <span class="n">analyse</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span>
+            <span class="n">path_to_poscar</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">poscar</span><span class="p">,</span>
+            <span class="n">path_to_charge</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span>
+            <span class="n">path_to_cohpcar</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">cohpcar</span><span class="p">,</span>
+            <span class="n">path_to_icohplist</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">icohplist</span><span class="p">,</span>
+            <span class="n">whichbonds</span><span class="o">=</span><span class="n">whichbonds</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">describe</span> <span class="o">=</span> <span class="n">Description</span><span class="p">(</span><span class="n">analysis_object</span><span class="o">=</span><span class="n">analyse</span><span class="p">)</span>
+        <span class="n">describe</span><span class="o">.</span><span class="n">write_description</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">analysedict</span> <span class="o">=</span> <span class="n">analyse</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">analysedict</span><span class="p">,</span> <span class="n">fd</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;plot&quot;</span><span class="p">,</span> <span class="s2">&quot;automatic-plot&quot;</span><span class="p">]:</span>
+        <span class="n">style_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">style_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_user_figsize</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">fontsize</span><span class="p">:</span>
+            <span class="n">style_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">fontsize</span><span class="p">})</span>
+
+        <span class="n">style_list</span> <span class="o">=</span> <span class="n">get_style_list</span><span class="p">(</span>
+            <span class="n">no_base_style</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">no_base_style</span><span class="p">,</span> <span class="n">styles</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="o">**</span><span class="n">style_kwargs</span>
+        <span class="p">)</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">style_list</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">sigma</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">sigma</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">fwhm</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">fwhm</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;automatic-plot&quot;</span><span class="p">]:</span>
+        <span class="n">describe</span><span class="o">.</span><span class="n">plot_cohps</span><span class="p">(</span>
+            <span class="n">ylim</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">ylim</span><span class="p">,</span>
+            <span class="n">xlim</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">xlim</span><span class="p">,</span>
+            <span class="n">integrated</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">integrated</span><span class="p">,</span>
+            <span class="n">save</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">save_plot</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;plot&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cobis</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">cohpcar</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;COBICAR.lobster&quot;</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">are_cobis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">coops</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">cohpcar</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;COOPCAR.lobster&quot;</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">cohpcar</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">completecohp</span> <span class="o">=</span> <span class="n">CompleteCohp</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span>
+            <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;LOBSTER&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">structure_file</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">poscar</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span>
+        <span class="p">)</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">PlainCohpPlotter</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">summed</span><span class="p">:</span>
+            <span class="c1"># TODO: add checks for label in allewod labels -&gt; print all labels</span>
+            <span class="c1"># TODO: add check if args.oribtalwise is exactly as long as labels</span>
+            <span class="c1"># TODO: add check if orbital is in args.orbitalwise</span>
+
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">bond_numbers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="n">completecohp</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                        <span class="s2">&quot;The provided bond label &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; is not available in ICO**LIST.lobster.</span><span class="se">\n</span><span class="s2"> &quot;</span>
+                        <span class="s2">&quot;Allowed options are in this list: </span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">listi</span><span class="p">)</span> <span class="k">for</span> <span class="n">listi</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">completecohp</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">keys</span><span class="p">())])</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">orbitalwise</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">bond_numbers</span><span class="p">:</span>
+                    <span class="n">cp</span><span class="o">.</span><span class="n">add_cohp</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">completecohp</span><span class="o">.</span><span class="n">get_cohp_by_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">bond_numbers</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">orbitalwise</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                        <span class="s2">&quot;Please provide as mainy orbitals as bond labels, e.g., lobsterpy plot 1 1 --orbitalwise &#39;2s-2s&#39; &#39;2s-2px&#39;&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">ilabel</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">bond_numbers</span><span class="p">):</span>
+                    <span class="n">orbitals</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">orbitalwise</span><span class="p">[</span><span class="n">ilabel</span><span class="p">]</span>
+
+                    <span class="n">availableorbitals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                        <span class="n">completecohp</span><span class="o">.</span><span class="n">orb_res_cohp</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="n">orbitaloptions</span> <span class="o">=</span> <span class="n">availableorbitals</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">orbitals</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">orbitaloptions</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                            <span class="s2">&quot;Orbital in not available for current bond. </span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="s2">&quot;For bond &quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="s2">&quot; only the following orbital options are available: </span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">orbitaloptions</span><span class="p">)</span>
+                        <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">orbitals</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                        <span class="n">cp</span><span class="o">.</span><span class="n">add_cohp</span><span class="p">(</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">orbitals</span><span class="p">,</span>
+                            <span class="n">completecohp</span><span class="o">.</span><span class="n">get_orbital_resolved_cohp</span><span class="p">(</span>
+                                <span class="n">label</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">orbitals</span> <span class="ow">in</span> <span class="n">availableorbitals</span><span class="p">:</span>
+                            <span class="n">cp</span><span class="o">.</span><span class="n">add_cohp</span><span class="p">(</span>
+                                <span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">orbitals</span><span class="p">,</span>
+                                <span class="n">completecohp</span><span class="o">.</span><span class="n">get_orbital_resolved_cohp</span><span class="p">(</span>
+                                    <span class="n">label</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">),</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span>
+                                <span class="p">),</span>
+                            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cp</span><span class="o">.</span><span class="n">add_cohp</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">bond_numbers</span><span class="p">),</span>
+                <span class="n">completecohp</span><span class="o">.</span><span class="n">get_summed_cohp_by_label_list</span><span class="p">(</span>
+                    <span class="n">label_list</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">bond_numbers</span><span class="p">]</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="n">plt</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span>
+            <span class="n">integrated</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">integrated</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">ylim</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span>
+        <span class="p">)</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">save_plot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">save_plot</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;create-inputs&quot;</span><span class="p">:</span>
+        <span class="c1"># This will rely on standard basis files as stored in pymatgen</span>
+        <span class="kn">from</span> <span class="nn">pymatgen.io.lobster</span> <span class="kn">import</span> <span class="n">Lobsterin</span>
+        <span class="kn">from</span> <span class="nn">pymatgen.core.structure</span> <span class="kn">import</span> <span class="n">Structure</span>
+
+        <span class="n">potcar_names</span> <span class="o">=</span> <span class="n">Lobsterin</span><span class="o">.</span><span class="n">_get_potcar_symbols</span><span class="p">(</span><span class="n">POTCAR_input</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">potcar</span><span class="p">)</span>
+
+        <span class="n">list_basis_dict</span> <span class="o">=</span> <span class="n">Lobsterin</span><span class="o">.</span><span class="n">get_all_possible_basis_functions</span><span class="p">(</span>
+            <span class="n">structure</span><span class="o">=</span><span class="n">Structure</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">poscar</span><span class="p">),</span> <span class="n">potcar_symbols</span><span class="o">=</span><span class="n">potcar_names</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ibasis</span><span class="p">,</span> <span class="n">basis_dict</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_basis_dict</span><span class="p">):</span>
+            <span class="n">lobsterinput</span> <span class="o">=</span> <span class="n">Lobsterin</span><span class="o">.</span><span class="n">standard_calculations_from_vasp_files</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">poscar</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">incar</span><span class="p">,</span>
+                <span class="kc">None</span><span class="p">,</span>
+                <span class="n">option</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+                <span class="n">dict_for_basis</span><span class="o">=</span><span class="n">basis_dict</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">lobsterin_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">lobsterinout</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ibasis</span><span class="p">))</span>
+            <span class="n">incar_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">incarout</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ibasis</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">lobsterin_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">incar_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">lobsterin_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="n">incar_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">overwrite</span>
+            <span class="p">):</span>
+                <span class="n">lobsterinput</span><span class="o">.</span><span class="n">write_lobsterin</span><span class="p">(</span><span class="n">lobsterin_path</span><span class="p">)</span>
+                <span class="n">lobsterinput</span><span class="o">.</span><span class="n">write_INCAR</span><span class="p">(</span>
+                    <span class="n">incar_input</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">incar</span><span class="p">,</span>
+                    <span class="n">incar_output</span><span class="o">=</span><span class="n">incar_path</span><span class="p">,</span>
+                    <span class="n">poscar_input</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">poscar</span><span class="p">,</span>
+                    <span class="n">isym</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;please use &quot;--overwrite&quot; if you would like to overwrite existing lobster inputs&#39;</span>
+                <span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Janine George.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

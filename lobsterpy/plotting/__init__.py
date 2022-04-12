@@ -63,6 +63,7 @@ class PlainCohpPlotter(CohpPlotter):
     ):
         """
         Get a matplotlib plot showing the COHP.
+        
         Args:
             ax: Existing Matplotlib Axes object to plot to.
             xlim: Specifies the x-axis limits. Defaults to None for
@@ -79,6 +80,7 @@ class PlainCohpPlotter(CohpPlotter):
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If this is unset (None) no broadening will be
                 added.
+                
         Returns:
             A matplotlib object.
         """
