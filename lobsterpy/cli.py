@@ -103,6 +103,7 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group = plotting_parent.add_argument_group("Plotting")
 
     broadening_group = plotting_group.add_mutually_exclusive_group()
+    broadening_group.add_argument_group("Broadening")
     broadening_group.add_argument(
         "--sigma",
         type=float,
