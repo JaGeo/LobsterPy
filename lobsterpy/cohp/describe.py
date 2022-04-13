@@ -160,7 +160,6 @@ class Description:
                             ""
                             + properties["ICOHP_mean"]
                             + " eV,"
-                            + " eV,"
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
