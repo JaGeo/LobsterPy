@@ -1,4 +1,5 @@
-![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/lobsterpy/badge/?version=latest)](https://lobsterpy.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/lobsterpy.svg)](https://badge.fury.io/py/lobsterpy) [![PyPI downloads](https://img.shields.io/pypi/dm/lobsterpy?style=flat&color=blue&label=pypi%20downloads)](https://pypi.org/project/lobsterpy) [![DOI](https://zenodo.org/badge/343384088.svg)](https://zenodo.org/badge/latestdoi/343384088)
+![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/lobsterpy/badge/?version=latest)](https://lobsterpy.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/lobsterpy.svg)](https://badge.fury.io/py/lobsterpy) [![PyPI downloads](https://img.shields.io/pypi/dm/lobsterpy?style=flat&color=blue&label=pypi%20downloads)](https://pypi.org/project/lobsterpy) [![DOI](https://zenodo.org/badge/343384088.svg)](https://zenodo.org/badge/latestdoi/343384088) [![Documentation Status](https://readthedocs.org/projects/lobsterpy/badge/?version=latest)](https://lobsterpy.readthedocs.io/en/latest/?badge=latest)
+      
 
 # LobsterPy
 <img src="LobsterPyLogo.png" alt="LobsterPy Logo" width="200"/>
@@ -46,7 +47,6 @@ Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](
 ## Future plans:
 * Include automatic plotting for COBIs/COOPs
 * Include orbitals into automatic plotting
-* Include more documentation
 * Include lobsterin generation
 
 ## Contributions
