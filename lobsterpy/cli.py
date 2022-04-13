@@ -280,7 +280,7 @@ def get_parser() -> argparse.ArgumentParser:
 def _user_figsize(width, height, aspect=None):
     """Get figsize options from user input, if any
 
-    If only width xor height is provided, use a target aspect ratio to derive
+    If only width x or height is provided, use a target aspect ratio to derive
     the other one.
 
     Returns a dict which can be merged into style kwargs

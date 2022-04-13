@@ -1,7 +1,8 @@
-![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/lobsterpy/badge/?version=latest)](https://lobsterpy.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/lobsterpy.svg)](https://badge.fury.io/py/lobsterpy) [![PyPI downloads](https://img.shields.io/pypi/dm/lobsterpy?style=flat&color=blue&label=pypi%20downloads)](https://pypi.org/project/lobsterpy) [![DOI](https://zenodo.org/badge/343384088.svg)](https://zenodo.org/badge/latestdoi/343384088)
+![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg)  [![PyPI version](https://badge.fury.io/py/lobsterpy.svg)](https://badge.fury.io/py/lobsterpy) [![PyPI downloads](https://img.shields.io/pypi/dm/lobsterpy?style=flat&color=blue&label=pypi%20downloads)](https://pypi.org/project/lobsterpy) [![DOI](https://zenodo.org/badge/343384088.svg)](https://zenodo.org/badge/latestdoi/343384088)
 
-# LobsterPy
-<img src="LobsterPyLogo.png" alt="LobsterPy Logo" width="200"/>
+# Getting started
+
+![LobsterPy Logo](Logo.png)
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
 
@@ -33,21 +34,16 @@ You can also pip install the package in development mode by writing ``pip instal
   
     You can get further information by using ``lobsterpy --help`` and also by typing ``lobsterpy description --help``, ``lobsterpy automatic-plot --help``, ``lobsterpy plot --help``
 
-
-## License
-Lobsterpy is released under a BSD 3-Clause "New" or "Revised" License. 
-
-
 ## How to cite?
 Please cite our preprint: [https://doi.org/10.26434/chemrxiv-2022-2v424](https://doi.org/10.26434/chemrxiv-2022-2v424). 
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
 
 ## Future plans:
-* Include automatic plotting for COBIs/COOPs
-* Include orbitals into automatic plotting
-* Include more documentation
-* Include lobsterin generation
+Following would be implemented in following releases.
+- Include automatic plotting for COBIs/COOPs
+- Include orbitals into automatic plotting
+- Include lobsterin generation
 
 ## Contributions
 * Contributions and suggestions for features are also welcome. Please write an Issue to describe your potential contribution or feature request.
