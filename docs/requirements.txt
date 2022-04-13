@@ -2,13 +2,6 @@ Sphinx==4.5.0
 sphinx-argparse==0.3.1
 sphinx-pdj-theme==0.2.1
 m2r2==0.3.2
-sphinxcontrib-applehelp==1.0.2
-sphinxcontrib-autoprogram==0.1.7
-sphinxcontrib-devhelp==1.0.2
-sphinxcontrib-htmlhelp==2.0.0
-sphinxcontrib-jsmath==1.0.1
-sphinxcontrib-qthelp==1.0.3
-sphinxcontrib-serializinghtml==1.1.5
 myst-parser==0.17.0
 docutils==0.17.1
 numpy==1.21.4
