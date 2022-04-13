@@ -394,7 +394,7 @@ class Analysis:
                 new = label.split(" ")[2].split("-")
                 sorted_new = self._sort_name(new, nameion)
                 new_label = sorted_new[0] + "-" + sorted_new[1]
-                integral, perc = self._integrate_antbdstates_below_efermi(cohp, -2)
+                integral, perc = self._integrate_antbdstates_below_efermi(cohp)
                 dict_antibd[new_label] = {"integral": integral, "perc": perc}
 
         return dict_antibd[new_label]
