@@ -135,7 +135,11 @@ class Analysis:
                     adapt_extremum_to_add_cond=True,
                 )
             except ValueError as err:
-                if str(err) == "min() arg is an empty sequence":
+                if (
+                    str(err) == "min() arg is an empty sequence"
+                    or str(err)
+                    == "All valences are equal to 0, additional_conditions 1 and 3 and 5 and 6 will not work"
+                ):
                     raise ValueError(
                         "Consider switching to an analysis of all bonds and not only cation-anion bonds. It looks like no cations are detected."
                     )
