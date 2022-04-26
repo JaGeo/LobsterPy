@@ -1640,7 +1640,7 @@
                 ]
             ]
         },
-        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\n"
+        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\n"
     },
     "automatic-plot --sigma 1.2": {
         "plot": {
@@ -3283,7 +3283,7 @@
                 ]
             ]
         },
-        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\n"
+        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\n"
     },
     "automatic-plot --style ggplot": {
         "plot": {
@@ -4926,7 +4926,7 @@
                 ]
             ]
         },
-        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\n"
+        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\n"
     },
     "automaticplot --allbonds": {
         "plot": {
@@ -6569,15 +6569,15 @@
                 ]
             ]
         },
-        "stdout": "The compound NaCl has 2 symmetry-independent atoms(s) with relevant bonds: Na1, Cl2.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\nCl2 has an octahedral (CN=6) coordination environment. It has 6 Cl-Na (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\n"
+        "stdout": "The compound NaCl has 2 symmetry-independent atoms(s) with relevant bonds: Na1, Cl2.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\nCl2 has an octahedral (CN=6) coordination environment. It has 6 Cl-Na (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\n"
     },
     "description": {
         "plot": null,
-        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\n"
+        "stdout": "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\n"
     },
     "description --all-bonds": {
         "plot": null,
-        "stdout": "The compound NaCl has 2 symmetry-independent atoms(s) with relevant bonds: Na1, Cl2.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\nCl2 has an octahedral (CN=6) coordination environment. It has 6 Cl-Na (mean ICOHP: -0.57 eV,4.866 percent antibonding interaction below EFermi) bonds.\n"
+        "stdout": "The compound NaCl has 2 symmetry-independent atoms(s) with relevant bonds: Na1, Cl2.\nNa1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\nCl2 has an octahedral (CN=6) coordination environment. It has 6 Cl-Na (mean ICOHP: -0.57 eV, 4.866 percent antibonding interaction below EFermi) bonds.\n"
     },
     "plot --summed 1 2": {
         "plot": {

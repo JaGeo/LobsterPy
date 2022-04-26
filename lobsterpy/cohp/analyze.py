@@ -391,9 +391,14 @@ class Analysis:
         dict_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
-                new = label.split(" ")[2].split("-")
-                sorted_new = self._sort_name(new, nameion)
-                new_label = sorted_new[0] + "-" + sorted_new[1]
+                if nameion is not None:
+                    new = label.split(" ")[2].split("-")
+                    sorted_new = self._sort_name(new, nameion)
+                    new_label = sorted_new[0] + "-" + sorted_new[1]
+                else:
+                    new = label.split(" ")[2].split("-")
+                    sorted_new = sorted(new.copy())
+                    new_label = sorted_new[0] + "-" + sorted_new[1]
                 (
                     integral,
                     perc,
@@ -419,7 +424,7 @@ class Analysis:
             start: where does the integration start
 
         Returns:
-            absolute value of antibonding, percentage value of antibonding, absolute value of bonding and percentage value of bonding interactions
+            absolute value of antibonding, percentage value of antibonding, absolute value of bonding, and percentage value of bonding interactions
         """
 
         warnings.warn(
@@ -429,7 +434,7 @@ class Analysis:
         # from scipy.integrate import simpson, trapezoid
         from scipy.interpolate import InterpolatedUnivariateSpline
 
-        def abstrapz_positive(y, x):
+        def integrate_positive(y, x):
             """
 
             This will integrate only bonding interactions of the COHP
@@ -452,7 +457,7 @@ class Analysis:
             )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
             return bonding
 
-        def abstrapz_negative(y, x=None, dx=0.001):
+        def integrate_negative(y, x=None):
             """
             will integrate only one side of the COHP
             Args:
@@ -502,9 +507,9 @@ class Analysis:
                 neg.append(-1 * cohp)
                 en_neg.append(energies_corrected[i])
 
-        antibonding = abstrapz_negative(y=neg, x=en_neg)
+        antibonding = integrate_negative(y=neg, x=en_neg)
 
-        bonding = abstrapz_positive(y=pos, x=en_pos)
+        bonding = integrate_positive(y=pos, x=en_pos)
 
         return (
             antibonding,
