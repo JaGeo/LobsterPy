@@ -176,6 +176,7 @@ class Analysis:
 
             class Lse:
                 """Test class when error was raised"""
+
                 def __init__(self, chemenv):
                     """
                     Test class when error was raised

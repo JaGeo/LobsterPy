@@ -18,7 +18,6 @@ from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import get_style_list, PlainCohpPlotter
 
 
-
 def main() -> None:
     """Entry point for setup.py installer"""
     args = get_parser().parse_args()
@@ -197,7 +196,7 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="This option will force the automatc analysis to consider"
-             " all bonds, not only cation-anion bonds (default) ",
+        " all bonds, not only cation-anion bonds (default) ",
     )
 
     subparsers = parser.add_subparsers(

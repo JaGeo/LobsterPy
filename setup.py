@@ -18,9 +18,9 @@ setup(
         "pymatgen==2022.4.19",
         "numpy",
         "typing",
-        'Sphinx==4.5.0',
-        'sphinx-argparse==0.3.1',
-        'sphinx-pdj-theme==0.2.1'
+        "Sphinx==4.5.0",
+        "sphinx-argparse==0.3.1",
+        "sphinx-pdj-theme==0.2.1",
     ],
     classifiers=[
         "Development Status :: 1 - Planning",

@@ -9,7 +9,6 @@ from pathlib import Path
 from lobsterpy.plotting import PlainCohpPlotter
 
 
-
 class Description:
     """
     Base class that will write generate a text description for all relevant bonds.
