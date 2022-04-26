@@ -143,6 +143,8 @@ class Analysis:
                     raise ValueError(
                         "Consider switching to an analysis of all bonds and not only cation-anion bonds. It looks like no cations are detected."
                     )
+                else:
+                    raise err
         elif self.whichbonds == "all":
             # raise ValueError("only cation anion bonds implemented so far")
             self.chemenv = LobsterNeighbors(
