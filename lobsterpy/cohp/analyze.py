@@ -25,9 +25,11 @@ class Analysis:
         final_dict_ions: dict including information on environments of cations
         chemenv: pymatgen.io.lobster.lobsterenv.LobsterNeighbors object
         lse: LightStructureEnvironment from pymatgen
-        cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values. cutoff_icohp*max_icohp limits the number of considered environments
+        cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
+         cutoff_icohp*max_icohp limits the number of considered environments
         anion_types: Set of Element objects from pymatgen
-        list_equivalent_sites: list of site indices of sites that indicate which sites are equivalent e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other
+        list_equivalent_sites: list of site indices of sites that indicate which sites are equivalent
+         e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other
         path_to_charge: str that describes the path to CHARGE.lobster
         path_to_cohpcar: str that describes the path to COHPCAR.lobster
         path_to_icohplist: str that describes the path to ICOHPLIST.lobster
@@ -141,10 +143,10 @@ class Analysis:
                     == "All valences are equal to 0, additional_conditions 1 and 3 and 5 and 6 will not work"
                 ):
                     raise ValueError(
-                        "Consider switching to an analysis of all bonds and not only cation-anion bonds. It looks like no cations are detected."
+                        "Consider switching to an analysis of all bonds and not only cation-anion bonds."
+                        " It looks like no cations are detected."
                     )
-                else:
-                    raise err
+                raise err
         elif self.whichbonds == "all":
             # raise ValueError("only cation anion bonds implemented so far")
             self.chemenv = LobsterNeighbors(
@@ -173,7 +175,16 @@ class Analysis:
         except ValueError:
 
             class Lse:
+                """Test class when error was raised"""
                 def __init__(self, chemenv):
+                    """
+                    Test class when error was raised
+
+                    Args:
+                        chemenv (LobsterNeighbors): LobsterNeighbors object
+
+                    """
+
                     self.coordination_environments = [
                         [{"ce_symbol": str(len(coord))}] for coord in chemenv
                     ]
@@ -381,7 +392,8 @@ class Analysis:
         This method will return a dictionary including information on antibonding states
         important is however that only the energy range can be considered that has been computed
         (i.e., this might not be all)
-        e.g., similar to: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
+        e.g., similar to: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995},
+        'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
 
         Args:
             cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects
@@ -390,7 +402,8 @@ class Analysis:
 
         Returns:
             dict including in formation on whether antibonding interactions exist,
-            e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
+            e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995},
+            'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
         """
 
         dict_antibd = {}
@@ -404,7 +417,8 @@ class Analysis:
 
         return dict_antibd
 
-    def _integrate_antbdstates_below_efermi(self, cohp, start=-30):
+    @staticmethod
+    def _integrate_antbdstates_below_efermi(cohp, start=-30):
         """
         .. warning:: NEEDS MORE TESTS
 
@@ -722,7 +736,8 @@ class Analysis:
             if isite in self.set_inequivalent_ions
         ]
 
-        # formula_units = self.structure.composition.num_atoms / self.structure.composition.reduced_composition.num_atoms
+        # formula_units = self.structure.composition.num_atoms /
+        # self.structure.composition.reduced_composition.num_atoms
 
         final_dict_bonds = {}
         for key in relevant_ion_ids:

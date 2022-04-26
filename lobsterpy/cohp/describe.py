@@ -5,13 +5,15 @@
 This module defines classes to describe the COHPs automatically
 """
 
-from lobsterpy.plotting import PlainCohpPlotter
 from pathlib import Path
+from lobsterpy.plotting import PlainCohpPlotter
+
 
 
 class Description:
     """
-    Base class that will write generate a text description for all relevant bonds. It analyses all relevant coordination environments in the system based on electronic structure theory.
+    Base class that will write generate a text description for all relevant bonds.
+    It analyses all relevant coordination environments in the system based on electronic structure theory.
 
     """
 
@@ -248,7 +250,7 @@ class Description:
             plot.title(title)
             if save:
                 if len(set_inequivalent_cations) > 1:
-                    if type(filename) == str:
+                    if isinstance(filename) == str:
                         filename = Path(filename)
                     filename_new = (
                         filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
