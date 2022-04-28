@@ -249,7 +249,7 @@ class Description:
             plot.title(title)
             if save:
                 if len(set_inequivalent_cations) > 1:
-                    if isinstance(filename) == str:
+                    if isinstance(filename, str):
                         filename = Path(filename)
                     filename_new = (
                         filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
