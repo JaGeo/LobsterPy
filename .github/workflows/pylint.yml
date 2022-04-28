@@ -29,6 +29,10 @@ jobs:
     - name: pydocstyle
       run: |
         pydocstyle --count lobsterpy
+    - name: pylint
+      run: |
+        pylint --version
+        pylint --rcfile=pylintrc lobsterpy
     - name: black
       run: |
         black --version
