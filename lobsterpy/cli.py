@@ -11,11 +11,11 @@ from math import log, sqrt
 from pathlib import Path
 
 import matplotlib.style
+from pymatgen.electronic_structure.cohp import CompleteCohp
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import get_style_list, PlainCohpPlotter
-from pymatgen.electronic_structure.cohp import CompleteCohp
 
 
 def main() -> None:
@@ -208,7 +208,8 @@ def get_parser() -> argparse.ArgumentParser:
         "--all-bonds",
         action="store_true",
         default=False,
-        help="This option will force the automatc analysis to consider all bonds, not only cation-anion bonds (default) ",
+        help="This option will force the automatc analysis to consider"
+        " all bonds, not only cation-anion bonds (default) ",
     )
 
     subparsers = parser.add_subparsers(
@@ -316,15 +317,14 @@ def _user_figsize(width, height, aspect=None):
 
     if width is None and height is None:
         return {}
-    elif width is not None and height is not None:
+    if width is not None and height is not None:
         return {"figure.figsize": (width, height)}
-    else:
-        if aspect is None:
-            aspect = (sqrt(5) + 1) / 2  # Golden ratio
-        if width is None:
-            return {"figure.figsize": (height * aspect, height)}
-        else:
-            return {"figure.figsize": (width, width / aspect)}
+
+    if aspect is None:
+        aspect = (sqrt(5) + 1) / 2  # Golden ratio
+    if width is None:
+        return {"figure.figsize": (height * aspect, height)}
+    return {"figure.figsize": (width, width / aspect)}
 
 
 # TODO: add automatic functionality for COBIs, COOPs
@@ -426,7 +426,8 @@ def run(args):
             else:
                 if len(args.bond_numbers) != len(args.orbitalwise):
                     raise IndexError(
-                        "Please provide as mainy orbitals as bond labels, e.g., lobsterpy plot 1 1 --orbitalwise '2s-2s' '2s-2px'"
+                        "Please provide as mainy orbitals as bond labels,"
+                        " e.g., lobsterpy plot 1 1 --orbitalwise '2s-2s' '2s-2px'"
                     )
 
                 for ilabel, label in enumerate(args.bond_numbers):
