@@ -108,7 +108,8 @@ def get_parser() -> argparse.ArgumentParser:
         default=None,
         type=_element_basis,
         nargs="+",
-        help="This setting will rely on a specific basis provided by the user (e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). Default is None.",
+        help="This setting will rely on a specific basis provided by the user "
+        "(e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). Default is None.",
     )
 
     plotting_parent = argparse.ArgumentParser(add_help=False)
