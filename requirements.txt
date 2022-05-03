@@ -1,1 +1,1 @@
-pymatgen==2022.4.19
+pymatgen==2022.4.26
