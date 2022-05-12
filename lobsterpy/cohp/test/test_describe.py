@@ -254,6 +254,18 @@ class TestDescribe(unittest.TestCase):
             self.assertTrue(Path(filename_test_1).exists())
             self.assertTrue(Path(filename_test_2).exists())
 
+        with tempfile.TemporaryDirectory() as tmp2:
+            filename_test = str(Path(tmp2) / "test.pdf")
+            self.describe_Nacl_all.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
+            filename_test_1 = Path(tmp2) / "test-0.pdf"
+            filename_test_2 = Path(tmp2) / "test-1.pdf"
+            self.assertFalse(Path(filename_test).exists())
+            self.assertTrue(Path(filename_test_1).exists())
+            self.assertTrue(Path(filename_test_2).exists())
+
+
     def test_write_descritoin(self):
         self.describe_NaCl.write_description()
         self.describe_NaSi_madelung_all.write_description()

@@ -176,7 +176,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--save-plot",
         "--saveplot",
         "-s",
-        type=str,
+        type=Path,
         metavar="FILENAME",
         default=None,
         dest="save_plot",
@@ -384,7 +384,8 @@ def run(args):
             ylim=args.ylim,
             xlim=args.xlim,
             integrated=args.integrated,
-            save=args.save_plot,
+            save=args.save_plot is not None,
+            filename=args.save_plot,
             title=args.title,
             sigma=sigma,
         )
