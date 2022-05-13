@@ -257,8 +257,10 @@ class Description:
                 else:
                     filename_new = filename
                 plot.savefig(filename_new)
-        if self.skip_show():
+        if not skip_show:
             plot.show()
+        else:
+            plot.close()
 
     @staticmethod
     def _coordination_environment_to_text(ce):
