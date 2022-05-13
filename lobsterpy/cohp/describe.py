@@ -257,7 +257,7 @@ class Description:
                 else:
                     filename_new = filename
                 plot.savefig(filename_new)
-        if not skip_show:
+        if self.skip_show():
             plot.show()
 
     @staticmethod
