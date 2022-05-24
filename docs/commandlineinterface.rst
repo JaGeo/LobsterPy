@@ -206,6 +206,8 @@ Following is the json file produced.
 ::
 
    lobsterpy automatic-plot --title 'Automatic COHP plot' --save-plot COHP.png
+   
+.. image:: Lobsterpy_tutorial_files/COHP.png
 
 You can also plot integrated ICOHP computed by lobster by turining on
 ``--integrated`` flag when executing ``lobsterpy automatic-plot``
@@ -214,6 +216,8 @@ command. Below is an example and sample output using this command.
 ::
 
    lobsterpy automatic-plot --title 'Automatic ICOHP plot' --integrated --save-plot ICOHP.png
+   
+.. image:: Lobsterpy_tutorial_files/ICOHP.png
 
 2. Plotting of COHPs/COBIs/COOPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -229,6 +233,11 @@ plot COHP and COOP for bond 3 and 30.
 ``lobsterpy plot 3 30 --save-plot COHP_330.png``
 
 ``lobsterpy plot 3 30 --coops --save-plot COOP_330.png``
+
+.. image:: Lobsterpy_tutorial_files/COHP_330.png
+    :width: 49 %
+.. image:: Lobsterpy_tutorial_files/COOP_330.png
+    :width: 49 %
 
 .. raw:: html
 
