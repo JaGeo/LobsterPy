@@ -10,7 +10,7 @@ Lobsterpy's documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   tutorial
+   tutorials
    ../README.md
    modules
    ../CHANGELOG.md
