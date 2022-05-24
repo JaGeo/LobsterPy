@@ -26,6 +26,7 @@ This notebook will demonstrate how the Lobsterpy package can be used to:
 .. toctree::
    :maxdepth: 2
 
+   installation.rst
    commandlineinterface
    pythoninterface
    computingtimes
