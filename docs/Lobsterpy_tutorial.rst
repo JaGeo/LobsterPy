@@ -1,0 +1,760 @@
+.. raw:: html
+
+   <h1>
+
+.. raw:: html
+
+   <center>
+
+Lobsterpy Tutorial
+
+.. raw:: html
+
+   </center>
+
+.. raw:: html
+
+   </h1>
+
+.. raw:: html
+
+   <center>
+
+Written by Aakash Naik (aakash.naik@bam.de) based on suggestions
+provided by Dr. Janine George (janine.george@bam.de)
+
+.. raw:: html
+
+   </center>
+
+   **NOTE:** To download Lobster, please visit http://www.cohp.de.
+   Currently, only VASP/Lobster computations are supported.
+
+.. container::
+
+   This notebook will demonstrate how the Lobsterpy package can be used
+   to:
+
+   .. raw:: html
+
+      <ol>
+
+   .. raw:: html
+
+      <li>
+
+   Create input files necessary for VASP and lobster runs
+
+   .. raw:: html
+
+      </li>
+
+   .. raw:: html
+
+      <li>
+
+   Use generated inputs files to run VASP and Lobster
+
+   .. raw:: html
+
+      </li>
+
+   .. raw:: html
+
+      <li>
+
+   Analyze the lobster outputs with automation
+
+   .. raw:: html
+
+      </li>
+
+   .. raw:: html
+
+      </ol>
+
+Installation
+============
+
+1. Create a conda enviornment with any suitable name eg:- conda create
+   -n Test python==3.9 (This step is optional but it is better to have
+   seperate environments to avoid conflicts with other packages)
+2. Activate the newly created enviornment ``conda activate Test``
+3. Use ``pip install lobsterpy`` to install the package and all its
+   dependencies.
+
+Now that you have installed the lobsterpy, one can use the built-in
+command-line interface of this package to adapt the standard VASP input
+file (INCAR) and create lobster input files needed for successfully
+performing bonding analysis.
+
+--------------
+
+Command line interface
+======================
+
+Creating input files
+--------------------
+
+.. container:: alert alert-block alert-info
+
+   ::
+
+      &#129306
+
+   Info: Important tags in INCAR of VASP to be paid attention before
+   performing lobster runs are NBANDS, NSW and ISYM. It is absolutely
+   necessary that VASP static run is performed (no movements of atoms,
+   NSW = 0) before running lobster program. LOBSTER can only deal with
+   VASP WAVECAR that contain results for the entire mesh or only half of
+   it. To do this, in the INCAR set ISYM = -1 (entire mesh / symmetry
+   switched off) or ISYM = 0 (half mesh/time-reversal). And to make sure
+   WAVECAR are written set LWAVE = .TRUE. For pCOHP analyses one needs
+   to have as many bands as there are orbitals in local basis. For pCOHP
+   analyses using LOBSTER, however, you need to manually set NBANDS in
+   the INCAR file.
+
+With lobsterpy these intricate details are taken care of with single
+command. We need the standard VASP input files i.e
+``INCAR, KPOINTS, POTCAR and POSCAR`` in the calculation directory. Once
+you have these files, one simply needs to run the following command :
+
+``lobsterpy create-inputs``
+
+The above command will create set of input files (INCAR and lobsterin)
+depending on the basis sets that are available in Lobster.
+
+The NBANDS, NSW, ISYM tag will be changed in existing INCAR file and new
+INCAR files will be written in the existing directory. The newly created
+INCAR file will be named ``INCAR.lobsterpy``\ by default. Simultaneously
+``lobsterin.lobsterpy`` files are created that is necessary for lobster
+run (this is the file that instructs lobster program what computations
+needed to be performed).
+
+You can also change the names of output files and path where they are
+saved using following optional tags:
+
+``lobsterpy create-inputs --incar-out <path/to/incar>/INCAR --lobsterin-out <path/to/lobsterin>/lobsterin``
+
+You can also use help to know addtional options using
+``lobsterpy create-inputs -h``
+
+In our example ``Cd`` element has two basis sets ``4d 5s`` ``4d 5s 5p``,
+thus following files are created:
+
+::
+
+   INCAR.lobsterpy-0
+   INCAR.lobsterpy-1
+   lobsterin.lobsterpy-0
+   lobsterin.lobsterpy-1
+
+The suffix “-0” & “-1” indicate input files corresponding to smaller and
+larger basis of ``Cd`` respectively.
+
+.. container:: alert alert-block alert-warning
+
+   | &#9888
+   | NOTE: The ‘KPOINTS’ file is not adapted, it is important for user
+     to select appropriate grid density before starting VASP
+     computations. Usually a factor of 50 x reciprocal lattice vectors
+     is sufficient to get reliable bonding analysis results.
+
+Running VASP and Lobster program
+--------------------------------
+
+Before we start computations, it is important to organize the files in
+seperate directories to avoid overwriting our results. So Lets create
+two new directories named **Basis_0** and **Basis_1.**
+
+1. Copy ‘INCAR.lobsterpy-0, KPOINTS, POSCAR, POTCAR,
+   lobsterin.lobsterpy-0’ files to **Basis_0**
+2. Copy ‘INCAR.lobsterpy-1, KPOINTS, POSCAR, POTCAR,
+   lobsterin.lobsterpy-1’ files to **Basis_1**
+3. Rename ‘INCAR.lobsterpy-\*’ to ‘INCAR’ and ‘lobsterin.lobsterpy-\*’
+   to lobsterin in *both* the directories (\* denotes 0 or 1)
+4. Run VASP using the job submission script to your job scheduler on HPC
+   .Eg: ``sbatch submit.sh``
+5. Wait for VASP computation to be finished.(Lobster program needs
+   WAVECAR generated by VASP)
+6. Now run the lobster program.
+
+The sample job scripts for slurm job scheduler are provided below.
+
+VASP job submission script
+
+.. code:: bash
+
+   #!/bin/bash -l
+   #SBATCH -J vasp_job
+   #SBATCH --no-requeue
+   #SBATCH --export=NONE
+   #SBATCH --get-user-env
+   #SBATCH -D ./
+   #SBATCH --ntasks=144
+   #SBATCH --time=04:00:00
+   #SBATCH --partition=micro
+   #SBATCH --nodes=3
+   #SBATCH --output=vaspjob.out.%j
+   #SBATCH --error=vaspjob.err.%j
+
+   <path-to-vasp-bin>/vasp_std
+
+--------------
+
+Lobster job submission script
+
+.. code:: bash
+
+   #!/bin/bash -l
+   #SBATCH -J lob_job
+   #SBATCH --no-requeue
+   #SBATCH --export=NONE
+   #SBATCH --get-user-env
+   #SBATCH -D ./
+   #SBATCH --ntasks=48
+   #SBATCH --time=04:00:00
+   #SBATCH --nodes=1
+   #SBATCH --output=lobsterjob.out.%j
+   #SBATCH --error=lobsterjob.err.%j
+
+   export OMP_NUM_THREADS=48
+
+   <path-to-lobster-bin>/lobster-4.1.0
+
+--------------
+
+Analyze the lobster outputs with automation
+-------------------------------------------
+
+.. code:: ipython3
+
+    import os
+    os.chdir('Basis_0/') #Navigate to directory containing the files of lobster runs
+
+1. Automatic analysis and plotting of COHPs/ICOHPs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  ``lobsterpy description`` command will perform an automated analysis
+   of COHPs for relevant cation-anion bonds. This command also provides
+   option to save output in json file. Below is an example output of
+   this command.
+
+::
+
+   lobsterpy description --json description.json
+
+.. code:: cmd
+
+   The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
+   Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.
+
+Following is the json file produced.
+
+.. code:: json
+
+   {
+     "formula": "CdF2",
+     "max_considered_bond_length": 5.98538,
+     "limit_icohp": [
+       -100000,
+       -0.1
+     ],
+     "number_of_considered_ions": 1,
+     "sites": {
+       "0": {
+         "env": "C:8",
+         "bonds": {
+           "F": {
+             "ICOHP_mean": "-0.62",
+             "ICOHP_sum": "-4.97",
+             "has_antibdg_states_below_Efermi": true,
+             "number_of_bonds": 8
+           }
+         },
+         "ion": "Cd",
+         "charge": 1.57,
+         "relevant_bonds": [
+           "29",
+           "30",
+           "33",
+           "40",
+           "53",
+           "60",
+           "63",
+           "64"
+         ]
+       }
+     },
+     "type_charges": "Mulliken"
+   }
+
+-  ``lobsterpy automatic-plot`` command will plot the results
+   automatically. It will evaluate all COHPs with ICOHP values down to
+   10% of the strongest ICOHP. You can enforce an analysis of all bonds
+   by using ``lobsterpy automatic-plot --allbonds``. Currently, the
+   computed Mulliken charges will be used to determine cations and
+   anions. If no CHARGE.lobster is available, the algorithm will fall
+   back to the BondValence analysis from pymatgen. Please be aware that
+   LobsterPy can only analyze bonds that have been included in the
+   initial Lobster computation. Below is an example and sample output
+   using this command.
+
+::
+
+   lobsterpy automatic-plot --title 'Automatic COHP plot' --save-plot COHP.png
+
+You can also plot integrated ICOHP computed by lobster by turining on
+``--integrated`` flag when executing ``lobsterpy automatic-plot``
+command. Below is an example and sample output using this command.
+
+::
+
+   lobsterpy automatic-plot --title 'Automatic ICOHP plot' --integrated --save-plot ICOHP.png
+
+2. Plotting of COHPs/COBIs/COOPs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can plot COHPs/COBIs/COOPs from the command line.
+
+``lobsterpy plot 3 30`` will plot COHPs of the first and second bond
+from COHPCAR.lobster. It is possible to sum or integrate the COHPs as
+well (–summed, –integrated). You can switch to COBIs or COOPs by using
+–cobis or –coops, respectively. Below is an example output of command to
+plot COHP and COOP for bond 3 and 30.
+
+``lobsterpy plot 3 30 --save-plot COHP_330.png``
+
+``lobsterpy plot 3 30 --coops --save-plot COOP_330.png``
+
+.. raw:: html
+
+   <tr>
+
+.. raw:: html
+
+   <td>
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   </tr>
+
+3. Additional Options
+~~~~~~~~~~~~~~~~~~~~~
+
+You can also customize the style and parameters of the plots generated
+by using optinal tags. One can easily get an overview of these using
+either of these commands:
+
+.. code:: cmd
+
+   lobsterpy automatic-plot --help 
+   lobsterpy plot --help
+
+You can get also refer detailed documentation for further information
+here or can also download the documentation [Download PDF].
+
+.. code:: ipython3
+
+    os.chdir('..') # Return to parent directory
+
+--------------
+
+Python interface
+================
+
+Import the necessary modules
+
+.. code:: ipython3
+
+    import os
+    from lobsterpy.cohp.analyze import Analysis
+    from lobsterpy.cohp.describe import Description
+    import warnings
+    warnings.filterwarnings('ignore')
+
+.. code:: ipython3
+
+    directory = "Basis_0" #Directory of your VASP and Lobster computations
+    # Setup analysis dict
+    analyse = Analysis(
+        path_to_poscar=os.path.join(directory, "POSCAR"),
+        path_to_icohplist=os.path.join(directory, "ICOHPLIST.lobster"),
+        path_to_cohpcar=os.path.join(directory, "COHPCAR.lobster"),
+        path_to_charge=os.path.join(directory, "CHARGE.lobster"),
+        whichbonds="cation-anion",
+    )
+
+.. code:: ipython3
+
+    # Setup Desciption dict
+    describe = Description(analysis_object=analyse)
+    describe.write_description()
+
+
+.. parsed-literal::
+
+    The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
+    Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.
+
+
+.. code:: ipython3
+
+    # Automatic plots
+    describe.plot_cohps(ylim=[-10, 2], xlim=[-4, 4])
+
+
+
+.. image:: Lobsterpy_tutorial_files/Lobsterpy_tutorial_38_0.png
+
+
+.. code:: ipython3
+
+    print(analyse.condensed_bonding_analysis) # dicts that summarize the results
+
+
+.. parsed-literal::
+
+    {'formula': 'CdF2', 'max_considered_bond_length': 5.98538, 'limit_icohp': (-100000, -0.1), 'number_of_considered_ions': 1, 'sites': {0: {'env': 'C:8', 'bonds': {'F': {'ICOHP_mean': '-0.62', 'ICOHP_sum': '-4.97', 'has_antibdg_states_below_Efermi': True, 'number_of_bonds': 8}}, 'ion': 'Cd', 'charge': 1.57, 'relevant_bonds': ['29', '30', '33', '40', '53', '60', '63', '64']}}, 'type_charges': 'Mulliken'}
+
+
+.. code:: ipython3
+
+    print(analyse.final_dict_bonds) # dicts that summarize the results
+
+
+.. parsed-literal::
+
+    {'Cd-F': {'ICOHP_mean': -0.62125, 'has_antbdg': True}}
+
+
+.. code:: ipython3
+
+    print(analyse.final_dict_ions) # dicts that summarize the results
+
+
+.. parsed-literal::
+
+    {'Cd': {'C:8': 1}}
+
+
+--------------
+
+Computing times
+===============
+
+.. raw:: html
+
+   <table>
+
+.. raw:: html
+
+   <thead>
+
+.. raw:: html
+
+   <tr>
+
+.. raw:: html
+
+   <th>
+
+Calc Type
+
+.. raw:: html
+
+   </th>
+
+.. raw:: html
+
+   <th>
+
+Computing time (secs)
+
+.. raw:: html
+
+   </th>
+
+.. raw:: html
+
+   <th>
+
+NCORES
+
+.. raw:: html
+
+   </th>
+
+.. raw:: html
+
+   <th>
+
+NODES
+
+.. raw:: html
+
+   </th>
+
+.. raw:: html
+
+   <th>
+
+CPU
+
+.. raw:: html
+
+   </th>
+
+.. raw:: html
+
+   <th>
+
+RAM per Node (GB)
+
+.. raw:: html
+
+   </th>
+
+.. raw:: html
+
+   </tr>
+
+.. raw:: html
+
+   </thead>
+
+.. raw:: html
+
+   <tbody>
+
+.. raw:: html
+
+   <tr>
+
+.. raw:: html
+
+   <td>
+
+VASP
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+1381.848
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+144
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+3
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+Intel Xeon (“Skylake”)
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+96
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   </tr>
+
+.. raw:: html
+
+   <tr>
+
+.. raw:: html
+
+   <td>
+
+lobsterbasis_0
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+166
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+48
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+1
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+Intel Xeon (“Skylake”)
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+96
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   </tr>
+
+.. raw:: html
+
+   <tr>
+
+.. raw:: html
+
+   <td>
+
+lobsterbasis_1
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+259
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+48
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+1
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+Intel Xeon (“Skylake”)
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   <td>
+
+96
+
+.. raw:: html
+
+   </td>
+
+.. raw:: html
+
+   </tr>
+
+.. raw:: html
+
+   </tbody>
+
+.. raw:: html
+
+   </table>
+
+--------------
+
+Automation via atomate (For high-throughput calcs)
+==================================================
+
+Please refere our previously published tutorial that showcases a test
+case here.
