@@ -47,7 +47,6 @@ Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](
 ## Future plans:
 * Include automatic plotting for COBIs/COOPs
 * Include orbitals into automatic plotting
-* Include lobsterin generation
 
 ## Contributions
 * Contributions and suggestions for features are also welcome. Please write an Issue to describe your potential contribution or feature request.

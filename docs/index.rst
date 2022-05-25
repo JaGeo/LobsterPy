@@ -10,10 +10,11 @@ Lobsterpy's documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   ../README.md
+   README
+   tutorials
    modules
-   ../CHANGELOG.md
-   ../LICENSE
+   CHANGELOG
+   LICENSE
 
 
 
