@@ -1,6 +1,7 @@
-# not released
+# v0.2.2
 - users can provide their own basis functions for lobsterin/INCAR generation
 - documentation added
+- fixes to saving files
 
 # v0.2.1
 - Fix error message when LobsterPy is used in cation-anion mode for materials that are not ionic.
