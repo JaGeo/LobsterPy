@@ -17,7 +17,7 @@ provided by Dr. Janine George (janine.george@bam.de)
    To download Lobster, please visit http://www.cohp.de. Currently, only VASP/Lobster computations are supported.
    
    
-This notebook will demonstrate how the Lobsterpy package can be used to:
+This tutorial will demonstrate how the Lobsterpy package can be used to:
 
 1. Create input files necessary for VASP and lobster runs
 2. Use generated inputs files to run VASP and Lobster
