@@ -1,14 +1,14 @@
-# v0.2.2
+## v0.2.2
 - users can provide their own basis functions for lobsterin/INCAR generation
 - documentation added
 - fixes to saving files
 
-# v0.2.1
+## v0.2.1
 - Fix error message when LobsterPy is used in cation-anion mode for materials that are not ionic.
 - automatic plots are now saved correctly. Before only the last plot was saved.
 - Additional Gaussian broadening available for COHPs
 - lobsterins can be generated with the command-line interface
-# v0.1.0
+## v0.1.0
 - First LobsterPy release
 - Automatic COHP analysis (description and plots)
 - Command line tool to perform automatic analysis

@@ -7,7 +7,6 @@ Getting started
 .. figure:: Logo.png
    :alt: LobsterPy Logo
 
-   LobsterPy Logo
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on http://www.cohp.de. Currently, only VASP/Lobster computations are supported.
 
@@ -64,3 +63,4 @@ Contributions
    :target: https://pypi.org/project/lobsterpy
 .. |DOI| image:: https://zenodo.org/badge/343384088.svg
    :target: https://zenodo.org/badge/latestdoi/343384088
+
