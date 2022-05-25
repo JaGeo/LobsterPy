@@ -13,8 +13,8 @@ Lobsterpy's documentation!
    readme_link
    tutorials
    modules
-   ../CHANGELOG.md
-   ../LICENSE.md
+   changelog_link
+   license_link
 
 
 
