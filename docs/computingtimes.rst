@@ -1,6 +1,8 @@
 Computing times
 ================
 
+The reported computing times below are for CdF\ :sub:`2` \(Materials project ID : mp-241)
+
 +-----------------+------------------------+---------+--------+-------------------------+--------------------+
 | Calc Type       | Computing time (secs)  | NCORES  | NODES  | CPU                     | RAM per Node (GB)  |
 +=================+========================+=========+========+=========================+====================+
