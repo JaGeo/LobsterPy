@@ -1,1 +1,4 @@
+CHANGELOG
+================
+
 .. mdinclude:: ../CHANGELOG.md
