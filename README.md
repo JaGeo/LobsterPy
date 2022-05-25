@@ -2,7 +2,7 @@
       
 
 # LobsterPy
-<img src="LobsterPyLogo.png" alt="LobsterPy Logo" width="200"/>
+<img src="https://raw.githubusercontent.com/JaGeo/LobsterPy/main/LobsterPyLogo.png" alt="LobsterPy Logo which consits of a green Python and a red Lobster" width="200"/>
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
 
