@@ -40,7 +40,7 @@ Lobsterpy is released under a BSD 3-Clause "New" or "Revised" License.
 
 
 ## How to cite?
-Please cite our preprint: [https://doi.org/10.26434/chemrxiv-2022-2v424](https://doi.org/10.26434/chemrxiv-2022-2v424). 
+Please cite our paper: J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, **ChemPlusChem**, [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123). 
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
 
