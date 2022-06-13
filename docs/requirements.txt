@@ -1,8 +1,8 @@
 Sphinx==5.0.1
-sphinx-argparse==0.3.1
+sphinx-argparse
 sphinx-pdj-theme==0.2.1
 m2r2==0.3.2
-myst-parser==0.17.2
+myst-parser
 docutils
 numpy==1.22.4
 matplotlib==3.5.2
