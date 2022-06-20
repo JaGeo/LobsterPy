@@ -1,4 +1,4 @@
-Sphinx==5.0.1
+Sphinx==5.0.2
 sphinx-argparse
 sphinx-pdj-theme==0.2.1
 m2r2==0.3.2
