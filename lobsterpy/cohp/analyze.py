@@ -425,7 +425,7 @@ class Analysis:
             "The bonding, antibonding integral/percent values are numerical estimate. And at present the energy range considered is dependent on COHPstartEnergy set during lobster runs"
         )
 
-        from scipy.integrate import simpson, trapezoid
+        from scipy.integrate import trapezoid
 
         # from scipy.interpolate import InterpolatedUnivariateSpline
 
