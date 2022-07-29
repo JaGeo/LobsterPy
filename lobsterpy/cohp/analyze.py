@@ -429,7 +429,7 @@ class Analysis:
 
         # from scipy.interpolate import InterpolatedUnivariateSpline
 
-        def abstrapz_positive(y, x):
+        def integrate_positive(y, x):
             """
 
             This will integrate only bonding interactions of the COHP
@@ -454,11 +454,8 @@ class Analysis:
             # )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
             return bonding
 
-<<<<<<< HEAD
         def integrate_negative(y, x):
-=======
-        def abstrapz_negative(y, x=None, dx=0.001):
->>>>>>> parent of b4956e9 (naming, remove duplicate variables, fix output)
+
             """
             will integrate only one side of the COHP
             Args:
@@ -510,9 +507,9 @@ class Analysis:
                 neg.append(-1 * cohp)
                 en_neg.append(energies_corrected[i])
 
-        antibonding = abstrapz_negative(y=neg, x=en_neg)
+        antibonding = integrate_negative(y=neg, x=en_neg)
 
-        bonding = abstrapz_positive(y=pos, x=en_pos)
+        bonding = integrate_positive(y=pos, x=en_pos)
 
         return (
             antibonding,
