@@ -388,29 +388,24 @@ class Analysis:
             e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
         """
 
-        dict_antibd = {}
+        dict_bd_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
-                if nameion is not None:
-                    new = label.split(" ")[2].split("-")
-                    sorted_new = self._sort_name(new, nameion)
-                    new_label = sorted_new[0] + "-" + sorted_new[1]
-                else:
-                    new = label.split(" ")[2].split("-")
-                    sorted_new = sorted(new.copy())
-                    new_label = sorted_new[0] + "-" + sorted_new[1]
+                new = label.split(" ")[2].split("-")
+                sorted_new = self._sort_name(new, nameion)
+                new_label = sorted_new[0] + "-" + sorted_new[1]
                 (
                     integral,
                     perc,
                     integral2,
                     perc2,
                 ) = self._integrate_antbdstates_below_efermi(cohp)
-                dict_antibd[new_label] = {
+                dict_bd_antibd[new_label] = {
                     "bonding": {"integral": integral2, "perc": perc2},
                     "antibonding": {"integral": integral, "perc": perc},
                 }
 
-        return dict_antibd[new_label]
+        return dict_bd_antibd
 
     def _integrate_antbdstates_below_efermi(self, cohp):
 
@@ -421,20 +416,20 @@ class Analysis:
 
         Args:
             cohp: cohp object
-            start: where does the integration start
 
         Returns:
-            absolute value of antibonding, percentage value of antibonding, absolute value of bonding, and percentage value of bonding interactions
+            absolute value of antibonding, percentage value of antibonding, absolute value of bonding and percentage value of bonding interactions
         """
 
         warnings.warn(
             "The bonding, antibonding integral/percent values are numerical estimate. And at present the energy range considered is dependent on COHPstartEnergy set during lobster runs"
         )
 
-        # from scipy.integrate import simpson, trapezoid
-        from scipy.interpolate import InterpolatedUnivariateSpline
+        from scipy.integrate import simpson, trapezoid
 
-        def integrate_positive(y, x):
+        # from scipy.interpolate import InterpolatedUnivariateSpline
+
+        def abstrapz_positive(y, x):
             """
 
             This will integrate only bonding interactions of the COHP
@@ -450,14 +445,20 @@ class Analysis:
             y = np.asanyarray(y)
             x = np.asanyarray(x)
 
-            # bonding = trapezoid(y,x,dx=0.001) discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
-            bonding_fit = InterpolatedUnivariateSpline(x, y)
-            bonding = bonding_fit.integral(
-                min(x), max(x)
-            )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
+            bonding = trapezoid(
+                y, x
+            )  # discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
+            # bonding_fit = InterpolatedUnivariateSpline(x, y)
+            # bonding = bonding_fit.integral(
+            #    min(x), max(x)
+            # )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
             return bonding
 
-        def integrate_negative(y, x=None):
+<<<<<<< HEAD
+        def integrate_negative(y, x):
+=======
+        def abstrapz_negative(y, x=None, dx=0.001):
+>>>>>>> parent of b4956e9 (naming, remove duplicate variables, fix output)
             """
             will integrate only one side of the COHP
             Args:
@@ -468,11 +469,13 @@ class Analysis:
             """
             y = np.asanyarray(y)
             x = np.asanyarray(x)
-            # antibonding = trapezoid(y,x,dx=0.001) discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
-            antibonding_fit = InterpolatedUnivariateSpline(x, y)
-            antibonding = antibonding_fit.integral(
-                min(x), max(x)
-            )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
+            antibonding = trapezoid(
+                y, x
+            )  # discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
+            # antibonding_fit = InterpolatedUnivariateSpline(x, y)
+            # antibonding = antibonding_fit.integral(
+            #    min(x), max(x)
+            # )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
 
             return antibonding
 
@@ -507,9 +510,9 @@ class Analysis:
                 neg.append(-1 * cohp)
                 en_neg.append(energies_corrected[i])
 
-        antibonding = integrate_negative(y=neg, x=en_neg)
+        antibonding = abstrapz_negative(y=neg, x=en_neg)
 
-        bonding = integrate_positive(y=pos, x=en_pos)
+        bonding = abstrapz_positive(y=pos, x=en_pos)
 
         return (
             antibonding,
@@ -640,12 +643,16 @@ class Analysis:
                         labels, cohps, nameion=namecation
                     )
                 )
-                # dict_antibonding,
+
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation)
 
-                for k, val in bond_dict.items():
-                    bond_dict[k]["bonding"] = dict_antibonding["bonding"]
-                    bond_dict[k]["antibonding"] = dict_antibonding["antibonding"]
+                for k, v in bond_dict.items():
+                    for k2, v2 in dict_antibonding.items():
+                        if k == k2.split("-")[1]:
+                            bond_dict[k]["bonding"] = dict_antibonding[k2]["bonding"]
+                            bond_dict[k]["antibonding"] = dict_antibonding[k2][
+                                "antibonding"
+                            ]
 
                 site_dict[ication] = {
                     "env": ce,
@@ -677,12 +684,16 @@ class Analysis:
                         labels, cohps, nameion
                     )
                 )
-                # dict_antibonding,
+
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
 
                 for k, val in bond_dict.items():
-                    bond_dict[k]["bonding"] = dict_antibonding["bonding"]
-                    bond_dict[k]["antibonding"] = dict_antibonding["antibonding"]
+                    for k2, v2 in dict_antibonding.items():
+                        if k == k2.split("-")[1]:
+                            bond_dict[k]["bonding"] = dict_antibonding[k2]["bonding"]
+                            bond_dict[k]["antibonding"] = dict_antibonding[k2][
+                                "antibonding"
+                            ]
 
                 site_dict[iion] = {
                     "env": ce,
