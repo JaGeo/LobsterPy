@@ -429,18 +429,23 @@ class Analysis:
         """
         .. warning:: NEEDS MORE TESTS
 
-        This integrates the whole COHP curve that has been computed. The energy range is very important. At present the energy range considered is dependent on COHPstartEnergy set during lobster runs
+        This integrates the whole COHP curve that has been computed.
+        The energy range is very important.
+        At present the energy range considered is dependent on COHPstartEnergy
+        set during lobster runs
 
         Args:
             cohp: cohp object
             start: integration start energy in eV , eg start = -15
 
         Returns:
-            absolute value of antibonding, percentage value of antibonding, absolute value of bonding and percentage value of bonding interactions
+            absolute value of antibonding, percentage value of antibonding,
+            absolute value of bonding and percentage value of bonding interactions
         """
 
         warnings.warn(
-            "The bonding, antibonding integral/percent values are numerical estimate. And at present the energy range considered is dependent on COHPstartEnergy set during lobster runs"
+            "The bonding, antibonding integral/percent values are numerical estimate. "
+            "And at present the energy range considered is dependent on COHPstartEnergy set during lobster runs"
         )
 
         from scipy.integrate import trapezoid
@@ -461,13 +466,10 @@ class Analysis:
             y = np.asanyarray(y)
             x = np.asanyarray(x)
 
-            bonding = trapezoid(
-                y, x
-            )  # discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
+            bonding = trapezoid(y, x)
             # bonding_fit = InterpolatedUnivariateSpline(x, y)
             # bonding = bonding_fit.integral(
-            #    min(x), max(x)
-            # )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
+            #    min(x), max(x))
             return bonding
 
         def integrate_negative(y, x):
@@ -482,13 +484,10 @@ class Analysis:
             """
             y = np.asanyarray(y)
             x = np.asanyarray(x)
-            antibonding = trapezoid(
-                y, x
-            )  # discrepancy in values observed based compared to InterpolatedUnivariateSpline fit and simpler methods like trapezoid/simpson
+            antibonding = trapezoid(y, x)
             # antibonding_fit = InterpolatedUnivariateSpline(x, y)
             # antibonding = antibonding_fit.integral(
-            #    min(x), max(x)
-            # )  # InterpolatedUnivariateSpline intergral provides much smaller antibonding interactions values
+            #    min(x), max(x))
 
             return antibonding
 
@@ -518,14 +517,14 @@ class Analysis:
         neg = []
         en_neg = []
 
-        for i, cohp in enumerate(cohp_bf):
-            if cohp >= 0:
-                pos.append(cohp)
+        for i, scohp in enumerate(cohp_bf):
+            if scohp >= 0:
+                pos.append(scohp)
                 en_pos.append(energies_corrected[i])
 
-        for i, cohp in enumerate(cohp_bf):
-            if cohp <= 0:
-                neg.append(-1 * cohp)
+        for i, scohp in enumerate(cohp_bf):
+            if scohp <= 0:
+                neg.append(-1 * scohp)
                 en_neg.append(energies_corrected[i])
 
         antibonding = integrate_negative(y=neg, x=en_neg)
