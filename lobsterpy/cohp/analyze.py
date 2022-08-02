@@ -5,15 +5,14 @@
 This module defines classes to analyze the COHPs automatically
 """
 
+import warnings
 from collections import Counter
 from typing import Optional
-
 import numpy as np
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-import warnings
 
 
 class Analysis:
