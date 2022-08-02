@@ -426,6 +426,11 @@ class Analysis:
         )
 
         from scipy.integrate import trapezoid
+<<<<<<< HEAD
+=======
+
+        # from scipy.interpolate import InterpolatedUnivariateSpline
+>>>>>>> 5c1b385713d2734284ebf57aaf29235d021facb1
 
         def integrate_positive(y, x):
             """
