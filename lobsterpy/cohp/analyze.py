@@ -503,10 +503,12 @@ class Analysis:
         en_bf = []
 
         for i, en in enumerate(energies_corrected):
-            if en <= 0 and start is None:
+            if (start is None) and en <= 0:
                 en_bf.append(en)
                 cohp_bf.append(-1 * summedcohp[i])
-            if en <= 0 and isinstance(start, int) and en >= start:
+            if (
+                start is not None
+            ) and 0 >= en >= start:  # en <= 0 and isinstance(start, (float, int)) and en >= start
                 en_bf.append(en)
                 cohp_bf.append(-1 * summedcohp[i])
 
@@ -664,10 +666,12 @@ class Analysis:
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
                         if namecation == k2.split("-")[0] and k == k2.split("-")[1]:
-                            bond_dict[k]["bonding"] = dict_antibonding[k2]["bonding"]
-                            bond_dict[k]["antibonding"] = dict_antibonding[k2][
+                            v["bonding"] = v2[
+                                "bonding"
+                            ]  # dict_antibonding[k2]["bonding"]
+                            v["antibonding"] = v2[
                                 "antibonding"
-                            ]
+                            ]  # dict_antibonding[k2]["antibonding"]
 
                 site_dict[ication] = {
                     "env": ce,
@@ -702,13 +706,15 @@ class Analysis:
 
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
 
-                for k, val in bond_dict.items():
+                for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
                         if nameion == k2.split("-")[0] and k == k2.split("-")[1]:
-                            bond_dict[k]["bonding"] = dict_antibonding[k2]["bonding"]
-                            bond_dict[k]["antibonding"] = dict_antibonding[k2][
+                            v["bonding"] = v2[
+                                "bonding"
+                            ]  # dict_antibonding[k2]["bonding"]
+                            v["antibonding"] = v2[
                                 "antibonding"
-                            ]
+                            ]  # dict_antibonding[k2]["antibonding"]
 
                 site_dict[iion] = {
                     "env": ce,
