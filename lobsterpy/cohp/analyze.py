@@ -57,6 +57,7 @@ class Analysis:
         cutoff_icohp: float = 0.1,
         summed_spins=True,
         type_charge=None,
+        start=None,
     ):
         """
         This is a class to analyse bonding information automatically
@@ -72,8 +73,9 @@ class Analysis:
             summed_spins: if true, spins will be summed
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
                         Löwdin charges cannot be selected at the moment.
+            start: start energy for integration
         """
-
+        self.start = start
         self.path_to_poscar = path_to_poscar
         self.path_to_icohplist = path_to_icohplist
         self.path_to_cohpcar = path_to_cohpcar
@@ -104,7 +106,6 @@ class Analysis:
 
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
-
         self.path_to_madelung = path_to_madelung
 
     def setup_env(self):
@@ -119,7 +120,6 @@ class Analysis:
         sga = SpacegroupAnalyzer(structure=self.structure)
         symmetry_dataset = sga.get_symmetry_dataset()
         equivalent_sites = symmetry_dataset["equivalent_atoms"]
-
         self.list_equivalent_sites = equivalent_sites
         self.set_equivalent_sites = list(set(equivalent_sites))
         self.spg = symmetry_dataset["international"]
@@ -387,7 +387,6 @@ class Analysis:
             dict including in formation on whether antibonding interactions exist,
             e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995}, 'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
         """
-
         dict_bd_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
@@ -399,7 +398,7 @@ class Analysis:
                     perc,
                     integral2,
                     perc2,
-                ) = self._integrate_antbdstates_below_efermi(cohp)
+                ) = self._integrate_antbdstates_below_efermi(cohp,start=self.start)
                 dict_bd_antibd[new_label] = {
                     "bonding": {"integral": integral2, "perc": perc2},
                     "antibonding": {"integral": integral, "perc": perc},
@@ -407,7 +406,7 @@ class Analysis:
 
         return dict_bd_antibd
 
-    def _integrate_antbdstates_below_efermi(self, cohp):
+    def _integrate_antbdstates_below_efermi(self, cohp,start):
 
         """
         .. warning:: NEEDS MORE TESTS
@@ -416,6 +415,7 @@ class Analysis:
 
         Args:
             cohp: cohp object
+            start: integration start energy in eV , eg start = -15
 
         Returns:
             absolute value of antibonding, percentage value of antibonding, absolute value of bonding and percentage value of bonding interactions
@@ -425,9 +425,7 @@ class Analysis:
             "The bonding, antibonding integral/percent values are numerical estimate. And at present the energy range considered is dependent on COHPstartEnergy set during lobster runs"
         )
 
-        from scipy.integrate import simpson, trapezoid
-
-        # from scipy.interpolate import InterpolatedUnivariateSpline
+        from scipy.integrate import trapezoid
 
         def integrate_positive(y, x):
             """
@@ -487,7 +485,10 @@ class Analysis:
         en_bf = []
 
         for i, en in enumerate(energies_corrected):
-            if en <= 0:
+            if en <= 0 and start is None:
+                en_bf.append(en)
+                cohp_bf.append(-1 * summedcohp[i])
+            if en <= 0 and isinstance(start,int) and en>=start:
                 en_bf.append(en)
                 cohp_bf.append(-1 * summedcohp[i])
 
@@ -582,7 +583,6 @@ class Analysis:
             None
 
         """
-
         self.condensed_bonding_analysis = {}
         # which icohps are considered
         if self.whichbonds == "cation-anion":
@@ -645,7 +645,7 @@ class Analysis:
 
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
-                        if k == k2.split("-")[1]:
+                        if namecation==k2.split("-")[0] and k == k2.split("-")[1]:
                             bond_dict[k]["bonding"] = dict_antibonding[k2]["bonding"]
                             bond_dict[k]["antibonding"] = dict_antibonding[k2][
                                 "antibonding"
@@ -686,7 +686,7 @@ class Analysis:
 
                 for k, val in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
-                        if k == k2.split("-")[1]:
+                        if nameion==k2.split("-")[0] and k == k2.split("-")[1]:
                             bond_dict[k]["bonding"] = dict_antibonding[k2]["bonding"]
                             bond_dict[k]["antibonding"] = dict_antibonding[k2][
                                 "antibonding"
