@@ -5,7 +5,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text("utf-8")
 setup(
     name="lobsterpy",
-    version="0.2.1",
+    version="0.2.2",
     description="Package for autmatic bonding analysis with Lobster/VASP",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -15,12 +15,12 @@ setup(
     license="BSD 3-clause",
     packages=find_packages(),
     install_requires=[
-        "pymatgen==2022.3.7",
+        "pymatgen==2022.7.25",
         "numpy",
         "typing",
-        'Sphinx==4.5.0',
-        'sphinx-argparse==0.3.1',
-        'sphinx-pdj-theme==0.2.1'
+        "Sphinx==5.1.1",
+        "sphinx-argparse==0.3.1",
+        "sphinx-pdj-theme==0.2.1",
     ],
     classifiers=[
         "Development Status :: 1 - Planning",

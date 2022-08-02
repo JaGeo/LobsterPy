@@ -2,7 +2,7 @@
       
 
 # LobsterPy
-<img src="LobsterPyLogo.png" alt="LobsterPy Logo" width="200"/>
+<img src="https://raw.githubusercontent.com/JaGeo/LobsterPy/main/LobsterPyLogo.png" alt="LobsterPy Logo which consits of a green Python and a red Lobster" width="200"/>
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
 
@@ -40,14 +40,13 @@ Lobsterpy is released under a BSD 3-Clause "New" or "Revised" License.
 
 
 ## How to cite?
-Please cite our preprint: [https://doi.org/10.26434/chemrxiv-2022-2v424](https://doi.org/10.26434/chemrxiv-2022-2v424). 
+Please cite our paper: J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, **ChemPlusChem**, [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123). 
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
 
 ## Future plans:
 * Include automatic plotting for COBIs/COOPs
 * Include orbitals into automatic plotting
-* Include lobsterin generation
 
 ## Contributions
 * Contributions and suggestions for features are also welcome. Please write an Issue to describe your potential contribution or feature request.

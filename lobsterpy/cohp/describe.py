@@ -5,13 +5,14 @@
 This module defines classes to describe the COHPs automatically
 """
 
-from lobsterpy.plotting import PlainCohpPlotter
 from pathlib import Path
+from lobsterpy.plotting import PlainCohpPlotter
 
 
 class Description:
     """
-    Base class that will write generate a text description for all relevant bonds. It analyses all relevant coordination environments in the system based on electronic structure theory.
+    Base class that will write generate a text description for all relevant bonds.
+    It analyses all relevant coordination environments in the system based on electronic structure theory.
 
     """
 
@@ -205,9 +206,9 @@ class Description:
         ylim=[-4, 2],
         xlim=None,
         integrated=False,
-        summed=True,
         title="",
         sigma=None,
+        skip_show=False,
     ):
         """
         Will automatically generate plots of the most relevant COHP
@@ -218,9 +219,9 @@ class Description:
             ylim (list of float): energy scale that is shown in plot (eV)
             xlim(list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
-            summed (bool): both spin cannels will be summed
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
+            skip_show (bool): if True, the plot will not be shown.
 
         Returns:
             A matplotlib object.
@@ -252,7 +253,7 @@ class Description:
             plot.title(title)
             if save:
                 if len(set_inequivalent_cations) > 1:
-                    if type(filename) == str:
+                    if isinstance(filename, str):
                         filename = Path(filename)
                     filename_new = (
                         filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
@@ -260,7 +261,10 @@ class Description:
                 else:
                     filename_new = filename
                 plot.savefig(filename_new)
-        plot.show()
+        if not skip_show:
+            plot.show()
+        else:
+            plot.close()
 
     @staticmethod
     def _coordination_environment_to_text(ce):
