@@ -140,7 +140,7 @@ class TestDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
-            start=-5.0
+            start=-5.0,
         )
 
         self.describe_NaSbF6_anbd = Description(self.analyse_NaSbF6_anbd)
@@ -152,7 +152,7 @@ class TestDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
-            start=-4.0
+            start=-4.0,
         )
 
         self.describe_NaCl_nan = Description(self.analyse_NaCl_nan)
@@ -164,10 +164,10 @@ class TestDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
-            start=-4.0
+            start=-4.0,
         )
 
-        self.describe_CdF_anbd =Description(self.analyse_CdF_anbd)
+        self.describe_CdF_anbd = Description(self.analyse_CdF_anbd)
 
     def test_coordination_environment_to_text(self):
         results_dict = {
