@@ -367,7 +367,6 @@ class Analysis:
 
         dict_antibd = {}
         for label, cohp in zip(labels, cohps):
-            # print(labels)
             if label is not None:
                 if nameion is not None:
                     new = label.split(" ")[2].split("-")
@@ -418,10 +417,27 @@ class Analysis:
                     integral2,
                     perc2,
                 ) = self._integrate_antbdstates_below_efermi(cohp, start=self.start)
-                dict_bd_antibd[new_label] = {
-                    "bonding": {"integral": integral2, "perc": perc2},
-                    "antibonding": {"integral": integral, "perc": perc},
-                }
+
+                if integral == 0 and integral2 != 0.0:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": perc2},
+                        "antibonding": {"integral": integral, "perc": 0.0},
+                    }
+                elif integral2 == 0.0 and integral != 0.0:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": 0.0},
+                        "antibonding": {"integral": integral, "perc": perc},
+                    }
+                elif integral == 0.0 and integral2 == 0.0:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": 0.0},
+                        "antibonding": {"integral": integral, "perc": 0.0},
+                    }
+                else:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": perc2},
+                        "antibonding": {"integral": integral, "perc": perc},
+                    }
 
         return dict_bd_antibd
 
@@ -467,9 +483,7 @@ class Analysis:
             x = np.asanyarray(x)
 
             bonding = trapezoid(y, x)
-            # bonding_fit = InterpolatedUnivariateSpline(x, y)
-            # bonding = bonding_fit.integral(
-            #    min(x), max(x))
+
             return bonding
 
         def integrate_negative(y, x):
@@ -482,16 +496,14 @@ class Analysis:
             Returns:
                 integrated value of antibonding interactions
             """
+
             y = np.asanyarray(y)
             x = np.asanyarray(x)
             antibonding = trapezoid(y, x)
-            # antibonding_fit = InterpolatedUnivariateSpline(x, y)
-            # antibonding = antibonding_fit.integral(
-            #    min(x), max(x))
 
             return antibonding
 
-        # will integrate spin.up and spin.down only below efermi and only below curve
+        # will integrate spin.up and spin.down only below efermi
         energies_corrected = cohp.energies - cohp.efermi
         if Spin.down in cohp.cohp:
             summedcohp = cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
@@ -505,9 +517,7 @@ class Analysis:
             if (start is None) and en <= 0:
                 en_bf.append(en)
                 cohp_bf.append(-1 * summedcohp[i])
-            if (
-                start is not None
-            ) and 0 >= en >= start:  # en <= 0 and isinstance(start, (float, int)) and en >= start
+            if (start is not None) and 0 >= en >= start:
                 en_bf.append(en)
                 cohp_bf.append(-1 * summedcohp[i])
 
@@ -665,12 +675,8 @@ class Analysis:
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
                         if namecation == k2.split("-")[0] and k == k2.split("-")[1]:
-                            v["bonding"] = v2[
-                                "bonding"
-                            ]  # dict_antibonding[k2]["bonding"]
-                            v["antibonding"] = v2[
-                                "antibonding"
-                            ]  # dict_antibonding[k2]["antibonding"]
+                            v["bonding"] = v2["bonding"]
+                            v["antibonding"] = v2["antibonding"]
 
                 site_dict[ication] = {
                     "env": ce,
@@ -708,12 +714,8 @@ class Analysis:
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
                         if nameion == k2.split("-")[0] and k == k2.split("-")[1]:
-                            v["bonding"] = v2[
-                                "bonding"
-                            ]  # dict_antibonding[k2]["bonding"]
-                            v["antibonding"] = v2[
-                                "antibonding"
-                            ]  # dict_antibonding[k2]["antibonding"]
+                            v["bonding"] = v2["bonding"]
+                            v["antibonding"] = v2["antibonding"]
 
                 site_dict[iion] = {
                     "env": ce,

@@ -17,6 +17,17 @@ class TestAnalyse(unittest.TestCase):
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
         )
+
+        self.analyse_NaCl_nan = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            start=-4.0
+        )
+
         self.analyse_NaCl_valences = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
@@ -125,6 +136,26 @@ class TestAnalyse(unittest.TestCase):
             path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
+        )
+
+        self.analyse_NaSbF6_anbd = Analysis(
+            path_to_poscar=TestDir / "TestData/NaSbF6/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            start=-5.0
+        )
+
+        self.analyse_CdF = Analysis(
+            path_to_poscar=TestDir / "TestData/CdF/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/CdF/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/CdF/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            start=-4.0
         )
 
         # different environment than O:6
@@ -563,6 +594,250 @@ class TestAnalyse(unittest.TestCase):
         self.assertEqual(
             self.analyse_NaSbF6.condensed_bonding_analysis["type_charges"], "Mulliken"
         )
+
+    def test_all_attributes_NaSbF6_anbd(self):
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["formula"], "NaSbF6"
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis[
+                "max_considered_bond_length"
+            ],
+            5.98893,
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["number_of_considered_ions"],
+            2,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["env"], "O:6"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["bonds"][
+                    "F"
+                ]["ICOHP_sum"]
+            ),
+            -3.65,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "number_of_bonds"
+            ],
+            6,
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "bonding"
+            ]["perc"],
+            0.0,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "antibonding"
+            ]["perc"],
+            1.0,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["ion"], "Na"
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["charge"], 0.91
+        )
+        self.assertListEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0][
+                "relevant_bonds"
+            ],
+            ["21", "25", "31", "34", "43", "47"],
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["env"], "O:6"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["bonds"][
+                    "F"
+                ]["ICOHP_sum"]
+            ),
+            -32.71,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["bonds"]["F"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            False,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["bonds"]["F"][
+                "number_of_bonds"
+            ],
+            6,
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["bonds"]["F"][
+                "bonding"
+            ]["perc"],
+            1.0,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["bonds"]["F"][
+                "antibonding"
+            ]["perc"],
+            0.0,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["ion"], "Sb"
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1]["charge"], 2.91
+        )
+        self.assertListEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][1][
+                "relevant_bonds"
+            ],
+            ["63", "69", "73", "80", "81", "87"],
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6_anbd.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+    def test_all_attributes_CdF(self):
+        self.assertEqual(
+            self.analyse_CdF.condensed_bonding_analysis["formula"], "CdF2"
+        )
+        self.assertAlmostEqual(
+            self.analyse_CdF.condensed_bonding_analysis[
+                "max_considered_bond_length"
+            ],
+            5.99501,
+        )
+        self.assertAlmostEqual(
+            self.analyse_CdF.condensed_bonding_analysis["number_of_considered_ions"],
+            1,
+        )
+        self.assertEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0]["env"], "C:8"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_CdF.condensed_bonding_analysis["sites"][0]["bonds"][
+                    "F"
+                ]["ICOHP_sum"]
+            ),
+            -4.96,
+        )
+        self.assertEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "number_of_bonds"
+            ],
+            8,
+        )
+        self.assertAlmostEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "bonding"
+            ]["perc"],
+            0.0,
+        )
+        self.assertEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "antibonding"
+            ]["perc"],
+            1.0,
+        )
+        self.assertEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0]["ion"], "Cd"
+        )
+        self.assertAlmostEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0]["charge"], 1.57
+        )
+        self.assertListEqual(
+            self.analyse_CdF.condensed_bonding_analysis["sites"][0][
+                "relevant_bonds"
+            ],
+            ["25", "32", "35", "36", "57", "58", "61", "68"],
+        )
+        self.assertEqual(
+            self.analyse_CdF.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+    def test_all_attributes_NaCl_nan(self):
+        self.assertEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["formula"], "NaCl"
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis[
+                "max_considered_bond_length"
+            ],
+            5.69169,
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["number_of_considered_ions"],
+            1,
+        )
+        self.assertEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["env"], "O:6"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["bonds"][
+                    "Cl"
+                ]["ICOHP_sum"]
+            ),
+            -3.39,
+        )
+        self.assertEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"][
+                "number_of_bonds"
+            ],
+            6,
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"][
+                "bonding"
+            ]["perc"],
+            0.0,
+        )
+        self.assertEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"][
+                "antibonding"
+            ]["perc"],
+            0.0,
+        )
+        self.assertEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["ion"], "Na"
+        )
+        self.assertAlmostEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0]["charge"], 0.78
+        )
+        self.assertListEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["sites"][0][
+                "relevant_bonds"
+            ],
+            ["21", "23", "24", "27", "28", "30"],
+        )
+        self.assertEqual(
+            self.analyse_NaCl_nan.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+
 
 
 if __name__ == "__main__":
