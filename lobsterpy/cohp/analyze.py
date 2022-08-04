@@ -448,7 +448,9 @@ class Analysis:
         This integrates the whole COHP curve that has been computed.
         The energy range is very important.
         At present the energy range considered is dependent on COHPstartEnergy
-        set during lobster runs
+        set during lobster runs. The bonding / antibonding intergral values are senstive to this parameter.
+        If COHPstartEnergy value does not cover entire range of VASP calculations then
+        absoulte value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.
 
         Args:
             cohp: cohp object
@@ -460,8 +462,10 @@ class Analysis:
         """
 
         warnings.warn(
-            "The bonding, antibonding integral/percent values are numerical estimate. "
-            "And at present the energy range considered is dependent on COHPstartEnergy set during lobster runs"
+            "The bonding, antibonding integral/percent values are numerical estimate."
+            " These values are senstive to COHPstartEnergy parameter."
+            " If COHPstartEnergy value does not cover entire range of VASP calculations then"
+            " absoulte value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values."
         )
 
         from scipy.integrate import trapezoid
@@ -484,7 +488,7 @@ class Analysis:
 
             bonding = trapezoid(y, x)
 
-            return bonding
+            return np.round(bonding, 2)
 
         def integrate_negative(y, x):
 
@@ -501,7 +505,7 @@ class Analysis:
             x = np.asanyarray(x)
             antibonding = trapezoid(y, x)
 
-            return antibonding
+            return np.round(antibonding, 2)
 
         # will integrate spin.up and spin.down only below efermi
         energies_corrected = cohp.energies - cohp.efermi
@@ -543,9 +547,9 @@ class Analysis:
 
         return (
             antibonding,
-            abs(antibonding) / (abs(bonding) + abs(antibonding)),
+            np.round(abs(antibonding) / (abs(bonding) + abs(antibonding)), 5),
             bonding,
-            abs(bonding) / (abs(bonding) + abs(antibonding)),
+            np.round(abs(bonding) / (abs(bonding) + abs(antibonding)), 5),
         )
 
     @staticmethod

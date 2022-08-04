@@ -346,7 +346,7 @@ class TestDescribe(unittest.TestCase):
             [
                 "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: Na1, Sb2.",
                 "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 4.112 percent antibonding interaction below EFermi) bonds.",
-                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, no antibonding interaction below EFermi) bonds.",
+                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
             ],
         )
         self.assertEqual(
@@ -354,7 +354,7 @@ class TestDescribe(unittest.TestCase):
             [
                 "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: Na1, Sb2.",
                 "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 100.0 percent antibonding interaction below EFermi) bonds.",
-                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, no antibonding interaction below EFermi) bonds.",
+                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
             ],
         )
         self.assertEqual(

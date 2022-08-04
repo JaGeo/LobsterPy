@@ -73,7 +73,7 @@ class Description:
                             + " (mean ICOHP: "
                             ""
                             + properties["ICOHP_mean"]
-                            + " eV, no antibonding interaction below EFermi)"
+                            + " eV, 0.0 percent antibonding interaction below EFermi)"
                         )
                     else:
                         bond_info.append(
@@ -148,7 +148,7 @@ class Description:
                             + " (mean ICOHP: "
                             ""
                             + properties["ICOHP_mean"]
-                            + " eV, no antibonding interaction below EFermi)"
+                            + " eV, 0.0 percent antibonding interaction below EFermi)"
                         )
                     else:
                         bond_info.append(

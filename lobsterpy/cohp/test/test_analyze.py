@@ -18,6 +18,15 @@ class TestAnalyse(unittest.TestCase):
             cutoff_icohp=0.1,
         )
 
+        self.analyse_NaCl_comp_range = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
+
         self.analyse_NaCl_nan = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
@@ -145,7 +154,7 @@ class TestAnalyse(unittest.TestCase):
             path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
-            start=-5.0,
+            start=-5.5,
         )
 
         self.analyse_CdF = Analysis(
@@ -156,6 +165,15 @@ class TestAnalyse(unittest.TestCase):
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
             start=-4.0,
+        )
+
+        self.analyse_CdF_comp_range = Analysis(
+            path_to_poscar=TestDir / "TestData/CdF_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/CdF_comp_range/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/CdF_comp_range/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/CdF_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
         )
 
         # different environment than O:6
@@ -520,17 +538,52 @@ class TestAnalyse(unittest.TestCase):
             ],
             6,
         )
-        self.assertAlmostEqual(
+        self.assertEqual(
+            self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "bonding"
+            ]["integral"],
+            3.77,
+        )
+        self.assertEqual(
             self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
                 "bonding"
             ]["perc"],
-            0.9588789999216777,
+            0.95929,
         )
         self.assertEqual(
             self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
                 "antibonding"
             ]["perc"],
-            0.041121000078322284,
+            0.04071,
+        )
+        self.assertEqual(
+            self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0]["bonds"]["F"][
+                "antibonding"
+            ]["integral"],
+            0.16,
+        )
+        self.assertAlmostEqual(
+            abs(
+                float(
+                    self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0]["bonds"][
+                        "F"
+                    ]["ICOHP_sum"]
+                )
+            ),
+            (
+                (
+                    round(
+                        self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0][
+                            "bonds"
+                        ]["F"]["bonding"]["integral"]
+                        - self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0][
+                            "bonds"
+                        ]["F"]["antibonding"]["integral"],
+                        2,
+                    )
+                )
+            ),
+            delta=0.10,
         )
         self.assertEqual(
             self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0]["ion"], "Na"
@@ -578,6 +631,29 @@ class TestAnalyse(unittest.TestCase):
                 "antibonding"
             ]["perc"],
             0.0,
+        )
+        self.assertAlmostEqual(
+            abs(
+                float(
+                    self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1]["bonds"][
+                        "F"
+                    ]["ICOHP_sum"]
+                )
+            ),
+            (
+                (
+                    round(
+                        self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1][
+                            "bonds"
+                        ]["F"]["bonding"]["integral"]
+                        - self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1][
+                            "bonds"
+                        ]["F"]["antibonding"]["integral"],
+                        2,
+                    )
+                )
+            ),
+            delta=0.10,
         )
         self.assertEqual(
             self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1]["ion"], "Sb"
@@ -645,7 +721,7 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["bonds"][
                 "F"
             ]["antibonding"]["perc"],
-            1.0,
+            0.0,
         )
         self.assertEqual(
             self.analyse_NaSbF6_anbd.condensed_bonding_analysis["sites"][0]["ion"], "Na"
@@ -838,6 +914,56 @@ class TestAnalyse(unittest.TestCase):
         )
         self.assertEqual(
             self.analyse_NaCl_nan.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+    def test_ICOHP_sum_NaCl(self):
+        self.assertAlmostEqual(
+            abs(
+                float(
+                    self.analyse_NaCl_comp_range.condensed_bonding_analysis["sites"][0][
+                        "bonds"
+                    ]["Cl"]["ICOHP_sum"]
+                )
+            ),
+            (
+                (
+                    round(
+                        self.analyse_NaCl_comp_range.condensed_bonding_analysis[
+                            "sites"
+                        ][0]["bonds"]["Cl"]["bonding"]["integral"]
+                        - self.analyse_NaCl_comp_range.condensed_bonding_analysis[
+                            "sites"
+                        ][0]["bonds"]["Cl"]["antibonding"]["integral"],
+                        2,
+                    )
+                )
+            ),
+            delta=0.10,
+        )
+
+    def test_ICOHP_sum_CdF(self):
+        self.assertAlmostEqual(
+            abs(
+                float(
+                    self.analyse_CdF_comp_range.condensed_bonding_analysis["sites"][0][
+                        "bonds"
+                    ]["F"]["ICOHP_sum"]
+                )
+            ),
+            (
+                (
+                    round(
+                        self.analyse_CdF_comp_range.condensed_bonding_analysis["sites"][
+                            0
+                        ]["bonds"]["F"]["bonding"]["integral"]
+                        - self.analyse_CdF_comp_range.condensed_bonding_analysis[
+                            "sites"
+                        ][0]["bonds"]["F"]["antibonding"]["integral"],
+                        2,
+                    )
+                )
+            ),
+            delta=0.10,
         )
 
 
