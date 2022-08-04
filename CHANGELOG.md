@@ -1,3 +1,6 @@
+## not yet released
+- bonding and antibonding contributions will now be integrated and a percentage of antibonding interactions below Efermi will be given.
+
 ## v0.2.2
 - users can provide their own basis functions for lobsterin/INCAR generation
 - documentation added
