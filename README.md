@@ -6,6 +6,8 @@
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
 
+Please note that LobsterPy relies on your Lobster outputs. Thus, please make sure that the outputs have enough information for our (automatic) analysis.
+
 ## Installation
 
 You can now use ``pip install lobsterpy`` to install it.
