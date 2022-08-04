@@ -123,6 +123,52 @@ class TestDescribe(unittest.TestCase):
 
         self.describe_NaSi_madelung_all = Description(self.analyse_NaSi_madelung_all)
 
+        self.analyse_NaSbF6 = Analysis(
+            path_to_poscar=TestDir / "TestData/NaSbF6/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
+        self.describe_NaSbF6 = Description(self.analyse_NaSbF6)
+
+        self.analyse_NaSbF6_anbd = Analysis(
+            path_to_poscar=TestDir / "TestData/NaSbF6/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            start=-5.5,
+        )
+
+        self.describe_NaSbF6_anbd = Description(self.analyse_NaSbF6_anbd)
+
+        self.analyse_NaCl_nan = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            start=-4.0,
+        )
+
+        self.describe_NaCl_nan = Description(self.analyse_NaCl_nan)
+
+        self.analyse_CdF_anbd = Analysis(
+            path_to_poscar=TestDir / "TestData/CdF/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/CdF/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/CdF/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            start=-4.0,
+        )
+
+        self.describe_CdF_anbd = Description(self.analyse_CdF_anbd)
+
     def test_coordination_environment_to_text(self):
         results_dict = {
             "S:1": "single (CN=1)",
@@ -268,27 +314,61 @@ class TestDescribe(unittest.TestCase):
     def test_write_descritoin(self):
         self.describe_NaCl.write_description()
         self.describe_NaSi_madelung_all.write_description()
+        self.describe_NaSbF6.write_description()
+        self.describe_NaSbF6_anbd.write_description()
+        self.describe_CdF_anbd.write_description()
+        self.describe_NaCl_nan.write_description()
 
     def test_text(self):
         self.assertEqual(
             self.describe_CdF.text,
             [
                 "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.",
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, 44.26 percent antibonding interaction below EFermi) bonds.",
             ],
         )
         self.assertEqual(
             self.describe_NaCl.text,
             [
                 "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 3.448 percent antibonding interaction below EFermi) bonds.",
             ],
         )
         self.assertEqual(
             self.describe_NaCl.text,
             [
                 "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, antibonding interaction below EFermi) bonds.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 3.448 percent antibonding interaction below EFermi) bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_NaSbF6.text,
+            [
+                "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: Na1, Sb2.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 4.071 percent antibonding interaction below EFermi) bonds.",
+                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_NaSbF6_anbd.text,
+            [
+                "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: Na1, Sb2.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
+                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_NaCl_nan.text,
+            [
+                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_CdF_anbd.text,
+            [
+                "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, 100.0 percent antibonding interaction below EFermi) bonds.",
             ],
         )
 

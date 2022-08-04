@@ -5,9 +5,9 @@
 This module defines classes to analyze the COHPs automatically
 """
 
+import warnings
 from collections import Counter
 from typing import Optional
-
 import numpy as np
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.core import Spin
@@ -58,6 +58,7 @@ class Analysis:
         cutoff_icohp: float = 0.1,
         summed_spins=True,
         type_charge=None,
+        start=None,
     ):
         """
         This is a class to analyse bonding information automatically
@@ -73,8 +74,9 @@ class Analysis:
             summed_spins: if true, spins will be summed
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
                         Löwdin charges cannot be selected at the moment.
+            start: start energy for integration
         """
-
+        self.start = start
         self.path_to_poscar = path_to_poscar
         self.path_to_icohplist = path_to_icohplist
         self.path_to_cohpcar = path_to_cohpcar
@@ -105,7 +107,6 @@ class Analysis:
 
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
-
         self.path_to_madelung = path_to_madelung
 
     def setup_env(self):
@@ -120,7 +121,6 @@ class Analysis:
         sga = SpacegroupAnalyzer(structure=self.structure)
         symmetry_dataset = sga.get_symmetry_dataset()
         equivalent_sites = symmetry_dataset["equivalent_atoms"]
-
         self.list_equivalent_sites = equivalent_sites
         self.set_equivalent_sites = list(set(equivalent_sites))
         self.spg = symmetry_dataset["international"]
@@ -367,7 +367,6 @@ class Analysis:
 
         dict_antibd = {}
         for label, cohp in zip(labels, cohps):
-            # print(labels)
             if label is not None:
                 if nameion is not None:
                     new = label.split(" ")[2].split("-")
@@ -406,102 +405,152 @@ class Analysis:
             e.g., {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995},
             'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}}
         """
-
-        dict_antibd = {}
+        dict_bd_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
                 new = label.split(" ")[2].split("-")
                 sorted_new = self._sort_name(new, nameion)
                 new_label = sorted_new[0] + "-" + sorted_new[1]
-                integral, perc = self._integrate_antbdstates_below_efermi(cohp, -2)
-                dict_antibd[new_label] = {"integral": integral, "perc": perc}
+                (
+                    integral,
+                    perc,
+                    integral2,
+                    perc2,
+                ) = self._integrate_antbdstates_below_efermi(cohp, start=self.start)
 
-        return dict_antibd
+                if integral == 0 and integral2 != 0.0:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": perc2},
+                        "antibonding": {"integral": integral, "perc": 0.0},
+                    }
+                elif integral2 == 0.0 and integral != 0.0:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": 0.0},
+                        "antibonding": {"integral": integral, "perc": perc},
+                    }
+                elif integral == 0.0 and integral2 == 0.0:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": 0.0},
+                        "antibonding": {"integral": integral, "perc": 0.0},
+                    }
+                else:
+                    dict_bd_antibd[new_label] = {
+                        "bonding": {"integral": integral2, "perc": perc2},
+                        "antibonding": {"integral": integral, "perc": perc},
+                    }
 
-    @staticmethod
-    def _integrate_antbdstates_below_efermi(cohp, start=-30):
+        return dict_bd_antibd
+
+    def _integrate_antbdstates_below_efermi(self, cohp, start):
         """
         .. warning:: NEEDS MORE TESTS
 
-        This method integrates the whole COHP curve that has been computed. The energy range is be very important
+        This integrates the whole COHP curve that has been computed.
+        The energy range is very important.
+        At present the energy range considered is dependent on COHPstartEnergy
+        set during lobster runs. The bonding / antibonding intergral values are senstive to this parameter.
+        If COHPstartEnergy value does not cover entire range of VASP calculations then
+        absoulte value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.
 
         Args:
             cohp: cohp object
-            start: where does the integration start
+            start: integration start energy in eV , eg start = -15
 
         Returns:
-            absolute value of antibonding interactions, percentage value of antibonding interaction
+            absolute value of antibonding, percentage value of antibonding,
+            absolute value of bonding and percentage value of bonding interactions
         """
 
-        # This integrates the whole COHP curve that has been computed. Just be aware that you might be
-        # neglecting some low-lying interactions due to the energy range
+        warnings.warn(
+            "The bonding, antibonding integral/percent values are numerical estimate."
+            " These values are senstive to COHPstartEnergy parameter."
+            " If COHPstartEnergy value does not cover entire range of VASP calculations then"
+            " absoulte value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values."
+        )
 
-        def abstrapz_positive(y, x=None, dx=0.001):
+        from scipy.integrate import trapezoid
+
+        def integrate_positive(y, x):
             """
-            This method will integrate only one side of the COHP
+
+            This will integrate only bonding interactions of the COHP
 
             Args:
-                y: Energy values
-                x: COHP values
-                dx: how fine should the integration steps be
+                y: COHP values
+                x: Energy values
 
             Returns:
-                integrated value
+                integrated value of bonding interactions
             """
 
             y = np.asanyarray(y)
-            if x is None:
-                d = dx
-            else:
-                x = np.asanyarray(x)
-                d = np.diff(x)
-            ret = d * (y[1:] + y[:-1]) / 2.0
-            return ret[ret > 0.0].sum()  # The important line
+            x = np.asanyarray(x)
 
-        def abstrapz_negative(y, x=None, dx=0.001):
+            bonding = trapezoid(y, x)
+
+            return np.round(bonding, 2)
+
+        def integrate_negative(y, x):
+
             """
-            This method will integrate only one side of the COHP
-
+            will integrate only one side of the COHP
             Args:
-                y: Energy values
-                x: COHP values
-                dx: how fine should the integration steps be
-
+                y: COHP values
+                x: Energy values
             Returns:
-                integrated value
+                integrated value of antibonding interactions
             """
+
             y = np.asanyarray(y)
-            if x is None:
-                d = dx
-            else:
-                x = np.asanyarray(x)
-                d = np.diff(x)
-            ret = d * (y[1:] + y[:-1]) / 2.0
-            return ret[ret < 0.0].sum()  # The important line
+            x = np.asanyarray(x)
+            antibonding = trapezoid(y, x)
 
-        from scipy.interpolate import InterpolatedUnivariateSpline
+            return np.round(antibonding, 2)
 
-        # will integrate spin.up and spin.down only below efermi and only below curve
+        # will integrate spin.up and spin.down only below efermi
         energies_corrected = cohp.energies - cohp.efermi
         if Spin.down in cohp.cohp:
             summedcohp = cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
         else:
             summedcohp = cohp.cohp[Spin.up]
 
-        spl = InterpolatedUnivariateSpline(energies_corrected, summedcohp, ext=0)
-        # integrate only below curve
-        # TODO: has to be tested again!
-        integrate = abstrapz_negative(
-            [spl(energy) for energy in energies_corrected if start <= energy <= 0],
-            [energy for energy in energies_corrected if start <= energy <= 0],
-        )
+        cohp_bf = []
+        en_bf = []
 
-        integrate2 = abstrapz_positive(
-            [spl(energy) for energy in energies_corrected if start <= energy <= 0],
-            [energy for energy in energies_corrected if start <= energy <= 0],
-        )
+        for i, en in enumerate(energies_corrected):
+            if (start is None) and en <= 0:
+                en_bf.append(en)
+                cohp_bf.append(-1 * summedcohp[i])
+            if (start is not None) and 0 >= en >= start:
+                en_bf.append(en)
+                cohp_bf.append(-1 * summedcohp[i])
 
-        return integrate2, abs(integrate2) / (abs(integrate2) + abs(integrate))
+        # Seperate the bonding and antibonding COHP values in seperate lists
+        pos = []
+        en_pos = []
+        neg = []
+        en_neg = []
+
+        for i, scohp in enumerate(cohp_bf):
+            if scohp >= 0:
+                pos.append(scohp)
+                en_pos.append(energies_corrected[i])
+
+        for i, scohp in enumerate(cohp_bf):
+            if scohp <= 0:
+                neg.append(-1 * scohp)
+                en_neg.append(energies_corrected[i])
+
+        antibonding = integrate_negative(y=neg, x=en_neg)
+
+        bonding = integrate_positive(y=pos, x=en_pos)
+
+        return (
+            antibonding,
+            np.round(abs(antibonding) / (abs(bonding) + abs(antibonding)), 5),
+            bonding,
+            np.round(abs(bonding) / (abs(bonding) + abs(antibonding)), 5),
+        )
 
     @staticmethod
     def _get_bond_dict(
@@ -567,7 +616,6 @@ class Analysis:
             None
 
         """
-
         self.condensed_bonding_analysis = {}
         # which icohps are considered
         if self.whichbonds == "cation-anion":
@@ -620,9 +668,19 @@ class Analysis:
                 # pairs, strengths, nameion
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, namecation)
-                # dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)
-                # dict_antibonding,
+                dict_antibonding = (
+                    self._integrate_antbdstates_below_efermi_for_set_cohps(
+                        labels, cohps, nameion=namecation
+                    )
+                )
+
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation)
+
+                for k, v in bond_dict.items():
+                    for k2, v2 in dict_antibonding.items():
+                        if namecation == k2.split("-")[0] and k == k2.split("-")[1]:
+                            v["bonding"] = v2["bonding"]
+                            v["antibonding"] = v2["antibonding"]
 
                 site_dict[ication] = {
                     "env": ce,
@@ -649,9 +707,19 @@ class Analysis:
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, nameion=None)
 
-                # dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)
-                # dict_antibonding,
+                dict_antibonding = (
+                    self._integrate_antbdstates_below_efermi_for_set_cohps(
+                        labels, cohps, nameion
+                    )
+                )
+
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
+
+                for k, v in bond_dict.items():
+                    for k2, v2 in dict_antibonding.items():
+                        if nameion == k2.split("-")[0] and k == k2.split("-")[1]:
+                            v["bonding"] = v2["bonding"]
+                            v["antibonding"] = v2["antibonding"]
 
                 site_dict[iion] = {
                     "env": ce,
