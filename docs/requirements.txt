@@ -1,7 +1,7 @@
 Sphinx==5.1.1
 sphinx-argparse
 sphinx-pdj-theme==0.2.1
-m2r2==0.3.2
+m2r2==0.3.3
 myst-parser
 docutils
 numpy==1.23.1
