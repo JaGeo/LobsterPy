@@ -74,14 +74,6 @@ class GraphObject:
         sg = chemenvlobster.get_bonded_structure(
             structure=decorated_structure, decorate=True, edge_properties=True
         )
-        #print(sg.graph)
-
-        # this is the relevant data
-        #print(sg.graph.edges(data=True))
-        #print('')
-        #print(sg.graph.nodes(data=True))
-        #nx.draw(sg.graph,with_labels = True)
-        #plt.savefig("filename.png")
 
 
         return sg #plt.show()
