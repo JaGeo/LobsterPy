@@ -7,8 +7,6 @@ This package provides the modules for generating graph objects using lobsterpy d
 from pymatgen.core.structure import Structure
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.lobster.outputs import Charge
-import networkx as nx
-import matplotlib.pyplot as plt
 
 
 class GraphObject:
@@ -46,9 +44,7 @@ class GraphObject:
         self.path_to_icooplist = path_to_icooplist
         self.path_to_icobilist = path_to_icobilist
         self.add_additional_data_sg = add_additional_data_sg
-        #self.sg()
 
-        #print(self.path_to_poscar)
     def sg(self):
 
         chemenvlobster = LobsterNeighbors(
@@ -68,15 +64,12 @@ class GraphObject:
             self.path_to_poscar
         )
 
-        #print(decorated_structure)
-
         # decorate=True will add the coordination environments as ell
         sg = chemenvlobster.get_bonded_structure(
             structure=decorated_structure, decorate=True, edge_properties=True
         )
 
-
-        return sg #plt.show()
+        return sg
 
     def get_sg_node_data(self):
 
@@ -87,6 +80,3 @@ class GraphObject:
 
         graph_data = self.sg()
         print(graph_data.graph.edges(data=True))
-
-
-
