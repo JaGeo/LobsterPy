@@ -88,6 +88,17 @@ class GraphObject:
                 add_additional_data_sg=self.add_additional_data_sg,
             )
 
+        chemenvlobster.get_info_cohps_to_neighbors(path_to_COHPCAR=self.path_to_cohpcar)
+
+        (
+            _summed_icohps,
+            list_icohps,
+            _number_bonds,
+            labels,
+            _atoms,
+            _final_isites,
+        ) = chemenvlobster.get_info_icohps_to_neighbors()
+
         decorated_structure = Charge(self.path_to_charge).get_structure_with_charges(
             self.path_to_poscar
         )
@@ -111,6 +122,16 @@ class GraphObject:
             for k2, v2 in lobster_env.graph.nodes.data():
                 if v["ion"] == v2["specie"]:
                     v2["properties"].update({"env": v["env"]})
+
+        for edge_prop in lobster_env.graph.edges.data():
+            for i, icohp in enumerate(list_icohps):
+                if icohp == edge_prop[2]["ICOHP"]:
+                    _ab, ab_p, _b, b_p = analyze._integrate_antbdstates_below_efermi(
+                        cohp=chemenvlobster.completecohp.get_cohp_by_label(labels[i]),
+                        start=None,
+                    )
+                    edge_prop[2]["ICOHP_bonding_perc"] = b_p
+                    edge_prop[2]["ICOHP_antibonding_perc"] = ab_p
 
         return lobster_env
 
