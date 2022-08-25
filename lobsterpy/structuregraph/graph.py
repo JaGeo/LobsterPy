@@ -5,12 +5,12 @@
 This package provides the modules for generating graph objects using lobsterpy data
 """
 
-import os
 from typing import Optional
 from pymatgen.core.structure import Structure
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.lobster.outputs import Charge
 from lobsterpy.cohp.analyze import Analysis
+
 
 class LobsterGraph:
     """
@@ -25,12 +25,12 @@ class LobsterGraph:
         path_to_poscar: str,
         path_to_charge: str,
         path_to_cohpcar: str,
-        path_to_icohplist:str,
+        path_to_icohplist: str,
         path_to_madelung: str,
         add_additional_data_sg=True,
         path_to_icooplist: Optional[str] = None,
         path_to_icobilist: Optional[str] = None,
-        which_bonds: str = 'all',
+        which_bonds: str = "all",
         start: str = None,
     ):
         """
@@ -64,13 +64,15 @@ class LobsterGraph:
         self.path_to_madelung = path_to_madelung
         self.which_bonds = which_bonds
 
-        if self.which_bonds == 'all':
+        if self.which_bonds == "all":
             self.additional_condition = 0
-        elif self.which_bonds == 'cation-anion':
+        elif self.which_bonds == "cation-anion":
             self.additional_condition = 1
         else:
-            raise ValueError ("Only accepted values are 'all' and 'cation-anion'."
-                              "Please check the input parameters of which_bonds arg")
+            raise ValueError(
+                "Only accepted values are 'all' and 'cation-anion'."
+                "Please check the input parameters of which_bonds arg"
+            )
         self.start = start
 
         self.sg = self.get_decorated_sg()
@@ -134,7 +136,9 @@ class LobsterGraph:
 
         for edge_prop in lobster_env.graph.edges.data():
             _ab, ab_p, _b, b_p = analyze._integrate_antbdstates_below_efermi(
-                cohp=chemenvlobster.completecohp.get_cohp_by_label(edge_prop[2]["ICOHP_bond_key"]),
+                cohp=chemenvlobster.completecohp.get_cohp_by_label(
+                    edge_prop[2]["ICOHP_bond_key"]
+                ),
                 start=self.start,
             )
             edge_prop[2]["ICOHP_bonding_perc"] = b_p
