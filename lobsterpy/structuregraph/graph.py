@@ -137,7 +137,7 @@ class LobsterGraph:
         for edge_prop in lobster_env.graph.edges.data():
             _ab, ab_p, _b, b_p = analyze._integrate_antbdstates_below_efermi(
                 cohp=chemenvlobster.completecohp.get_cohp_by_label(
-                    edge_prop[2]["ICOHP_bond_key"]
+                    edge_prop[2]["bond_label"]
                 ),
                 start=self.start,
             )
