@@ -7,4 +7,4 @@ docutils
 numpy==1.23.2
 matplotlib==3.5.3
 matplotlib-inline==0.1.6
-pymatgen==2022.7.25
+pymatgen==2022.8.23
