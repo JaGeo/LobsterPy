@@ -49,7 +49,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["../../lobsterpy/test","../../lobsterpy/cohp/test","../../lobsterpy/TestData","Thumbs.db", ".DS_Store",]
-path: docs/
+
 def run_apidoc(_):
     import subprocess
     import glob
