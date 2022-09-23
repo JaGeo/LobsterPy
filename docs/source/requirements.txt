@@ -2,7 +2,7 @@ Sphinx==4.5.0
 sphinx-argparse
 sphinx-book-theme==0.3.3
 m2r2
-myst-parser
+myst-parser==0.8.2
 docutils
 numpy==1.23.3
 matplotlib==3.6.0
