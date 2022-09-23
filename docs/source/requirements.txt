@@ -1,4 +1,4 @@
-Sphinx==5.1.1
+Sphinx==4.5.0
 sphinx-argparse
 sphinx-book-theme==0.3.3
 m2r2==0.3.3
