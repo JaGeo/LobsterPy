@@ -27,4 +27,3 @@ formats:
 python:
    install:
    - requirements: docs/source/requirements.txt
-   - path: docs/
