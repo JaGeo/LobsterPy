@@ -1,4 +1,4 @@
-## not yet released
+## v0.2.3
 - bonding and antibonding contributions will now be integrated and a percentage of antibonding interactions below Efermi will be given.
 
 ## v0.2.2

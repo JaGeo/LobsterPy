@@ -4,7 +4,7 @@ sphinx-pdj-theme==0.2.1
 m2r2==0.3.3
 myst-parser
 docutils
-numpy==1.23.2
-matplotlib==3.5.3
+numpy==1.23.3
+matplotlib==3.6.0
 matplotlib-inline==0.1.6
-pymatgen==2022.7.25
+pymatgen==2022.9.8
