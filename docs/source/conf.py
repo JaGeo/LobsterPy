@@ -58,7 +58,7 @@ def run_apidoc(_):
     excludes = glob.glob(os.path.join(output_path, "../../lobsterpy/*/test"))
     module = os.path.join(output_path, "../../lobsterpy/*")
     cmd_path = "sphinx-apidoc"
-    command = [cmd_path, "-e", "-o", output_path, module, " ".join(excludes),"".join(glob.glob(os.path.join(output_path, "../../lobsterpy/test"))), "--force"]
+    command = [cmd_path, "-e", "-o", output_path, module, " ".join(excludes), "--force"]
     subprocess.check_call(command)
 
 
