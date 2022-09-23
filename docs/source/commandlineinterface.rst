@@ -143,14 +143,14 @@ Analyze the lobster outputs with automation
    option to save output in json file. Below is an example output of
    this command.
 
+.. code:: bash
+   
+   The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
+   Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, 27.843 percent antibonding interaction below EFermi) bonds.
+   
 ::
 
    lobsterpy description --json description.json
-
-.. code:: bash
-
-   The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
-   Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.
 
 Following is the json file produced.
 
@@ -172,7 +172,15 @@ Following is the json file produced.
              "ICOHP_mean": "-0.62",
              "ICOHP_sum": "-4.97",
              "has_antibdg_states_below_Efermi": true,
-             "number_of_bonds": 8
+             "number_of_bonds": 8,
+             "bonding": {
+               "integral": 7.93,
+               "perc": 0.72157
+             },
+             "antibonding": {
+               "integral": 3.06,
+               "perc": 0.27843
+             }
            }
          },
          "ion": "Cd",
@@ -190,8 +198,8 @@ Following is the json file produced.
        }
      },
      "type_charges": "Mulliken"
-   }
-
+  }
+   
 -  ``lobsterpy automatic-plot`` command will plot the results
    automatically. It will evaluate all COHPs with ICOHP values down to
    10% of the strongest ICOHP. You can enforce an analysis of all bonds
