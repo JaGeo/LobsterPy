@@ -147,7 +147,7 @@ Analyze the lobster outputs with automation
 
    lobsterpy description --json description.json
 
-.. code:: cmd
+.. code:: bash
 
    The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
    Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, antibonding interaction below EFermi) bonds.
@@ -270,7 +270,7 @@ You can also customize the style and parameters of the plots generated
 by using optinal tags. One can easily get an overview of these using
 either of these commands:
 
-.. code:: cmd
+.. code:: bash
 
    lobsterpy automatic-plot --help 
    lobsterpy plot --help
@@ -280,5 +280,3 @@ You can also download the PDF version of the documentation `[here] <https://lobs
 .. code:: ipython3
 
     os.chdir('..') # Return to parent directory
-
---------------

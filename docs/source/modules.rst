@@ -1,4 +1,4 @@
-LobsterPy
+lobsterpy
 =========
 
 .. toctree::

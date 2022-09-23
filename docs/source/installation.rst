@@ -12,5 +12,3 @@ Now that you have installed the lobsterpy, one can use the built-in
 command-line interface of this package to adapt the standard VASP input
 file (INCAR) and create lobster input files needed for successfully
 performing bonding analysis.
-
---------------
