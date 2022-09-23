@@ -1,6 +1,6 @@
 ![CI Status](https://github.com/JaGeo/LobsterPy/actions/workflows/python-package.yml/badge.svg) [![Documentation Status](https://readthedocs.org/projects/lobsterpy/badge/?version=latest)](https://lobsterpy.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/lobsterpy.svg)](https://badge.fury.io/py/lobsterpy) [![PyPI downloads](https://img.shields.io/pypi/dm/lobsterpy?style=flat&color=blue&label=pypi%20downloads)](https://pypi.org/project/lobsterpy) [![Downloads](https://pepy.tech/badge/lobsterpy)](https://pepy.tech/project/lobsterpy)   [![DOI](https://zenodo.org/badge/343384088.svg)](https://zenodo.org/badge/latestdoi/343384088)     
 
-# LobsterPy
+# Getting started
 <img src="https://raw.githubusercontent.com/JaGeo/LobsterPy/main/LobsterPyLogo.png" alt="LobsterPy Logo which consits of a green Python and a red Lobster" width="200"/>
 
 This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
@@ -34,11 +34,6 @@ You can also pip install the package in development mode by writing ``pip instal
 * **Further help?**
   
     You can get further information by using ``lobsterpy --help`` and also by typing ``lobsterpy description --help``, ``lobsterpy automatic-plot --help``, ``lobsterpy plot --help``
-
-
-## License
-Lobsterpy is released under a BSD 3-Clause "New" or "Revised" License. 
-
 
 ## How to cite?
 Please cite our paper: J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, **ChemPlusChem**, [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123). 
