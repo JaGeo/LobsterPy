@@ -1,0 +1,10 @@
+Sphinx==5.1.1
+sphinx-argparse
+sphinx-rtd-theme
+m2r2==0.3.3
+myst-parser
+docutils
+numpy==1.23.3
+matplotlib==3.6.0
+matplotlib-inline==0.1.6
+pymatgen==2022.9.8
