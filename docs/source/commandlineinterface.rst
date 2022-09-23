@@ -283,7 +283,6 @@ either of these commands:
    lobsterpy automatic-plot --help 
    lobsterpy plot --help
 
-You can also download the PDF version of the documentation `[here] <https://lobsterpy.readthedocs.io/_/downloads/en/latest/pdf/>`_.
 
 .. code:: ipython3
 
