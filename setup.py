@@ -19,7 +19,7 @@ setup(
         "numpy",
         "typing",
         "Sphinx==5.3.0",
-        "sphinx-argparse==0.3.1",
+        "sphinx-argparse==0.3.2",
         "sphinx-pdj-theme==0.2.1",
     ],
     classifiers=[
