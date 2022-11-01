@@ -1,0 +1,9 @@
+Sphinx==4.5.0
+jupyter
+sphinx-argparse
+sphinx-book-theme==0.3.3
+m2r2
+myst-parser
+docutils
+numpy==1.23.3
+lobsterpy

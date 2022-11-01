@@ -15,11 +15,11 @@ setup(
     license="BSD 3-clause",
     packages=find_packages(),
     install_requires=[
-        "pymatgen==2022.9.8",
+        "pymatgen==2022.10.22",
         "numpy",
         "typing",
-        "Sphinx==5.1.1",
-        "sphinx-argparse==0.3.1",
+        "Sphinx==5.3.0",
+        "sphinx-argparse==0.3.2",
         "sphinx-pdj-theme==0.2.1",
     ],
     classifiers=[
