@@ -112,11 +112,11 @@ class LobsterGraph:
 
         decorated_structure = Charge(self.path_to_charge).get_structure_with_charges(
             self.path_to_poscar
-        ) # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)
+        )  # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)
 
         lobster_env = chemenvlobster.get_bonded_structure(
             structure=decorated_structure, decorate=True, edge_properties=True
-        ) # Create the structure graph object decorated with site properties and also edge properties based on ICOHP/ICOBI/ICOOP data
+        )  # Create the structure graph object decorated with site properties and also edge properties based on ICOHP/ICOBI/ICOOP data
 
         analyze = Analysis(
             path_to_charge=self.path_to_charge,
@@ -125,23 +125,23 @@ class LobsterGraph:
             path_to_icohplist=self.path_to_icohplist,
             path_to_madelung=self.path_to_madelung,
             whichbonds=self.which_bonds,
-        ) # Initialized automating bonding analysis from Lobsterpy based on ICOHP 
+        )  # Initialized automating bonding analysis from Lobsterpy based on ICOHP 
 
-        cba = analyze.condensed_bonding_analysis # Store the summarized dictionary object containing bonding information
+        cba = analyze.condensed_bonding_analysis  # Store the summarized dictionary object containing bonding information
 
-        for k, v in cba["sites"].items(): # Iterate over sites in the dictionary
+        for k, v in cba["sites"].items():  # Iterate over sites in the dictionary
             for k2, v2 in lobster_env.graph.nodes.data(): 
-                if v["ion"] == v2["specie"]: # Here check if ions are same and add its corresponding environment in node properties
+                if v["ion"] == v2["specie"]:  # Here check if ions are same and add its corresponding environment in node properties
                     v2["properties"].update({"env": v["env"]})
 
-        for edge_prop in lobster_env.graph.edges.data(): # Iterate over structure graph edges 
+        for edge_prop in lobster_env.graph.edges.data():  # Iterate over structure graph edges 
             _ab, ab_p, _b, b_p = analyze._integrate_antbdstates_below_efermi(
                 cohp=chemenvlobster.completecohp.get_cohp_by_label(
                     edge_prop[2]["bond_label"]
                 ),
                 start=self.start,
-            ) # Compute bonding- antibonding percentages for each bond in structure graph object 
-            edge_prop[2]["ICOHP_bonding_perc"] = b_p # Store bonding percentage in structure graph object
-            edge_prop[2]["ICOHP_antibonding_perc"] = ab_p # Store anti-bonding percentage in structure graph object
+            )  # Compute bonding- antibonding percentages for each bond in structure graph object 
+            edge_prop[2]["ICOHP_bonding_perc"] = b_p  # Store bonding percentage in structure graph object
+            edge_prop[2]["ICOHP_antibonding_perc"] = ab_p  # Store anti-bonding percentage in structure graph object
 
         return lobster_env
