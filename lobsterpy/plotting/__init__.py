@@ -13,6 +13,9 @@ from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 from pymatgen.electronic_structure.plotter import CohpPlotter
 from pymatgen.electronic_structure.core import Spin
+from layout_dicts import layout_dict, cohp_axis_style_dict, energy_axis_style_dict, spin_up_trace_style_dict, \
+    spin_down_trace_style_dict, legend_style_dict
+import plotly.graph_objs as go
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
@@ -223,3 +226,168 @@ class PlainCohpPlotter(CohpPlotter):
         kernel = norm.pdf(kernel_x, scale=sigma)
 
         return convolve(population, kernel, mode="same") / kernel.sum()
+
+
+class InteractiveCohpPlotter:
+    """
+    Interactive COHP plotter to view all relevant / multiple COHPs in one figure
+    """
+
+    def __init__(self, zero_at_efermi=True, are_coops=False, are_cobis=False):
+        """
+        Args:
+            zero_at_efermi: Whether to shift all populations to have zero
+                energy at the Fermi level. Defaults to True.
+            are_coops: Switch to indicate that these are COOPs, not COHPs.
+                Defaults to False for COHPs.
+            are_cobis: Switch to indicate that these are COBIs, not COHPs/COOPs.
+                Defaults to False for COHPs
+        """
+        self.zero_at_efermi = zero_at_efermi
+        self.are_coops = are_coops
+        self.are_cobis = are_cobis
+        self._cohps = {}
+
+    def add_all_relevant_cohps(self, complete_cohp, analyse):
+        """
+        Adds all relevant COHPs from lobsterpy analyse object.
+
+        Args:
+            complete_cohp: CompleteCohp object from pymatgen.
+            analyse: Analyse object from lobsterpy, required f. determination of
+                relevant bonds.
+        """
+        for label in analyse.condensed_bonding_analysis["sites"][0]["relevant_bonds"]:
+            cohp = complete_cohp.get_cohp_by_label(label)
+            energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+            populations = cohp.get_cohp()
+            int_populations = cohp.get_icohp()
+            self._cohps[label] = {
+                "energies": energies,
+                "COHP": populations,
+                "ICOHP": int_populations,
+                "efermi": cohp.efermi,
+                "plot_label": (
+                        str(label)
+                        + ":"
+                        + str(complete_cohp.bonds[label]["sites"][0].species_string)
+                        + "-"
+                        + str(complete_cohp.bonds[label]["sites"][1].species_string)
+                )
+            }
+
+    def add_cohps_by_lobster_label(self, complete_cohp, label_list):
+        """
+        Adds COHPs explicitly specified in label list.
+
+        Args:
+            complete_cohp: CompleteCohp object from pymatgen.
+            label_list: List of COHP labels as from LOBSTER.
+        """
+        for label in label_list:
+            cohp = complete_cohp.get_cohp_by_label(label)
+            energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+            populations = cohp.get_cohp()
+            int_populations = cohp.get_icohp()
+            self._cohps[label] = {
+                "energies": energies,
+                "COHP": populations,
+                "ICOHP": int_populations,
+                "efermi": cohp.efermi,
+                "plot_label": (
+                    str(label)
+                    + ":"
+                    + str(complete_cohp.bonds[label]["sites"][0].species_string)
+                    + "-"
+                    + str(complete_cohp.bonds[label]["sites"][1].species_string)
+                )
+            }
+
+    def get_plot(
+        self,
+        xlim=None,
+        ylim=None,
+        plot_negative=None,
+        integrated=False,
+        invert_axes=True,
+    ):
+        """
+        Get an interactive plotly figure showing the COHPs.
+
+        Args:
+            xlim: Specifies the x-axis limits. Defaults to None for
+                automatic determination.
+            ylim: Specifies the y-axis limits. Defaults to None for
+                automatic determination.
+            plot_negative: It is common to plot -COHP(E) so that the
+                sign means the same for COOPs and COHPs. Defaults to None
+                for automatic determination: If are_coops is True, this
+                will be set to False, else it will be set to True.
+            integrated: Switch to plot ICOHPs. Defaults to False.
+            invert_axes: Put the energies onto the y-axis, which is
+                common in chemistry.
+
+        Returns:
+            A  plotly.graph_objects.Figure object.
+        """
+        if self.are_coops:
+            cohp_label = "COOP"
+        elif self.are_cobis:
+            cohp_label = "COBI"
+        else:
+            cohp_label = "COHP"
+
+        if plot_negative is None:
+            plot_negative = (not self.are_coops) and (not self.are_cobis)
+
+        if integrated:
+            cohp_label = "I" + cohp_label + " (eV)"
+
+        if plot_negative:
+            cohp_label = "-" + cohp_label
+
+        if self.zero_at_efermi:
+            energy_label = "$E - E_f$ (eV)"
+        else:
+            energy_label = "$E$ (eV)"
+
+        traces = []
+        for item in self._cohps.values():
+            population_key = item["ICOHP"] if integrated else item["COHP"]
+            for spin in [Spin.up, Spin.down]:
+                if spin in population_key:
+                    population = [-i for i in population_key[spin]] if plot_negative else population_key[spin]
+                    x = population if invert_axes else item["energies"]
+                    y = item["energies"] if invert_axes else population
+                    if spin == Spin.down:
+                        trace = go.Scatter(x=x, y=y, name=item["plot_label"])
+                        trace.update(spin_down_trace_style_dict)
+                        traces.append(trace)
+                    else:
+                        trace = go.Scatter(x=x, y=y, name=item["plot_label"])
+                        trace.update(spin_up_trace_style_dict)
+                        traces.append(trace)
+        cohp_data = go.Data(traces)
+
+        energy_axis = go.layout.YAxis(title=energy_label)
+        energy_axis.update(energy_axis_style_dict)
+        cohp_axis = go.layout.XAxis(title=cohp_label)
+        cohp_axis.update(cohp_axis_style_dict)
+
+        layout = go.Layout(xaxis=cohp_axis, yaxis=energy_axis) if invert_axes \
+            else go.Layout(xaxis=energy_axis, yaxis=cohp_axis)
+
+        fig = go.Figure(data=cohp_data, layout=layout)
+        fig.update_layout(layout_dict)
+        fig["layout"]["legend"] = legend_style_dict
+
+        if xlim:
+            fig.update_xaxes(range=xlim)
+        if ylim:
+            fig.update_yaxes(range=ylim)
+        #TODO:
+        # Automatic limit determination
+        # Same color of alpha / beta el. of same band
+        # replace go.Data (deprecated)
+
+        return fig
