@@ -7,18 +7,20 @@ Here classes and functions to plot Lobster outputs are provided
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from itertools import cycle
 import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 from pymatgen.electronic_structure.plotter import CohpPlotter
 from pymatgen.electronic_structure.core import Spin
-from layout_dicts import layout_dict, cohp_axis_style_dict, energy_axis_style_dict, spin_up_trace_style_dict, \
-    spin_down_trace_style_dict, legend_style_dict
+#from layout_dicts import layout_dict, cohp_axis_style_dict, energy_axis_style_dict, spin_up_trace_style_dict, \
+#    spin_down_trace_style_dict, legend_style_dict
+from . import layout_dicts as ld
 import plotly.graph_objs as go
+import plotly.express as px
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
-
 
 def get_style_list(
     no_base_style: bool = False,
@@ -351,35 +353,39 @@ class InteractiveCohpPlotter:
         else:
             energy_label = "$E$ (eV)"
 
+        # Setting up repeating color scheme
+        palette = px.colors.qualitative.Light24
+        pal_iter = cycle(palette)
+
         traces = []
         for item in self._cohps.values():
             population_key = item["ICOHP"] if integrated else item["COHP"]
+            band_color = next(pal_iter)
             for spin in [Spin.up, Spin.down]:
                 if spin in population_key:
                     population = [-i for i in population_key[spin]] if plot_negative else population_key[spin]
                     x = population if invert_axes else item["energies"]
                     y = item["energies"] if invert_axes else population
-                    if spin == Spin.down:
+                    if spin == Spin.up:
                         trace = go.Scatter(x=x, y=y, name=item["plot_label"])
-                        trace.update(spin_down_trace_style_dict)
-                        traces.append(trace)
+                        trace.update(ld.spin_up_trace_style_dict)
                     else:
-                        trace = go.Scatter(x=x, y=y, name=item["plot_label"])
-                        trace.update(spin_up_trace_style_dict)
-                        traces.append(trace)
-        cohp_data = go.Data(traces)
+                        trace = go.Scatter(x=x, y=y, name="")
+                        trace.update(ld.spin_down_trace_style_dict)
+                    trace.update(line=dict(color=band_color))
+                    traces.append(trace)
 
         energy_axis = go.layout.YAxis(title=energy_label)
-        energy_axis.update(energy_axis_style_dict)
+        energy_axis.update(ld.energy_axis_style_dict)
         cohp_axis = go.layout.XAxis(title=cohp_label)
-        cohp_axis.update(cohp_axis_style_dict)
+        cohp_axis.update(ld.cohp_axis_style_dict)
 
         layout = go.Layout(xaxis=cohp_axis, yaxis=energy_axis) if invert_axes \
             else go.Layout(xaxis=energy_axis, yaxis=cohp_axis)
 
-        fig = go.Figure(data=cohp_data, layout=layout)
-        fig.update_layout(layout_dict)
-        fig["layout"]["legend"] = legend_style_dict
+        fig = go.Figure(data=traces, layout=layout)
+        fig.update_layout(ld.layout_dict)
+        fig["layout"]["legend"] = ld.legend_style_dict
 
         if xlim:
             fig.update_xaxes(range=xlim)
@@ -387,7 +393,6 @@ class InteractiveCohpPlotter:
             fig.update_yaxes(range=ylim)
         #TODO:
         # Automatic limit determination
-        # Same color of alpha / beta el. of same band
-        # replace go.Data (deprecated)
+        # inherit CohpPlotter fr. pymatgen?
 
         return fig
