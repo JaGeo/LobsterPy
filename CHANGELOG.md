@@ -1,3 +1,5 @@
+## v0.2.4
+- fixing linting errors due to new mypy versions
 ## v0.2.3
 - bonding and antibonding contributions will now be integrated and a percentage of antibonding interactions below Efermi will be given.
 
