@@ -56,13 +56,13 @@ energy_axis_style_dict = dict(
 )
 
 spin_up_trace_style_dict = dict(
-                line=dict(width=4),
+                line=dict(width=3),
                 mode="lines",
                 visible="legendonly"
 )
 
 spin_down_trace_style_dict = dict(
-                line=dict(width=4, dash="dash"),
+                line=dict(width=3, dash="dash"),
                 mode="lines",
                 visible="legendonly"
 )

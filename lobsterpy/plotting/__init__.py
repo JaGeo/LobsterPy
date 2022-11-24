@@ -7,18 +7,18 @@ Here classes and functions to plot Lobster outputs are provided
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from itertools import cycle
 import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 from pymatgen.electronic_structure.plotter import CohpPlotter
 from pymatgen.electronic_structure.core import Spin
-from layout_dicts import layout_dict, cohp_axis_style_dict, energy_axis_style_dict, spin_up_trace_style_dict, \
-    spin_down_trace_style_dict, legend_style_dict
+from . import layout_dicts as ld
 import plotly.graph_objs as go
+import plotly.express as px
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
-
 
 def get_style_list(
     no_base_style: bool = False,
@@ -257,24 +257,28 @@ class InteractiveCohpPlotter:
             analyse: Analyse object from lobsterpy, required f. determination of
                 relevant bonds.
         """
-        for label in analyse.condensed_bonding_analysis["sites"][0]["relevant_bonds"]:
-            cohp = complete_cohp.get_cohp_by_label(label)
-            energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
-            populations = cohp.get_cohp()
-            int_populations = cohp.get_icohp()
-            self._cohps[label] = {
-                "energies": energies,
-                "COHP": populations,
-                "ICOHP": int_populations,
-                "efermi": cohp.efermi,
-                "plot_label": (
-                        str(label)
-                        + ":"
-                        + str(complete_cohp.bonds[label]["sites"][0].species_string)
-                        + "-"
-                        + str(complete_cohp.bonds[label]["sites"][1].species_string)
-                )
-            }
+        for site_key, site in analyse.condensed_bonding_analysis["sites"].items():
+            for label in site["relevant_bonds"]:
+                cohp = complete_cohp.get_cohp_by_label(label)
+                energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+                populations = cohp.get_cohp()
+                int_populations = cohp.get_icohp()
+                self._cohps[label] = {
+                    "energies": energies,
+                    "COHP": populations,
+                    "ICOHP": int_populations,
+                    "efermi": cohp.efermi,
+                    "plot_label": (
+                            "site_cohplabel:"
+                            + str(site_key)
+                            + "_"
+                            + str(label)
+                            + "="
+                            + str(complete_cohp.bonds[label]["sites"][0].species_string)
+                            + "-"
+                            + str(complete_cohp.bonds[label]["sites"][1].species_string)
+                    )
+                }
 
     def add_cohps_by_lobster_label(self, complete_cohp, label_list):
         """
@@ -344,50 +348,57 @@ class InteractiveCohpPlotter:
             cohp_label = "I" + cohp_label + " (eV)"
 
         if plot_negative:
-            cohp_label = "-" + cohp_label
+            cohp_label = u"\u2212" + cohp_label
 
         if self.zero_at_efermi:
             energy_label = "$E - E_f$ (eV)"
         else:
             energy_label = "$E$ (eV)"
 
+        # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
+        palette = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
+        pal_iter = cycle(palette)
+
         traces = []
         for item in self._cohps.values():
             population_key = item["ICOHP"] if integrated else item["COHP"]
+            band_color = next(pal_iter)
             for spin in [Spin.up, Spin.down]:
                 if spin in population_key:
                     population = [-i for i in population_key[spin]] if plot_negative else population_key[spin]
                     x = population if invert_axes else item["energies"]
                     y = item["energies"] if invert_axes else population
-                    if spin == Spin.down:
+                    if spin == Spin.up:
                         trace = go.Scatter(x=x, y=y, name=item["plot_label"])
-                        trace.update(spin_down_trace_style_dict)
-                        traces.append(trace)
+                        trace.update(ld.spin_up_trace_style_dict)
                     else:
-                        trace = go.Scatter(x=x, y=y, name=item["plot_label"])
-                        trace.update(spin_up_trace_style_dict)
-                        traces.append(trace)
-        cohp_data = go.Data(traces)
+                        trace = go.Scatter(x=x, y=y, name="")
+                        trace.update(ld.spin_down_trace_style_dict)
+                    trace.update(line=dict(color=band_color))
+                    traces.append(trace)
 
-        energy_axis = go.layout.YAxis(title=energy_label)
-        energy_axis.update(energy_axis_style_dict)
-        cohp_axis = go.layout.XAxis(title=cohp_label)
-        cohp_axis.update(cohp_axis_style_dict)
+        energy_axis = go.layout.YAxis(title=energy_label) if invert_axes \
+            else go.layout.XAxis(title=energy_label, rangeslider=dict(visible=True))
+        energy_axis.update(ld.energy_axis_style_dict)
+        cohp_axis = go.layout.XAxis(title=cohp_label, rangeslider=dict(visible=True)) if invert_axes \
+            else go.layout.YAxis(title=cohp_label)
+        cohp_axis.update(ld.cohp_axis_style_dict)
 
         layout = go.Layout(xaxis=cohp_axis, yaxis=energy_axis) if invert_axes \
             else go.Layout(xaxis=energy_axis, yaxis=cohp_axis)
 
-        fig = go.Figure(data=cohp_data, layout=layout)
-        fig.update_layout(layout_dict)
-        fig["layout"]["legend"] = legend_style_dict
+        fig = go.Figure(data=traces, layout=layout)
+        fig.update_layout(ld.layout_dict)
+        fig.update_layout(legend=ld.legend_style_dict)
 
         if xlim:
             fig.update_xaxes(range=xlim)
         if ylim:
             fig.update_yaxes(range=ylim)
         #TODO:
-        # Automatic limit determination
-        # Same color of alpha / beta el. of same band
-        # replace go.Data (deprecated)
+        # improve display of legend
+        # somehow y axis scaling inside image?
+        # inherit CohpPlotter fr. pymatgen?
+        # maybe dashed line at Ef
 
         return fig
