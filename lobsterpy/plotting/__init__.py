@@ -355,6 +355,7 @@ class InteractiveCohpPlotter:
         else:
             energy_label = "$E$ (eV)"
 
+
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
         palette = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
         pal_iter = cycle(palette)
@@ -382,7 +383,6 @@ class InteractiveCohpPlotter:
         energy_axis.update(ld.energy_axis_style_dict)
         cohp_axis = go.layout.XAxis(title=cohp_label, rangeslider=dict(visible=True)) if invert_axes \
             else go.layout.YAxis(title=cohp_label)
-        cohp_axis.update(ld.cohp_axis_style_dict)
 
         layout = go.Layout(xaxis=cohp_axis, yaxis=energy_axis) if invert_axes \
             else go.Layout(xaxis=energy_axis, yaxis=cohp_axis)
