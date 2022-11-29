@@ -383,6 +383,7 @@ class InteractiveCohpPlotter:
         energy_axis.update(ld.energy_axis_style_dict)
         cohp_axis = go.layout.XAxis(title=cohp_label, rangeslider=dict(visible=True)) if invert_axes \
             else go.layout.YAxis(title=cohp_label)
+        cohp_axis.update(ld.cohp_axis_style_dict)
 
         layout = go.Layout(xaxis=cohp_axis, yaxis=energy_axis) if invert_axes \
             else go.Layout(xaxis=energy_axis, yaxis=cohp_axis)
