@@ -302,30 +302,30 @@ class Description:
         set_labels_cohps = self.analysis_object.set_labels_cohps
         structure = self.analysis_object.structure
 
+        ia = InteractiveCohpPlotter()
         for iplot, (ication, labels, cohps) in enumerate(
             zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
 
             namecation = str(structure[ication].specie)
 
-            ia = InteractiveCohpPlotter()
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     ia.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
-            plot = ia.get_plot(integrated=integrated, xlim=xlim, ylim=ylim)
+        plot = ia.get_plot(integrated=integrated, xlim=xlim, ylim=ylim)
 
-            plot.update_layout(title_text=title)
-            if save_as_html:
-                if len(set_inequivalent_cations) > 1:
-                    if isinstance(filename, str):
-                        filename = Path(filename)
-                    filename_new = (
-                        filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
-                    )
-                else:
-                    filename_new = filename
-                plot.write_html(filename_new)
-            plot.show()
+        plot.update_layout(title_text=title)
+        if save_as_html:
+            if len(set_inequivalent_cations) > 1:
+                if isinstance(filename, str):
+                    filename = Path(filename)
+                filename_new = (
+                    filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                )
+            else:
+                filename_new = filename
+            plot.write_html(filename_new)
+        plot.show()
 
     @staticmethod
     def _coordination_environment_to_text(ce):
