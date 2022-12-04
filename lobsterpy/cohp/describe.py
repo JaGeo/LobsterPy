@@ -7,6 +7,7 @@ This module defines classes to describe the COHPs automatically
 
 from pathlib import Path
 from lobsterpy.plotting import PlainCohpPlotter
+from LobsterPy.lobsterpy.plotting import InteractiveCohpPlotter
 
 
 class Description:
@@ -265,6 +266,66 @@ class Description:
             plot.show()
         else:
             plot.close()
+
+    def plot_interactive_cohps(
+        self,
+        save_as_html=False,
+        filename=None,
+        ylim=None,
+        xlim=None,
+        integrated=False,
+        title="",
+        sigma=None,
+    ):
+        """
+        Will automatically generate interactive plots of the most relevant COHP
+
+        Args:
+            save (bool): will save the plot to a file
+            filename (str/Path):
+            ylim (list of float): energy scale that is shown in plot (eV)
+            xlim(list of float): energy range for COHPs in eV
+            integrated (bool): if True, integrated COHPs will be shown
+            sigma: Standard deviation of Gaussian broadening applied to
+                population data. If None, no broadening will be added.
+            skip_show (bool): if True, the plot will not be shown.
+
+        Returns:
+            A plotly.graph_objects.Figure object.
+
+        """
+        set_cohps = self.analysis_object.set_cohps
+        if self.analysis_object.whichbonds == "cation-anion":
+            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
+        elif self.analysis_object.whichbonds == "all":
+            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
+        set_labels_cohps = self.analysis_object.set_labels_cohps
+        structure = self.analysis_object.structure
+
+        for iplot, (ication, labels, cohps) in enumerate(
+            zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
+        ):
+
+            namecation = str(structure[ication].specie)
+
+            ia = InteractiveCohpPlotter()
+            for label, cohp in zip(labels, cohps):
+                if label is not None:
+                    ia.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
+            plot = ia.get_plot(integrated=integrated, xlim=xlim, ylim=ylim)
+
+            plot.update_layout(title_text=title)
+            if save_as_html:
+                if len(set_inequivalent_cations) > 1:
+                    if isinstance(filename, str):
+                        filename = Path(filename)
+                    filename_new = (
+                        filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                    )
+                else:
+                    filename_new = filename
+                plot.write_html(filename_new)
+            plot.show()
 
     @staticmethod
     def _coordination_environment_to_text(ce):

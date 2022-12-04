@@ -228,25 +228,10 @@ class PlainCohpPlotter(CohpPlotter):
         return convolve(population, kernel, mode="same") / kernel.sum()
 
 
-class InteractiveCohpPlotter:
+class InteractiveCohpPlotter(CohpPlotter):
     """
     Interactive COHP plotter to view all relevant / multiple COHPs in one figure
     """
-
-    def __init__(self, zero_at_efermi=True, are_coops=False, are_cobis=False):
-        """
-        Args:
-            zero_at_efermi: Whether to shift all populations to have zero
-                energy at the Fermi level. Defaults to True.
-            are_coops: Switch to indicate that these are COOPs, not COHPs.
-                Defaults to False for COHPs.
-            are_cobis: Switch to indicate that these are COBIs, not COHPs/COOPs.
-                Defaults to False for COHPs
-        """
-        self.zero_at_efermi = zero_at_efermi
-        self.are_coops = are_coops
-        self.are_cobis = are_cobis
-        self._cohps = {}
 
     def add_all_relevant_cohps(self, complete_cohp, analyse):
         """
@@ -355,13 +340,12 @@ class InteractiveCohpPlotter:
         else:
             energy_label = "$E$ (eV)"
 
-
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
         palette = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', '#a65628', '#f781bf', '#999999']
         pal_iter = cycle(palette)
 
         traces = []
-        for item in self._cohps.values():
+        for label, item in self._cohps.items():
             population_key = item["ICOHP"] if integrated else item["COHP"]
             band_color = next(pal_iter)
             for spin in [Spin.up, Spin.down]:
@@ -370,7 +354,7 @@ class InteractiveCohpPlotter:
                     x = population if invert_axes else item["energies"]
                     y = item["energies"] if invert_axes else population
                     if spin == Spin.up:
-                        trace = go.Scatter(x=x, y=y, name=item["plot_label"])
+                        trace = go.Scatter(x=x, y=y, name=label)
                         trace.update(ld.spin_up_trace_style_dict)
                     else:
                         trace = go.Scatter(x=x, y=y, name="")
@@ -399,7 +383,7 @@ class InteractiveCohpPlotter:
         #TODO:
         # improve display of legend
         # somehow y axis scaling inside image?
-        # inherit CohpPlotter fr. pymatgen?
+        # add sigma arg
         # maybe dashed line at Ef
 
         return fig
