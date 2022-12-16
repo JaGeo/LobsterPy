@@ -233,7 +233,7 @@ class InteractiveCohpPlotter(CohpPlotter):
     Interactive COHP plotter to view all relevant / multiple COHPs in one figure
     """
 
-    def add_all_relevant_cohps(self, complete_cohp, analyse):
+    def add_all_relevant_cohps(self, complete_cohp, analyse, label_addition=None):
         """
         Adds all relevant COHPs from lobsterpy analyse object.
 
@@ -241,6 +241,7 @@ class InteractiveCohpPlotter(CohpPlotter):
             complete_cohp: CompleteCohp object from pymatgen.
             analyse: Analyse object from lobsterpy, required f. determination of
                 relevant bonds.
+            label_addition: str, optional addition to LOBSTER label.
         """
         for site_key, site in analyse.condensed_bonding_analysis["sites"].items():
             for label in site["relevant_bonds"]:
@@ -248,7 +249,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
                 populations = cohp.get_cohp()
                 int_populations = cohp.get_icohp()
-                self._cohps[label] = {
+                self._cohps[f"{label}{label_addition}"] = {
                     "energies": energies,
                     "COHP": populations,
                     "ICOHP": int_populations,
@@ -295,6 +296,7 @@ class InteractiveCohpPlotter(CohpPlotter):
     def get_plot(
         self,
         xlim=None,
+        rangeslider=False,
         ylim=None,
         plot_negative=None,
         integrated=False,
@@ -306,6 +308,8 @@ class InteractiveCohpPlotter(CohpPlotter):
         Args:
             xlim: Specifies the x-axis limits. Defaults to None for
                 automatic determination.
+            rangeslider: Adds a plotly.graph_objs.layout.xaxis.Rangeslider
+                object to figure to allow easy manipulation of x-axis..
             ylim: Specifies the y-axis limits. Defaults to None for
                 automatic determination.
             plot_negative: It is common to plot -COHP(E) so that the
@@ -363,9 +367,9 @@ class InteractiveCohpPlotter(CohpPlotter):
                     traces.append(trace)
 
         energy_axis = go.layout.YAxis(title=energy_label) if invert_axes \
-            else go.layout.XAxis(title=energy_label, rangeslider=dict(visible=True))
+            else go.layout.XAxis(title=energy_label, rangeslider=dict(visible=rangeslider))
         energy_axis.update(ld.energy_axis_style_dict)
-        cohp_axis = go.layout.XAxis(title=cohp_label, rangeslider=dict(visible=True)) if invert_axes \
+        cohp_axis = go.layout.XAxis(title=cohp_label, rangeslider=dict(visible=rangeslider)) if invert_axes \
             else go.layout.YAxis(title=cohp_label)
         cohp_axis.update(ld.cohp_axis_style_dict)
 

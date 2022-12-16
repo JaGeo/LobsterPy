@@ -324,7 +324,7 @@ class Description:
                 )
             else:
                 filename_new = filename
-            plot.write_html(filename_new)
+            plot.write_html(filename_new, include_mathjax='cdn')
         plot.show()
 
     @staticmethod
