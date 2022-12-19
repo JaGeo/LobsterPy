@@ -56,13 +56,13 @@ class PlainCohpPlotter(CohpPlotter):
 
     def get_plot(
         self,
-        ax: matplotlib.axes.Axes = None,
-        xlim: Tuple[float, float] = None,
-        ylim: Tuple[float, float] = None,
-        plot_negative: bool = None,
+        ax: Optional[matplotlib.axes.Axes] = None,
+        xlim: Optional[Tuple[float, float]] = None,
+        ylim: Optional[Tuple[float, float]] = None,
+        plot_negative: Optional[bool] = None,
         integrated: bool = False,
         invert_axes: bool = True,
-        sigma: float = None,
+        sigma: Optional[float] = None,
     ):
         """
         Get a matplotlib plot showing the COHP.
