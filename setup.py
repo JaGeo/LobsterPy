@@ -18,7 +18,7 @@ setup(
         "pymatgen==2022.11.7",
         "numpy",
         "typing",
-        "Sphinx==5.3.0",
+        "Sphinx==6.0.0",
         "sphinx-argparse==0.4.0",
         "sphinx-pdj-theme==0.2.1",
     ],
