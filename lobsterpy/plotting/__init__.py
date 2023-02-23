@@ -30,9 +30,7 @@ def get_style_list(
                 or dicts of rcParam options.
 
     Remaining kwargs are collected as a dict and take highest priority.
-
     """
-
     if no_base_style:
         base = []  # type: List[Union[str, Dict[str, Any]]]
     else:
@@ -45,10 +43,12 @@ def get_style_list(
 
 
 class PlainCohpPlotter(CohpPlotter):
-    """Modified Pymatgen CohpPlotter with styling removed
+    """
+    Modified Pymatgen CohpPlotter with styling removed
 
     This allows the styling to be manipulated more easily using matplotlib
-    style sheets."""
+    style sheets.
+    """
 
     def get_plot(
         self,

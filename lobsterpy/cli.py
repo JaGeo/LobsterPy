@@ -305,7 +305,6 @@ def _user_figsize(width, height, aspect=None):
 
     Returns a dict which can be merged into style kwargs
     """
-
     if width is None and height is None:
         return {}
     if width is not None and height is not None:
@@ -324,8 +323,6 @@ def run(args):
 
     Args:
         args: args for cli
-
-    Returns:
 
     """
     if args.action == "automaticplot":

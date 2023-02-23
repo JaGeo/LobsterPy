@@ -17,14 +17,12 @@ class Description:
     It analyses all relevant coordination environments in the system based on electronic structure theory.
 
     """
-
     def __init__(self, analysis_object):
         """
 
         Args:
             analysis_object: Analysis object from lobsterpy.analysis
         """
-
         self.analysis_object = analysis_object
         self.set_description()
 
@@ -244,7 +242,6 @@ class Description:
         Returns:
             A text description of coordination environment
         """
-
         if ce == "S:1":
             return "single (CN=1)"
         if ce == "L:2":

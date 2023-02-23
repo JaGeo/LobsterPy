@@ -178,7 +178,6 @@ class Analysis:
                         chemenv (LobsterNeighbors): LobsterNeighbors object
 
                     """
-
                     self.coordination_environments = [[{"ce_symbol": str(len(coord))}] for coord in chemenv]
 
             self.lse = Lse(self.chemenv.list_coords)
@@ -191,7 +190,6 @@ class Analysis:
             None
 
         """
-
         if self.whichbonds == "cation-anion":
             # this will only analyze cation anion bonds which simplifies the analysis
             self.set_inequivalent_ions = []
@@ -315,7 +313,7 @@ class Analysis:
     @staticmethod
     def _sort_name(pair, nameion=None):
         """
-        will place the cation first in a list of name strings
+        Will place the cation first in a list of name strings
         Args:
             pair: ["O","Cu"]
             nameion: "Cu"
@@ -338,7 +336,7 @@ class Analysis:
 
     def _get_antibdg_states(self, cohps, labels, nameion=None, limit=0.01):
         """
-        will return a dictionary including information on antibonding states
+        Will return a dictionary including information on antibonding states
         e.g., similar to: {'Cu-O': True, 'Cu-F': True}
 
         Args:
@@ -353,7 +351,6 @@ class Analysis:
 
 
         """
-
         dict_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
@@ -449,7 +446,6 @@ class Analysis:
             absolute value of antibonding, percentage value of antibonding,
             absolute value of bonding and percentage value of bonding interactions
         """
-
         warnings.warn(
             "The bonding, antibonding integral/percent values are numerical estimate."
             " These values are sensitive to COHPstartEnergy parameter."
@@ -471,7 +467,6 @@ class Analysis:
             Returns:
                 integrated value of bonding interactions
             """
-
             y = np.asanyarray(y)
             x = np.asanyarray(x)
 
@@ -481,14 +476,13 @@ class Analysis:
 
         def integrate_negative(y, x):
             """
-            will integrate only one side of the COHP
+            Will integrate only one side of the COHP
             Args:
                 y: COHP values
                 x: Energy values
             Returns:
                 integrated value of antibonding interactions
             """
-
             y = np.asanyarray(y)
             x = np.asanyarray(x)
             antibonding = trapezoid(y, x)
@@ -543,7 +537,7 @@ class Analysis:
     @staticmethod
     def _get_bond_dict(bond_strength_dict, small_antbd_dict, nameion=None, large_antbd_dict=None):
         """
-        will return a bond_dict including information for each site
+        Will return a bond_dict including information for each site
 
         Args:
             bond_strength_dict (dict): dict with bond names as key and lists of bond strengths as items
@@ -595,7 +589,7 @@ class Analysis:
 
     def set_condensed_bonding_analysis(self):
         """
-        sets a condensed version of the bonding analysis including a summary dictionary
+        Sets a condensed version of the bonding analysis including a summary dictionary
 
         Returns:
             None
@@ -760,7 +754,7 @@ class Analysis:
 
     def set_summary_dicts(self):
         """
-        sets summary dicts that can be used for correlations
+        Sets summary dicts that can be used for correlations
 
         bond_dict that includes information on each bond
 
