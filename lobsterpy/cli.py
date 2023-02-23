@@ -17,7 +17,6 @@ from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import get_style_list, PlainCohpPlotter
 
 
-
 def main() -> None:
     """Entry point for setup.py installer"""
     args = get_parser().parse_args()
@@ -542,7 +541,6 @@ def run(args):
             if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
                 args.overwrite
             ):
-
                 lobsterinput.write_lobsterin(lobsterin_path)
                 lobsterinput.write_INCAR(
                     incar_input=args.incar,

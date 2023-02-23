@@ -59,7 +59,6 @@ class Description:
             )
 
             for key, item in self.condensed_bonding_analysis["sites"].items():
-
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
                 for type, properties in item["bonds"].items():
@@ -134,7 +133,6 @@ class Description:
             )
 
             for key, item in self.condensed_bonding_analysis["sites"].items():
-
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
                 for type, properties in item["bonds"].items():
@@ -238,7 +236,6 @@ class Description:
         for iplot, (ication, labels, cohps) in enumerate(
             zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
-
             namecation = str(structure[ication].specie)
 
             cp = PlainCohpPlotter()
