@@ -11,11 +11,10 @@ from math import log, sqrt
 from pathlib import Path
 
 import matplotlib.style
-from pymatgen.electronic_structure.cohp import CompleteCohp
-
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import get_style_list, PlainCohpPlotter
+from pymatgen.electronic_structure.cohp import CompleteCohp
 
 
 def main() -> None:
@@ -393,13 +392,13 @@ def run(args):
     if args.action == "plot":
         if args.cobis:
             filename = args.cohpcar.parent / "COBICAR.lobster"
-            options = dict(are_cobis=True, are_coops=False)
+            options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
             filename = args.cohpcar.parent / "COOPCAR.lobster"
-            options = dict(are_cobis=False, are_coops=True)
+            options = {"are_cobis": False, "are_coops": True}
         else:
             filename = args.cohpcar
-            options = dict(are_cobis=False, are_coops=False)
+            options = {"are_cobis": False, "are_coops": False}
 
         completecohp = CompleteCohp.from_file(
             fmt="LOBSTER", filename=filename, structure_file=args.poscar, **options
