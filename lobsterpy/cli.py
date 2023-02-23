@@ -4,6 +4,7 @@
 """
 Script to analyze Lobster outputs from the command line
 """
+from __future__ import annotations
 
 import argparse
 import json
@@ -12,9 +13,10 @@ from pathlib import Path
 
 import matplotlib.style
 from pymatgen.electronic_structure.cohp import CompleteCohp
+
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import get_style_list, PlainCohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list
 
 
 def main() -> None:
@@ -25,9 +27,7 @@ def main() -> None:
 
 def get_parser() -> argparse.ArgumentParser:
     """Construct argumentparser with subcommands and sections"""
-    parser = argparse.ArgumentParser(
-        description="Analyze and plot results from Lobster runs."
-    )
+    parser = argparse.ArgumentParser(description="Analyze and plot results from Lobster runs.")
 
     # Arguments common to all actions
     input_parent = argparse.ArgumentParser(add_help=False)
@@ -181,15 +181,9 @@ def get_parser() -> argparse.ArgumentParser:
         dest="save_plot",
         help="Save plot to file",
     )
-    plotting_group.add_argument(
-        "--width", type=float, default=None, help="Plot width in inches"
-    )
-    plotting_group.add_argument(
-        "--height", type=float, default=None, help="Plot height in inches"
-    )
-    plotting_group.add_argument(
-        "--fontsize", "--font-size", type=float, default=None, help="Base font size"
-    )
+    plotting_group.add_argument("--width", type=float, default=None, help="Plot width in inches")
+    plotting_group.add_argument("--height", type=float, default=None, help="Plot height in inches")
+    plotting_group.add_argument("--fontsize", "--font-size", type=float, default=None, help="Base font size")
 
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Automatic analysis")
@@ -239,9 +233,7 @@ def get_parser() -> argparse.ArgumentParser:
         "create-inputs",
         aliases=["createinputs"],
         parents=[input_parent, output_parent],
-        help=(
-            "Will create inputs for lobster computation. It only works with PBE POTCARs."
-        ),
+        help=("Will create inputs for lobster computation. It only works with PBE POTCARs."),
     )
 
     # Mode for normal plotting (without automatic detection of relevant COHPs)
@@ -366,9 +358,7 @@ def run(args):
         if args.fontsize:
             style_kwargs.update({"font.size": args.fontsize})
 
-        style_list = get_style_list(
-            no_base_style=args.no_base_style, styles=args.style, **style_kwargs
-        )
+        style_list = get_style_list(no_base_style=args.no_base_style, styles=args.style, **style_kwargs)
         matplotlib.style.use(style_list)
 
         if args.sigma:
@@ -400,9 +390,7 @@ def run(args):
             filename = args.cohpcar
             options = {"are_cobis": False, "are_coops": False}
 
-        completecohp = CompleteCohp.from_file(
-            fmt="LOBSTER", filename=filename, structure_file=args.poscar, **options
-        )
+        completecohp = CompleteCohp.from_file(fmt="LOBSTER", filename=filename, structure_file=args.poscar, **options)
         cp = PlainCohpPlotter(**options)
 
         if not args.summed:
@@ -411,11 +399,9 @@ def run(args):
             # TODO: add check if orbital is in args.orbitalwise
 
             for label in args.bond_numbers:
-                if not str(label) in completecohp.bonds.keys():
+                if str(label) not in completecohp.bonds.keys():
                     raise IndexError(
-                        "The provided bond label "
-                        + str(label)
-                        + " is not available in ICO**LIST.lobster.\n "
+                        "The provided bond label " + str(label) + " is not available in ICO**LIST.lobster.\n "
                         "Allowed options are in this list: \n"
                         + str([int(listi) for listi in list(completecohp.bonds.keys())])
                     )
@@ -433,10 +419,8 @@ def run(args):
                 for ilabel, label in enumerate(args.bond_numbers):
                     orbitals = args.orbitalwise[ilabel]
 
-                    availableorbitals = list(
-                        completecohp.orb_res_cohp[str(label)].keys()
-                    )
-                    orbitaloptions = availableorbitals + ["all"]
+                    availableorbitals = list(completecohp.orb_res_cohp[str(label)].keys())
+                    orbitaloptions = [*availableorbitals, "all"]
 
                     if orbitals not in orbitaloptions:
                         raise IndexError(
@@ -450,29 +434,21 @@ def run(args):
                     if orbitals != "all":
                         cp.add_cohp(
                             str(label) + ": " + orbitals,
-                            completecohp.get_orbital_resolved_cohp(
-                                label=str(label), orbitals=orbitals
-                            ),
+                            completecohp.get_orbital_resolved_cohp(label=str(label), orbitals=orbitals),
                         )
                     else:
                         for orbitals in availableorbitals:
                             cp.add_cohp(
                                 str(label) + ": " + orbitals,
-                                completecohp.get_orbital_resolved_cohp(
-                                    label=str(label), orbitals=orbitals
-                                ),
+                                completecohp.get_orbital_resolved_cohp(label=str(label), orbitals=orbitals),
                             )
         else:
             cp.add_cohp(
                 str(args.bond_numbers),
-                completecohp.get_summed_cohp_by_label_list(
-                    label_list=[str(label) for label in args.bond_numbers]
-                ),
+                completecohp.get_summed_cohp_by_label_list(label_list=[str(label) for label in args.bond_numbers]),
             )
 
-        plt = cp.get_plot(
-            integrated=args.integrated, xlim=args.xlim, ylim=args.ylim, sigma=sigma
-        )
+        plt = cp.get_plot(integrated=args.integrated, xlim=args.xlim, ylim=args.ylim, sigma=sigma)
 
         ax = plt.gca()
         ax.set_title(args.title)
@@ -483,8 +459,8 @@ def run(args):
             fig = plt.gcf()
             fig.savefig(args.save_plot)
     if args.action == "create-inputs":
-        from pymatgen.io.lobster import Lobsterin
         from pymatgen.core.structure import Structure
+        from pymatgen.io.lobster import Lobsterin
 
         if args.userbasis is None:
             # This will rely on standard basis files as stored in pymatgen
@@ -507,9 +483,7 @@ def run(args):
                 lobsterin_path = Path(str(args.lobsterinout) + "-" + str(ibasis))
                 incar_path = Path(str(args.incarout) + "-" + str(ibasis))
 
-                if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
-                    args.overwrite
-                ):
+                if (not lobsterin_path.is_file() and not incar_path.is_file()) or (args.overwrite):
                     lobsterinput.write_lobsterin(lobsterin_path)
                     lobsterinput.write_INCAR(
                         incar_input=args.incar,
@@ -518,9 +492,7 @@ def run(args):
                         isym=0,
                     )
                 else:
-                    raise ValueError(
-                        'please use "--overwrite" if you would like to overwrite existing lobster inputs'
-                    )
+                    raise ValueError('please use "--overwrite" if you would like to overwrite existing lobster inputs')
         else:
             # convert list userbasis to dict
             userbasis = {}
@@ -538,9 +510,7 @@ def run(args):
             lobsterin_path = Path(str(args.lobsterinout) + "-" + str(0))
             incar_path = Path(str(args.incarout) + "-" + str(0))
 
-            if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
-                args.overwrite
-            ):
+            if (not lobsterin_path.is_file() and not incar_path.is_file()) or (args.overwrite):
                 lobsterinput.write_lobsterin(lobsterin_path)
                 lobsterinput.write_INCAR(
                     incar_input=args.incar,
@@ -549,9 +519,7 @@ def run(args):
                     isym=0,
                 )
             else:
-                raise ValueError(
-                    'please use "--overwrite" if you would like to overwrite existing lobster inputs'
-                )
+                raise ValueError('please use "--overwrite" if you would like to overwrite existing lobster inputs')
 
 
 if __name__ == "__main__":

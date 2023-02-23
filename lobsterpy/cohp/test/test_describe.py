@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 from pathlib import Path
 
@@ -192,7 +194,7 @@ class TestDescribe(unittest.TestCase):
             "ET:7": "end-trigonal-face capped trigonal prismatic (CN=7)",
             "FO:7": "face-capped octahedron (CN=7)",
             "C:8": "cubic (CN=8)",
-            "SA:8": "sqaure antiprismatic (CN=8)",
+            "SA:8": "square antiprismatic (CN=8)",
             "SBT:8": "square-face bicapped trigonal prismatic (CN=8)",
             "TBT:8": "triangular-face bicapped trigonal prismatic (CN=8)",
             "DD:8": "dodecahedronal (with triangular faces) (CN=8)",
@@ -218,7 +220,6 @@ class TestDescribe(unittest.TestCase):
             "MI:10": "Metabidiminished icosahedral (CN=10)",
             "S:10": "sphenocoronal (CN=10)",
             "H:10": "Hexadecahedral (CN=10)",
-            "BS_1:10": "Bicapped square prismatic (opposite faces) (CN=10)",
             "BS_1:10": "Bicapped square prismatic (opposite faces) (CN=10)",
             "BS_2:10": "Bicapped square prism(adjacent faces) (CN=10)",
             "TBSA:10": "Trigonal-face bicapped square antiprismatic (CN=10)",
@@ -277,23 +278,17 @@ class TestDescribe(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp0:
             filename_test = Path(tmp0) / "test.pdf"
-            self.describe_NaCl.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            self.describe_NaCl.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             self.assertTrue(Path(filename_test).exists())
 
         with tempfile.TemporaryDirectory() as tmp1:
             filename_test = Path(tmp1) / "test.pdf"
-            self.describe_NaCl_spin.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            self.describe_NaCl_spin.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             self.assertTrue(Path(filename_test).exists())
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = Path(tmp2) / "test.pdf"
-            self.describe_Nacl_all.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            self.describe_Nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             self.assertFalse(Path(filename_test).exists())
@@ -302,9 +297,7 @@ class TestDescribe(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = str(Path(tmp2) / "test.pdf")
-            self.describe_Nacl_all.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            self.describe_Nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             self.assertFalse(Path(filename_test).exists())

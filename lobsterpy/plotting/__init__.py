@@ -4,24 +4,23 @@
 """
 Here classes and functions to plot Lobster outputs are provided
 """
+from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import numpy as np
 import matplotlib
+import numpy as np
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
-from pymatgen.electronic_structure.plotter import CohpPlotter
 from pymatgen.electronic_structure.core import Spin
+from pymatgen.electronic_structure.plotter import CohpPlotter
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
 def get_style_list(
-    no_base_style: bool = False,
-    styles: Optional[List[Union[str, Dict[str, Any]]]] = None,
-    **kwargs
-) -> List[Union[str, Dict[str, Any]]]:
+    no_base_style: bool = False, styles: list[str | dict[str, Any]] | None = None, **kwargs
+) -> list[str | dict[str, Any]]:
     """Get *args for matplotlib.style from user input
 
     Args:
@@ -53,13 +52,13 @@ class PlainCohpPlotter(CohpPlotter):
 
     def get_plot(
         self,
-        ax: Optional[matplotlib.axes.Axes] = None,
-        xlim: Optional[Tuple[float, float]] = None,
-        ylim: Optional[Tuple[float, float]] = None,
-        plot_negative: Optional[bool] = None,
+        ax: matplotlib.axes.Axes | None = None,
+        xlim: tuple[float, float] | None = None,
+        ylim: tuple[float, float] | None = None,
+        plot_negative: bool | None = None,
         integrated: bool = False,
         invert_axes: bool = True,
-        sigma: Optional[float] = None,
+        sigma: float | None = None,
     ):
         """
         Get a matplotlib plot showing the COHP.
@@ -211,10 +210,7 @@ class PlainCohpPlotter(CohpPlotter):
 
         spacing = np.mean(np.diff(energies))
         if not np.allclose(np.diff(energies), spacing, atol=1e-5):
-            raise ValueError(
-                "Energy grid is not regular, cannot broaden with "
-                "discrete convolution."
-            )
+            raise ValueError("Energy grid is not regular, cannot broaden with " "discrete convolution.")
 
         # Obtain symmetric mesh for broadening kernel, centered on zero
         kernel_x = np.arange(0, cutoff * sigma + 0.5 * spacing, spacing)

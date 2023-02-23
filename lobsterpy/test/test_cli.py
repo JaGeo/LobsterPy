@@ -1,15 +1,16 @@
-from contextlib import redirect_stdout
+from __future__ import annotations
+
 import io
 import json
 import os
+from contextlib import redirect_stdout
 from pathlib import Path
-from typing import Union
 
-import numpy as np
-from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.style
+import numpy as np
 import pytest
+from matplotlib.figure import Figure
 
 from lobsterpy.cli import get_parser, run
 
@@ -58,7 +59,7 @@ class TestCLI:
         plt.close("all")
         matplotlib.style.use("default")
 
-    with open(ref_data_file, "r") as fd:
+    with open(ref_data_file) as fd:
         ref_results = json.load(fd)
 
     @classmethod
@@ -83,9 +84,7 @@ class TestCLI:
             for key, ref_value in ref_plot_attributes.items():
                 if key == "xydata":
                     for line, ref_line in zip(plot_attributes[key], ref_value):
-                        assert np.array(np.array(line)) == pytest.approx(
-                            np.array(ref_line)
-                        )
+                        assert np.array(np.array(line)) == pytest.approx(np.array(ref_line))
                 else:
                     assert plot_attributes[key] == pytest.approx(ref_value)
 
@@ -223,15 +222,13 @@ class TestCLI:
                 json_data[" ".join(args)] = {"stdout": stdout.getvalue()}
 
                 fig = plt.gcf()
-                json_data[" ".join(args)].update(
-                    {"plot": self.get_plot_attributes(fig)}
-                )
+                json_data[" ".join(args)].update({"plot": self.get_plot_attributes(fig)})
 
         with open(ref_data_file, "w") as fd:
             json.dump(json_data, fd, indent=4, sort_keys=True)
 
     @staticmethod
-    def get_plot_attributes(fig: Figure) -> Union[dict, None]:
+    def get_plot_attributes(fig: Figure) -> dict | None:
         if fig.axes:
             ax = fig.gca()
 
