@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 from pathlib import Path
 
@@ -192,7 +194,7 @@ class TestDescribe(unittest.TestCase):
             "ET:7": "end-trigonal-face capped trigonal prismatic (CN=7)",
             "FO:7": "face-capped octahedron (CN=7)",
             "C:8": "cubic (CN=8)",
-            "SA:8": "sqaure antiprismatic (CN=8)",
+            "SA:8": "square antiprismatic (CN=8)",
             "SBT:8": "square-face bicapped trigonal prismatic (CN=8)",
             "TBT:8": "triangular-face bicapped trigonal prismatic (CN=8)",
             "DD:8": "dodecahedronal (with triangular faces) (CN=8)",
@@ -218,7 +220,6 @@ class TestDescribe(unittest.TestCase):
             "MI:10": "Metabidiminished icosahedral (CN=10)",
             "S:10": "sphenocoronal (CN=10)",
             "H:10": "Hexadecahedral (CN=10)",
-            "BS_1:10": "Bicapped square prismatic (opposite faces) (CN=10)",
             "BS_1:10": "Bicapped square prismatic (opposite faces) (CN=10)",
             "BS_2:10": "Bicapped square prism(adjacent faces) (CN=10)",
             "TBSA:10": "Trigonal-face bicapped square antiprismatic (CN=10)",

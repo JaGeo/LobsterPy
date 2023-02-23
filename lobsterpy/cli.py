@@ -4,6 +4,7 @@
 """
 Script to analyze Lobster outputs from the command line
 """
+from __future__ import annotations
 
 import argparse
 import json
@@ -12,9 +13,10 @@ from pathlib import Path
 
 import matplotlib.style
 from pymatgen.electronic_structure.cohp import CompleteCohp
+
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import get_style_list, PlainCohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list
 
 
 def main() -> None:
@@ -313,7 +315,6 @@ def _user_figsize(width, height, aspect=None):
 
     Returns a dict which can be merged into style kwargs
     """
-
     if width is None and height is None:
         return {}
     if width is not None and height is not None:
@@ -332,8 +333,6 @@ def run(args):
 
     Args:
         args: args for cli
-
-    Returns:
 
     """
     if args.action == "automaticplot":
@@ -411,7 +410,7 @@ def run(args):
             # TODO: add check if orbital is in args.orbitalwise
 
             for label in args.bond_numbers:
-                if not str(label) in completecohp.bonds.keys():
+                if str(label) not in completecohp.bonds.keys():
                     raise IndexError(
                         "The provided bond label "
                         + str(label)
@@ -436,7 +435,7 @@ def run(args):
                     availableorbitals = list(
                         completecohp.orb_res_cohp[str(label)].keys()
                     )
-                    orbitaloptions = availableorbitals + ["all"]
+                    orbitaloptions = [*availableorbitals, "all"]
 
                     if orbitals not in orbitaloptions:
                         raise IndexError(
@@ -483,8 +482,8 @@ def run(args):
             fig = plt.gcf()
             fig.savefig(args.save_plot)
     if args.action == "create-inputs":
-        from pymatgen.io.lobster import Lobsterin
         from pymatgen.core.structure import Structure
+        from pymatgen.io.lobster import Lobsterin
 
         if args.userbasis is None:
             # This will rely on standard basis files as stored in pymatgen

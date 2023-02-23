@@ -4,8 +4,10 @@
 """
 This module defines classes to describe the COHPs automatically
 """
+from __future__ import annotations
 
 from pathlib import Path
+
 from lobsterpy.plotting import PlainCohpPlotter
 
 
@@ -22,7 +24,6 @@ class Description:
         Args:
             analysis_object: Analysis object from lobsterpy.analysis
         """
-
         self.analysis_object = analysis_object
         self.set_description()
 
@@ -274,7 +275,6 @@ class Description:
         Returns:
             A text description of coordination environment
         """
-
         if ce == "S:1":
             return "single (CN=1)"
         if ce == "L:2":
@@ -318,7 +318,7 @@ class Description:
         if ce == "C:8":
             return "cubic (CN=8)"
         if ce == "SA:8":
-            return "sqaure antiprismatic (CN=8)"
+            return "square antiprismatic (CN=8)"
         if ce == "SBT:8":
             return "square-face bicapped trigonal prismatic (CN=8)"
         if ce == "TBT:8":

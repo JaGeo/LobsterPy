@@ -4,10 +4,11 @@
 """
 This module defines classes to analyze the COHPs automatically
 """
+from __future__ import annotations
 
 import warnings
 from collections import Counter
-from typing import Optional
+
 import numpy as np
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.core import Spin
@@ -52,8 +53,8 @@ class Analysis:
         path_to_poscar: str,
         path_to_icohplist: str,
         path_to_cohpcar: str,
-        path_to_charge: Optional[str] = None,
-        path_to_madelung: Optional[str] = None,
+        path_to_charge: str | None = None,
+        path_to_madelung: str | None = None,
         whichbonds: str = "cation-anion",
         cutoff_icohp: float = 0.1,
         summed_spins=True,
@@ -185,7 +186,6 @@ class Analysis:
                         chemenv (LobsterNeighbors): LobsterNeighbors object
 
                     """
-
                     self.coordination_environments = [
                         [{"ce_symbol": str(len(coord))}] for coord in chemenv
                     ]
@@ -200,7 +200,6 @@ class Analysis:
             None
 
         """
-
         if self.whichbonds == "cation-anion":
             # this will only analyze cation anion bonds which simplifies the analysis
             self.set_inequivalent_ions = []
@@ -290,7 +289,7 @@ class Analysis:
 
         Args:
             pairs: list of list including labels for the atoms, e.g., [['O3', 'Cu1'], ['O3', 'Cu1']]
-            strengths (list of float): list that gives the icohp strenghts as a float, [-1.86287, -1.86288]
+            strengths (list of float): list that gives the icohp strengths as a float, [-1.86287, -1.86288]
             nameion: string including the name of the cation in the list, e.g Cu1
 
         Returns:
@@ -326,7 +325,7 @@ class Analysis:
     @staticmethod
     def _sort_name(pair, nameion=None):
         """
-        will place the cation first in a list of name strings
+        Will place the cation first in a list of name strings
         Args:
             pair: ["O","Cu"]
             nameion: "Cu"
@@ -349,7 +348,7 @@ class Analysis:
 
     def _get_antibdg_states(self, cohps, labels, nameion=None, limit=0.01):
         """
-        will return a dictionary including information on antibonding states
+        Will return a dictionary including information on antibonding states
         e.g., similar to: {'Cu-O': True, 'Cu-F': True}
 
         Args:
@@ -364,7 +363,6 @@ class Analysis:
 
 
         """
-
         dict_antibd = {}
         for label, cohp in zip(labels, cohps):
             if label is not None:
@@ -448,9 +446,9 @@ class Analysis:
         This integrates the whole COHP curve that has been computed.
         The energy range is very important.
         At present the energy range considered is dependent on COHPstartEnergy
-        set during lobster runs. The bonding / antibonding intergral values are senstive to this parameter.
+        set during lobster runs. The bonding / antibonding intergral values are sensitive to this parameter.
         If COHPstartEnergy value does not cover entire range of VASP calculations then
-        absoulte value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.
+        absolute value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.
 
         Args:
             cohp: cohp object
@@ -460,12 +458,11 @@ class Analysis:
             absolute value of antibonding, percentage value of antibonding,
             absolute value of bonding and percentage value of bonding interactions
         """
-
         warnings.warn(
             "The bonding, antibonding integral/percent values are numerical estimate."
-            " These values are senstive to COHPstartEnergy parameter."
+            " These values are sensitive to COHPstartEnergy parameter."
             " If COHPstartEnergy value does not cover entire range of VASP calculations then"
-            " absoulte value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values."
+            " absolute value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values."
         )
 
         from scipy.integrate import trapezoid
@@ -482,7 +479,6 @@ class Analysis:
             Returns:
                 integrated value of bonding interactions
             """
-
             y = np.asanyarray(y)
             x = np.asanyarray(x)
 
@@ -492,14 +488,13 @@ class Analysis:
 
         def integrate_negative(y, x):
             """
-            will integrate only one side of the COHP
+            Will integrate only one side of the COHP
             Args:
                 y: COHP values
                 x: Energy values
             Returns:
                 integrated value of antibonding interactions
             """
-
             y = np.asanyarray(y)
             x = np.asanyarray(x)
             antibonding = trapezoid(y, x)
@@ -524,7 +519,7 @@ class Analysis:
                 en_bf.append(en)
                 cohp_bf.append(-1 * summedcohp[i])
 
-        # Seperate the bonding and antibonding COHP values in seperate lists
+        # Separate the bonding and antibonding COHP values in separate lists
         pos = []
         en_pos = []
         neg = []
@@ -556,7 +551,7 @@ class Analysis:
         bond_strength_dict, small_antbd_dict, nameion=None, large_antbd_dict=None
     ):
         """
-        will return a bond_dict incluing information for each site
+        Will return a bond_dict including information for each site
 
         Args:
             bond_strength_dict (dict): dict with bond names as key and lists of bond strengths as items
@@ -608,7 +603,7 @@ class Analysis:
 
     def set_condensed_bonding_analysis(self):
         """
-        sets a condensed version of the bonding analysis including a summary dictionary
+        Sets a condensed version of the bonding analysis including a summary dictionary
 
         Returns:
             None
@@ -779,7 +774,7 @@ class Analysis:
 
     def set_summary_dicts(self):
         """
-        sets summary dicts that can be used for correlations
+        Sets summary dicts that can be used for correlations
 
         bond_dict that includes information on each bond
 

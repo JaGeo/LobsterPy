@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 from pathlib import Path
 
@@ -571,16 +573,14 @@ class TestAnalyse(unittest.TestCase):
                 )
             ),
             (
-                (
-                    round(
-                        self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0][
-                            "bonds"
-                        ]["F"]["bonding"]["integral"]
-                        - self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0][
-                            "bonds"
-                        ]["F"]["antibonding"]["integral"],
-                        2,
-                    )
+                round(
+                    self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0]["bonds"][
+                        "F"
+                    ]["bonding"]["integral"]
+                    - self.analyse_NaSbF6.condensed_bonding_analysis["sites"][0][
+                        "bonds"
+                    ]["F"]["antibonding"]["integral"],
+                    2,
                 )
             ),
             delta=0.10,
@@ -641,16 +641,14 @@ class TestAnalyse(unittest.TestCase):
                 )
             ),
             (
-                (
-                    round(
-                        self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1][
-                            "bonds"
-                        ]["F"]["bonding"]["integral"]
-                        - self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1][
-                            "bonds"
-                        ]["F"]["antibonding"]["integral"],
-                        2,
-                    )
+                round(
+                    self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1]["bonds"][
+                        "F"
+                    ]["bonding"]["integral"]
+                    - self.analyse_NaSbF6.condensed_bonding_analysis["sites"][1][
+                        "bonds"
+                    ]["F"]["antibonding"]["integral"],
+                    2,
                 )
             ),
             delta=0.10,
@@ -926,16 +924,14 @@ class TestAnalyse(unittest.TestCase):
                 )
             ),
             (
-                (
-                    round(
-                        self.analyse_NaCl_comp_range.condensed_bonding_analysis[
-                            "sites"
-                        ][0]["bonds"]["Cl"]["bonding"]["integral"]
-                        - self.analyse_NaCl_comp_range.condensed_bonding_analysis[
-                            "sites"
-                        ][0]["bonds"]["Cl"]["antibonding"]["integral"],
-                        2,
-                    )
+                round(
+                    self.analyse_NaCl_comp_range.condensed_bonding_analysis["sites"][0][
+                        "bonds"
+                    ]["Cl"]["bonding"]["integral"]
+                    - self.analyse_NaCl_comp_range.condensed_bonding_analysis["sites"][
+                        0
+                    ]["bonds"]["Cl"]["antibonding"]["integral"],
+                    2,
                 )
             ),
             delta=0.10,
@@ -951,16 +947,14 @@ class TestAnalyse(unittest.TestCase):
                 )
             ),
             (
-                (
-                    round(
-                        self.analyse_CdF_comp_range.condensed_bonding_analysis["sites"][
-                            0
-                        ]["bonds"]["F"]["bonding"]["integral"]
-                        - self.analyse_CdF_comp_range.condensed_bonding_analysis[
-                            "sites"
-                        ][0]["bonds"]["F"]["antibonding"]["integral"],
-                        2,
-                    )
+                round(
+                    self.analyse_CdF_comp_range.condensed_bonding_analysis["sites"][0][
+                        "bonds"
+                    ]["F"]["bonding"]["integral"]
+                    - self.analyse_CdF_comp_range.condensed_bonding_analysis["sites"][
+                        0
+                    ]["bonds"]["F"]["antibonding"]["integral"],
+                    2,
                 )
             ),
             delta=0.10,
