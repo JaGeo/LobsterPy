@@ -491,7 +491,6 @@ class Analysis:
             return np.round(bonding, 2)
 
         def integrate_negative(y, x):
-
             """
             will integrate only one side of the COHP
             Args:
@@ -581,7 +580,6 @@ class Analysis:
         """
         bond_dict = {}
         for key, item in bond_strength_dict.items():
-
             if nameion is not None:
                 a = key.split("-")[0]
                 b = key.split("-")[1]
@@ -759,7 +757,6 @@ class Analysis:
                 madelung_energy = madelung.madelungenergies_Loewdin
             # This sets the dictionary including the most important information on the compound
             if self.whichbonds == "cation-anion":
-
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
@@ -810,7 +807,6 @@ class Analysis:
 
         final_dict_bonds = {}
         for key in relevant_ion_ids:
-
             item = self.condensed_bonding_analysis["sites"][key]
             for type, properties in item["bonds"].items():
                 label_list = [item["ion"], str(type)]

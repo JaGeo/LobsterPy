@@ -15,7 +15,7 @@ setup(
     license="BSD 3-clause",
     packages=find_packages(),
     install_requires=[
-        "pymatgen==2023.1.20",
+        "pymatgen==2023.1.30",
         "numpy",
         "typing",
         "Sphinx==6.1.3",
