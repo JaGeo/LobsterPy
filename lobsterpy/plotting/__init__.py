@@ -19,7 +19,9 @@ base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
 def get_style_list(
-    no_base_style: bool = False, styles: list[str | dict[str, Any]] | None = None, **kwargs
+    no_base_style: bool = False,
+    styles: list[str | dict[str, Any]] | None = None,
+    **kwargs,
 ) -> list[str | dict[str, Any]]:
     """Get *args for matplotlib.style from user input
 
@@ -210,7 +212,10 @@ class PlainCohpPlotter(CohpPlotter):
 
         spacing = np.mean(np.diff(energies))
         if not np.allclose(np.diff(energies), spacing, atol=1e-5):
-            raise ValueError("Energy grid is not regular, cannot broaden with " "discrete convolution.")
+            raise ValueError(
+                "Energy grid is not regular, cannot broaden with "
+                "discrete convolution."
+            )
 
         # Obtain symmetric mesh for broadening kernel, centered on zero
         kernel_x = np.arange(0, cutoff * sigma + 0.5 * spacing, spacing)

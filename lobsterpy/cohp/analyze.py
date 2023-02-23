@@ -97,10 +97,14 @@ class Analysis:
             elif type_charge == "Mulliken":
                 self.type_charge = "Mulliken"
             elif type_charge == "Löwdin":
-                raise ValueError("Only Mulliken charges can be used here at the moment. Implementation will follow.")
+                raise ValueError(
+                    "Only Mulliken charges can be used here at the moment. Implementation will follow."
+                )
             else:
                 self.type_charge = "Valences"
-                print("type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences")
+                print(
+                    "type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences"
+                )
 
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
@@ -162,9 +166,13 @@ class Analysis:
         # determine cations and anions
         try:
             if self.whichbonds == "cation-anion":
-                self.lse = self.chemenv.get_light_structure_environment(only_cation_environments=True)
+                self.lse = self.chemenv.get_light_structure_environment(
+                    only_cation_environments=True
+                )
             elif self.whichbonds == "all":
-                self.lse = self.chemenv.get_light_structure_environment(only_cation_environments=False)
+                self.lse = self.chemenv.get_light_structure_environment(
+                    only_cation_environments=False
+                )
         except ValueError:
 
             class Lse:
@@ -178,7 +186,9 @@ class Analysis:
                         chemenv (LobsterNeighbors): LobsterNeighbors object
 
                     """
-                    self.coordination_environments = [[{"ce_symbol": str(len(coord))}] for coord in chemenv]
+                    self.coordination_environments = [
+                        [{"ce_symbol": str(len(coord))}] for coord in chemenv
+                    ]
 
             self.lse = Lse(self.chemenv.list_coords)
 
@@ -207,7 +217,9 @@ class Analysis:
                     self.set_inequivalent_ions.append(ice)
                     ce = ce[0]["ce_symbol"]
                     self.set_coordination_ions.append(ce)
-                    cation_anion_infos = self.chemenv.get_info_icohps_to_neighbors([ice])
+                    cation_anion_infos = self.chemenv.get_info_icohps_to_neighbors(
+                        [ice]
+                    )
                     self.set_infos_bonds.append(cation_anion_infos)
 
                     aniontype_labels = []
@@ -535,7 +547,9 @@ class Analysis:
         )
 
     @staticmethod
-    def _get_bond_dict(bond_strength_dict, small_antbd_dict, nameion=None, large_antbd_dict=None):
+    def _get_bond_dict(
+        bond_strength_dict, small_antbd_dict, nameion=None, large_antbd_dict=None
+    ):
         """
         Will return a bond_dict including information for each site
 
@@ -647,8 +661,10 @@ class Analysis:
                 # pairs, strengths, nameion
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, namecation)
-                dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(
-                    labels, cohps, nameion=namecation
+                dict_antibonding = (
+                    self._integrate_antbdstates_below_efermi_for_set_cohps(
+                        labels, cohps, nameion=namecation
+                    )
                 )
 
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation)
@@ -684,7 +700,11 @@ class Analysis:
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, nameion=None)
 
-                dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)
+                dict_antibonding = (
+                    self._integrate_antbdstates_below_efermi_for_set_cohps(
+                        labels, cohps, nameion
+                    )
+                )
 
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
 
@@ -771,7 +791,11 @@ class Analysis:
             None
 
         """
-        relevant_ion_ids = [isite for isite in self.list_equivalent_sites if isite in self.set_inequivalent_ions]
+        relevant_ion_ids = [
+            isite
+            for isite in self.list_equivalent_sites
+            if isite in self.set_inequivalent_ions
+        ]
 
         # formula_units = self.structure.composition.num_atoms /
         # self.structure.composition.reduced_composition.num_atoms
@@ -791,28 +815,38 @@ class Analysis:
                         "has_antbdg": properties["has_antibdg_states_below_Efermi"],
                     }
                 else:
-                    final_dict_bonds[label]["number_of_bonds"] += int(properties["number_of_bonds"])
-                    final_dict_bonds[label]["ICOHP_sum"] += float(properties["ICOHP_sum"])
+                    final_dict_bonds[label]["number_of_bonds"] += int(
+                        properties["number_of_bonds"]
+                    )
+                    final_dict_bonds[label]["ICOHP_sum"] += float(
+                        properties["ICOHP_sum"]
+                    )
                     final_dict_bonds[label]["has_antbdg"] = (
-                        final_dict_bonds[label]["has_antbdg"] or properties["has_antibdg_states_below_Efermi"]
+                        final_dict_bonds[label]["has_antbdg"]
+                        or properties["has_antibdg_states_below_Efermi"]
                     )
         self.final_dict_bonds = {}
         for key, item in final_dict_bonds.items():
             self.final_dict_bonds[key] = {}
-            self.final_dict_bonds[key]["ICOHP_mean"] = item["ICOHP_sum"] / (item["number_of_bonds"])
+            self.final_dict_bonds[key]["ICOHP_mean"] = item["ICOHP_sum"] / (
+                item["number_of_bonds"]
+            )
             self.final_dict_bonds[key]["has_antbdg"] = item["has_antbdg"]
 
         # rework, add all environments!
         final_dict_ions = {}
         for key in relevant_ion_ids:
-            if self.condensed_bonding_analysis["sites"][key]["ion"] not in final_dict_ions:
-                final_dict_ions[self.condensed_bonding_analysis["sites"][key]["ion"]] = [
-                    self.condensed_bonding_analysis["sites"][key]["env"]
-                ]
+            if (
+                self.condensed_bonding_analysis["sites"][key]["ion"]
+                not in final_dict_ions
+            ):
+                final_dict_ions[
+                    self.condensed_bonding_analysis["sites"][key]["ion"]
+                ] = [self.condensed_bonding_analysis["sites"][key]["env"]]
             else:
-                final_dict_ions[self.condensed_bonding_analysis["sites"][key]["ion"]].append(
-                    self.condensed_bonding_analysis["sites"][key]["env"]
-                )
+                final_dict_ions[
+                    self.condensed_bonding_analysis["sites"][key]["ion"]
+                ].append(self.condensed_bonding_analysis["sites"][key]["env"])
 
         self.final_dict_ions = {}
         for key, item in final_dict_ions.items():

@@ -84,7 +84,9 @@ class TestCLI:
             for key, ref_value in ref_plot_attributes.items():
                 if key == "xydata":
                     for line, ref_line in zip(plot_attributes[key], ref_value):
-                        assert np.array(np.array(line)) == pytest.approx(np.array(ref_line))
+                        assert np.array(np.array(line)) == pytest.approx(
+                            np.array(ref_line)
+                        )
                 else:
                     assert plot_attributes[key] == pytest.approx(ref_value)
 
@@ -222,7 +224,9 @@ class TestCLI:
                 json_data[" ".join(args)] = {"stdout": stdout.getvalue()}
 
                 fig = plt.gcf()
-                json_data[" ".join(args)].update({"plot": self.get_plot_attributes(fig)})
+                json_data[" ".join(args)].update(
+                    {"plot": self.get_plot_attributes(fig)}
+                )
 
         with open(ref_data_file, "w") as fd:
             json.dump(json_data, fd, indent=4, sort_keys=True)

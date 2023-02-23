@@ -278,17 +278,23 @@ class TestDescribe(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp0:
             filename_test = Path(tmp0) / "test.pdf"
-            self.describe_NaCl.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            self.describe_NaCl.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
             self.assertTrue(Path(filename_test).exists())
 
         with tempfile.TemporaryDirectory() as tmp1:
             filename_test = Path(tmp1) / "test.pdf"
-            self.describe_NaCl_spin.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            self.describe_NaCl_spin.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
             self.assertTrue(Path(filename_test).exists())
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = Path(tmp2) / "test.pdf"
-            self.describe_Nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            self.describe_Nacl_all.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             self.assertFalse(Path(filename_test).exists())
@@ -297,7 +303,9 @@ class TestDescribe(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = str(Path(tmp2) / "test.pdf")
-            self.describe_Nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            self.describe_Nacl_all.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             self.assertFalse(Path(filename_test).exists())

@@ -17,6 +17,7 @@ class Description:
     It analyses all relevant coordination environments in the system based on electronic structure theory.
 
     """
+
     def __init__(self, analysis_object):
         """
 
@@ -36,7 +37,9 @@ class Description:
             None
 
         """
-        self.condensed_bonding_analysis = self.analysis_object.condensed_bonding_analysis
+        self.condensed_bonding_analysis = (
+            self.analysis_object.condensed_bonding_analysis
+        )
         if self.analysis_object.whichbonds == "cation-anion":
             relevant_cations = ", ".join(
                 [
@@ -62,12 +65,24 @@ class Description:
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
-                            str(properties["number_of_bonds"]) + " " + item["ion"] + "-" + str(type) + " (mean ICOHP: "
-                            "" + properties["ICOHP_mean"] + " eV, 0.0 percent antibonding interaction below EFermi)"
+                            str(properties["number_of_bonds"])
+                            + " "
+                            + item["ion"]
+                            + "-"
+                            + str(type)
+                            + " (mean ICOHP: "
+                            ""
+                            + properties["ICOHP_mean"]
+                            + " eV, 0.0 percent antibonding interaction below EFermi)"
                         )
                     else:
                         bond_info.append(
-                            str(properties["number_of_bonds"]) + " " + item["ion"] + "-" + str(type) + " (mean ICOHP: "
+                            str(properties["number_of_bonds"])
+                            + " "
+                            + item["ion"]
+                            + "-"
+                            + str(type)
+                            + " (mean ICOHP: "
                             ""
                             + properties["ICOHP_mean"]
                             + " eV, "
@@ -124,12 +139,24 @@ class Description:
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
-                            str(properties["number_of_bonds"]) + " " + item["ion"] + "-" + str(type) + " (mean ICOHP: "
-                            "" + properties["ICOHP_mean"] + " eV, 0.0 percent antibonding interaction below EFermi)"
+                            str(properties["number_of_bonds"])
+                            + " "
+                            + item["ion"]
+                            + "-"
+                            + str(type)
+                            + " (mean ICOHP: "
+                            ""
+                            + properties["ICOHP_mean"]
+                            + " eV, 0.0 percent antibonding interaction below EFermi)"
                         )
                     else:
                         bond_info.append(
-                            str(properties["number_of_bonds"]) + " " + item["ion"] + "-" + str(type) + " (mean ICOHP: "
+                            str(properties["number_of_bonds"])
+                            + " "
+                            + item["ion"]
+                            + "-"
+                            + str(type)
+                            + " (mean ICOHP: "
                             ""
                             + properties["ICOHP_mean"]
                             + " eV, "
@@ -165,7 +192,9 @@ class Description:
         if "madelung_energy" in self.analysis_object.condensed_bonding_analysis:
             self.text.append(
                 "The Madelung energy of this crystal structure per unit cell is: "
-                + str(self.analysis_object.condensed_bonding_analysis["madelung_energy"])
+                + str(
+                    self.analysis_object.condensed_bonding_analysis["madelung_energy"]
+                )
                 + " eV."
             )
 
@@ -205,7 +234,9 @@ class Description:
         set_labels_cohps = self.analysis_object.set_labels_cohps
         structure = self.analysis_object.structure
 
-        for iplot, (ication, labels, cohps) in enumerate(zip(set_inequivalent_cations, set_labels_cohps, set_cohps)):
+        for iplot, (ication, labels, cohps) in enumerate(
+            zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
+        ):
             namecation = str(structure[ication].specie)
 
             cp = PlainCohpPlotter()
@@ -222,7 +253,9 @@ class Description:
                 if len(set_inequivalent_cations) > 1:
                     if isinstance(filename, str):
                         filename = Path(filename)
-                    filename_new = filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                    filename_new = (
+                        filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                    )
                 else:
                     filename_new = filename
                 plot.savefig(filename_new)
@@ -293,7 +326,9 @@ class Description:
         if ce == "DD:8":
             return "dodecahedronal (with triangular faces) (CN=8)"
         if ce == "DDPN:8":
-            return "dodecahedronal (with triangular faces - p2345 plane normalized) (CN=8)"
+            return (
+                "dodecahedronal (with triangular faces - p2345 plane normalized) (CN=8)"
+            )
         if ce == "HB:8":
             return "hexagonal bipyramidal (CN=8)"
         if ce == "BO_1:8":
