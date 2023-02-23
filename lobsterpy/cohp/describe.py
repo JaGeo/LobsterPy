@@ -202,7 +202,7 @@ class Description:
         self,
         save=False,
         filename=None,
-        ylim=[-4, 2],
+        ylim=None,
         xlim=None,
         integrated=False,
         title="",
@@ -226,6 +226,9 @@ class Description:
             A matplotlib object.
 
         """
+        if ylim is None:
+            ylim = [-4, 2]
+
         set_cohps = self.analysis_object.set_cohps
         if self.analysis_object.whichbonds == "cation-anion":
             set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
