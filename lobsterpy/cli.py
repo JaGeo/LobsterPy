@@ -11,10 +11,11 @@ from math import log, sqrt
 from pathlib import Path
 
 import matplotlib.style
+from pymatgen.electronic_structure.cohp import CompleteCohp
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import get_style_list, PlainCohpPlotter
-from pymatgen.electronic_structure.cohp import CompleteCohp
+
 
 
 def main() -> None:
