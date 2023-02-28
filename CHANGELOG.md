@@ -1,4 +1,4 @@
-## v0.2.6
+## v0.2.7
 - compatible with atomate2
 ## v0.2.5
 - compatible with latest pymatgen version
