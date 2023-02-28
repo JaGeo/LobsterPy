@@ -1,3 +1,7 @@
+## v0.2.6
+- compatible with atomate2
+## v0.2.5
+- compatible with latest pymatgen version
 ## v0.2.4
 - fixing linting errors due to new mypy versions
 ## v0.2.3
