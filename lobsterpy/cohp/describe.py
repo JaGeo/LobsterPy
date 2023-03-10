@@ -262,7 +262,8 @@ class Description:
         if not skip_show:
             plot.show()
         else:
-            plot.close()
+            if not save:
+                plot.close()
 
     @staticmethod
     def _coordination_environment_to_text(ce):
