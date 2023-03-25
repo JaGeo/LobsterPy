@@ -583,14 +583,14 @@ class Analysis:
                 elif b == nameion:
                     key_here = a
 
-            if large_antbd_dict is None:
+            if large_antbd_dict is None and small_antbd_dict:
                 bond_dict[key_here] = {
                     "ICOHP_mean": str(round(np.mean(item), 2)),
                     "ICOHP_sum": str(round(np.sum(item), 2)),
                     "has_antibdg_states_below_Efermi": small_antbd_dict[key],
                     "number_of_bonds": len(item),
                 }
-            else:
+            if large_antbd_dict is not None:
                 bond_dict[key_here] = {
                     "ICOHP_mean": str(round(np.mean(item), 2)),
                     "ICOHP_sum": str(round(np.sum(item), 2)),
