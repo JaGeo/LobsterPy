@@ -178,6 +178,24 @@ class TestAnalyse(unittest.TestCase):
             cutoff_icohp=0.1,
         )
 
+        self.analyse_K3Sb = Analysis(
+            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
+
+        self.analyse_K3Sb_all = Analysis(
+            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+        )
+
         # different environment than O:6
 
     def test_exception(self):
@@ -385,7 +403,6 @@ class TestAnalyse(unittest.TestCase):
         )
 
     def test_all_attributes_NaCl_all(self):
-        print(self.analyse_NaCl_all.condensed_bonding_analysis)
         self.assertEqual(
             self.analyse_NaCl_all.condensed_bonding_analysis["formula"], "NaCl"
         )
@@ -845,6 +862,262 @@ class TestAnalyse(unittest.TestCase):
         )
         self.assertEqual(
             self.analyse_CdF.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+    def test_all_attributes_K3Sb(self):
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["formula"], "K3Sb"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis[
+                "max_considered_bond_length"
+            ],
+            4.28164,
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["number_of_considered_ions"],
+            2,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["env"], "6"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["bonds"][
+                    "Sb"
+                ]["ICOHP_sum"]
+            ),
+            -0.84,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["bonds"]["Sb"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["bonds"]["Sb"][
+                "number_of_bonds"
+            ],
+            6,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["ion"], "K"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["charge"], 0.68
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0][
+                "relevant_bonds"
+            ],
+            ['9', '10', '11', '12', '13', '14'],
+        )
+
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["env"], "4"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["bonds"][
+                    "Sb"
+                ]["ICOHP_sum"]
+            ),
+            -1.45,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"][
+                "number_of_bonds"
+            ],
+            4,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["ion"], "K"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["charge"], 0.52
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1][
+                "relevant_bonds"
+            ],
+            ['21', '22', '23', '24'],
+        )
+
+        self.assertEqual(
+            self.analyse_K3Sb.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+    def test_all_attributes_K3Sb_all(self):
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["formula"], "K3Sb"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis[
+                "max_considered_bond_length"
+            ],
+            4.28164,
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["number_of_considered_ions"],
+            3,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["env"], "14"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["bonds"][
+                    "K"
+                ]["ICOHP_sum"]
+            ),
+            -2.97,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["bonds"]["K"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["bonds"]["K"][
+                "number_of_bonds"
+            ],
+            8,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["bonds"][
+                    "Sb"
+                ]["ICOHP_sum"]
+            ),
+            -0.84,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["bonds"]["Sb"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["bonds"]["Sb"][
+                "number_of_bonds"
+            ],
+            6,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["ion"], "K"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0]["charge"], 0.68
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0][
+                "relevant_bonds"
+            ],
+            ['1', '2', '3', '4', '5', '6', '7', '8','9', '10', '11', '12', '13', '14'],
+        )
+
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["env"], "14"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["bonds"][
+                    "Sb"
+                ]["ICOHP_sum"]
+            ),
+            -1.45,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["bonds"]["K"][
+                "number_of_bonds"
+            ],
+            10,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["bonds"][
+                    "K"
+                ]["ICOHP_sum"]
+            ),
+            -2.15,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["bonds"]["K"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["bonds"]["K"][
+                "number_of_bonds"
+            ],
+            10,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["ion"], "K"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1]["charge"], 0.52
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1][
+                "relevant_bonds"
+            ],
+            ['1', '2', '3', '4', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
+        )
+
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["env"], "14"
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["bonds"][
+                    "K"
+                ]["ICOHP_sum"]
+            ),
+            -3.74,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["bonds"]["K"][
+                "has_antibdg_states_below_Efermi"
+            ],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["bonds"]["K"][
+                "number_of_bonds"
+            ],
+            14,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["ion"], "Sb"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["charge"], -1.73
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3][
+                "relevant_bonds"
+            ],
+            ['9', '10', '11', '12', '13', '14', '21', '22', '23', '24', '25', '26', '27', '28'],
         )
 
     def test_all_attributes_NaCl_nan(self):

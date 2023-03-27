@@ -167,7 +167,10 @@ class Description:
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
-                    bonds = bond_info[0]
+                    if bond_info:
+                        bonds = bond_info[0]
+                    else:
+                        bonds = 0
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
