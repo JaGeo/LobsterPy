@@ -869,9 +869,7 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_K3Sb.condensed_bonding_analysis["formula"], "K3Sb"
         )
         self.assertAlmostEqual(
-            self.analyse_K3Sb.condensed_bonding_analysis[
-                "max_considered_bond_length"
-            ],
+            self.analyse_K3Sb.condensed_bonding_analysis["max_considered_bond_length"],
             4.28164,
         )
         self.assertAlmostEqual(
@@ -883,9 +881,9 @@ class TestAnalyse(unittest.TestCase):
         )
         self.assertAlmostEqual(
             float(
-                self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["bonds"][
-                    "Sb"
-                ]["ICOHP_sum"]
+                self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["bonds"]["Sb"][
+                    "ICOHP_sum"
+                ]
             ),
             -0.84,
         )
@@ -908,10 +906,8 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["charge"], 0.68
         )
         self.assertListEqual(
-            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0][
-                "relevant_bonds"
-            ],
-            ['9', '10', '11', '12', '13', '14'],
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][0]["relevant_bonds"],
+            ["9", "10", "11", "12", "13", "14"],
         )
 
         self.assertEqual(
@@ -919,9 +915,9 @@ class TestAnalyse(unittest.TestCase):
         )
         self.assertAlmostEqual(
             float(
-                self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["bonds"][
-                    "Sb"
-                ]["ICOHP_sum"]
+                self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"][
+                    "ICOHP_sum"
+                ]
             ),
             -1.45,
         )
@@ -944,10 +940,8 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["charge"], 0.52
         )
         self.assertListEqual(
-            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1][
-                "relevant_bonds"
-            ],
-            ['21', '22', '23', '24'],
+            self.analyse_K3Sb.condensed_bonding_analysis["sites"][1]["relevant_bonds"],
+            ["21", "22", "23", "24"],
         )
 
         self.assertEqual(
@@ -965,7 +959,9 @@ class TestAnalyse(unittest.TestCase):
             4.28164,
         )
         self.assertAlmostEqual(
-            self.analyse_K3Sb_all.condensed_bonding_analysis["number_of_considered_ions"],
+            self.analyse_K3Sb_all.condensed_bonding_analysis[
+                "number_of_considered_ions"
+            ],
             3,
         )
         self.assertEqual(
@@ -1021,7 +1017,7 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][0][
                 "relevant_bonds"
             ],
-            ['1', '2', '3', '4', '5', '6', '7', '8','9', '10', '11', '12', '13', '14'],
+            ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"],
         )
 
         self.assertEqual(
@@ -1077,7 +1073,22 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][1][
                 "relevant_bonds"
             ],
-            ['1', '2', '3', '4', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
+            [
+                "1",
+                "2",
+                "3",
+                "4",
+                "15",
+                "16",
+                "17",
+                "18",
+                "19",
+                "20",
+                "21",
+                "22",
+                "23",
+                "24",
+            ],
         )
 
         self.assertEqual(
@@ -1111,13 +1122,29 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["ion"], "Sb"
         )
         self.assertAlmostEqual(
-            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["charge"], -1.73
+            self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3]["charge"],
+            -1.73,
         )
         self.assertListEqual(
             self.analyse_K3Sb_all.condensed_bonding_analysis["sites"][3][
                 "relevant_bonds"
             ],
-            ['9', '10', '11', '12', '13', '14', '21', '22', '23', '24', '25', '26', '27', '28'],
+            [
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "21",
+                "22",
+                "23",
+                "24",
+                "25",
+                "26",
+                "27",
+                "28",
+            ],
         )
 
     def test_all_attributes_NaCl_nan(self):

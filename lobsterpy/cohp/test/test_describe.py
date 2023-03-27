@@ -418,24 +418,29 @@ class TestDescribe(unittest.TestCase):
         )
         self.assertEqual(
             self.describe_K3Sb.text,
-            ["The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion interactions: K1, K2.",
-             "K1 has a 6-fold coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent antibonding interaction below EFermi) bonds.",
-             "K2 has a 4-fold coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 percent antibonding interaction below EFermi) bonds."],
+            [
+                "The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion interactions: K1, K2.",
+                "K1 has a 6-fold coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent antibonding interaction below EFermi) bonds.",
+                "K2 has a 4-fold coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 percent antibonding interaction below EFermi) bonds.",
+            ],
         )
         self.assertEqual(
             self.describe_K3Sb_all.text,
-            ['The compound K3Sb has 3 symmetry-independent atoms(s) with relevant bonds: K1, K2, Sb4.',
-             'K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.544 percent antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent antibonding interaction below EFermi) bonds.',
-             'K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 percent antibonding interaction below EFermi) bonds.',
-             'Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 3.731 percent antibonding interaction below EFermi) bonds.'],
+            [
+                "The compound K3Sb has 3 symmetry-independent atoms(s) with relevant bonds: K1, K2, Sb4.",
+                "K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.544 percent antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent antibonding interaction below EFermi) bonds.",
+                "K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 percent antibonding interaction below EFermi) bonds.",
+                "Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 3.731 percent antibonding interaction below EFermi) bonds.",
+            ],
         )
         self.assertEqual(
             self.describe_CsH_all.text,
-            ['The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.',
-             'Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 percent antibonding interaction below EFermi) bonds.',
-             'H2 has a 0 coordination environment. It has 0 bonds.'],
+            [
+                "The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.",
+                "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 percent antibonding interaction below EFermi) bonds.",
+                "H2 has a 0 coordination environment. It has 0 bonds.",
+            ],
         )
-
 
 
 if __name__ == "__main__":
