@@ -231,10 +231,7 @@ class Analysis:
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if (
-                    ice in self.set_equivalent_sites
-                    and ce[0]["ce_symbol"] is not None
-                ):
+                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.set_inequivalent_ions.append(ice)
                     ce = ce[0]["ce_symbol"]
                     self.set_coordination_ions.append(ce)
