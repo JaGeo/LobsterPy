@@ -171,6 +171,41 @@ class TestDescribe(unittest.TestCase):
 
         self.describe_CdF_anbd = Description(self.analyse_CdF_anbd)
 
+        # tests for key error issues
+        self.analyse_K3Sb = Analysis(
+            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+        )
+
+        self.describe_K3Sb = Description(self.analyse_K3Sb)
+
+        self.analyse_K3Sb_all = Analysis(
+            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+        )
+
+        self.describe_K3Sb_all = Description(self.analyse_K3Sb_all)
+
+        # test for empty bond dict text generation
+        self.analyse_CsH_all = Analysis(
+            path_to_poscar=TestDir / "TestData/CsH/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/CsH/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/CsH/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+        )
+
+        self.describe_CsH_all = Description(self.analyse_CsH_all)
+
     def test_coordination_environment_to_text(self):
         results_dict = {
             "S:1": "single (CN=1)",
@@ -312,6 +347,15 @@ class TestDescribe(unittest.TestCase):
             self.assertTrue(Path(filename_test_1).exists())
             self.assertTrue(Path(filename_test_2).exists())
 
+        with tempfile.TemporaryDirectory() as tmp4:
+            filename_test = str(Path(tmp4) / "test.pdf")
+            self.describe_CsH_all.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
+            filename_test_1 = Path(tmp4) / "test-0.pdf"
+            self.assertFalse(Path(filename_test).exists())
+            self.assertTrue(Path(filename_test_1).exists())
+
     def test_write_descritoin(self):
         self.describe_NaCl.write_description()
         self.describe_NaSi_madelung_all.write_description()
@@ -372,6 +416,26 @@ class TestDescribe(unittest.TestCase):
                 "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, 100.0 percent antibonding interaction below EFermi) bonds.",
             ],
         )
+        self.assertEqual(
+            self.describe_K3Sb.text,
+            ["The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion interactions: K1, K2.",
+             "K1 has a 6-fold coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent antibonding interaction below EFermi) bonds.",
+             "K2 has a 4-fold coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 percent antibonding interaction below EFermi) bonds."],
+        )
+        self.assertEqual(
+            self.describe_K3Sb_all.text,
+            ['The compound K3Sb has 3 symmetry-independent atoms(s) with relevant bonds: K1, K2, Sb4.',
+             'K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.544 percent antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent antibonding interaction below EFermi) bonds.',
+             'K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 percent antibonding interaction below EFermi) bonds.',
+             'Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 3.731 percent antibonding interaction below EFermi) bonds.'],
+        )
+        self.assertEqual(
+            self.describe_CsH_all.text,
+            ['The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.',
+             'Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 percent antibonding interaction below EFermi) bonds.',
+             'H2 has a 0 coordination environment. It has 0 bonds.'],
+        )
+
 
 
 if __name__ == "__main__":

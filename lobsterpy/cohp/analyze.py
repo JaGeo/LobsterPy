@@ -213,7 +213,11 @@ class Analysis:
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
+                if (
+                    ice in self.set_equivalent_sites
+                    and ce[0]["ce_symbol"] is not None
+                    and self.chemenv.valences[ice] > 0
+                ):
                     self.set_inequivalent_ions.append(ice)
                     ce = ce[0]["ce_symbol"]
                     self.set_coordination_ions.append(ce)
@@ -583,14 +587,14 @@ class Analysis:
                 elif b == nameion:
                     key_here = a
 
-            if large_antbd_dict is None and small_antbd_dict:
+            if large_antbd_dict is None:
                 bond_dict[key_here] = {
                     "ICOHP_mean": str(round(np.mean(item), 2)),
                     "ICOHP_sum": str(round(np.sum(item), 2)),
                     "has_antibdg_states_below_Efermi": small_antbd_dict[key],
                     "number_of_bonds": len(item),
                 }
-            if large_antbd_dict is not None:
+            else:
                 bond_dict[key_here] = {
                     "ICOHP_mean": str(round(np.mean(item), 2)),
                     "ICOHP_sum": str(round(np.sum(item), 2)),

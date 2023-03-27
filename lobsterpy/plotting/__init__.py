@@ -151,7 +151,8 @@ class PlainCohpPlotter(CohpPlotter):
             ax.set_ylim(ylim)
         else:
             relevanty = [p[1] for p in allpts if xlim[0] < p[0] < xlim[1]]
-            plt.ylim((min(relevanty), max(relevanty)))
+            if relevanty:
+                plt.ylim((min(relevanty), max(relevanty)))
 
         grid_like_line_kwargs = {
             "color": matplotlib.rcParams["grid.color"],
@@ -185,6 +186,7 @@ class PlainCohpPlotter(CohpPlotter):
             plt.ylabel(cohp_label)
 
         _ = ax.legend()
+
         return plt
 
     @staticmethod
