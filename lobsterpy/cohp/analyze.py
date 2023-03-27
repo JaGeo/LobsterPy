@@ -234,7 +234,6 @@ class Analysis:
                 if (
                     ice in self.set_equivalent_sites
                     and ce[0]["ce_symbol"] is not None
-                    and self.chemenv.valences[ice] > 0
                 ):
                     self.set_inequivalent_ions.append(ice)
                     ce = ce[0]["ce_symbol"]
