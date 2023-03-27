@@ -1,3 +1,6 @@
+## v0.2.9
+- fix the error handling in cases ChemEnv cannot determine a coordination environment and we use coordination numbers instead for the cation-anion mode
+
 ## v0.2.8
 - fix issue while saving files
 
