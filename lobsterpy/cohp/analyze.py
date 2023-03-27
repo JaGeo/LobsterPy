@@ -161,7 +161,7 @@ class Analysis:
             )
 
         else:
-            raise ValueError("only cation anion bonds implemented so far")
+            raise ValueError("only cation anion and all bonds implemented so far")
 
         # determine cations and anions
         try:
@@ -178,19 +178,37 @@ class Analysis:
             class Lse:
                 """Test class when error was raised"""
 
-                def __init__(self, chemenv):
+                def __init__(self, chemenv, valences=None):
                     """
                     Test class when error was raised
 
                     Args:
                         chemenv (LobsterNeighbors): LobsterNeighbors object
+                        valences: list of valences
 
                     """
-                    self.coordination_environments = [
-                        [{"ce_symbol": str(len(coord))}] for coord in chemenv
-                    ]
+                    if valences is None:
+                        self.coordination_environments = [
+                            [{"ce_symbol": str(len(coord))}] for coord in chemenv
+                        ]
+                    else:
+                        self.coordination_environments = []
 
-            self.lse = Lse(self.chemenv.list_coords)
+                        for val, coord in zip(valences, chemenv):
+                            if val >= 0.0:
+                                self.coordination_environments.append(
+                                    [{"ce_symbol": str(len(coord))}]
+                                )
+                            else:
+                                self.coordination_environments.append(
+                                    [{"ce_symbol": None}]
+                                )
+
+            if self.whichbonds == "all":
+                self.lse = Lse(self.chemenv.list_coords)
+            elif self.whichbonds == "cation-anion":
+                # make a new list
+                self.lse = Lse(self.chemenv.list_coords, self.chemenv.valences)
 
     def get_information_all_bonds(self, summed_spins=True):
         """
