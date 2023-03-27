@@ -174,6 +174,7 @@ class Analysis:
                     only_cation_environments=False
                 )
         except ValueError:
+
             class Lse:
                 """Test class when error was raised"""
 
@@ -191,20 +192,23 @@ class Analysis:
                             [{"ce_symbol": str(len(coord))}] for coord in chemenv
                         ]
                     else:
-                        self.coordination_environments=[]
+                        self.coordination_environments = []
 
-                        for val, coord in zip(valences,chemenv):
-                            if val >=0.0:
-                                self.coordination_environments.append([{"ce_symbol": str(len(coord))}])
+                        for val, coord in zip(valences, chemenv):
+                            if val >= 0.0:
+                                self.coordination_environments.append(
+                                    [{"ce_symbol": str(len(coord))}]
+                                )
                             else:
-                                self.coordination_environments.append([{"ce_symbol": None}])
+                                self.coordination_environments.append(
+                                    [{"ce_symbol": None}]
+                                )
 
-            if self.whichbonds=="all":
+            if self.whichbonds == "all":
                 self.lse = Lse(self.chemenv.list_coords)
-            elif self.whichbonds=="cation-anion":
+            elif self.whichbonds == "cation-anion":
                 # make a new list
-                self.lse=Lse(self.chemenv.list_coords,self.chemenv.valences)
-
+                self.lse = Lse(self.chemenv.list_coords, self.chemenv.valences)
 
     def get_information_all_bonds(self, summed_spins=True):
         """
