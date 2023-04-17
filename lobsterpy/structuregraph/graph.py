@@ -41,10 +41,12 @@ class LobsterGraph:
             path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster")
             path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster")
             path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster")
+            path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster")
+            path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster")
             path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
             add_additional_data_sg: (bool) if True will add the information from ICOOPLIST.lobster
             and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond
-            whichbonds: selects which kind of bonds are analyzed. "all" is the default
+            which_bonds: selects which kind of bonds are analyzed. "all" is the default
             start: start energy for bonding antibonding percent integration
         """
 
@@ -114,10 +116,12 @@ class LobsterGraph:
             self.path_to_poscar
         )  # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)
 
+        # Create the structure graph object decorated with site and edge properties based on ICOHP/ICOBI/ICOOP data
         lobster_env = chemenvlobster.get_bonded_structure(
             structure=decorated_structure, decorate=True, edge_properties=True
-        )  # Create the structure graph object decorated with site properties and also edge properties based on ICOHP/ICOBI/ICOOP data
+        )
 
+        # Initialize automating bonding analysis from Lobsterpy based on ICOHP
         analyze = Analysis(
             path_to_charge=self.path_to_charge,
             path_to_cohpcar=self.path_to_cohpcar,
@@ -125,23 +129,32 @@ class LobsterGraph:
             path_to_icohplist=self.path_to_icohplist,
             path_to_madelung=self.path_to_madelung,
             whichbonds=self.which_bonds,
-        )  # Initialized automating bonding analysis from Lobsterpy based on ICOHP 
+        )
 
-        cba = analyze.condensed_bonding_analysis  # Store the summarized dictionary object containing bonding information
+        # Store the summarized dictionary object containing bonding information
+        cba = analyze.condensed_bonding_analysis
 
-        for k, v in cba["sites"].items():  # Iterate over sites in the dictionary
-            for k2, v2 in lobster_env.graph.nodes.data(): 
-                if v["ion"] == v2["specie"]:  # Here check if ions are same and add its corresponding environment in node properties
+        # Iterate over sites in the dictionary
+        for k, v in cba["sites"].items():
+            for k2, v2 in lobster_env.graph.nodes.data():
+                # Check if ions are same and add its corresponding environment in node properties
+                if v["ion"] == v2["specie"]:
                     v2["properties"].update({"env": v["env"]})
 
-        for edge_prop in lobster_env.graph.edges.data():  # Iterate over structure graph edges 
+        for (
+            edge_prop
+        ) in lobster_env.graph.edges.data():  # Iterate over structure graph edges
             _ab, ab_p, _b, b_p = analyze._integrate_antbdstates_below_efermi(
                 cohp=chemenvlobster.completecohp.get_cohp_by_label(
                     edge_prop[2]["bond_label"]
                 ),
                 start=self.start,
-            )  # Compute bonding- antibonding percentages for each bond in structure graph object 
-            edge_prop[2]["ICOHP_bonding_perc"] = b_p  # Store bonding percentage in structure graph object
-            edge_prop[2]["ICOHP_antibonding_perc"] = ab_p  # Store anti-bonding percentage in structure graph object
+            )  # Compute bonding- antibonding percentages for each bond in structure graph object
+            edge_prop[2][
+                "ICOHP_bonding_perc"
+            ] = b_p  # Store bonding percentage in structure graph object
+            edge_prop[2][
+                "ICOHP_antibonding_perc"
+            ] = ab_p  # Store anti-bonding percentage in structure graph object
 
         return lobster_env
