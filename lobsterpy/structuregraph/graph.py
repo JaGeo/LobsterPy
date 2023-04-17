@@ -49,15 +49,16 @@ class LobsterGraph:
             which_bonds: selects which kind of bonds are analyzed. "all" is the default
             start: start energy for bonding antibonding percent integration
         """
-
         if add_additional_data_sg:
             self.add_additional_data_sg = add_additional_data_sg
-            self.path_to_icooplist = path_to_icooplist
-            self.path_to_icobilist = path_to_icobilist
-        else:
-            self.add_additional_data_sg = add_additional_data_sg
-            self.path_to_icooplist = path_to_icooplist
-            self.path_to_icobilist = path_to_icobilist
+            if path_to_icooplist is not None and path_to_icobilist is not None:
+                self.path_to_icooplist = path_to_icooplist
+                self.path_to_icobilist = path_to_icobilist
+            else:
+                raise ValueError(
+                    "add_additional_data_sg is set to True."
+                    "Please provide path_to_icooplist and path_to_icobilist"
+                )
 
         self.path_to_poscar = path_to_poscar
         self.path_to_charge = path_to_charge
