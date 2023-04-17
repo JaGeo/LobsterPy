@@ -1,11 +1,14 @@
-from setuptools import setup, find_packages
+from __future__ import annotations
+
 from pathlib import Path
+
+from setuptools import find_packages, setup
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text("utf-8")
 setup(
     name="lobsterpy",
-    version="0.2.3",
+    version="0.2.9",
     description="Package for autmatic bonding analysis with Lobster/VASP",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -15,11 +18,11 @@ setup(
     license="BSD 3-clause",
     packages=find_packages(),
     install_requires=[
-        "pymatgen==2022.10.22",
+        "pymatgen>=2023.1.20",
         "numpy",
         "typing",
-        "Sphinx==5.3.0",
-        "sphinx-argparse==0.3.2",
+        "Sphinx>=4",
+        "sphinx-argparse==0.4.0",
         "sphinx-pdj-theme==0.2.1",
     ],
     classifiers=[
@@ -30,6 +33,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     entry_points={
         "console_scripts": [

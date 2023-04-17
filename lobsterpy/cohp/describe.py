@@ -4,8 +4,10 @@
 """
 This module defines classes to describe the COHPs automatically
 """
+from __future__ import annotations
 
 from pathlib import Path
+
 from lobsterpy.plotting import PlainCohpPlotter
 
 
@@ -22,7 +24,6 @@ class Description:
         Args:
             analysis_object: Analysis object from lobsterpy.analysis
         """
-
         self.analysis_object = analysis_object
         self.set_description()
 
@@ -59,7 +60,6 @@ class Description:
             )
 
             for key, item in self.condensed_bonding_analysis["sites"].items():
-
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
                 for type, properties in item["bonds"].items():
@@ -134,7 +134,6 @@ class Description:
             )
 
             for key, item in self.condensed_bonding_analysis["sites"].items():
-
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
                 for type, properties in item["bonds"].items():
@@ -168,7 +167,10 @@ class Description:
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
-                    bonds = bond_info[0]
+                    if bond_info:
+                        bonds = bond_info[0]
+                    else:
+                        bonds = 0
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -238,7 +240,6 @@ class Description:
         for iplot, (ication, labels, cohps) in enumerate(
             zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
-
             namecation = str(structure[ication].specie)
 
             cp = PlainCohpPlotter()
@@ -264,7 +265,8 @@ class Description:
         if not skip_show:
             plot.show()
         else:
-            plot.close()
+            if not save:
+                plot.close()
 
     @staticmethod
     def _coordination_environment_to_text(ce):
@@ -277,7 +279,6 @@ class Description:
         Returns:
             A text description of coordination environment
         """
-
         if ce == "S:1":
             return "single (CN=1)"
         if ce == "L:2":
@@ -321,7 +322,7 @@ class Description:
         if ce == "C:8":
             return "cubic (CN=8)"
         if ce == "SA:8":
-            return "sqaure antiprismatic (CN=8)"
+            return "square antiprismatic (CN=8)"
         if ce == "SBT:8":
             return "square-face bicapped trigonal prismatic (CN=8)"
         if ce == "TBT:8":

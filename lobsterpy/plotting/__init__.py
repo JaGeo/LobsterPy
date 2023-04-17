@@ -4,24 +4,25 @@
 """
 Here classes and functions to plot Lobster outputs are provided
 """
+from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import numpy as np
 import matplotlib
+import numpy as np
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
-from pymatgen.electronic_structure.plotter import CohpPlotter
 from pymatgen.electronic_structure.core import Spin
+from pymatgen.electronic_structure.plotter import CohpPlotter
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
 def get_style_list(
     no_base_style: bool = False,
-    styles: Optional[List[Union[str, Dict[str, Any]]]] = None,
-    **kwargs
-) -> List[Union[str, Dict[str, Any]]]:
+    styles: list[str | dict[str, Any]] | None = None,
+    **kwargs,
+) -> list[str | dict[str, Any]]:
     """Get *args for matplotlib.style from user input
 
     Args:
@@ -31,9 +32,7 @@ def get_style_list(
                 or dicts of rcParam options.
 
     Remaining kwargs are collected as a dict and take highest priority.
-
     """
-
     if no_base_style:
         base = []  # type: List[Union[str, Dict[str, Any]]]
     else:
@@ -46,20 +45,22 @@ def get_style_list(
 
 
 class PlainCohpPlotter(CohpPlotter):
-    """Modified Pymatgen CohpPlotter with styling removed
+    """
+    Modified Pymatgen CohpPlotter with styling removed
 
     This allows the styling to be manipulated more easily using matplotlib
-    style sheets."""
+    style sheets.
+    """
 
     def get_plot(
         self,
-        ax: matplotlib.axes.Axes = None,
-        xlim: Tuple[float, float] = None,
-        ylim: Tuple[float, float] = None,
-        plot_negative: bool = None,
+        ax: matplotlib.axes.Axes | None = None,
+        xlim: tuple[float, float] | None = None,
+        ylim: tuple[float, float] | None = None,
+        plot_negative: bool | None = None,
         integrated: bool = False,
         invert_axes: bool = True,
-        sigma: float = None,
+        sigma: float | None = None,
     ):
         """
         Get a matplotlib plot showing the COHP.
@@ -150,7 +151,8 @@ class PlainCohpPlotter(CohpPlotter):
             ax.set_ylim(ylim)
         else:
             relevanty = [p[1] for p in allpts if xlim[0] < p[0] < xlim[1]]
-            plt.ylim((min(relevanty), max(relevanty)))
+            if relevanty:
+                plt.ylim((min(relevanty), max(relevanty)))
 
         grid_like_line_kwargs = {
             "color": matplotlib.rcParams["grid.color"],
@@ -184,6 +186,7 @@ class PlainCohpPlotter(CohpPlotter):
             plt.ylabel(cohp_label)
 
         _ = ax.legend()
+
         return plt
 
     @staticmethod

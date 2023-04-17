@@ -13,7 +13,7 @@ analyse = Analysis(
     path_to_charge=os.path.join(directory, "CHARGE.lobster"),
     whichbonds="cation-anion",
 )
-
+print(analyse.type_charge)
 # Setup Desciption dict
 describe = Description(analysis_object=analyse)
 describe.write_description()
