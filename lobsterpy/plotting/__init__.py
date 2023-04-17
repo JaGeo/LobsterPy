@@ -6,7 +6,7 @@ Here classes and functions to plot Lobster outputs are provided
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import matplotlib
 import numpy as np
@@ -34,7 +34,7 @@ def get_style_list(
     Remaining kwargs are collected as a dict and take highest priority.
     """
     if no_base_style:
-        base = []  # type: List[Union[str, Dict[str, Any]]]
+        base = []
     else:
         base = [base_style]
 
