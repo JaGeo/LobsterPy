@@ -49,7 +49,7 @@ default-tag = "0.0.1"
 line-length = 120
 
 [tool.flake8]
-exclude = ".git,test"
+exclude = ".git,tests"
 
 [tool.cibuildwheel.linux]
 archs = ["auto64"]
