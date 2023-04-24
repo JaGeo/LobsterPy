@@ -19,7 +19,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install mypy pydocstyle pylint black flake8
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install -e .
+        pip install .
         pip install types-setuptools
     - name: mypy
       run: |
