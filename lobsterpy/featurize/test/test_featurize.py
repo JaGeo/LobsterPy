@@ -12,10 +12,13 @@ TestDir = CurrentDir / "../../"
 class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
     def setUp(self):
         os.chdir(TestDir / "TestData/JSONS")
-        self.mpids = ["mp-1249.json.gz", "mp-1958.json.gz", "mp-14652.json.gz"]
 
-    def test_featurize_lobsterpy_icohp_0(self):
-        df = featurize_lobsterpy_icohp_data(self.mpids[0])
+        self.mp_1249 = "mp-1249.json.gz"
+        self.mp_1958 = "mp-1958.json.gz"
+        self.mp_14652 = "mp-14652.json.gz"
+
+    def test_featurize_lobsterpy_icohp_data(self):
+        df = featurize_lobsterpy_icohp_data(self.mp_1249)
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)
@@ -44,7 +47,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
         self.assertCountEqual(list(df.columns), expected_cols)
 
         # Test that the DataFrame has the expected index
-        self.assertEqual(df.index[0], self.mpids[0].split(".")[0])
+        self.assertEqual(df.index[0], self.mp_1249.split(".")[0])
 
         # Test that all the values in the DataFrame
         self.assertAlmostEqual(
@@ -66,7 +69,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
             df.loc[df.index[0], "bonding_perc_avg"], 0.978985, places=5
         )
 
-        df = featurize_lobsterpy_icohp_data(self.mpids[1])
+        df = featurize_lobsterpy_icohp_data(self.mp_1958)
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)
@@ -95,7 +98,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
         self.assertCountEqual(list(df.columns), expected_cols)
 
         # Test that the DataFrame has the expected index
-        self.assertEqual(df.index[0], self.mpids[1].split(".")[0])
+        self.assertEqual(df.index[0], self.mp_1958.split(".")[0])
 
         # Test that all the values in the DataFrame
         self.assertAlmostEqual(df.loc[df.index[0], "Icohp_sum_avg"], -2.96000, places=5)
@@ -109,7 +112,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
             df.loc[df.index[0], "antibonding_perc_avg"], 0.14528, places=5
         )
 
-        df = featurize_lobsterpy_icohp_data(self.mpids[2])
+        df = featurize_lobsterpy_icohp_data(self.mp_14652)
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)
@@ -138,7 +141,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
         self.assertCountEqual(list(df.columns), expected_cols)
 
         # Test that the DataFrame has the expected index
-        self.assertEqual(df.index[0], self.mpids[2].split(".")[0])
+        self.assertEqual(df.index[0], self.mp_14652.split(".")[0])
 
         # Test that all the values in the DataFrame
         self.assertAlmostEqual(
