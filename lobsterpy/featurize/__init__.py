@@ -15,8 +15,10 @@ def read_lobster_lightweight_json(filename: str):
     """
     This function reads loads the lightweight json.gz files and returns a python dictionary object
     with lobster summmarized bonding analysis data.
+
     Args:
         filename (str) : name of file
+
     Returns:
         Returns a dictionary with lobster summmarized bonding analysis data.
     """
@@ -34,9 +36,11 @@ def featurize_lobsterpy_icohp_data(filename, bonds: str = "all_bonds"):
     """
     This function reads loads the lightweight json.gz files and generates icohp stats data from lobsterpy
     bonding analysis
+
     Args:
         filename (str) : name of file
         bonds (str) : all_bonds | cation_anion_bonds
+
     Returns:
         Returns a pandas dataframe with lobsterpy icohp statistics .
     """
