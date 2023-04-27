@@ -3,7 +3,7 @@ import sys
 import unittest
 import pandas as pd
 from pathlib import Path
-from lobsterpy.featurize import featurize_lobsterpy_icohp_data
+from lobsterpy.featurize.lobsterpy_data import featurize_lobster_lightweight_json
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
@@ -18,7 +18,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
         self.mp_14652 = "mp-14652.json.gz"
 
     def test_featurize_lobsterpy_icohp_data(self):
-        df = featurize_lobsterpy_icohp_data(self.mp_1249)
+        df = featurize_lobster_lightweight_json(self.mp_1249)
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)
@@ -69,7 +69,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
             df.loc[df.index[0], "bonding_perc_avg"], 0.978985, places=5
         )
 
-        df = featurize_lobsterpy_icohp_data(self.mp_1958)
+        df = featurize_lobster_lightweight_json(self.mp_1958)
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)
@@ -112,7 +112,7 @@ class TestFeaturizeLobsterpyIcohp(unittest.TestCase):
             df.loc[df.index[0], "antibonding_perc_avg"], 0.14528, places=5
         )
 
-        df = featurize_lobsterpy_icohp_data(self.mp_14652)
+        df = featurize_lobster_lightweight_json(self.mp_14652)
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)
