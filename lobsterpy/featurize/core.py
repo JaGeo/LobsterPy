@@ -450,7 +450,12 @@ class FeaturizeCOXX:
         return band_center
 
     def _get_n_moment(
-        self, n: int, cohp: List[float], energies: List[float], e_range: List[int], center: bool = True
+        self,
+        n: float,
+        cohp: List[float],
+        energies: List[float],
+        e_range: List[int],
+        center: bool = True,
     ) -> float:
         """
 
@@ -475,7 +480,7 @@ class FeaturizeCOXX:
             band_center = self._get_band_center(
                 cohp=cohp, energies=energies, e_range=self.e_range
             )
-            p = energies - band_center
+            p = [en - band_center for en in energies]
         else:
             p = energies
 
