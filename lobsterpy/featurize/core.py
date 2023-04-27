@@ -176,12 +176,12 @@ class FeaturizeCOXX:
             structure_file=self.path_to_structure,
         )
 
-        self.coxx_fingerprint = None
 
     def get_coxx_fingerprint_df(
         self,
         ids: str,
         fp_type: str,
+        label_list: list,
         coxxcar_obj: CompleteCohp,
         spin_type: str = "summed",
         binning: bool = True,
@@ -189,7 +189,6 @@ class FeaturizeCOXX:
         max_e: float = 0,
         n_bins: int = 50,
         normalize: bool = True,
-        label_list: list = None,
     ):
         """
         Generates the COHP fingerprint
@@ -282,7 +281,7 @@ class FeaturizeCOXX:
             else:
                 coxx_rebin_sc = coxx_rebin
 
-            self.coxx_fingerprint = coxx_fingerprint(
+            fp = coxx_fingerprint(
                 np.array([ener]),
                 coxx_rebin_sc,
                 fp_type,
@@ -292,7 +291,7 @@ class FeaturizeCOXX:
             )
 
             df_temp = pd.DataFrame(index=[ids], columns=["COHP_FP"])
-            df_temp.at[ids, "COHP_FP"] = self.coxx_fingerprint.coxx
+            df_temp.at[ids, "COHP_FP"] = fp.coxx
 
             df = pd.DataFrame(df_temp["COHP_FP"].tolist())
 
@@ -401,7 +400,7 @@ class FeaturizeCOXX:
 
         return band_center, band_width, band_skew, band_kurt
 
-    def _get_band_center(self, cohp: list, energies: list, e_range: list) -> float:
+    def _get_band_center(self, cohp: List[float], energies: List[float], e_range: List[int]) -> float:
         """
         Get the band width, defined as the first moment of the orbital resolved COHP
         Args:
