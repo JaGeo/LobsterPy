@@ -7,13 +7,13 @@ This module defines functions to featurize Lobster lighweight jsons
 
 import gzip
 import json
-import numpy as np
-import pandas as pd
 from pathlib import Path
 from typing import Mapping, NamedTuple, List, Any
 from collections import namedtuple
-from pymatgen.core.structure import Structure
+import numpy as np
+import pandas as pd
 from mendeleev import element
+from pymatgen.core.structure import Structure
 from pymatgen.io.lobster import Charge, Lobsterout, Icohplist
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
@@ -121,7 +121,6 @@ class FeaturizeLobsterpy:
 
 
 class FeaturizeCOXX:
-
     """
     class to featurize  COHPCAR/COBICAR/COOPCAR data as fingerprint
 
@@ -129,12 +128,14 @@ class FeaturizeCOXX:
         path_to_coxxcar: path to COXXCAR.lobster (e.g., "COXXCAR.lobster")
         path_to_icoxxlist : path to ICOXXLIST.lobster (e.g., "ICOXXLIST.lobster")
         path_to_structure : path to structure file (e.g., "POSCAR")
-        feature_type: set the feature type for moment features and fingerprints. Possible options are "bonding", "antibonding" or "overall"
+        feature_type: set the feature type for moment features and fingerprints.
+        Possible options are "bonding", "antibonding" or "overall"
         are_cobis : bool indicating if file contains COBI/ICOBI data
         are_coops : bool indicating if file contains COOP/ICOOP data
         include_wicoxx : if True will include weighted ICOXX, effective co-ordination number
         in the featurized dataframe
-        include_moment_features : if True will include ICOXX center,width, skew and kurtosis features in the  featurized dataframe
+        include_moment_features : if True will include ICOXX center,width, skew and kurtosis features
+        in the  featurized dataframe
         e_range : range of energy relative to fermi for which moment features needs to be computed
 
     Attributes:
@@ -215,7 +216,6 @@ class FeaturizeCOXX:
             Fingerprint(namedtuple) : The COHP fingerprint
             of format (energies, coxx, fp_type, spin_type, n_bins, bin_width)
         """
-
         coxx_fingerprint = namedtuple(
             "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
         )
@@ -247,7 +247,7 @@ class FeaturizeCOXX:
                 """Check the spin_type argument,
                                  Possible options are summed/up/down"""
             )
-        coxx_dict = dict()
+        coxx_dict = {}
 
         coxx_dict["bonding"] = np.array(
             [scohp if scohp <= 0 else 0 for scohp in coxx_all]
@@ -484,7 +484,7 @@ class FeaturizeCOXX:
         else:
             p = energies
 
-        nth_moment = np.trapz(p**n * cohp, x=energies) / np.trapz(cohp, x=energies) # type: ignore
+        nth_moment = np.trapz(p**n * cohp, x=energies) / np.trapz(cohp, x=energies)  # type: ignore
 
         return nth_moment
 
@@ -497,7 +497,6 @@ class FeaturizeCOXX:
             Returns a pandas dataframe with cohp/cobi/coop related features
 
         """
-
         df = pd.DataFrame(index=[ids])
 
         if self.include_wicoxx:
@@ -577,7 +576,6 @@ class FeaturizeCharges:
             Ionicity of the structure
 
         """
-
         chargeobj = Charge(filename=self.path_to_charge)
         structure = Structure.from_file(self.path_to_structure)
 
@@ -657,7 +655,6 @@ class FeaturizeCharges:
             Returns a pandas dataframe with ionicity
 
         """
-
         df = pd.DataFrame(index=[ids])
 
         if self.charge_type == "mulliken":
