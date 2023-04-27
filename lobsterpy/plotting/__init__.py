@@ -17,10 +17,10 @@ from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.plotter import CohpPlotter
 from lobsterpy.plotting import layout_dicts as ld
 import plotly.graph_objs as go
-import plotly.express as px
 
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
+
 
 def get_style_list(
     no_base_style: bool = False,
@@ -234,19 +234,19 @@ class PlainCohpPlotter(CohpPlotter):
 
 class InteractiveCohpPlotter(CohpPlotter):
     """
-    Interactive COHP plotter to view all relevant / multiple COHPs in one figure
+    Interactive COHP plotter to view all relevant / multiple COHPs in one figure.
     """
 
-    def add_all_relevant_cohps(self, complete_cohp, analyse, label_addition=None):
+    def add_all_relevant_cohps(self, analyse, label_addition=""):
         """
         Adds all relevant COHPs from lobsterpy analyse object.
 
         Args:
-            complete_cohp: CompleteCohp object from pymatgen.
-            analyse: Analyse object from lobsterpy, required f. determination of
-                relevant bonds.
-            label_addition: str, optional addition to LOBSTER label.
+            analyse: Analyse object from lobsterpy.
+            label_addition: str, optional addition to LOBSTER label to avoid key
+                conflicts when plotting multiple calcs or just for additional legend information.
         """
+        complete_cohp = analyse.chemenv.completecohp
         for site_key, site in analyse.condensed_bonding_analysis["sites"].items():
             for label in site["relevant_bonds"]:
                 cohp = complete_cohp.get_cohp_by_label(label)
@@ -259,41 +259,45 @@ class InteractiveCohpPlotter(CohpPlotter):
                     "ICOHP": int_populations,
                     "efermi": cohp.efermi,
                     "plot_label": (
-                            "site_cohplabel:"
-                            + str(site_key)
+                            str(site_key)
                             + "_"
                             + str(label)
-                            + "="
+                            + str(label_addition)
+                            + ": "
                             + str(complete_cohp.bonds[label]["sites"][0].species_string)
                             + "-"
                             + str(complete_cohp.bonds[label]["sites"][1].species_string)
                     )
                 }
 
-    def add_cohps_by_lobster_label(self, complete_cohp, label_list):
+    def add_cohps_by_lobster_label(self, analyse, label_list, label_addition=""):
         """
         Adds COHPs explicitly specified in label list.
 
         Args:
-            complete_cohp: CompleteCohp object from pymatgen.
+            analyse: Analyse object from lobsterpy.
             label_list: List of COHP labels as from LOBSTER.
+            label_addition: str, optional addition to LOBSTER label to avoid key
+                conflicts when plotting multiple calcs or just for additional legend information.
         """
+        complete_cohp = analyse.chemenv.completecohp
         for label in label_list:
             cohp = complete_cohp.get_cohp_by_label(label)
             energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
             populations = cohp.get_cohp()
             int_populations = cohp.get_icohp()
-            self._cohps[label] = {
+            self._cohps[f"{label}{label_addition}"] = {
                 "energies": energies,
                 "COHP": populations,
                 "ICOHP": int_populations,
                 "efermi": cohp.efermi,
                 "plot_label": (
-                    str(label)
-                    + ":"
-                    + str(complete_cohp.bonds[label]["sites"][0].species_string)
-                    + "-"
-                    + str(complete_cohp.bonds[label]["sites"][1].species_string)
+                        str(label)
+                        + str(label_addition)
+                        + ": "
+                        + str(complete_cohp.bonds[label]["sites"][0].species_string)
+                        + "-"
+                        + str(complete_cohp.bonds[label]["sites"][1].species_string)
                 )
             }
 
@@ -353,7 +357,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         pal_iter = cycle(palette)
 
         traces = []
-        for label, item in self._cohps.items():
+        for item in self._cohps.values():
             population_key = item["ICOHP"] if integrated else item["COHP"]
             band_color = next(pal_iter)
             for spin in [Spin.up, Spin.down]:
@@ -362,7 +366,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                     x = population if invert_axes else item["energies"]
                     y = item["energies"] if invert_axes else population
                     if spin == Spin.up:
-                        trace = go.Scatter(x=x, y=y, name=label)
+                        trace = go.Scatter(x=x, y=y, name=item["plot_label"])
                         trace.update(ld.spin_up_trace_style_dict)
                     else:
                         trace = go.Scatter(x=x, y=y, name="")
@@ -388,6 +392,8 @@ class InteractiveCohpPlotter(CohpPlotter):
             fig.update_xaxes(range=xlim)
         if ylim:
             fig.update_yaxes(range=ylim)
+
+        fig.update_yaxes(automargin=True)
         #TODO:
         # improve display of legend
         # somehow y axis scaling inside image?
