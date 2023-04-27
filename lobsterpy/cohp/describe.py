@@ -9,7 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from lobsterpy.plotting import PlainCohpPlotter
-from LobsterPy.lobsterpy.plotting import InteractiveCohpPlotter
+from lobsterpy.plotting import InteractiveCohpPlotter
 
 
 class Description:
