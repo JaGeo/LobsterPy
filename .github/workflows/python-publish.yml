@@ -29,8 +29,7 @@ jobs:
         python -m pip install flake8 pytest pytest-mock
         python -m pip install types-setuptools
         python -m pip install coverage
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install -e .
+        pip install -e .[featurizer]
         pip install build
     - name: Build package
       run: python -m build
