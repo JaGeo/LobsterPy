@@ -4,7 +4,6 @@
 """
 This module defines classes to analyze the COHPs automatically
 """
-import json
 import warnings
 from collections import Counter
 from typing import Optional
@@ -59,9 +58,6 @@ class Analysis:
         summed_spins=True,
         type_charge=None,
         start=None,
-        integration_method="trapezoid",
-        integration_smeared=False,
-        smearing_sigma=0.03
     ):
         """
         This is a class to analyse bonding information automatically
@@ -78,15 +74,8 @@ class Analysis:
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
                         Löwdin charges cannot be selected at the moment.
             start: start energy for integration
-            integration_method : method for separate antibonding / bonding integration of C**Ps.
-                        Available options are trapezoid and Simpson.
-            integration_smeared : Adds Gaussian smearing with standard deviation of Integration_smeared_sigma to C**P
-                        curve before integrating.
         """
         self.start = start
-        self.integration_method = integration_method
-        self.integration_smeared = integration_smeared
-        self.smearing_sigma = smearing_sigma
         self.path_to_poscar = path_to_poscar
         self.path_to_icohplist = path_to_icohplist
         self.path_to_cohpcar = path_to_cohpcar
@@ -478,11 +467,7 @@ class Analysis:
             " absoulte value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values."
         )
 
-        if self.integration_method == "trapezoid":
-            from scipy.integrate import trapezoid as int_method
-        elif self.integration_method == "simpson":
-            from scipy.integrate import simpson as int_method
-
+        from scipy.integrate import trapezoid
 
         def integrate_positive(y, x):
             """
@@ -500,7 +485,7 @@ class Analysis:
             y = np.asanyarray(y)
             x = np.asanyarray(x)
 
-            bonding = int_method(y, x)
+            bonding = trapezoid(y, x)
 
             return np.round(bonding, 2)
 
@@ -517,27 +502,9 @@ class Analysis:
 
             y = np.asanyarray(y)
             x = np.asanyarray(x)
-            antibonding = int_method(y, x)
+            antibonding = trapezoid(y, x)
 
             return np.round(antibonding, 2)
-
-        def get_smeared_cohp(self, cohplist, energylist):
-            """
-            Returns CO** with a Gaussian smearing of std dev sigma.
-            Modified from pymatgen.electronic_structure_dos.py, DOS class.
-            Args:
-                cohplist: list of COHP values.
-                energylist: list of energy values.
-                self.smearing_sigma: Std dev of Gaussian smearing function.
-            Returns:
-                List of Gaussian-smeared CO**s.
-            """
-            from scipy.ndimage import gaussian_filter1d
-
-            diff = [energylist[i + 1] - energylist[i] for i in range(len(energylist) - 1)]
-            avgdiff = sum(diff) / len(diff)
-            smeared_cohp = gaussian_filter1d(cohplist, self.smearing_sigma / avgdiff)
-            return smeared_cohp
 
         # will integrate spin.up and spin.down only below efermi
         energies_corrected = cohp.energies - cohp.efermi
@@ -556,10 +523,6 @@ class Analysis:
             if (start is not None) and 0 >= en >= start:
                 en_bf.append(en)
                 cohp_bf.append(-1 * summedcohp[i])
-
-        # Add Gaussian smearing below Efermi if chosen
-        if self.integration_smeared is True:
-            cohp_bf = get_smeared_cohp(self, cohplist=cohp_bf, energylist=en_bf)
 
         # Separate the bonding and antibonding COHP values in separate lists
         pos = []
