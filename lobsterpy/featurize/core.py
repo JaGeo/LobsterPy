@@ -10,7 +10,7 @@ import json
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from typing import Mapping, NamedTuple
+from typing import Mapping, NamedTuple, List
 from collections import namedtuple
 from pymatgen.core.structure import Structure
 from mendeleev import element
@@ -70,8 +70,7 @@ class FeaturizeLobsterpy:
                     antibond.append(v1["antibonding"]["perc"])
         else:
             raise Exception(
-                "There exist no data for {} for this structure. "
-                'Please switch to "all_bonds" mode'.format(self.bonds)
+                "There exist no data for {} for this structure. " 'Please switch to "all_bonds" mode'.format(self.bonds)
             )
 
         # add stats data as columns to the dataframe
@@ -218,12 +217,8 @@ class FeaturizeCOXX:
             of format (energies, coxx, fp_type, spin_type, n_bins, bin_width)
         """
 
-        coxx_fingerprint = namedtuple(
-            "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
-        )
-        energies = (
-            coxxcar_obj.energies - coxxcar_obj.efermi
-        )  # here substraction of efermi has impact on fp.
+        coxx_fingerprint = namedtuple("coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width")
+        energies = coxxcar_obj.energies - coxxcar_obj.efermi  # here substraction of efermi has impact on fp.
 
         if max_e is None:
             max_e = np.max(energies)
@@ -232,9 +227,7 @@ class FeaturizeCOXX:
             min_e = np.min(energies)
 
         if label_list:
-            coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_list(
-                label_list
-            ).get_cohp()
+            coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_list(label_list).get_cohp()
         else:
             coxxcar_obj = coxxcar_obj.get_cohp()
 
@@ -249,21 +242,17 @@ class FeaturizeCOXX:
                 """Check the spin_type argument,
                                  Possible options are summed/up/down"""
             )
-        coxx_dict = {}
+        coxx_dict = dict()
 
-        coxx_dict["bonding"] = np.array(
-            [scohp if scohp <= 0 else 0 for scohp in coxx_all]
-        )
-        coxx_dict["antibonding"] = np.array(
-            [scohp if scohp >= 0 else 0 for scohp in coxx_all]
-        )
+        coxx_dict["bonding"] = np.array([scohp if scohp <= 0 else 0 for scohp in coxx_all])
+        coxx_dict["antibonding"] = np.array([scohp if scohp >= 0 else 0 for scohp in coxx_all])
         coxx_dict["overall"] = coxx_all
 
         try:
             coxxs = coxx_dict[fp_type]
             if len(energies) < n_bins:
                 inds = np.where((energies >= min_e) & (energies <= max_e))
-                return fingerprint(
+                return coxx_fingerprint(
                     energies[inds],
                     coxxs[inds],
                     fp_type,
@@ -332,23 +321,15 @@ class FeaturizeCOXX:
         icoxx_dict = self.icoxxlist.icohpcollection.as_dict()
         list_labels = icoxx_dict["list_labels"]
         # Compute sum of icohps
-        icoxx_total = self.icoxxlist.icohpcollection.get_summed_icohp_by_label_list(
-            list_labels
-        )
+        icoxx_total = self.icoxxlist.icohpcollection.get_summed_icohp_by_label_list(list_labels)
 
         summed_weighted_coxx = []
 
         for lab in list_labels:
-            for k, v in self.completecoxx.get_cohp_by_label(
-                "{}".format(lab), summed_spin_channels=True
-            ).cohp.items():
+            for k, v in self.completecoxx.get_cohp_by_label("{}".format(lab), summed_spin_channels=True).cohp.items():
                 coxx = v
-            icoxx = self.icoxxlist.icohpcollection.get_icohp_by_label(
-                lab, summed_spin_channels=True
-            )
-            weight = (
-                icoxx / icoxx_total
-            )  # calculate the weights based on icohp contri to total icohp of the structure
+            icoxx = self.icoxxlist.icohpcollection.get_icohp_by_label(lab, summed_spin_channels=True)
+            weight = icoxx / icoxx_total  # calculate the weights based on icohp contri to total icohp of the structure
             weighted_coxx = weight * coxx
             summed_weighted_coxx.append(weighted_coxx)
 
@@ -362,26 +343,20 @@ class FeaturizeCOXX:
             bonding_indices = coxx_bf <= 0
             antibonding_indices = coxx_bf >= 0
             bnd = abs(trapezoid(en_bf[bonding_indices], coxx_bf[bonding_indices]))
-            antibnd = abs(
-                trapezoid(en_bf[antibonding_indices], coxx_bf[antibonding_indices])
-            )
+            antibnd = abs(trapezoid(en_bf[antibonding_indices], coxx_bf[antibonding_indices]))
             per_bnd = (bnd / (bnd + antibnd)) * 100
             per_antibnd = (antibnd / (bnd + antibnd)) * 100
         elif self.icoxxlist.are_cobis or self.icoxxlist.are_coops:
             bonding_indices = coxx_bf >= 0
             antibonding_indices = coxx_bf <= 0
             bnd = abs(trapezoid(coxx_bf[bonding_indices], en_bf[bonding_indices]))
-            antibnd = abs(
-                trapezoid(coxx_bf[antibonding_indices], en_bf[antibonding_indices])
-            )
+            antibnd = abs(trapezoid(coxx_bf[antibonding_indices], en_bf[antibonding_indices]))
             per_bnd = (bnd / (bnd + antibnd)) * 100
             per_antibnd = (antibnd / (bnd + antibnd)) * 100
 
         w_icoxx = trapezoid(coxx_bf, en_bf)
 
-        ein = (icoxx_total / w_icoxx) * (
-            2 / self.completecoxx.structure.num_sites
-        )  # calc effective interaction number
+        ein = (icoxx_total / w_icoxx) * (2 / self.completecoxx.structure.num_sites)  # calc effective interaction number
 
         return per_bnd, per_antibnd, w_icoxx, ein
 
@@ -392,20 +367,12 @@ class FeaturizeCOXX:
 
         coxx_dict = {}
         if not self.are_cobis and not self.are_coops:
-            coxx_dict["bonding"] = np.array(
-                [scohp if scohp <= 0 else 0 for scohp in coxx_all]
-            )
-            coxx_dict["antibonding"] = np.array(
-                [scohp if scohp >= 0 else 0 for scohp in coxx_all]
-            )
+            coxx_dict["bonding"] = np.array([scohp if scohp <= 0 else 0 for scohp in coxx_all])
+            coxx_dict["antibonding"] = np.array([scohp if scohp >= 0 else 0 for scohp in coxx_all])
             coxx_dict["overall"] = coxx_all
         else:
-            coxx_dict["antibonding"] = np.array(
-                [scohp if scohp <= 0 else 0 for scohp in coxx_all]
-            )
-            coxx_dict["bonding"] = np.array(
-                [scohp if scohp >= 0 else 0 for scohp in coxx_all]
-            )
+            coxx_dict["antibonding"] = np.array([scohp if scohp <= 0 else 0 for scohp in coxx_all])
+            coxx_dict["bonding"] = np.array([scohp if scohp >= 0 else 0 for scohp in coxx_all])
             coxx_dict["overall"] = coxx_all
 
         band_center = self._get_band_center(
@@ -443,15 +410,11 @@ class FeaturizeCOXX:
         Returns:
             Orbital-Orbital interaction band center in eV
         """
-        band_center = self._get_n_moment(
-            n=1, cohp=cohp, energies=energies, e_range=e_range, center=False
-        )
+        band_center = self._get_n_moment(n=1, cohp=cohp, energies=energies, e_range=e_range, center=False)
 
         return band_center
 
-    def _get_n_moment(
-        self, n: int, cohp: list, energies: list, e_range: list, center: bool = True
-    ) -> float:
+    def _get_n_moment(self, n: int, cohp: list, energies: list, e_range: list, center: bool = True) -> float:
         """
 
         Get the nth moment of COXX
@@ -467,14 +430,10 @@ class FeaturizeCOXX:
         """
         if e_range:
             cohp = cohp[(energies >= self.e_range[0]) & (energies <= self.e_range[1])]
-            energies = energies[
-                (energies >= self.e_range[0]) & (energies <= self.e_range[1])
-            ]
+            energies = energies[(energies >= self.e_range[0]) & (energies <= self.e_range[1])]
 
         if center:
-            band_center = self._get_band_center(
-                cohp=cohp, energies=energies, e_range=self.e_range
-            )
+            band_center = self._get_band_center(cohp=cohp, energies=energies, e_range=self.e_range)
             p = energies - band_center
         else:
             p = energies
@@ -581,20 +540,14 @@ class FeaturizeCharges:
         elif self.charge_type.lower() == "loewdin":
             charges = chargeobj.Loewdin
         else:
-            raise ValueError(
-                "Please check the requested charge_type, "
-                'Possible options are "Mulliken" or "Loewdin"'
-            )
+            raise ValueError("Please check the requested charge_type, " 'Possible options are "Mulliken" or "Loewdin"')
 
         ch_veff = []
         for i, j in enumerate(charges):
             if (
                 j > 0
                 and not structure.species[i].is_transition_metal
-                and (
-                    not structure.species[i].is_actinoid
-                    and not structure.species[i].is_lanthanoid
-                )
+                and (not structure.species[i].is_actinoid and not structure.species[i].is_lanthanoid)
             ):
                 valence_elec = element(structure.species[i].value)
                 val = j / (valence_elec.nvalence() - 0)
@@ -603,10 +556,7 @@ class FeaturizeCharges:
             elif (
                 j > 0
                 and not structure.species[i].is_transition_metal
-                and (
-                    not structure.species[i].is_actinoid
-                    and not structure.species[i].is_lanthanoid
-                )
+                and (not structure.species[i].is_actinoid and not structure.species[i].is_lanthanoid)
             ):
                 valence_elec = element(structure.species[i].value)
                 val = j / (valence_elec.nvalence() - 8)
@@ -615,10 +565,7 @@ class FeaturizeCharges:
             elif (
                 j < 0
                 and not structure.species[i].is_transition_metal
-                and (
-                    not structure.species[i].is_actinoid
-                    and not structure.species[i].is_lanthanoid
-                )
+                and (not structure.species[i].is_actinoid and not structure.species[i].is_lanthanoid)
             ):
                 valence_elec = element(structure.species[i].value)
                 val = j / (valence_elec.nvalence() - 8)
