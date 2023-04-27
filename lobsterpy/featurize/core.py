@@ -69,8 +69,10 @@ class FeaturizeLobsterpy:
                     bond.append(v1["bonding"]["perc"])
                     antibond.append(v1["antibonding"]["perc"])
         else:
-            raise Exception('There exist no data for {} for this structure. '
-                            'Please switch to "all_bonds" mode'.format(self.bonds))
+            raise Exception(
+                "There exist no data for {} for this structure. "
+                'Please switch to "all_bonds" mode'.format(self.bonds)
+            )
 
         # add stats data as columns to the dataframe
         df.loc[ids, "Icohp_mean_avg"] = np.mean(icohp_mean)
@@ -175,6 +177,8 @@ class FeaturizeCOXX:
             structure_file=self.path_to_structure,
         )
 
+        self.coxx_fingerprint = None
+
     def get_coxx_fingerprint_df(
         self,
         ids: str,
@@ -214,7 +218,7 @@ class FeaturizeCOXX:
             of format (energies, coxx, fp_type, spin_type, n_bins, bin_width)
         """
 
-        fingerprint = namedtuple(
+        coxx_fingerprint = namedtuple(
             "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
         )
         energies = (
@@ -289,7 +293,7 @@ class FeaturizeCOXX:
             else:
                 coxx_rebin_sc = coxx_rebin
 
-            fp = fingerprint(
+            self.coxx_fingerprint = coxx_fingerprint(
                 np.array([ener]),
                 coxx_rebin_sc,
                 fp_type,
@@ -299,7 +303,7 @@ class FeaturizeCOXX:
             )
 
             df_temp = pd.DataFrame(index=[ids], columns=["COHP_FP"])
-            df_temp.at[ids, "COHP_FP"] = fp.coxx * fp.bin_width
+            df_temp.at[ids, "COHP_FP"] = self.coxx_fingerprint.coxx
 
             df = pd.DataFrame(df_temp["COHP_FP"].tolist())
 
@@ -386,7 +390,7 @@ class FeaturizeCOXX:
         coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
         energies = self.completecoxx.energies - self.completecoxx.efermi
 
-        coxx_dict={}
+        coxx_dict = {}
         if not self.are_cobis and not self.are_coops:
             coxx_dict["bonding"] = np.array(
                 [scohp if scohp <= 0 else 0 for scohp in coxx_all]
