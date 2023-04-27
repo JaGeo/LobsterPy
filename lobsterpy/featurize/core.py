@@ -10,7 +10,7 @@ import json
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from typing import Mapping, NamedTuple, List
+from typing import Mapping, NamedTuple, List, Any
 from collections import namedtuple
 from pymatgen.core.structure import Structure
 from mendeleev import element
@@ -484,7 +484,7 @@ class FeaturizeCOXX:
         else:
             p = energies
 
-        nth_moment = np.trapz(p**n * cohp, x=energies) / np.trapz(cohp, x=energies)
+        nth_moment = np.trapz(p**n * cohp, x=energies) / np.trapz(cohp, x=energies) # type: ignore
 
         return nth_moment
 
