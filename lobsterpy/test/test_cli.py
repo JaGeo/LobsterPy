@@ -1,15 +1,16 @@
-from contextlib import redirect_stdout
+from __future__ import annotations
+
 import io
 import json
 import os
+from contextlib import redirect_stdout
 from pathlib import Path
-from typing import Union
 
-import numpy as np
-from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.style
+import numpy as np
 import pytest
+from matplotlib.figure import Figure
 
 from lobsterpy.cli import get_parser, run
 
@@ -58,7 +59,7 @@ class TestCLI:
         plt.close("all")
         matplotlib.style.use("default")
 
-    with open(ref_data_file, "r") as fd:
+    with open(ref_data_file) as fd:
         ref_results = json.load(fd)
 
     @classmethod
@@ -231,7 +232,7 @@ class TestCLI:
             json.dump(json_data, fd, indent=4, sort_keys=True)
 
     @staticmethod
-    def get_plot_attributes(fig: Figure) -> Union[dict, None]:
+    def get_plot_attributes(fig: Figure) -> dict | None:
         if fig.axes:
             ax = fig.gca()
 

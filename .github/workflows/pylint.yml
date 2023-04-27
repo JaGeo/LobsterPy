@@ -7,17 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install mypy pydocstyle pylint black flake8
+        pip install mypy pydocstyle pylint black flake8 pyproject-flake8==6.0.0
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install -e .
         pip install types-setuptools
@@ -28,7 +28,7 @@ jobs:
         mypy lobsterpy
     - name: pydocstyle
       run: |
-        pydocstyle --count lobsterpy
+        pydocstyle --config pyproject.toml --count lobsterpy
     - name: pylint
       run: |
         pylint --version
@@ -37,8 +37,8 @@ jobs:
       run: |
         black --version
         black --check --diff --color lobsterpy
-    - name: flake8
+    - name: pflake8
       run: |
-        flake8 --version
-        flake8 --count --show-source --statistics lobsterpy
-        flake8 --count --exit-zero --max-complexity=20 --statistics lobsterpy
+        pflake8 --version
+        pflake8 --count --show-source --statistics lobsterpy
+        pflake8 --count --exit-zero --max-complexity=20 --statistics lobsterpy
