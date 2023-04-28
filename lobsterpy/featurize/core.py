@@ -2,15 +2,17 @@
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
 """
-This module defines functions to featurize Lobster lighweight jsons
+This module defines classes to featurize Lobster data ready to be used for ML studies
 """
 
+from __future__ import annotations
 import gzip
 import json
 from pathlib import Path
-from typing import Mapping, NamedTuple, List, Any
+from typing import Mapping, NamedTuple, List
 from collections import namedtuple
 import numpy as np
+import numpy.typing as npt
 import pandas as pd
 from mendeleev import element
 from pymatgen.core.structure import Structure
@@ -132,10 +134,6 @@ class FeaturizeCOXX:
         Possible options are "bonding", "antibonding" or "overall"
         are_cobis : bool indicating if file contains COBI/ICOBI data
         are_coops : bool indicating if file contains COOP/ICOOP data
-        include_wicoxx : if True will include weighted ICOXX, effective co-ordination number
-        in the featurized dataframe
-        include_moment_features : if True will include ICOXX center,width, skew and kurtosis features
-        in the  featurized dataframe
         e_range : range of energy relative to fermi for which moment features needs to be computed
 
     Attributes:
@@ -150,18 +148,14 @@ class FeaturizeCOXX:
         path_to_icoxxlist: str,
         path_to_structure: str,
         feature_type: str,
+        e_range: List[float] = [-10.0, 0.0],
         are_cobis: bool = False,
         are_coops: bool = False,
-        include_wicoxx: bool = False,
-        include_moment_features: bool = False,
-        e_range: list = [-5, 0],
     ):
         self.path_to_coxxcar = path_to_coxxcar
         self.path_to_icoxxlist = path_to_icoxxlist
         self.path_to_structure = path_to_structure
         self.feature_type = feature_type
-        self.include_wicoxx = include_wicoxx
-        self.include_moment_features = include_moment_features
         self.e_range = e_range
         self.are_cobis = are_cobis
         self.are_coops = are_coops
@@ -181,13 +175,9 @@ class FeaturizeCOXX:
     def get_coxx_fingerprint_df(
         self,
         ids: str,
-        fp_type: str,
-        label_list: list,
-        coxxcar_obj: CompleteCohp,
+        label_list: List[str] | None = None,
         spin_type: str = "summed",
         binning: bool = True,
-        min_e: float = -5,
-        max_e: float = 0,
         n_bins: int = 50,
         normalize: bool = True,
     ):
@@ -199,29 +189,28 @@ class FeaturizeCOXX:
             spin_type: Specify spin type. Can accept '{summed/up/down}'
             (default is summed)
             binning: If true cohps will be binned
-            min_e: The minimum mode energy to include in the fingerprint (default is None)
-            max_e: The maximum mode energy to include in the fingerprint (default is None)
             n_bins: Number of bins to be used in the fingerprint (default is 256)
             normalize: If true, normalizes the area under fp to equal to 1 (default is True)
-            fp_type: Specify fingerprint type needed can accept '{bonding/antibonding/overall}'
-            (default is antibonding)
             label_list: Specify bond lables as a list for which cohp fingerprints are needed
-            coxxcar_obj: coxxcar object
 
         Raises:
             Exception: If spin_type is not one of the accepted values {summed/up/down}.
-            ValueError: If fp_type is not one of the accepted values {bonding/antibonding/overall}.
+            ValueError: If feature_type is not one of the accepted values {bonding/antibonding/overall}.
 
         Returns:
             Fingerprint(namedtuple) : The COHP fingerprint
             of format (energies, coxx, fp_type, spin_type, n_bins, bin_width)
         """
+        coxxcar_obj = self.completecoxx
         coxx_fingerprint = namedtuple(
             "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
         )
         energies = (
             coxxcar_obj.energies - coxxcar_obj.efermi
         )  # here substraction of efermi has impact on fp.
+
+        min_e = self.e_range[0]
+        max_e = self.e_range[-1]
 
         if max_e is None:
             max_e = np.max(energies)
@@ -258,13 +247,13 @@ class FeaturizeCOXX:
         coxx_dict["overall"] = coxx_all
 
         try:
-            coxxs = coxx_dict[fp_type]
+            coxxs = coxx_dict[self.feature_type]
             if len(energies) < n_bins:
                 inds = np.where((energies >= min_e) & (energies <= max_e))
                 return coxx_fingerprint(
                     energies[inds],
                     coxxs[inds],
-                    fp_type,
+                    self.feature_type,
                     spin_type,
                     len(energies),
                     np.diff(energies)[0],
@@ -294,16 +283,15 @@ class FeaturizeCOXX:
             fp = coxx_fingerprint(
                 np.array([ener]),
                 coxx_rebin_sc,
-                fp_type,
+                self.feature_type,
                 spin_type,
                 n_bins,
                 bin_width,
             )
 
-            df_temp = pd.DataFrame(index=[ids], columns=["COHP_FP"])
-            df_temp.at[ids, "COHP_FP"] = fp.coxx
+            df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
 
-            df = pd.DataFrame(df_temp["COHP_FP"].tolist())
+            df.at[ids, "COXX_FP"] = fp
 
             return df
 
@@ -383,10 +371,23 @@ class FeaturizeCOXX:
 
         return per_bnd, per_antibnd, w_icoxx, ein
 
-    def _calc_moment_features(self):
-        coxxcar = self.completecoxx.get_cohp()
-        coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
-        energies = self.completecoxx.energies - self.completecoxx.efermi
+    def _calc_moment_features(self, label_list: List[str] | None = None):
+        if label_list:
+            coxxcar = self.completecoxx.get_summed_cohp_by_label_list(
+                label_list
+            ).get_cohp()
+            try:
+                coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
+            except KeyError:
+                coxx_all = coxxcar[Spin.up]
+            energies = self.completecoxx.energies - self.completecoxx.efermi
+        else:
+            coxxcar = self.completecoxx.get_cohp()
+            try:
+                coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
+            except KeyError:
+                coxx_all = coxxcar[Spin.up]
+            energies = self.completecoxx.energies - self.completecoxx.efermi
 
         coxx_dict = {}
         if not self.are_cobis and not self.are_coops:
@@ -406,34 +407,56 @@ class FeaturizeCOXX:
             )
             coxx_dict["overall"] = coxx_all
 
-        band_center = self._get_band_center(
-            cohp=coxx_dict[self.feature_type],
+        coxx_center = self._get_coxx_center(
+            coxx=coxx_dict[self.feature_type],
             energies=energies,
             e_range=self.e_range,
         )
-        band_width = self._get_n_moment(
-            n=2,
-            cohp=coxx_dict[self.feature_type],
-            energies=energies,
-            e_range=self.e_range,
+        coxx_width = np.sqrt(
+            self._get_n_moment(
+                n=2,
+                coxx=coxx_dict[self.feature_type],
+                energies=energies,
+                e_range=self.e_range,
+            )
         )
-        band_skew = self._get_n_moment(
+        coxx_skew = self._get_n_moment(
             n=3,
-            cohp=coxx_dict[self.feature_type],
+            coxx=coxx_dict[self.feature_type],
             energies=energies,
             e_range=self.e_range,
-        )
-        band_kurt = self._get_n_moment(
-            n=4,
-            cohp=coxx_dict[self.feature_type],
+        ) / self._get_n_moment(
+            n=2,
+            coxx=coxx_dict[self.feature_type],
             energies=energies,
             e_range=self.e_range,
+        ) ** (
+            3 / 2
         )
 
-        return band_center, band_width, band_skew, band_kurt
+        coxx_kurt = (
+            self._get_n_moment(
+                n=4,
+                coxx=coxx_dict[self.feature_type],
+                energies=energies,
+                e_range=self.e_range,
+            )
+            / self._get_n_moment(
+                n=2,
+                coxx=coxx_dict[self.feature_type],
+                energies=energies,
+                e_range=self.e_range,
+            )
+            ** 2
+        )
 
-    def _get_band_center(
-        self, cohp: List[float], energies: List[float], e_range: List[int]
+        return coxx_center, coxx_width, coxx_skew, coxx_kurt
+
+    def _get_coxx_center(
+        self,
+        coxx: npt.NDArray[np.floating],
+        energies: npt.NDArray[np.floating],
+        e_range: List[float],
     ) -> float:
         """
         Get the band width, defined as the first moment of the orbital resolved COHP
@@ -443,18 +466,18 @@ class FeaturizeCOXX:
         Returns:
             Orbital-Orbital interaction band center in eV
         """
-        band_center = self._get_n_moment(
-            n=1, cohp=cohp, energies=energies, e_range=e_range, center=False
+        coxx_center = self._get_n_moment(
+            n=1, coxx=coxx, energies=energies, e_range=e_range, center=False
         )
 
-        return band_center
+        return coxx_center
 
     def _get_n_moment(
         self,
         n: float,
-        cohp: List[float],
-        energies: List[float],
-        e_range: List[int],
+        coxx: npt.NDArray[np.floating],
+        energies: npt.NDArray[np.floating],
+        e_range: list[float] | None,
         center: bool = True,
     ) -> float:
         """
@@ -471,73 +494,71 @@ class FeaturizeCOXX:
             COXX nth moment in eV
         """
         if e_range:
-            cohp = cohp[(energies >= self.e_range[0]) & (energies <= self.e_range[1])]
+            coxx = coxx[(energies >= self.e_range[0]) & (energies <= self.e_range[-1])]
             energies = energies[
-                (energies >= self.e_range[0]) & (energies <= self.e_range[1])
+                (energies >= self.e_range[0]) & (energies <= self.e_range[-1])
             ]
 
         if center:
-            band_center = self._get_band_center(
-                cohp=cohp, energies=energies, e_range=self.e_range
+            coxx_center = self._get_coxx_center(
+                coxx=coxx, energies=energies, e_range=self.e_range
             )
-            p = [en - band_center for en in energies]
+            p = energies - coxx_center
         else:
             p = energies
 
-        nth_moment = np.trapz(p**n * cohp, x=energies) / np.trapz(cohp, x=energies)  # type: ignore
+        nth_moment = np.trapz(p**n * coxx, x=energies) / np.trapz(coxx, x=energies)  # type: ignore
 
         return nth_moment
 
-    def get_df(self, ids: str):
+    def get_summarized_coxx_df(self, ids: str, label_list: List[str] | None = None):
         """
         This function returns a pandas dataframe with weighted ICOXX, effective interaction number
         and moment features (center, width, skewness and kurtosis) of COXX in selected energy range
 
         Returns:
-            Returns a pandas dataframe with cohp/cobi/coop related features
+            Returns a pandas dataframe with cohp/cobi/coop related features as per input file
 
         """
         df = pd.DataFrame(index=[ids])
 
-        if self.include_wicoxx:
-            (
-                per_bnd_xx,
-                per_antibnd_xx,
-                w_icoxx,
-                ein_xx,
-            ) = self._calculate_wicoxx_ein()
+        (
+            per_bnd_xx,
+            per_antibnd_xx,
+            w_icoxx,
+            ein_xx,
+        ) = self._calculate_wicoxx_ein()
 
-            if self.are_coops:
-                bc, bw, bs, bk = self._calc_moment_features()
-                df.loc[ids, "bnd_ICOOP"] = per_bnd_xx
-                df.loc[ids, "antibnd_ICOOP"] = per_antibnd_xx
-                df.loc[ids, "w_ICOOP"] = w_icoxx
-                df.loc[ids, "EIN_ICOOP"] = ein_xx
-                df.loc[ids, "band_center_COOP"] = bc
-                df.loc[ids, "band_width_COOP"] = bw
-                df.loc[ids, "band_skewness_COOP"] = bs
-                df.loc[ids, "band_kurtosis_COOP"] = bk
-            elif self.are_cobis:
-                bc, bw, bs, bk = self._calc_moment_features()
-                df.loc[ids, "bnd_ICOOP"] = per_bnd_xx
-                df.loc[ids, "bnd_ICOBI"] = per_bnd_xx
-                df.loc[ids, "antibnd_ICOBI"] = per_antibnd_xx
-                df.loc[ids, "w_ICOBI"] = w_icoxx
-                df.loc[ids, "EIN_ICOBI"] = ein_xx
-                df.loc[ids, "band_center_COBi"] = bc
-                df.loc[ids, "band_width_COBI"] = bw
-                df.loc[ids, "band_skewness_COBI"] = bs
-                df.loc[ids, "band_kurtosis_COBI"] = bk
-            else:
-                bc, bw, bs, bk = self._calc_moment_features()
-                df.loc[ids, "bnd_ICOHP"] = per_bnd_xx
-                df.loc[ids, "antibnd_ICOHP"] = per_antibnd_xx
-                df.loc[ids, "w_ICOHP"] = w_icoxx
-                df.loc[ids, "EIN_ICOHP"] = ein_xx
-                df.loc[ids, "band_center_COHP"] = bc
-                df.loc[ids, "band_width_COHP"] = bw
-                df.loc[ids, "band_skewness_COHP"] = bs
-                df.loc[ids, "band_kurtosis_COHP"] = bk
+        if self.are_coops:
+            cc, cw, cs, ck = self._calc_moment_features(label_list=label_list)
+            df.loc[ids, "bnd_wICOOP"] = per_bnd_xx
+            df.loc[ids, "antibnd_wICOOP"] = per_antibnd_xx
+            df.loc[ids, "w_ICOOP"] = w_icoxx
+            df.loc[ids, "EIN_ICOOP"] = ein_xx
+            df.loc[ids, "center_COOP"] = cc
+            df.loc[ids, "width_COOP"] = cw
+            df.loc[ids, "skewness_COOP"] = cs
+            df.loc[ids, "kurtosis_COOP"] = ck
+        elif self.are_cobis:
+            cc, cw, cs, ck = self._calc_moment_features(label_list=label_list)
+            df.loc[ids, "bnd_wICOBI"] = per_bnd_xx
+            df.loc[ids, "antibnd_wICOBI"] = per_antibnd_xx
+            df.loc[ids, "w_ICOBI"] = w_icoxx
+            df.loc[ids, "EIN_ICOBI"] = ein_xx
+            df.loc[ids, "center_COBI"] = cc
+            df.loc[ids, "width_COBI"] = cw
+            df.loc[ids, "skewness_COBI"] = cs
+            df.loc[ids, "kurtosis_COBI"] = ck
+        else:
+            cc, cw, cs, ck = self._calc_moment_features(label_list=label_list)
+            df.loc[ids, "bnd_wICOHP"] = per_bnd_xx
+            df.loc[ids, "antibnd_wICOHP"] = per_antibnd_xx
+            df.loc[ids, "w_ICOHP"] = w_icoxx
+            df.loc[ids, "EIN_ICOHP"] = ein_xx
+            df.loc[ids, "center_COHP"] = cc
+            df.loc[ids, "width_COHP"] = cw
+            df.loc[ids, "skewness_COHP"] = cs
+            df.loc[ids, "kurtosis_COHP"] = ck
 
         return df
 
@@ -558,11 +579,11 @@ class FeaturizeCharges:
 
     def __init__(
         self,
-        path_to_strucutre: str,
+        path_to_structure: str,
         path_to_charge: str,
         charge_type: str,
     ):
-        self.path_to_structure = path_to_strucutre
+        self.path_to_structure = path_to_structure
         self.path_to_charge = path_to_charge
         self.charge_type = charge_type
 

@@ -3,7 +3,7 @@ import sys
 import unittest
 import pandas as pd
 from pathlib import Path
-from lobsterpy.featurize.core import FeaturizeLobsterpy
+from lobsterpy.featurize.core import FeaturizeLobsterpy, FeaturizeCharges, FeaturizeCOXX
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
@@ -157,6 +157,170 @@ class TestFeaturizeLobsterpy(unittest.TestCase):
         self.assertAlmostEqual(
             df.loc["mp-14652", "antibonding_perc_std"], 0.006339, places=5
         )
+
+
+class TestFeaturizeCOXX(unittest.TestCase):
+    def setUp(self):
+        self.featurize_NaCl_COXX = FeaturizeCOXX(
+            path_to_coxxcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+            path_to_icoxxlist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_structure=TestDir / "TestData/NaCl/POSCAR",
+            feature_type="overall",
+            e_range=[-5, 0],
+        )
+        self.featurize_CdF_COXX = FeaturizeCOXX(
+            path_to_coxxcar=TestDir / "TestData/CdF/COHPCAR.lobster",
+            path_to_icoxxlist=TestDir / "TestData/CdF/ICOHPLIST.lobster",
+            path_to_structure=TestDir / "TestData/CdF/POSCAR",
+            feature_type="bonding",
+            e_range=[-5, 0],
+        )
+        self.featurize_K3Sb_COXX = FeaturizeCOXX(
+            path_to_coxxcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
+            path_to_icoxxlist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
+            path_to_structure=TestDir / "TestData/K3Sb/POSCAR.gz",
+            feature_type="antibonding",
+            e_range=[-5, 0],
+        )
+
+    def test_featurize_NaCl_COXX(self):
+        df = self.featurize_NaCl_COXX.get_summarized_coxx_df(ids="NaCl")
+
+        # Test that the function returns a pandas DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "bnd_wICOHP",
+            "antibnd_wICOHP",
+            "w_ICOHP",
+            "EIN_ICOHP",
+            "center_COHP",
+            "width_COHP",
+            "skewness_COHP",
+            "kurtosis_COHP",
+        ]
+        self.assertCountEqual(list(df.columns), expected_cols)
+
+        # Test that the DataFrame has the expected index
+        self.assertEqual(df.index[0], "NaCl")
+
+        # Test that all the values in the DataFrame
+        self.assertAlmostEqual(df.loc["NaCl", "bnd_wICOHP"], 96.822857, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "antibnd_wICOHP"], 3.177143, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "w_ICOHP"], -0.150558, places=5)
+
+        self.assertAlmostEqual(df.loc["NaCl", "EIN_ICOHP"], 27.843536, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "center_COHP"], -4.96241, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "width_COHP"], 8.881784e-16, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "skewness_COHP"], 1, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "kurtosis_COHP"], 1, places=5)
+
+    def test_featurize_CdF_COXX(self):
+        df = self.featurize_CdF_COXX.get_summarized_coxx_df(ids="CdF")
+
+        # Test that the function returns a pandas DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "bnd_wICOHP",
+            "antibnd_wICOHP",
+            "w_ICOHP",
+            "EIN_ICOHP",
+            "center_COHP",
+            "width_COHP",
+            "skewness_COHP",
+            "kurtosis_COHP",
+        ]
+        self.assertCountEqual(list(df.columns), expected_cols)
+
+        # Test that the DataFrame has the expected index
+        self.assertEqual(df.index[0], "CdF")
+
+        # Test that all the values in the DataFrame
+        self.assertAlmostEqual(df.loc["CdF", "bnd_wICOHP"], 56.05771, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "antibnd_wICOHP"], 43.94229, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "w_ICOHP"], -0.198235, places=5)
+
+        self.assertAlmostEqual(df.loc["CdF", "EIN_ICOHP"], 18.76634, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "center_COHP"], -4.748383, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "width_COHP"], 0.157761, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "skewness_COHP"], 0.910094, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "kurtosis_COHP"], 2.866611, places=5)
+
+
+class TestFeaturizeCharges(unittest.TestCase):
+    def setUp(self):
+        self.featurize_C_Charge = FeaturizeCharges(
+            path_to_structure=TestDir / "TestData/C/POSCAR",
+            path_to_charge=TestDir / "TestData/C/CHARGE.lobster",
+            charge_type="mulliken",
+        )
+        self.featurize_CdF_Charge = FeaturizeCharges(
+            path_to_structure=TestDir / "TestData/CdF/POSCAR",
+            path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
+            charge_type="mulliken",
+        )
+        self.featurize_K3Sb_Charge = FeaturizeCharges(
+            path_to_structure=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            charge_type="loewdin",
+        )
+
+    def test_featurize_C_Charge(self):
+        df = self.featurize_C_Charge.get_df(ids="C")
+
+        # Test that the function returns a pandas DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "Ionicity_Mull",
+        ]
+        self.assertCountEqual(list(df.columns), expected_cols)
+
+        # Test that the DataFrame has the expected index
+        self.assertEqual(df.index[0], "C")
+
+        # Test that all the values in the DataFrame
+        self.assertAlmostEqual(df.loc["C", "Ionicity_Mull"], 0.0, places=5)
+
+    def test_featurize_CdF_Charge(self):
+        df = self.featurize_CdF_Charge.get_df(ids="CdF")
+
+        # Test that the function returns a pandas DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "Ionicity_Mull",
+        ]
+        self.assertCountEqual(list(df.columns), expected_cols)
+
+        # Test that the DataFrame has the expected index
+        self.assertEqual(df.index[0], "CdF")
+
+        # Test that all the values in the DataFrame
+        self.assertAlmostEqual(df.loc["CdF", "Ionicity_Mull"], 0.788333, places=5)
+
+    def test_featurize_K3Sb_Charge(self):
+        df = self.featurize_K3Sb_Charge.get_df(ids="K3Sb")
+
+        # Test that the function returns a pandas DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "Ionicity_Loew",
+        ]
+        self.assertCountEqual(list(df.columns), expected_cols)
+
+        # Test that the DataFrame has the expected index
+        self.assertEqual(df.index[0], "K3Sb")
+
+        # Test that all the values in the DataFrame
+        self.assertAlmostEqual(df.loc["K3Sb", "Ionicity_Loew"], 0.563333, places=5)
 
 
 if __name__ == "__main__":
