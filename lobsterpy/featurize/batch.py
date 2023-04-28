@@ -56,9 +56,12 @@ class FingperintSimilarityMatrix:
 
     @staticmethod
     def _fp_to_dict(fp) -> dict:
-        """Converts a fingerprint into a dictionary
+        """
+        Converts a fingerprint into a dictionary
+
         Args:
             fp: The fingerprint to be converted into a dictionary
+
         Returns:
             dict: A dict of the fingerprint Keys=type, Values=np.ndarray(energies, cohp)
         """
@@ -76,7 +79,9 @@ class FingperintSimilarityMatrix:
         normalize: bool = False,
         tanimoto: bool = False,
     ) -> float:
-        """Calculates the similarity index (dot product) of two fingerprints
+        """
+        Calculates the similarity index (dot product) of two fingerprints
+
         Args:
             fp1 (NamedTuple): The 1st dos fingerprint object
             fp2 (NamedTuple): The 2nd dos fingerprint object
@@ -84,10 +89,12 @@ class FingperintSimilarityMatrix:
             pt (int or str) : The index of the point that the dot product is to be taken (default is All)
             normalize (bool): If True normalize the scalar product to 1 (default is False)
             tanimoto (bool): If True will compute Tanimoto index (default is False)
+
         Raises:
             ValueError: If both tanimoto and normalize are set to True.
+
         Returns:
-        Similarity index (float): The value of dot product
+            Similarity index (float): The value of dot product
         """
         fp1_dict = (
             FingperintSimilarityMatrix._fp_to_dict(fp1)
