@@ -6,8 +6,8 @@ This module defines wrapper class to obtain summary features ready to used for M
 """
 
 import logging
-import pandas as pd
 from typing import List
+import pandas as pd
 from lobsterpy.featurize.core import (
     FeaturizeLobsterpy,
     FeaturizeCharges,
@@ -88,7 +88,7 @@ class SummarizedFeaturizer:
 
         feat_charge = FeaturizeCharges(
             path_to_charge=self.path_to_charge,
-            path_to_strucutre=self.path_to_structure,
+            path_to_structure=self.path_to_structure,
             charge_type=self.charge_type,
         )
 
