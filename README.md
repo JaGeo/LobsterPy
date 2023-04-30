@@ -49,4 +49,4 @@ Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](
 
 ## Contributions
 * Contributions and suggestions for features are also welcome. Please write an Issue to describe your potential contribution or feature request.
-* We are planning to submit a paper for the code LobstePy when more features have been added (~ mid of 2023). Major contributors will of course have the chance to be co-authors. Please talk to us if you are interested in contributing :).
+* We are planning to submit a paper for the code LobsterPy when more features have been added (~ mid of 2023). Major contributors will of course have the chance to be co-authors. Please talk to us if you are interested in contributing :).
