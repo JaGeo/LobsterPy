@@ -33,7 +33,7 @@ You can also pip install the package in development mode by writing ``pip instal
 
 * **LobsterPy as part of an atomate2 workflow**
 
-We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in [atomate2](https://github.com/materialsproject/atomate2). More documentation and information will follow soon.
+    We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in [atomate2](https://github.com/materialsproject/atomate2). More documentation and information will follow soon.
 
 * **Further help?**
 
