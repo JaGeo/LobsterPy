@@ -32,6 +32,7 @@ You can also pip install the package in development mode by writing ``pip instal
     ``lobsterpy create-inputs`` will create standard inputs based on existing POSCAR, POTCAR, INCAR files. It will allow to test for different basis sets that are available in Lobster. Currently only available for PBE_54 POTCARs.
 
 * **LobsterPy as part of an atomate2 workflow**
+
 We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in [atomate2](https://github.com/materialsproject/atomate2). More documentation and information will follow soon.
 
 * **Further help?**
