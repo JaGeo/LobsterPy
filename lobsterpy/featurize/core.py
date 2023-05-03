@@ -13,17 +13,16 @@ import warnings
 from pathlib import Path
 from typing import Mapping, NamedTuple, List
 from collections import namedtuple
-import warnings
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from mendeleev import element
-from lobsterpy.cohp.analyze import Analysis
 from pymatgen.core.structure import Structure
 from pymatgen.io.lobster import Charge, Lobsterout, Icohplist, MadelungEnergies
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
 from scipy.integrate import trapezoid
+from lobsterpy.cohp.analyze import Analysis
 
 warnings.filterwarnings('ignore')
 

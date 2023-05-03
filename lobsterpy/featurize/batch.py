@@ -6,9 +6,8 @@ This module defines wrapper classes to quickly obtain similarity matrix of input
 """
 from __future__ import annotations
 import os
-from typing import NamedTuple
+from typing import NamedTuple, List
 import multiprocessing as mp
-from typing import List
 from pathlib import Path
 import warnings
 import numpy as np
@@ -19,7 +18,6 @@ from lobsterpy.featurize.core import (
     FeaturizeCharges,
     FeaturizeCOXX,
 )
-
 warnings.filterwarnings("ignore")
 
 
