@@ -363,7 +363,8 @@ class TestExceptions(unittest.TestCase):
 
         self.assertEqual(
             err.exception.__str__(),
-            "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall")
+            "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall",
+        )
 
         with self.assertRaises(Exception) as err2:
             self.featurize_COXX = FeaturizeCOXX(
@@ -374,12 +375,12 @@ class TestExceptions(unittest.TestCase):
                 e_range=[-5, 0],
             )
 
-            self.featurize_COXX.get_coxx_fingerprint_df(spin_type='-1')
+            self.featurize_COXX.get_coxx_fingerprint_df(spin_type="-1")
 
         self.assertEqual(
             err2.exception.__str__(),
-            "Check the spin_type argument."
-            "Possible options are summed/up/down")
+            "Check the spin_type argument." "Possible options are summed/up/down",
+        )
 
         with self.assertRaises(Exception) as err3:
             self.featurize_COXX = FeaturizeCOXX(
@@ -389,16 +390,15 @@ class TestExceptions(unittest.TestCase):
                 feature_type="bonding",
                 e_range=[-5, 0],
                 are_cobis=True,
-                are_coops=True
+                are_coops=True,
             )
 
             self.featurize_COXX.get_coxx_fingerprint_df()
 
         self.assertEqual(
             err3.exception.__str__(),
-            "You cannot have info about COOPs and COBIs in the same file.")
-
-
+            "You cannot have info about COOPs and COBIs in the same file.",
+        )
 
 
 if __name__ == "__main__":

@@ -367,7 +367,7 @@ class TestExceptions(unittest.TestCase):
         with self.assertRaises(Exception) as err:
             self.summary_featurize_with_json = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
-                                      / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/1/",
+                / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/1/",
                 bonds="all_bonds",
                 feature_type="antibonding",
                 include_cobi_data=True,
@@ -385,7 +385,7 @@ class TestExceptions(unittest.TestCase):
         with self.assertRaises(Exception) as err:
             self.summary_featurize_with_json = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
-                                      / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/2/",
+                / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/2/",
                 bonds="all_bonds",
                 feature_type="antibonding",
                 include_cobi_data=True,

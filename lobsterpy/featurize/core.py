@@ -24,7 +24,7 @@ from pymatgen.electronic_structure.core import Spin
 from scipy.integrate import trapezoid
 from lobsterpy.cohp.analyze import Analysis
 
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore")
 
 
 class FeaturizeLobsterpy:
@@ -163,7 +163,12 @@ class FeaturizeLobsterpy:
         else:
             which_bonds = "cation-anion"
 
-        if icohplist_path.exists() and cohpcar_path.exists() and charge_path.exists() and structure_path.exists():
+        if (
+            icohplist_path.exists()
+            and cohpcar_path.exists()
+            and charge_path.exists()
+            and structure_path.exists()
+        ):
             analyse = Analysis(
                 path_to_poscar=structure_path,
                 path_to_icohplist=icohplist_path,
@@ -178,9 +183,11 @@ class FeaturizeLobsterpy:
                 {self.bonds: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
             )
         else:
-            raise Exception("Path provided for Lobster calc directory seems incorrect."
-                            "It does not contain COHPCAR.lobster.gz, ICOHPLIST.lobster.gz, POSCAR.gz and "
-                            "CHARGE.lobster.gz files needed for automatic analysis using LobsterPy")
+            raise Exception(
+                "Path provided for Lobster calc directory seems incorrect."
+                "It does not contain COHPCAR.lobster.gz, ICOHPLIST.lobster.gz, POSCAR.gz and "
+                "CHARGE.lobster.gz files needed for automatic analysis using LobsterPy"
+            )
 
         if madelung_energies_path.exists():
             madelung_obj = MadelungEnergies(filename=str(madelung_energies_path))
@@ -194,7 +201,8 @@ class FeaturizeLobsterpy:
         else:
             warnings.warn(
                 "MadelungEnergies.lobster.gz file not found in Lobster calc directory provided"
-                " Will set Madelung Engeries for crystal structure values to NaN")
+                " Will set Madelung Engeries for crystal structure values to NaN"
+            )
 
             madelung_energies = {
                 "Mulliken": np.nan,
@@ -207,8 +215,8 @@ class FeaturizeLobsterpy:
 
 
 coxx_fingerprint = namedtuple(
-            "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
-        )
+    "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
+)
 
 
 class FeaturizeCOXX:
@@ -316,7 +324,9 @@ class FeaturizeCOXX:
             try:
                 coxx_all = coxxcar_obj[Spin.down]
             except KeyError:
-                raise ValueError('LOSBTER calculation is non-spin polarized. Please switch spin_type to "up"')
+                raise ValueError(
+                    'LOSBTER calculation is non-spin polarized. Please switch spin_type to "up"'
+                )
         elif spin_type == "summed":
             try:
                 coxx_all = coxxcar_obj[Spin.up] + coxxcar_obj[Spin.down]
@@ -324,8 +334,7 @@ class FeaturizeCOXX:
                 coxx_all = coxxcar_obj[Spin.up]
         else:
             raise Exception(
-                "Check the spin_type argument."
-                "Possible options are summed/up/down"
+                "Check the spin_type argument." "Possible options are summed/up/down"
             )
 
         coxx_dict = {}
@@ -697,7 +706,6 @@ class FeaturizeCharges:
         path_to_charge: str,
         charge_type: str,
     ):
-
         self.path_to_structure = path_to_structure
         self.path_to_charge = path_to_charge
         self.charge_type = charge_type
