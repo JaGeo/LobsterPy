@@ -323,5 +323,83 @@ class TestFeaturizeCharges(unittest.TestCase):
         self.assertAlmostEqual(df.loc["K3Sb", "Ionicity_Loew"], 0.563333, places=5)
 
 
+class TestExceptions(unittest.TestCase):
+    def test_lobsterpy_featurize_exception(self):
+        with self.assertRaises(Exception) as err:
+            self.featurize_mp1249_json = FeaturizeLobsterpy(
+                path_to_json=None, path_to_lobster_calc=None, bonds="all_bonds"
+            )
+
+            self.featurize_mp1249_json.get_df()
+        self.assertEqual(
+            err.exception.__str__(),
+            "Please provide either path to lightweight lobster jsons or path to lobster calc",
+        )
+
+        with self.assertRaises(Exception) as err:
+            self.featurize_mp1249_json = FeaturizeLobsterpy(
+                path_to_json=None, path_to_lobster_calc=TestDir, bonds="all_bonds"
+            )
+
+            self.featurize_mp1249_json.get_df()
+        self.assertEqual(
+            err.exception.__str__(),
+            "Path provided for Lobster calc directory seems incorrect."
+            "It does not contain COHPCAR.lobster.gz, ICOHPLIST.lobster.gz, POSCAR.gz and "
+            "CHARGE.lobster.gz files needed for automatic analysis using LobsterPy",
+        )
+
+    def test_featurize_coxx(self):
+        with self.assertRaises(Exception) as err:
+            self.featurize_COXX = FeaturizeCOXX(
+                path_to_coxxcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+                path_to_icoxxlist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+                path_to_structure=TestDir / "TestData/NaCl/POSCAR",
+                feature_type="summed",
+                e_range=[-5, 0],
+            )
+
+            self.featurize_COXX.get_summarized_coxx_df()
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall")
+
+        with self.assertRaises(Exception) as err2:
+            self.featurize_COXX = FeaturizeCOXX(
+                path_to_coxxcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+                path_to_icoxxlist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+                path_to_structure=TestDir / "TestData/NaCl/POSCAR",
+                feature_type="bonding",
+                e_range=[-5, 0],
+            )
+
+            self.featurize_COXX.get_coxx_fingerprint_df(spin_type='-1')
+
+        self.assertEqual(
+            err2.exception.__str__(),
+            "Check the spin_type argument."
+            "Possible options are summed/up/down")
+
+        with self.assertRaises(Exception) as err3:
+            self.featurize_COXX = FeaturizeCOXX(
+                path_to_coxxcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
+                path_to_icoxxlist=TestDir / "TestData/NaSi/ICOHPLIST.lobster",
+                path_to_structure=TestDir / "TestData/NaSi/POSCAR",
+                feature_type="bonding",
+                e_range=[-5, 0],
+                are_cobis=True,
+                are_coops=True
+            )
+
+            self.featurize_COXX.get_coxx_fingerprint_df()
+
+        self.assertEqual(
+            err3.exception.__str__(),
+            "You cannot have info about COOPs and COBIs in the same file.")
+
+
+
+
 if __name__ == "__main__":
     unittest.main()
