@@ -11,14 +11,14 @@ import json
 import os
 import warnings
 from pathlib import Path
-from typing import Mapping, NamedTuple, List
+from typing import List, Tuple
 from collections import namedtuple
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from mendeleev import element
 from pymatgen.core.structure import Structure
-from pymatgen.io.lobster import Charge, Lobsterout, Icohplist, MadelungEnergies
+from pymatgen.io.lobster import Charge, Icohplist, MadelungEnergies
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
 from scipy.integrate import trapezoid
@@ -124,7 +124,7 @@ class FeaturizeLobsterpy:
 
         return df
 
-    def _read_lobster_lightweight_json(self):
+    def _read_lobster_lightweight_json(self) -> dict:
         """
         This function reads loads the lightweight json.gz files and returns a python dictionary object
         with lobster summmarized bonding analysis data.
@@ -142,7 +142,7 @@ class FeaturizeLobsterpy:
 
         return lobster_data
 
-    def _get_lobsterpy_cba_dict(self):
+    def _get_lobsterpy_cba_dict(self) -> dict:
         """
         This function uses lobsterpy.cohp.analyze.Analysis class to generate a python dictionary object
         with lobster summmarized bonding analysis data.
@@ -170,10 +170,10 @@ class FeaturizeLobsterpy:
             and structure_path.exists()
         ):
             analyse = Analysis(
-                path_to_poscar=structure_path,
-                path_to_icohplist=icohplist_path,
-                path_to_cohpcar=cohpcar_path,
-                path_to_charge=charge_path,
+                path_to_poscar=str(structure_path),
+                path_to_icohplist=str(icohplist_path),
+                path_to_cohpcar=str(cohpcar_path),
+                path_to_charge=str(charge_path),
                 summed_spins=False,  # we will always use spin polarization here
                 cutoff_icohp=0.10,
                 whichbonds=which_bonds,
@@ -277,7 +277,7 @@ class FeaturizeCOXX:
         binning: bool = True,
         n_bins: int = 56,
         normalize: bool = True,
-    ):
+    ) -> pd.DataFrame:
         """
         Generates the COXX fingerprint
 
@@ -295,8 +295,9 @@ class FeaturizeCOXX:
             ValueError: If feature_type is not one of the accepted values {bonding/antibonding/overall}.
 
         Returns:
-            Fingerprint(namedtuple) : A pandas dataframe with the COXX fingerprint
+            A pandas dataframe with the COXX fingerprint
             of format (energies, coxx, fp_type, spin_type, n_bins, bin_width)
+
         """
         coxxcar_obj = self.completecoxx
 
@@ -358,10 +359,16 @@ class FeaturizeCOXX:
         coxx_dict["overall"] = coxx_all
 
         try:
+            if ids:
+                df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
+            else:
+                ids = os.path.basename(os.path.dirname(self.path_to_coxxcar))
+                df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
+
             coxxs = coxx_dict[self.feature_type]
             if len(energies) < n_bins:
                 inds = np.where((energies >= min_e) & (energies <= max_e))
-                return coxx_fingerprint(
+                fp = coxx_fingerprint(
                     energies[inds],
                     coxxs[inds],
                     self.feature_type,
@@ -369,6 +376,10 @@ class FeaturizeCOXX:
                     len(energies),
                     np.diff(energies)[0],
                 )
+
+                df.at[ids, "COXX_FP"] = fp
+
+                return df
 
             if binning:
                 ener_bounds = np.linspace(min_e, max_e, n_bins + 1)
@@ -400,12 +411,6 @@ class FeaturizeCOXX:
                 bin_width,
             )
 
-            if ids:
-                df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
-            else:
-                ids = os.path.basename(os.path.dirname(self.path_to_coxxcar))
-                df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
-
             df.at[ids, "COXX_FP"] = fp
 
             return df
@@ -415,7 +420,7 @@ class FeaturizeCOXX:
                 "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall"
             )
 
-    def _calculate_wicoxx_ein(self):
+    def _calculate_wicoxx_ein(self) -> Tuple[float, float, float, float]:
         """
         Method to calculate weighted icoxx (xx ==hp,op,bi) and ein of crystal structure based on work by Peter Müller
 
@@ -457,6 +462,13 @@ class FeaturizeCOXX:
         indices = self.completecoxx.energies <= self.completecoxx.efermi
         en_bf = self.completecoxx.energies[indices]
         coxx_bf = summed[indices]
+
+        w_icoxx = trapezoid(coxx_bf, en_bf)
+
+        ein = (icoxx_total / w_icoxx) * (
+            2 / self.completecoxx.structure.num_sites
+        )  # calc effective interaction number
+
         # percent bonding-anitbonding
         if not self.icoxxlist.are_cobis and not self.icoxxlist.are_coops:
             bonding_indices = coxx_bf <= 0
@@ -467,6 +479,7 @@ class FeaturizeCOXX:
             )
             per_bnd = (bnd / (bnd + antibnd)) * 100
             per_antibnd = (antibnd / (bnd + antibnd)) * 100
+
         elif self.icoxxlist.are_cobis or self.icoxxlist.are_coops:
             bonding_indices = coxx_bf >= 0
             antibonding_indices = coxx_bf <= 0
@@ -477,15 +490,11 @@ class FeaturizeCOXX:
             per_bnd = (bnd / (bnd + antibnd)) * 100
             per_antibnd = (antibnd / (bnd + antibnd)) * 100
 
-        w_icoxx = trapezoid(coxx_bf, en_bf)
-
-        ein = (icoxx_total / w_icoxx) * (
-            2 / self.completecoxx.structure.num_sites
-        )  # calc effective interaction number
-
         return per_bnd, per_antibnd, w_icoxx, ein
 
-    def _calc_moment_features(self, label_list: List[str] | None = None):
+    def _calc_moment_features(
+        self, label_list: List[str] | None = None
+    ) -> Tuple[float, float, float, float]:
         if label_list:
             coxxcar = self.completecoxx.get_summed_cohp_by_label_list(
                 label_list
@@ -632,7 +641,7 @@ class FeaturizeCOXX:
 
     def get_summarized_coxx_df(
         self, ids: str | None = None, label_list: List[str] | None = None
-    ):
+    ) -> pd.DataFrame:
         """
         This function returns a pandas dataframe with weighted ICOXX, effective interaction number
         and moment features (center, width, skewness and kurtosis) of COXX in selected energy range
@@ -793,7 +802,7 @@ class FeaturizeCharges:
 
         return ionicity
 
-    def get_df(self, ids: str | None = None):
+    def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """
         This function returns a pandas dataframe with computed ionicity as column
 

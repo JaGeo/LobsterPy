@@ -67,7 +67,7 @@ class BatchSummaryFeaturizer:
         self.e_range = e_range
         self.n_jobs = n_jobs
 
-    def _featurizelobsterpy(self, file_name_or_path):
+    def _featurizelobsterpy(self, file_name_or_path) -> pd.DataFrame:
         """
         Wrapper method to featurize Lobsterpy condensed bonding analysis data by loading lightweight json
         if json file exists or invokes lobsterpy.analzye.Analysis module
@@ -93,7 +93,7 @@ class BatchSummaryFeaturizer:
 
         return df
 
-    def _featurizecoxx(self, path_to_lobster_calc):
+    def _featurizecoxx(self, path_to_lobster_calc) -> pd.DataFrame:
         """
         Wrapper method to featurize COHP/COBI/COOPCAR data that uses FeaturizeCOXX under the hood
 
@@ -113,9 +113,9 @@ class BatchSummaryFeaturizer:
             and icoxxlist_path.exists()
         ):
             coxx = FeaturizeCOXX(
-                path_to_coxxcar=coxxcar_path,
-                path_to_icoxxlist=icoxxlist_path,
-                path_to_structure=structure_path,
+                path_to_coxxcar=str(coxxcar_path),
+                path_to_icoxxlist=str(icoxxlist_path),
+                path_to_structure=str(structure_path),
                 feature_type=self.feature_type,
                 e_range=self.e_range,
             )
@@ -133,9 +133,9 @@ class BatchSummaryFeaturizer:
 
             if coxxcar_path.exists() and icoxxlist_path.exists():
                 coxx = FeaturizeCOXX(
-                    path_to_coxxcar=coxxcar_path,
-                    path_to_icoxxlist=icoxxlist_path,
-                    path_to_structure=structure_path,
+                    path_to_coxxcar=str(coxxcar_path),
+                    path_to_icoxxlist=str(icoxxlist_path),
+                    path_to_structure=str(structure_path),
                     feature_type=self.feature_type,
                     e_range=self.e_range,
                     are_cobis=True,
@@ -155,9 +155,9 @@ class BatchSummaryFeaturizer:
 
             if coxxcar_path.exists() and icoxxlist_path.exists():
                 coxx = FeaturizeCOXX(
-                    path_to_coxxcar=coxxcar_path,
-                    path_to_icoxxlist=icoxxlist_path,
-                    path_to_structure=structure_path,
+                    path_to_coxxcar=str(coxxcar_path),
+                    path_to_icoxxlist=str(icoxxlist_path),
+                    path_to_structure=str(structure_path),
                     feature_type=self.feature_type,
                     e_range=self.e_range,
                     are_coops=True,
@@ -182,7 +182,7 @@ class BatchSummaryFeaturizer:
 
         return df
 
-    def _featurizecharges(self, path_to_lobster_calc):
+    def _featurizecharges(self, path_to_lobster_calc) -> pd.DataFrame:
         """
         Wrapper method to featurize CHARGE.lobster.gz data that uses FeaturizeCharges under the hood
 
@@ -197,29 +197,29 @@ class BatchSummaryFeaturizer:
         if charge_path.exists() and structure_path.exists():
             if self.charge_type == "mulliken":
                 charge_mull = FeaturizeCharges(
-                    path_to_charge=charge_path,
-                    path_to_structure=structure_path,
+                    path_to_charge=str(charge_path),
+                    path_to_structure=str(structure_path),
                     charge_type="mulliken",
                 )
                 df = charge_mull.get_df()
             elif self.charge_type == "loewdin":
                 charge_loew = FeaturizeCharges(
-                    path_to_charge=charge_path,
-                    path_to_structure=structure_path,
+                    path_to_charge=str(charge_path),
+                    path_to_structure=str(structure_path),
                     charge_type="loewdin",
                 )
                 df = charge_loew.get_df()
             elif self.charge_type == "both":
                 charge_mull = FeaturizeCharges(
-                    path_to_charge=charge_path,
-                    path_to_structure=structure_path,
+                    path_to_charge=str(charge_path),
+                    path_to_structure=str(structure_path),
                     charge_type="mulliken",
                 )
                 df_mull = charge_mull.get_df()
 
                 charge_loew = FeaturizeCharges(
-                    path_to_charge=charge_path,
-                    path_to_structure=structure_path,
+                    path_to_charge=str(charge_path),
+                    path_to_structure=str(structure_path),
                     charge_type="loewdin",
                 )
                 df_loew = charge_loew.get_df()
@@ -232,7 +232,7 @@ class BatchSummaryFeaturizer:
                 "CHARGE.lobster.gz or POSCAR.gz not found in {}".format(dir_name.name)
             )
 
-    def get_df(self):
+    def get_df(self) -> pd.DataFrame:
         """
         This method will return a pandas dataframe with summary features extracted from LOBSTER files
         as columns. Uses multiprocessing to speed up the process.
@@ -410,7 +410,7 @@ class BatchCoxxFingerprint:
 
         self.fingerprint_df = self._get_fingerprints_df()
 
-    def get_similarity_matrix_df(self):
+    def get_similarity_matrix_df(self) -> pd.DataFrame:
         """
         This function will compute pairwise similarity index for each fingerprint object in input dataframe
 
@@ -464,8 +464,8 @@ class BatchCoxxFingerprint:
 
     @staticmethod
     def _get_fp_similarity(
-        fp1,
-        fp2,
+        fp1: NamedTuple,
+        fp2: NamedTuple,
         col: int = 1,
         pt: int | str = "All",
         normalize: bool = False,
@@ -525,7 +525,7 @@ class BatchCoxxFingerprint:
                 "Cannot compute similarity index. Please set either normalize=True or tanimoto=True or both to False."
             )
 
-    def _fingerprint_df(self, path_to_lobster_calc):
+    def _fingerprint_df(self, path_to_lobster_calc) -> pd.DataFrame:
         """
         Wrapper method to get fingerprint object dataframe using FeaturizeCOXX.get_coxx_fingerprint_df method.
         Also helps switching the data used for fingerprint generation
@@ -582,9 +582,9 @@ class BatchCoxxFingerprint:
             raise Exception("POSCAR.gz file not found in {}".format(dir_name.name))
 
         coxx = FeaturizeCOXX(
-            path_to_coxxcar=coxxcar_path,
-            path_to_icoxxlist=icoxxlist_path,
-            path_to_structure=structure_path,
+            path_to_coxxcar=str(coxxcar_path),
+            path_to_icoxxlist=str(icoxxlist_path),
+            path_to_structure=str(structure_path),
             feature_type=self.feature_type,
             e_range=self.e_range,
             are_coops=are_coops,
@@ -599,7 +599,7 @@ class BatchCoxxFingerprint:
         )
         return df_fp
 
-    def _get_fingerprints_df(self):
+    def _get_fingerprints_df(self) -> pd.DataFrame:
         """
         Batch wrapper method to get fingerprint objects dataframe using
         BatchCoxxFingerprint._fingerprint_df method.
