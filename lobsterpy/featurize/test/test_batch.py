@@ -20,6 +20,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             include_cobi_data=False,
             include_coop_data=False,
             e_range=[-15, 0],
+            n_jobs=3,
         )
 
         self.summary_featurize_without_json = BatchSummaryFeaturizer(
@@ -29,6 +30,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             include_cobi_data=False,
             include_coop_data=False,
             e_range=[-15, 0],
+            n_jobs=3,
         )
 
         self.summary_featurize_with_json_overall = BatchSummaryFeaturizer(
@@ -40,6 +42,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             include_cobi_data=True,
             include_coop_data=True,
             e_range=[-15, 0],
+            n_jobs=3,
         )
 
         self.summary_featurize_with_json_bonding = BatchSummaryFeaturizer(
@@ -52,6 +55,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             include_coop_data=False,
             e_range=[-15, 0],
             charge_type="mulliken",
+            n_jobs=3,
         )
 
         self.summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
@@ -64,6 +68,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             include_coop_data=False,
             e_range=[-15, 0],
             charge_type="loewdin",
+            n_jobs=3,
         )
 
     def test_summary_featurize_with_json(self):
@@ -104,7 +109,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_cols)
 
-        expected_index = ["mp-463", "mp-1000", "mp-2176"]
+        expected_index = ['mp-1000', 'mp-2176', 'mp-463']
 
         self.assertEqual(list(df.index), expected_index)
 
@@ -146,7 +151,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_cols)
 
-        expected_index = ["mp-463", "mp-1000", "mp-2176"]
+        expected_index = ['mp-1000', 'mp-2176', 'mp-463']
 
         self.assertEqual(list(df.index), expected_index)
 
@@ -204,7 +209,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_cols)
 
-        expected_index = ["mp-463", "mp-1000", "mp-2176"]
+        expected_index = ['mp-1000', 'mp-2176', 'mp-463']
 
         self.assertEqual(list(df.index), expected_index)
 
@@ -292,6 +297,7 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
             feature_type="overall",
             normalize=True,
             tanimoto=True,
+            n_jobs=3,
         )
 
         self.fp_cohp_bonding = BatchCoxxFingerprint(
@@ -301,6 +307,7 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
             feature_type="bonding",
             normalize=False,
             tanimoto=True,
+            n_jobs=3,
         )
 
         self.fp_cobi = BatchCoxxFingerprint(
@@ -310,7 +317,8 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
             feature_type="antibonding",
             normalize=True,
             tanimoto=True,
-            are_cobis=True,
+            fingerprint_for='cobi',
+            n_jobs=3,
         )
 
         self.fp_coop = BatchCoxxFingerprint(
@@ -320,7 +328,8 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
             feature_type="bonding",
             normalize=True,
             tanimoto=False,
-            are_coops=True,
+            fingerprint_for='coop',
+            n_jobs=3,
         )
 
     def test_fp_cohp_overall(self):

@@ -265,6 +265,8 @@ class FeaturizeCOXX:
             fmt="LOBSTER",
             filename=self.path_to_coxxcar,
             structure_file=self.path_to_structure,
+            are_cobis=self.are_cobis,
+            are_coops=self.are_coops,
         )
 
     def get_coxx_fingerprint_df(
@@ -277,7 +279,7 @@ class FeaturizeCOXX:
         normalize: bool = True,
     ):
         """
-        Generates the COHP fingerprint
+        Generates the COXX fingerprint
 
         Args:
             ids: sets index of pandas dataframe
@@ -293,7 +295,7 @@ class FeaturizeCOXX:
             ValueError: If feature_type is not one of the accepted values {bonding/antibonding/overall}.
 
         Returns:
-            Fingerprint(namedtuple) : The COHP fingerprint
+            Fingerprint(namedtuple) : A pandas dataframe with the COXX fingerprint
             of format (energies, coxx, fp_type, spin_type, n_bins, bin_width)
         """
         coxxcar_obj = self.completecoxx

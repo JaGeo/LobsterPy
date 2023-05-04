@@ -264,7 +264,7 @@ class BatchSummaryFeaturizer:
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(
-                pool.imap(self._featurizelobsterpy, file_name_or_path, chunksize=1),
+                pool.imap_unordered(self._featurizelobsterpy, file_name_or_path, chunksize=1),
                 total=len(file_name_or_path),
                 desc="Generating LobsterPy summary stats",
             )
@@ -273,6 +273,7 @@ class BatchSummaryFeaturizer:
                 row.append(result)
 
         df_lobsterpy = pd.concat(row)
+        df_lobsterpy.sort_index(inplace=True)
 
         if self.only_smallest_basis:
             paths = [
@@ -294,7 +295,7 @@ class BatchSummaryFeaturizer:
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(
-                pool.imap(self._featurizecoxx, paths, chunksize=1),
+                pool.imap_unordered(self._featurizecoxx, paths, chunksize=1),
                 total=len(paths),
                 desc="Generating COHP/COOP/COBI summary stats",
             )
@@ -303,10 +304,11 @@ class BatchSummaryFeaturizer:
                 row.append(result)
 
         df_coxx = pd.concat(row)
+        df_coxx.sort_index(inplace=True)
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(
-                pool.imap(self._featurizecharges, paths, chunksize=1),
+                pool.imap_unordered(self._featurizecharges, paths, chunksize=1),
                 total=len(paths),
                 desc="Generating charge based features",
             )
@@ -315,6 +317,7 @@ class BatchSummaryFeaturizer:
                 row.append(result)
 
         df_charges = pd.concat(row)
+        df_charges.sort_index(inplace=True)
 
         df = pd.concat([df_lobsterpy, df_coxx, df_charges], axis=1)
 
@@ -338,8 +341,7 @@ class BatchCoxxFingerprint:
         n_bins: int = 56,
         e_range: List[float] = [-15.0, 0.0],
         n_jobs=4,
-        are_cobis: bool = False,
-        are_coops: bool = False,
+        fingerprint_for: str = 'cohp',
     ):
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.only_smallest_basis = only_smallest_basis
@@ -351,8 +353,7 @@ class BatchCoxxFingerprint:
         self.n_bins = n_bins
         self.e_range = e_range
         self.n_jobs = n_jobs
-        self.are_cobis = are_cobis
-        self.are_coops = are_coops
+        self.fingerprint_for = fingerprint_for
 
         self.fingerprint_df = self._get_fingerprints_df()
 
@@ -368,7 +369,6 @@ class BatchCoxxFingerprint:
         )
         for i, (row, col) in enumerate(self.fingerprint_df.iterrows()):
             for j, (row1, col1) in enumerate(self.fingerprint_df.iterrows()):
-                # if i <= j:
                 if self.tanimoto:
                     simi = self._get_fp_similarity(
                         col["COXX_FP"],
@@ -473,23 +473,28 @@ class BatchCoxxFingerprint:
 
     def _fingerprint_df(self, path_to_lobster_calc):
         dir_name = Path(path_to_lobster_calc)
-        if self.are_cobis and not self.are_coops:
+
+        if self.fingerprint_for.upper() == 'COBI':
             if (dir_name / "COBICAR.lobster.gz").exists() and (
                 dir_name / "ICOBILIST.lobster.gz"
             ).exists():
                 coxxcar_path = dir_name / "COBICAR.lobster.gz"
                 icoxxlist_path = dir_name / "ICOBILIST.lobster.gz"
+                are_cobis = True
+                are_coops = False
             else:
                 raise Exception(
                     "COBICAR.lobster.gz or ICOBILIST.lobster.gz file not found in "
                     "{}".format(dir_name.name)
                 )
-        elif self.are_coops and not self.are_cobis:
+        elif self.fingerprint_for.upper() == 'COOP':
             if (dir_name / "COOPCAR.lobster.gz").exists() and (
                 dir_name / "ICOOPLIST.lobster.gz"
             ).exists():
                 coxxcar_path = dir_name / "COOPCAR.lobster.gz"
                 icoxxlist_path = dir_name / "ICOOPLIST.lobster.gz"
+                are_cobis = False
+                are_coops = True
             else:
                 raise Exception(
                     "COOPCAR.lobster.gz or ICOOPLIST.lobster.gz file not found in "
@@ -501,6 +506,8 @@ class BatchCoxxFingerprint:
             ).exists():
                 coxxcar_path = dir_name / "COHPCAR.lobster.gz"
                 icoxxlist_path = dir_name / "ICOHPLIST.lobster.gz"
+                are_cobis = False
+                are_coops = False
             else:
                 raise Exception(
                     "COHPCAR.lobster.gz or ICOHPLIST.lobster.gz file not found in "
@@ -518,8 +525,8 @@ class BatchCoxxFingerprint:
             path_to_structure=structure_path,
             feature_type=self.feature_type,
             e_range=self.e_range,
-            are_coops=self.are_coops,
-            are_cobis=self.are_cobis,
+            are_coops=are_coops,
+            are_cobis=are_cobis,
         )
 
         df_fp = coxx.get_coxx_fingerprint_df(
@@ -551,14 +558,15 @@ class BatchCoxxFingerprint:
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(
-                pool.imap(self._fingerprint_df, paths, chunksize=1),
+                pool.imap_unordered(self._fingerprint_df, paths, chunksize=1),
                 total=len(paths),
-                desc="Generating COHP/COBI/COOP fingerprints",
+                desc="Generating {} fingerprints".format(self.fingerprint_for.upper()),
             )
             row = []
             for result in results:
                 row.append(result)
 
         df = pd.concat(row)
+        df.sort_index(inplace=True)
 
         return df
