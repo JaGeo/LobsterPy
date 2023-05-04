@@ -24,7 +24,7 @@ warnings.filterwarnings("ignore")
 
 class BatchSummaryFeaturizer:
     """
-    Featurizer sets that generates summary features from lobster data.
+    Batch Featurizer sets that generates summary features from lobster data.
 
     Args:
         path_to_lobster_calcs: path to root directory consisting of all lobster calc
@@ -40,7 +40,7 @@ class BatchSummaryFeaturizer:
         n_jobs : parallel processes to run
 
     Attributes:
-        get_df: a pandas dataframe with summary features
+        get_df: A pandas dataframe with summary features
     """
 
     def __init__(
@@ -68,6 +68,15 @@ class BatchSummaryFeaturizer:
         self.n_jobs = n_jobs
 
     def _featurizelobsterpy(self, file_name_or_path):
+        """
+        Wrapper method to featurize Lobsterpy condensed bonding analysis data by loading lightweight json
+        if json file exists or invokes lobsterpy.analzye.Analysis module
+
+        Returns:
+            A pandas dataframe with ICOHP stats like mean, min, max of relevant bonds and
+            madelung energies
+
+        """
         if os.path.isfile(file_name_or_path):
             featurize_lobsterpy = FeaturizeLobsterpy(
                 path_to_json=file_name_or_path,
@@ -85,6 +94,14 @@ class BatchSummaryFeaturizer:
         return df
 
     def _featurizecoxx(self, path_to_lobster_calc):
+        """
+        Wrapper method to featurize COHP/COBI/COOPCAR data that uses FeaturizeCOXX under the hood
+
+        Returns:
+            A pandas dataframe with COHP summary stats data mainly weighted ICOHP/ICOOP/ICOBI,
+            Effective interaction number and moment features (center, width, skewness and kurtosis)
+
+        """
         dir_name = Path(path_to_lobster_calc)
         coxxcar_path = dir_name / "COHPCAR.lobster.gz"
         structure_path = dir_name / "POSCAR.gz"
@@ -166,6 +183,13 @@ class BatchSummaryFeaturizer:
         return df
 
     def _featurizecharges(self, path_to_lobster_calc):
+        """
+        Wrapper method to featurize CHARGE.lobster.gz data that uses FeaturizeCharges under the hood
+
+        Returns:
+            A pandas dataframe with computed ionicity for the structure
+
+        """
         dir_name = Path(path_to_lobster_calc)
         charge_path = dir_name / "CHARGE.lobster.gz"
         structure_path = dir_name / "POSCAR.gz"
@@ -210,11 +234,11 @@ class BatchSummaryFeaturizer:
 
     def get_df(self):
         """
-        This function featurizes LobsterPy condensed bonding analysis data from
-        lobster lightweight json.gz files
+        This method will return a pandas dataframe with summary features extracted from LOBSTER files
+        as columns. Uses multiprocessing to speed up the process.
 
         Returns:
-            Returns a pandas dataframe with lobster summar icohp statistics
+            Returns a pandas dataframe
 
         """
         if self.path_to_jsons and self.only_smallest_basis:
@@ -334,7 +358,28 @@ class BatchSummaryFeaturizer:
 
 class BatchCoxxFingerprint:
     """
-    Featurizer that generates Tanimoto index similarity matrix summary features from fingerprint objects.
+    BatchFeaturizer that generates COHP/COOP/COBI fingerprints and
+    Tanimoto index similarity matrix from fingerprint objects.
+
+    Args:
+        path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        only_smallest_basis: bool to state to include directories with smallest basis only
+        feature_type: set the feature type for moment features.
+        Possible options are "bonding", "antibonding" or "overall"
+        label_list: bond labels list for which fingerprints needs to be generated.
+        tanimoto : bool to state to compute tanimoto index betweeen fingerprint objects
+        normalize: bool to state to normalize the fingerprint data
+        n_bins: sets number for bins for fingerprint objects
+        e_range : range of energy relative to fermi for which moment features needs to be computed
+        n_jobs : number of parallel processes to run
+        fingerprint_for: Possible options are 'cohp/cobi/coop'.
+        Based on this fingerprints will be computed for COHPCAR/COOBICAR/COOPCAR.lobster files
+
+    Attributes:
+        fingerprint_df: A pandas dataframe with fingerprint objects
+        get_similarity_matrix_df: A symmetric pandas dataframe consisting of
+        similarity index (tanimoto/normalized dot product/dot product)
+        computed between all pairs of compunds
     """
 
     def __init__(
@@ -442,6 +487,7 @@ class BatchCoxxFingerprint:
 
         Returns:
             Similarity index (float): The value of dot product
+
         """
         fp1_dict = (
             BatchCoxxFingerprint._fp_to_dict(fp1) if not isinstance(fp1, dict) else fp1
@@ -480,6 +526,14 @@ class BatchCoxxFingerprint:
             )
 
     def _fingerprint_df(self, path_to_lobster_calc):
+        """
+        Wrapper method to get fingerprint object dataframe using FeaturizeCOXX.get_coxx_fingerprint_df method.
+        Also helps switching the data used for fingerprint generation
+
+        Returns:
+            A pandas dataframe with COXX fingerprint object
+
+        """
         dir_name = Path(path_to_lobster_calc)
 
         if self.fingerprint_for.upper() == "COBI":
@@ -546,6 +600,14 @@ class BatchCoxxFingerprint:
         return df_fp
 
     def _get_fingerprints_df(self):
+        """
+        Batch wrapper method to get fingerprint objects dataframe using
+        BatchCoxxFingerprint._fingerprint_df method.
+
+        Returns:
+            A pandas dataframe with COXX fingerprint objects
+
+        """
         if self.only_smallest_basis:
             paths = [
                 os.path.join(self.path_to_lobster_calcs, f)
