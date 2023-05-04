@@ -133,7 +133,7 @@ class FeaturizeLobsterpy:
             Returns a dictionary with lobster summmarized bonding analysis data
 
         """
-        with gzip.open(self.path_to_json, "rb") as f:
+        with gzip.open(str(self.path_to_json), "rb") as f:
             data = json.loads(f.read().decode("utf-8"))
 
         lobster_data = {}
@@ -151,7 +151,7 @@ class FeaturizeLobsterpy:
             Returns a dictionary with lobster summmarized bonding analysis data
 
         """
-        dir_name = Path(self.path_to_lobster_calc)
+        dir_name = Path(str(self.path_to_lobster_calc))
         cohpcar_path = dir_name / "COHPCAR.lobster.gz"
         charge_path = dir_name / "CHARGE.lobster.gz"
         structure_path = dir_name / "POSCAR.gz"
