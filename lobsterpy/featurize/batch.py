@@ -264,7 +264,9 @@ class BatchSummaryFeaturizer:
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(
-                pool.imap_unordered(self._featurizelobsterpy, file_name_or_path, chunksize=1),
+                pool.imap_unordered(
+                    self._featurizelobsterpy, file_name_or_path, chunksize=1
+                ),
                 total=len(file_name_or_path),
                 desc="Generating LobsterPy summary stats",
             )
@@ -341,7 +343,7 @@ class BatchCoxxFingerprint:
         n_bins: int = 56,
         e_range: List[float] = [-15.0, 0.0],
         n_jobs=4,
-        fingerprint_for: str = 'cohp',
+        fingerprint_for: str = "cohp",
     ):
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.only_smallest_basis = only_smallest_basis
@@ -474,7 +476,7 @@ class BatchCoxxFingerprint:
     def _fingerprint_df(self, path_to_lobster_calc):
         dir_name = Path(path_to_lobster_calc)
 
-        if self.fingerprint_for.upper() == 'COBI':
+        if self.fingerprint_for.upper() == "COBI":
             if (dir_name / "COBICAR.lobster.gz").exists() and (
                 dir_name / "ICOBILIST.lobster.gz"
             ).exists():
@@ -487,7 +489,7 @@ class BatchCoxxFingerprint:
                     "COBICAR.lobster.gz or ICOBILIST.lobster.gz file not found in "
                     "{}".format(dir_name.name)
                 )
-        elif self.fingerprint_for.upper() == 'COOP':
+        elif self.fingerprint_for.upper() == "COOP":
             if (dir_name / "COOPCAR.lobster.gz").exists() and (
                 dir_name / "ICOOPLIST.lobster.gz"
             ).exists():

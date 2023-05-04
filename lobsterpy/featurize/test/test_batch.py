@@ -109,7 +109,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_cols)
 
-        expected_index = ['mp-1000', 'mp-2176', 'mp-463']
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
 
         self.assertEqual(list(df.index), expected_index)
 
@@ -151,7 +151,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_cols)
 
-        expected_index = ['mp-1000', 'mp-2176', 'mp-463']
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
 
         self.assertEqual(list(df.index), expected_index)
 
@@ -209,7 +209,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_cols)
 
-        expected_index = ['mp-1000', 'mp-2176', 'mp-463']
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
 
         self.assertEqual(list(df.index), expected_index)
 
@@ -317,7 +317,7 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
             feature_type="antibonding",
             normalize=True,
             tanimoto=True,
-            fingerprint_for='cobi',
+            fingerprint_for="cobi",
             n_jobs=3,
         )
 
@@ -328,7 +328,7 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
             feature_type="bonding",
             normalize=True,
             tanimoto=False,
-            fingerprint_for='coop',
+            fingerprint_for="coop",
             n_jobs=3,
         )
 
