@@ -14,6 +14,11 @@ class TestFeaturizeLobsterpy(unittest.TestCase):
         self.featurize_mp1249_json = FeaturizeLobsterpy(
             path_to_json=TestDir / "TestData/JSONS/mp-1249.json.gz", bonds="all_bonds"
         )
+
+        self.featurize_mp1249_json_ca = FeaturizeLobsterpy(
+            path_to_json=TestDir / "TestData/JSONS/mp-1249.json.gz",
+            bonds="cation_anion_bonds",
+        )
         self.featurize_mp1958_json = FeaturizeLobsterpy(
             path_to_json=TestDir / "TestData/JSONS/mp-1958.json.gz", bonds="all_bonds"
         )
@@ -63,8 +68,40 @@ class TestFeaturizeLobsterpy(unittest.TestCase):
             df.loc["mp-1249", "bonding_perc_avg"], 0.978985, places=5
         )
 
+    def test_featurize_mp1249_json_ca(self):
+        df = self.featurize_mp1249_json_ca.get_df(ids="mp-1249")
+
+        # Test that the function returns a pandas DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "Icohp_mean_avg",
+            "Icohp_mean_max",
+            "Icohp_mean_min",
+            "Icohp_mean_std",
+            "Icohp_sum_avg",
+            "Icohp_sum_max",
+            "Icohp_sum_min",
+            "Icohp_sum_std",
+            "bonding_perc_avg",
+            "bonding_perc_max",
+            "bonding_perc_min",
+            "bonding_perc_std",
+            "antibonding_perc_avg",
+            "antibonding_perc_min",
+            "antibonding_perc_max",
+            "antibonding_perc_std",
+            "Madelung_Mull",
+            "Madelung_Loew",
+        ]
+        self.assertCountEqual(list(df.columns), expected_cols)
+
+        # Test that the DataFrame has the expected index
+        self.assertEqual(df.index[0], "mp-1249")
+
     def test_featurize_mp1958_json(self):
-        df = self.featurize_mp1958_json.get_df(ids="mp-1958")
+        df = self.featurize_mp1958_json.get_df()
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)
@@ -217,7 +254,7 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertAlmostEqual(df.loc["NaCl", "kurtosis_COHP"], 1, places=5)
 
     def test_featurize_CdF_COXX(self):
-        df = self.featurize_CdF_COXX.get_summarized_coxx_df(ids="CdF")
+        df = self.featurize_CdF_COXX.get_summarized_coxx_df()
 
         # Test that the function returns a pandas DataFrame
         self.assertIsInstance(df, pd.DataFrame)

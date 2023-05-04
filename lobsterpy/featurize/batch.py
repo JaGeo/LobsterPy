@@ -270,6 +270,8 @@ class BatchSummaryFeaturizer:
                 total=len(file_name_or_path),
                 desc="Generating LobsterPy summary stats",
             )
+            pool.close()
+            pool.join()
             row = []
             for result in results:
                 row.append(result)
@@ -301,6 +303,8 @@ class BatchSummaryFeaturizer:
                 total=len(paths),
                 desc="Generating COHP/COOP/COBI summary stats",
             )
+            pool.close()
+            pool.join()
             row = []
             for result in results:
                 row.append(result)
@@ -314,6 +318,8 @@ class BatchSummaryFeaturizer:
                 total=len(paths),
                 desc="Generating charge based features",
             )
+            pool.close()
+            pool.join()
             row = []
             for result in results:
                 row.append(result)
@@ -564,6 +570,8 @@ class BatchCoxxFingerprint:
                 total=len(paths),
                 desc="Generating {} fingerprints".format(self.fingerprint_for.upper()),
             )
+            pool.close()
+            pool.join()
             row = []
             for result in results:
                 row.append(result)
