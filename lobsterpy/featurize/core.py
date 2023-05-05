@@ -84,17 +84,18 @@ class FeaturizeLobsterpy:
         bond = []
         antibond = []
         # extract lobsterpy icohp related data for bond type specified
-        if data[self.bonds]:
+        if data[self.bonds]["lobsterpy_data"]["sites"]:
             for k, v in data[self.bonds]["lobsterpy_data"]["sites"].items():
-                for k1, v1 in v["bonds"].items():
-                    icohp_mean.append(float(v1["ICOHP_mean"]))
-                    icohp_sum.append(float(v1["ICOHP_sum"]))
-                    bond.append(v1["bonding"]["perc"])
-                    antibond.append(v1["antibonding"]["perc"])
+                if v["bonds"]:
+                    for k1, v1 in v["bonds"].items():
+                        icohp_mean.append(float(v1["ICOHP_mean"]))
+                        icohp_sum.append(float(v1["ICOHP_sum"]))
+                        bond.append(v1["bonding"]["perc"])
+                        antibond.append(v1["antibonding"]["perc"])
         else:
             raise Exception(
-                "There exist no data for {} for this structure. "
-                'Please switch to "all_bonds" mode'.format(self.bonds)
+                "There exist no data for {} for {} structure. "
+                'Please switch to "all_bonds" mode'.format(self.bonds, ids)
             )
 
         # add stats data as columns to the dataframe
@@ -169,19 +170,23 @@ class FeaturizeLobsterpy:
             and charge_path.exists()
             and structure_path.exists()
         ):
-            analyse = Analysis(
-                path_to_poscar=str(structure_path),
-                path_to_icohplist=str(icohplist_path),
-                path_to_cohpcar=str(cohpcar_path),
-                path_to_charge=str(charge_path),
-                summed_spins=False,  # we will always use spin polarization here
-                cutoff_icohp=0.10,
-                whichbonds=which_bonds,
-            )
-            data = {}
-            data.update(
-                {self.bonds: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
-            )
+            try:
+                analyse = Analysis(
+                    path_to_poscar=str(structure_path),
+                    path_to_icohplist=str(icohplist_path),
+                    path_to_cohpcar=str(cohpcar_path),
+                    path_to_charge=str(charge_path),
+                    summed_spins=False,  # we will always use spin polarization here
+                    cutoff_icohp=0.10,
+                    whichbonds=which_bonds,
+                )
+                data = {}
+                data.update(
+                    {self.bonds: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
+                )
+            except ValueError:
+                data = {}
+                data.update({self.bonds: {"lobsterpy_data": {}}})
         else:
             raise Exception(
                 "Path provided for Lobster calc directory seems incorrect."
