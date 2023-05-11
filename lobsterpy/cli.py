@@ -335,8 +335,8 @@ def run(args):
         args: args for cli
 
     """
-        if args.action == "automaticplot" or args.action == "auto-plot" or args.action == "autoplot":
-            args.action = "automatic-plot"
+    if args.action == "automaticplot" or args.action == "auto-plot" or args.action == "autoplot":
+        args.action = "automatic-plot"
     
     if args.action in ["description", "automatic-plot"]:
         if args.allbonds:
