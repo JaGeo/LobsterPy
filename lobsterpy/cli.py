@@ -337,7 +337,7 @@ def run(args):
     """
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
         args.action = "automatic-plot"
-    
+
     if args.action in ["description", "automatic-plot"]:
         if args.allbonds:
             whichbonds = "all"
