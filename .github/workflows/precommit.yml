@@ -11,4 +11,4 @@ jobs:
       - name: Install pre-commit
         run: pip install pre-commit
       - name: Run pre-commit
-        run: pre-commit run --all-files --exclude ^(docs|examples|TestData)
+        run: pre-commit run --all-files
