@@ -229,7 +229,7 @@ def get_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser(
         "automatic-plot",
-        aliases=["automaticplot"],
+        aliases=["automaticplot", "auto-plot", "autoplot"],
         parents=[input_parent, auto_parent, plotting_parent],
         help=(
             "Plot most important COHPs automatically. Implementation "
@@ -335,7 +335,7 @@ def run(args):
         args: args for cli
 
     """
-    if args.action == "automaticplot":
+    if args.action in ["automaticplot", "autoplot", "auto-plot"]:
         args.action = "automatic-plot"
 
     if args.action in ["description", "automatic-plot"]:
