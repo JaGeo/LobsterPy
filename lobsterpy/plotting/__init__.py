@@ -335,7 +335,6 @@ class InteractiveCohpPlotter(CohpPlotter):
                                 )
                                 outer_key = "All" + label_addition
                                 key = new_label
-                                # print(key)
                                 self._update_cohps_data(
                                     label=outer_key,
                                     key=key,
@@ -373,7 +372,10 @@ class InteractiveCohpPlotter(CohpPlotter):
                             efermi=cohp.efermi,
                         )
                     else:
-                        if dropdown_label != "All" + label_addition:
+                        if (
+                            dropdown_label != "All" + label_addition
+                            and "Please" not in dropdown_label
+                        ):
                             cohp = complete_cohp.get_summed_cohp_by_label_list(
                                 label_list=labels
                             )
@@ -445,8 +447,18 @@ class InteractiveCohpPlotter(CohpPlotter):
         # convert to cohp objects
         plot_data_dict = plot_data_dict.copy()
         for key, cohps in plot_data_dict.items():
-            cohps = Cohp.from_dict(cohps)
-            plot_data_dict.update({key: cohps})
+            if type(cohps) == Cohp:
+                plot_data_dict.update({key: cohps})
+            else:
+                try:
+                    cohps = Cohp.from_dict(cohps)
+                    plot_data_dict.update({key: cohps})
+                except:
+                    raise ValueError(
+                        "The data provided could not be converted to cohp object.Please recheck the input data"
+                    )
+            # cohps = Cohp.from_dict(cohps)
+            # plot_data_dict.update({key: cohps})
 
         self._cohps["Please select COHP label here"] = {}
         self._cohps["All" + label_addition] = {}
@@ -494,7 +506,13 @@ class InteractiveCohpPlotter(CohpPlotter):
                         )
 
     def _update_cohps_data(
-        self, label, key, energies, populations, int_populations, efermi
+        self,
+        label,
+        key,
+        energies,
+        populations,
+        int_populations,
+        efermi,
     ):
         self._cohps[label].update(
             {
@@ -515,6 +533,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         plot_negative=None,
         integrated=False,
         invert_axes=True,
+        sigma=None,
     ):
         """
         Get an interactive plotly figure showing the COHPs.
@@ -533,6 +552,9 @@ class InteractiveCohpPlotter(CohpPlotter):
             integrated: Switch to plot ICOHPs. Defaults to False.
             invert_axes: Put the energies onto the y-axis, which is
                 common in chemistry.
+            sigma: Standard deviation of Gaussian broadening applied to
+                population data. If this is unset (None) no broadening will be
+                added.
 
         Returns:
             A  plotly.graph_objects.Figure object.
@@ -587,8 +609,16 @@ class InteractiveCohpPlotter(CohpPlotter):
                             if plot_negative
                             else population_key[spin]
                         )
-                        x = population if invert_axes else v[label]["energies"]
-                        y = v[label]["energies"] if invert_axes else population
+                        if invert_axes:
+                            x = population
+                            y = v[label]["energies"]
+                            x = PlainCohpPlotter._broaden(y, x, sigma=sigma)
+                        else:
+                            x = v[label]["energies"]
+                            y = population
+                            y = PlainCohpPlotter._broaden(x, y, sigma=sigma)
+                        # x = population if invert_axes else v[label]["energies"]
+                        # y = v[label]["energies"] if invert_axes else population
                         if spin == Spin.up:
                             trace = go.Scatter(x=x, y=y, name=label)
                             trace.update(ld.spin_up_trace_style_dict)
