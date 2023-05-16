@@ -16,9 +16,9 @@ from pkg_resources import resource_filename
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.cohp import Cohp
 from pymatgen.electronic_structure.plotter import CohpPlotter
+import plotly.graph_objs as go
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
-import plotly.graph_objs as go
 
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
@@ -447,13 +447,13 @@ class InteractiveCohpPlotter(CohpPlotter):
         # convert to cohp objects
         plot_data_dict = plot_data_dict.copy()
         for key, cohps in plot_data_dict.items():
-            if type(cohps) == Cohp:
+            if isinstance(cohps, Cohp):
                 plot_data_dict.update({key: cohps})
             else:
                 try:
                     cohps = Cohp.from_dict(cohps)
                     plot_data_dict.update({key: cohps})
-                except:
+                except TypeError:
                     raise ValueError(
                         "The data provided could not be converted to cohp object.Please recheck the input data"
                     )
@@ -658,45 +658,45 @@ class InteractiveCohpPlotter(CohpPlotter):
         fig.update_layout(legend=ld.legend_style_dict)
 
         # Add all traces to figure
-        for group in traces:
-            for trace in traces[group]:
+        for _, val_trace in traces.items():
+            for trace in val_trace:
                 fig.add_trace(trace)
 
         # Update visibility of traces
-        for i in range(len(fig.data)):
+        for i, _ in enumerate(fig.data):
             fig.data[i].visible = False
 
             # Update layout with dropdown menu
         fig.update_layout(
             updatemenus=[
-                dict(
-                    buttons=[
-                        dict(
-                            args=[
+                {
+                    "buttons": [
+                        {
+                            "args": [
                                 {
                                     "visible": [
-                                        True if group == selected_group else False
-                                        for group in traces.keys()
-                                        for _trace in traces[group]
+                                        selected_group == group
+                                        for group, val_trace in traces.items()
+                                        for _trace in val_trace
                                     ]
                                 }
                             ],
-                            label=selected_group,
-                            method="update",
-                        )
+                            "label": selected_group,
+                            "method": "update",
+                        }
                         for selected_group in traces.keys()
                     ],
-                    direction="down",
-                    showactive=True,
-                    active=0,
-                    x=0.5,
-                    y=1.15,
-                    bgcolor="rgba(255,255,255,0.8)",
-                    bordercolor="rgba(0,0,0,0.2)",
-                    xanchor="center",
-                    yanchor="top",
-                    font={"family": "Arial", "color": "#444444", "size": 18},
-                )
+                    "direction": "down",
+                    "showactive": True,
+                    "active": 0,
+                    "x": 0.5,
+                    "y": 1.15,
+                    "bgcolor": "rgba(255,255,255,0.8)",
+                    "bordercolor": "rgba(0,0,0,0.2)",
+                    "xanchor": "center",
+                    "yanchor": "top",
+                    "font": {"family": "Arial", "color": "#444444", "size": 18},
+                }
             ]
         )
 
