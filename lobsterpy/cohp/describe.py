@@ -224,6 +224,7 @@ class Description:
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
+            title: sets the title of figure generated
             skip_show (bool): if True, the plot will not be shown.
 
         Returns:
@@ -278,56 +279,50 @@ class Description:
         integrated=False,
         title="",
         sigma=None,
+        skip_show=False,
     ):
         """
         Will automatically generate interactive plots of the most relevant COHP
 
         Args:
-            save (bool): will save the plot to a file
+            save_as_html (bool): will save the plot to a html file
             filename (str/Path):
             ylim (list of float): energy scale that is shown in plot (eV)
-            xlim(list of float): energy range for COHPs in eV
+            xlim (list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
+            title : Title of the interactive plot
             skip_show (bool): if True, the plot will not be shown.
 
         Returns:
             A plotly.graph_objects.Figure object.
 
         """
+        cba_cohp_plot_data = {}  # Initialize dict to store plot data
+
         set_cohps = self.analysis_object.set_cohps
-        if self.analysis_object.whichbonds == "cation-anion":
-            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
-        elif self.analysis_object.whichbonds == "all":
-            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
         set_labels_cohps = self.analysis_object.set_labels_cohps
+        set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
         structure = self.analysis_object.structure
 
-        ia = InteractiveCohpPlotter()
-        for iplot, (ication, labels, cohps) in enumerate(
+        for _iplot, (ication, labels, cohps) in enumerate(
             zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
-
-            namecation = str(structure[ication].specie)
-
+            label_str = f"{str(structure[ication].specie)}{str(ication + 1)}: "
             for label, cohp in zip(labels, cohps):
                 if label is not None:
-                    ia.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
-        plot = ia.get_plot(integrated=integrated, xlim=xlim, ylim=ylim)
+                    cba_cohp_plot_data[label_str + label] = cohp
+
+        ia = InteractiveCohpPlotter()
+        ia.add_cohps_from_plot_data(plot_data_dict=cba_cohp_plot_data)
+        plot = ia.get_plot(integrated=integrated, xlim=xlim, ylim=ylim, sigma=sigma)
 
         plot.update_layout(title_text=title)
         if save_as_html:
-            if len(set_inequivalent_cations) > 1:
-                if isinstance(filename, str):
-                    filename = Path(filename)
-                filename_new = (
-                    filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
-                )
-            else:
-                filename_new = filename
-            plot.write_html(filename_new, include_mathjax='cdn')
-        plot.show()
+            plot.write_html(filename, include_mathjax="cdn")
+        if not skip_show:
+            plot.show()
 
     @staticmethod
     def _coordination_environment_to_text(ce):
