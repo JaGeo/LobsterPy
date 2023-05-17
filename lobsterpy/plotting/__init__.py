@@ -411,6 +411,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         complete_cohp = analyse.chemenv.completecohp
         self._cohps["Please select COHP label here"] = {}
+        self._cohps["All" + label_addition] = {}
 
         for label in label_list:
             atom1 = complete_cohp.bonds[label]["sites"][0].species_string
@@ -429,6 +430,17 @@ class InteractiveCohpPlotter(CohpPlotter):
             self._update_cohps_data(
                 label=outer_key,
                 key=key,
+                populations=populations,
+                energies=energies,
+                int_populations=int_populations,
+                efermi=cohp.efermi,
+            )
+
+            all_outer = "All" + label_addition
+
+            self._update_cohps_data(
+                label=all_outer,
+                key=outer_key,
                 populations=populations,
                 energies=energies,
                 int_populations=int_populations,
