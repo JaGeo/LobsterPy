@@ -322,7 +322,9 @@ class Description:
         if save_as_html:
             plot.write_html(filename, include_mathjax="cdn")
         if not skip_show:
-            plot.show()
+            return plot.show()
+        else:
+            return plot
 
     @staticmethod
     def _coordination_environment_to_text(ce):
