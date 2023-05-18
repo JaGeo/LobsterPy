@@ -148,13 +148,6 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.des = Description(analysis_object=self.analyse_NaSi)
 
         fig = self.des.plot_interactive_cohps(skip_show=True)
-
-        write_json(
-            fig,
-            file=TestDir / "TestData/interactive_plotter_ref/analyse_NaSi.json",
-            engine="json",
-        )
-
         ref_fig = read_json(
             TestDir / "TestData/interactive_plotter_ref/analyse_NaSi.json",
             engine="json",
