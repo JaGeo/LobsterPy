@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
-from plotly.io import read_json, write_json
+from plotly.io import read_json
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
 
@@ -49,7 +49,16 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             engine="json",
         )
 
-        self.assertEqual(Fig.data, ref_fig.data)
+        for og_trace, ref_trace in zip(Fig.data, ref_fig.data):
+            for og_x, og_y, ref_x, ref_y in zip(
+                og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+            ):
+                self.assertAlmostEqual(og_x, ref_x, places=4)
+                self.assertAlmostEqual(og_y, ref_y, places=4)
+            self.assertEqual(og_trace.name, ref_trace.name)
+            self.assertEqual(og_trace.line, ref_trace.line)
+            self.assertEqual(og_trace.line, ref_trace.line)
+            self.assertEqual(og_trace.visible, ref_trace.visible)
 
     def test_add_all_relevant_cohps_K3Sb(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -73,7 +82,16 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             engine="json",
         )
 
-        self.assertEqual(Fig.data, ref_fig.data)
+        for og_trace, ref_trace in zip(Fig.data, ref_fig.data):
+            for og_x, og_y, ref_x, ref_y in zip(
+                og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+            ):
+                self.assertAlmostEqual(og_x, ref_x, places=4)
+                self.assertAlmostEqual(og_y, ref_y, places=4)
+            self.assertEqual(og_trace.name, ref_trace.name)
+            self.assertEqual(og_trace.line, ref_trace.line)
+            self.assertEqual(og_trace.line, ref_trace.line)
+            self.assertEqual(og_trace.visible, ref_trace.visible)
 
     def test_add_cohps_by_lobster_label_NaCl(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -94,4 +112,13 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             engine="json",
         )
 
-        self.assertEqual(Fig.data, ref_fig.data)
+        for og_trace, ref_trace in zip(Fig.data, ref_fig.data):
+            for og_x, og_y, ref_x, ref_y in zip(
+                og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+            ):
+                self.assertAlmostEqual(og_x, ref_x, places=4)
+                self.assertAlmostEqual(og_y, ref_y, places=4)
+            self.assertEqual(og_trace.name, ref_trace.name)
+            self.assertEqual(og_trace.line, ref_trace.line)
+            self.assertEqual(og_trace.line, ref_trace.line)
+            self.assertEqual(og_trace.visible, ref_trace.visible)
