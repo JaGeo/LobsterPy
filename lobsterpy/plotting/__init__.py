@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Any, List
 
 from itertools import cycle
+from decimal import Decimal
 import matplotlib
 import numpy as np
 from matplotlib import pyplot as plt

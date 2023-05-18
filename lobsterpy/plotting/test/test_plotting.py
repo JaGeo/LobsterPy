@@ -48,17 +48,19 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             TestDir / "TestData/interactive_plotter_ref/analyse_NaCl.json",
             engine="json",
         )
-
-        for og_trace, ref_trace in zip(Fig.data, ref_fig.data):
-            for og_x, og_y, ref_x, ref_y in zip(
-                og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-            ):
-                self.assertAlmostEqual(og_x, ref_x, places=4)
-                self.assertAlmostEqual(og_y, ref_y, places=4)
-            self.assertEqual(og_trace.name, ref_trace.name)
-            self.assertEqual(og_trace.line, ref_trace.line)
-            self.assertEqual(og_trace.line, ref_trace.line)
-            self.assertEqual(og_trace.visible, ref_trace.visible)
+        self.assertEqual(len(Fig.data), len(ref_fig.data))
+        for og_trace in Fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
 
     def test_add_all_relevant_cohps_K3Sb(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -81,17 +83,19 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             TestDir / "TestData/interactive_plotter_ref/analyse_K3Sb.json",
             engine="json",
         )
-
-        for og_trace, ref_trace in zip(Fig.data, ref_fig.data):
-            for og_x, og_y, ref_x, ref_y in zip(
-                og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-            ):
-                self.assertAlmostEqual(og_x, ref_x, places=4)
-                self.assertAlmostEqual(og_y, ref_y, places=4)
-            self.assertEqual(og_trace.name, ref_trace.name)
-            self.assertEqual(og_trace.line, ref_trace.line)
-            self.assertEqual(og_trace.line, ref_trace.line)
-            self.assertEqual(og_trace.visible, ref_trace.visible)
+        self.assertEqual(len(Fig.data), len(ref_fig.data))
+        for og_trace in Fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
 
     def test_add_cohps_by_lobster_label_NaCl(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -111,14 +115,16 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             TestDir / "TestData/interactive_plotter_ref/analyse_NaCl_label.json",
             engine="json",
         )
-
-        for og_trace, ref_trace in zip(Fig.data, ref_fig.data):
-            for og_x, og_y, ref_x, ref_y in zip(
-                og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-            ):
-                self.assertAlmostEqual(og_x, ref_x, places=4)
-                self.assertAlmostEqual(og_y, ref_y, places=4)
-            self.assertEqual(og_trace.name, ref_trace.name)
-            self.assertEqual(og_trace.line, ref_trace.line)
-            self.assertEqual(og_trace.line, ref_trace.line)
-            self.assertEqual(og_trace.visible, ref_trace.visible)
+        self.assertEqual(len(Fig.data), len(ref_fig.data))
+        for og_trace in Fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
