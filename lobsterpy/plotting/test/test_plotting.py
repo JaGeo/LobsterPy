@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
-from plotly.io import read_json
+from plotly.io import read_json, write_json
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
 
@@ -45,7 +45,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
 
         Fig = self.iplotter.get_plot(invert_axes=False)
         ref_fig = read_json(
-            TestDir / "TestData/interactive_plotter_ref/analyse_NaCl.json"
+            TestDir / "TestData/interactive_plotter_ref/analyse_NaCl.json",
+            engine="json",
         )
 
         self.assertEqual(Fig.data, ref_fig.data)
@@ -68,8 +69,10 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
 
         Fig = self.iplotter.get_plot(sigma=0.3, xlim=[-5, 5], ylim=[-10, 10])
         ref_fig = read_json(
-            TestDir / "TestData/interactive_plotter_ref/analyse_K3Sb.json"
+            TestDir / "TestData/interactive_plotter_ref/analyse_K3Sb.json",
+            engine="json",
         )
+
         self.assertEqual(Fig.data, ref_fig.data)
 
     def test_add_cohps_by_lobster_label_NaCl(self):
@@ -87,6 +90,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
 
         Fig = self.iplotter.get_plot(integrated=True)
         ref_fig = read_json(
-            TestDir / "TestData/interactive_plotter_ref/analyse_NaCl_label.json"
+            TestDir / "TestData/interactive_plotter_ref/analyse_NaCl_label.json",
+            engine="json",
         )
+
         self.assertEqual(Fig.data, ref_fig.data)
