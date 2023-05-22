@@ -103,7 +103,6 @@ class LobsterGraph:
             )
 
         else:
-
             chemenvlobster = LobsterNeighbors(
                 are_coops=False,
                 filename_ICOHP=self.path_to_icohplist,
