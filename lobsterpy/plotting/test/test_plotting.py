@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import unittest
+import gzip
+import json
 from pathlib import Path
-from plotly.io import read_json
+from plotly.io import read_json, write_json
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
@@ -42,6 +44,21 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             cutoff_icohp=0.1,
             summed_spins=False,
         )
+
+        plot_data_file_name = (
+            TestDir / "TestData/interactive_plotter_ref/mp-8818.json.gz"
+        )
+
+        with gzip.open(plot_data_file_name, "rb") as f:
+            data = json.loads(f.read().decode("utf-8"))
+
+        lobsterpy_plot_data = {}
+        for item in data:
+            lobsterpy_plot_data.update(item)
+
+        self.lobsterpy_plot_data = lobsterpy_plot_data["all_bonds"]["lobsterpy_data"][
+            "cohp_plot_data"
+        ]
 
     def test_add_all_relevant_cohps_NaCl(self):
         self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False)
@@ -83,11 +100,11 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
         self.assertIn("K1: 8 x K-K", self.iplotter._cohps)
-        self.assertIn("K1: 6 x Sb-K", self.iplotter._cohps)
-        self.assertIn("K2: 4 x Sb-K", self.iplotter._cohps)
+        self.assertIn("K1: 6 x K-Sb", self.iplotter._cohps)
+        self.assertIn("K2: 4 x K-Sb", self.iplotter._cohps)
         self.assertIn("K2: 10 x K-K", self.iplotter._cohps)
         self.assertIn("K2: 10 x K-K", self.iplotter._cohps)
-        self.assertIn("Sb4: 14 x Sb-K", self.iplotter._cohps)
+        self.assertIn("Sb4: 14 x K-Sb", self.iplotter._cohps)
         self.assertEqual(len(self.iplotter._cohps), 7)
 
         fig = self.iplotter.get_plot(sigma=0.3, xlim=[-5, 5], ylim=[-10, 10])
@@ -167,3 +184,63 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
                 self.assertEqual(og_trace.line, ref_trace.line)
                 self.assertEqual(og_trace.line, ref_trace.line)
                 self.assertEqual(og_trace.visible, ref_trace.visible)
+
+    def test_add_cohps_from_plot_data_json(self):
+        self.iplotter = InteractiveCohpPlotter()
+
+        self.iplotter.add_cohps_from_plot_data(
+            plot_data_dict=self.lobsterpy_plot_data, label_addition=""
+        )
+
+        self.assertIn("Please select COHP label here", self.iplotter._cohps)
+        self.assertIn("All", self.iplotter._cohps)
+        self.assertIn("Ca1: 5 x Ca-N", self.iplotter._cohps)
+        self.assertIn("Zn3: 2 x N-Zn", self.iplotter._cohps)
+        self.assertIn("N4: 5 x Ca-N", self.iplotter._cohps)
+        self.assertIn("N4: 1 x N-Zn", self.iplotter._cohps)
+        self.assertIn("N4: 1 x N-N", self.iplotter._cohps)
+        self.assertEqual(len(self.iplotter._cohps), 7)
+
+        fig = self.iplotter.get_plot()
+
+        write_json(
+            fig,
+            file=TestDir / "TestData/interactive_plotter_ref/fig_mp8818.json",
+            engine="json",
+        )
+        ref_fig = read_json(
+            TestDir / "TestData/interactive_plotter_ref/fig_mp8818.json",
+            engine="json",
+        )
+        self.assertEqual(len(fig.data), len(ref_fig.data))
+        self.assertEqual(fig.layout, ref_fig.layout)
+
+        for og_trace in fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
+
+
+class TestPlotterExceptions(unittest.TestCase):
+    def test_plotter_exception(self):
+        with self.assertRaises(Exception) as err:
+            self.iplotter = InteractiveCohpPlotter()
+
+            data = {"N4: 1 x N-N": []}
+
+            self.iplotter.add_cohps_from_plot_data(
+                plot_data_dict=data, label_addition=""
+            )
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "The data provided could not be converted to cohp object.Please recheck the input data",
+            )

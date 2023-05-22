@@ -259,13 +259,14 @@ class InteractiveCohpPlotter(CohpPlotter):
         labels = [[] for _i in range(len(analyse.set_infos_bonds))]  # type: ignore
         for inx, i in enumerate(analyse.set_infos_bonds):
             for ixx, val in enumerate(i[4]):
+                label_srt = sorted(val.copy())
                 bonds[inx].append(
                     analyse.structure.sites[i[5][0]].species_string
                     + str(i[5][0] + 1)
                     + ": "
-                    + val[0].strip("123456789")
+                    + label_srt[0].strip("123456789")
                     + "-"
-                    + val[1].strip("123456789")
+                    + label_srt[1].strip("123456789")
                 )
                 labels[inx].append(i[3][ixx])
 
@@ -416,7 +417,10 @@ class InteractiveCohpPlotter(CohpPlotter):
         for label in label_list:
             atom1 = complete_cohp.bonds[label]["sites"][0].species_string
             atom2 = complete_cohp.bonds[label]["sites"][1].species_string
-            self._cohps[atom1 + "-" + atom2 + ": " + label + label_addition] = {}
+            sorted_label = sorted([atom1, atom2])
+            self._cohps[
+                sorted_label[0] + "-" + sorted_label[1] + ": " + label + label_addition
+            ] = {}
             cohp = complete_cohp.get_cohp_by_label(label)
             energies = (
                 cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
@@ -469,8 +473,6 @@ class InteractiveCohpPlotter(CohpPlotter):
                     raise ValueError(
                         "The data provided could not be converted to cohp object.Please recheck the input data"
                     )
-            # cohps = Cohp.from_dict(cohps)
-            # plot_data_dict.update({key: cohps})
 
         self._cohps["Please select COHP label here"] = {}
         self._cohps["All" + label_addition] = {}
@@ -609,8 +611,6 @@ class InteractiveCohpPlotter(CohpPlotter):
         traces = {}
         for k, v in self._cohps.items():
             traces.update({k: []})
-        for k, v in self._cohps.items():
-            # traces={k:[]}
             for label, val in v.items():
                 population_key = v[label]["ICOHP"] if integrated else v[label]["COHP"]
                 band_color = next(pal_iter)
@@ -721,7 +721,6 @@ class InteractiveCohpPlotter(CohpPlotter):
         # TODO:
         # improve display of legend
         # somehow y axis scaling inside image?
-        # add sigma arg
         # maybe dashed line at Ef
 
         return fig
