@@ -68,8 +68,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         )
         self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
-        self.assertIn("Na1: 6 x Cl-Na", self.iplotter._cohps)
-        self.assertEqual(len(self.iplotter._cohps), 3)
+        self.assertEqual(len(self.iplotter._cohps), 2)
 
         fig = self.iplotter.get_plot(invert_axes=False)
         ref_fig = read_json(
@@ -136,10 +135,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         )
         self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
-        self.assertIn("Na-Na: 5", self.iplotter._cohps)
-        self.assertIn("Na-Na: 10", self.iplotter._cohps)
-        self.assertIn("Na-Na: 15", self.iplotter._cohps)
-        self.assertEqual(len(self.iplotter._cohps), 5)
+        self.assertEqual(len(self.iplotter._cohps), 2)
 
         fig = self.iplotter.get_plot(integrated=True)
         ref_fig = read_json(
@@ -194,20 +190,9 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
 
         self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
-        self.assertIn("Ca1: 5 x Ca-N", self.iplotter._cohps)
-        self.assertIn("Zn3: 2 x N-Zn", self.iplotter._cohps)
-        self.assertIn("N4: 5 x Ca-N", self.iplotter._cohps)
-        self.assertIn("N4: 1 x N-Zn", self.iplotter._cohps)
-        self.assertIn("N4: 1 x N-N", self.iplotter._cohps)
-        self.assertEqual(len(self.iplotter._cohps), 7)
+        self.assertEqual(len(self.iplotter._cohps), 2)
 
         fig = self.iplotter.get_plot()
-
-        write_json(
-            fig,
-            file=TestDir / "TestData/interactive_plotter_ref/fig_mp8818.json",
-            engine="json",
-        )
         ref_fig = read_json(
             TestDir / "TestData/interactive_plotter_ref/fig_mp8818.json",
             engine="json",
