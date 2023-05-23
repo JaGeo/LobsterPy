@@ -4,7 +4,7 @@ import unittest
 import gzip
 import json
 from pathlib import Path
-from plotly.io import read_json, write_json
+from plotly.io import read_json
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
@@ -66,9 +66,9 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter.add_all_relevant_cohps(
             analyse=self.analyse_NaCl, label_resolved=False, label_addition=""
         )
-        self.assertIn("Please select COHP label here", self.iplotter._cohps)
+        # self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
-        self.assertEqual(len(self.iplotter._cohps), 2)
+        self.assertEqual(len(self.iplotter._cohps), 1)
 
         fig = self.iplotter.get_plot(invert_axes=False)
         ref_fig = read_json(
@@ -96,7 +96,6 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter.add_all_relevant_cohps(
             analyse=self.analyse_K3Sb, label_resolved=True, label_addition=""
         )
-        self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
         self.assertIn("K1: 8 x K-K", self.iplotter._cohps)
         self.assertIn("K1: 6 x K-Sb", self.iplotter._cohps)
@@ -104,7 +103,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertIn("K2: 10 x K-K", self.iplotter._cohps)
         self.assertIn("K2: 10 x K-K", self.iplotter._cohps)
         self.assertIn("Sb4: 14 x K-Sb", self.iplotter._cohps)
-        self.assertEqual(len(self.iplotter._cohps), 7)
+        self.assertEqual(len(self.iplotter._cohps), 6)
 
         fig = self.iplotter.get_plot(sigma=0.3, xlim=[-5, 5], ylim=[-10, 10])
         ref_fig = read_json(
@@ -133,9 +132,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter.add_cohps_by_lobster_label(
             analyse=self.analyse_NaCl, label_list=["5", "10", "15"], label_addition=""
         )
-        self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
-        self.assertEqual(len(self.iplotter._cohps), 2)
+        self.assertEqual(len(self.iplotter._cohps), 1)
 
         fig = self.iplotter.get_plot(integrated=True)
         ref_fig = read_json(
@@ -188,9 +186,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             plot_data_dict=self.lobsterpy_plot_data, label_addition=""
         )
 
-        self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
-        self.assertEqual(len(self.iplotter._cohps), 2)
+        self.assertEqual(len(self.iplotter._cohps), 1)
 
         fig = self.iplotter.get_plot()
         ref_fig = read_json(

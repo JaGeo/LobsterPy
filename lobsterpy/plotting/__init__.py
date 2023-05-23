@@ -279,7 +279,6 @@ class InteractiveCohpPlotter(CohpPlotter):
                 filtered_bond_label_list = [labels[indx][i] for i in indices]
                 plot_data.update({item: filtered_bond_label_list})
 
-        self._cohps["Please select COHP label here"] = {}
         if "All" in self._cohps:
             pass
         else:
@@ -381,7 +380,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 conflicts when plotting multiple calcs or just for additional legend information.
         """
         complete_cohp = analyse.chemenv.completecohp
-        self._cohps["Please select COHP label here"] = {}
+
         if "All" in self._cohps:
             pass
         else:
@@ -433,12 +432,10 @@ class InteractiveCohpPlotter(CohpPlotter):
                         "The data provided could not be converted to cohp object.Please recheck the input data"
                     )
 
-        self._cohps["Please select COHP label here"] = {}
         if "All" in self._cohps:
             pass
         else:
             self._cohps["All"] = {}
-        # self._cohps["All"] = {}
 
         for _, (bond_key, cohps) in enumerate(plot_data_dict.items()):
             energies = (
@@ -597,10 +594,7 @@ class InteractiveCohpPlotter(CohpPlotter):
             else go.Layout(xaxis=energy_axis, yaxis=cohp_axis)
         )
 
-        # Define initial selection
-        # initial_selection = list(traces.keys())[0]
-
-        # Create figure
+        # Create figure object
         fig = go.Figure(layout=layout)
         fig.update_layout(ld.layout_dict)
         fig.update_layout(legend=ld.legend_style_dict)
@@ -610,43 +604,47 @@ class InteractiveCohpPlotter(CohpPlotter):
             for trace in val_trace:
                 fig.add_trace(trace)
 
-        # Update visibility of traces
-        for i, _ in enumerate(fig.data):
-            fig.data[i].visible = False
-
-            # Update layout with dropdown menu
-        fig.update_layout(
-            updatemenus=[
-                {
-                    "buttons": [
-                        {
-                            "args": [
-                                {
-                                    "visible": [
-                                        selected_group == group
-                                        for group, val_trace in traces.items()
-                                        for _trace in val_trace
-                                    ]
-                                }
-                            ],
-                            "label": selected_group,
-                            "method": "update",
-                        }
-                        for selected_group in traces.keys()
-                    ],
-                    "direction": "down",
-                    "showactive": True,
-                    "active": 0,
-                    "x": 0.5,
-                    "y": 1.15,
-                    "bgcolor": "rgba(255,255,255,0.8)",
-                    "bordercolor": "rgba(0,0,0,0.2)",
-                    "xanchor": "center",
-                    "yanchor": "top",
-                    "font": {"family": "Arial", "color": "#444444", "size": 18},
-                }
-            ]
-        )
+        # Update layout with dropdown menu if label resolved plot
+        if len(traces) > 2:
+            # Update visibility of traces
+            for i, _ in enumerate(fig.data):
+                if ":" in fig.data[i].name:
+                    pass
+                else:
+                    fig.data[i].visible = False
+            # Add dropdown buttons
+            fig.update_layout(
+                updatemenus=[
+                    {
+                        "buttons": [
+                            {
+                                "args": [
+                                    {
+                                        "visible": [
+                                            selected_group == group
+                                            for group, val_trace in traces.items()
+                                            for _trace in val_trace
+                                        ]
+                                    }
+                                ],
+                                "label": selected_group,
+                                "method": "update",
+                            }
+                            for selected_group in traces.keys()
+                        ],
+                        "direction": "down",
+                        "showactive": True,
+                        "active": 0,
+                        "x": 0.5,
+                        "y": 1.15,
+                        "bgcolor": "rgba(255,255,255,0.8)",
+                        "bordercolor": "rgba(0,0,0,0.2)",
+                        "xanchor": "center",
+                        "yanchor": "top",
+                        "font": {"family": "Arial", "color": "#444444", "size": 18},
+                    }
+                ]
+            )
 
         if xlim:
             fig.update_xaxes(range=xlim)
