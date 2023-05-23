@@ -291,56 +291,49 @@ class InteractiveCohpPlotter(CohpPlotter):
                     label=bond_key, character=":", number_of_bonds=count
                 )
                 self._cohps[label_with_count + label_addition] = {}
-                for dropdown_label, val in self._cohps.items():
-                    if dropdown_label == label_with_count + label_addition:
-                        for label in labels:
-                            cohp = complete_cohp.get_cohp_by_label(label)
-                            energies = (
-                                cohp.energies - cohp.efermi
-                                if self.zero_at_efermi
-                                else cohp.energies
-                            )
-                            populations = cohp.get_cohp()
-                            int_populations = cohp.get_icohp()
-                            outer_key = label_with_count + label_addition
-                            key = label
-                            self._update_cohps_data(
-                                label=outer_key,
-                                key=key,
-                                populations=populations,
-                                energies=energies,
-                                int_populations=int_populations,
-                                efermi=cohp.efermi,
-                            )
-                    else:
-                        if dropdown_label != "All":
-                            for label in labels:
-                                cohp = complete_cohp.get_cohp_by_label(label)
-                                energies = (
-                                    cohp.energies - cohp.efermi
-                                    if self.zero_at_efermi
-                                    else cohp.energies
-                                )
-                                populations = cohp.get_cohp()
-                                int_populations = cohp.get_icohp()
-                                alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                new_label = (
-                                    bond_key.split(":")[0].strip(alpha)
-                                    + "_"
-                                    + bond_key.split(":")[1].strip()
-                                    + ": "
-                                    + label
-                                )
-                                outer_key = "All"
-                                key = new_label + label_addition
-                                self._update_cohps_data(
-                                    label=outer_key,
-                                    key=key,
-                                    populations=populations,
-                                    energies=energies,
-                                    int_populations=int_populations,
-                                    efermi=cohp.efermi,
-                                )
+                for label in labels:
+                    cohp = complete_cohp.get_cohp_by_label(label)
+                    energies = (
+                        cohp.energies - cohp.efermi
+                        if self.zero_at_efermi
+                        else cohp.energies
+                    )
+                    populations = cohp.get_cohp()
+                    int_populations = cohp.get_icohp()
+                    outer_key = label_with_count + label_addition
+                    key = label
+                    self._cohps[outer_key].update(
+                        {
+                            key: {
+                                "energies": energies,
+                                "COHP": populations,
+                                "ICOHP": int_populations,
+                                "efermi": cohp.efermi,
+                            }
+                        }
+                    )
+
+                    alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    new_label = (
+                        bond_key.split(":")[0].strip(alpha)
+                        + "_"
+                        + bond_key.split(":")[1].strip()
+                        + ": "
+                        + label
+                    )
+                    outer_key = "All"
+                    key = new_label + label_addition
+                    self._cohps[outer_key].update(
+                        {
+                            key: {
+                                "energies": energies,
+                                "COHP": populations,
+                                "ICOHP": int_populations,
+                                "efermi": cohp.efermi,
+                            }
+                        }
+                    )
+
         else:
             for bond_key, labels in plot_data.items():
                 count = str(len(labels)) + " x"
@@ -358,13 +351,15 @@ class InteractiveCohpPlotter(CohpPlotter):
                 int_populations = cohp.get_icohp()
                 outer_key = "All"
                 key = label_with_count + label_addition
-                self._update_cohps_data(
-                    label=outer_key,
-                    key=key,
-                    populations=populations,
-                    energies=energies,
-                    int_populations=int_populations,
-                    efermi=cohp.efermi,
+                self._cohps[outer_key].update(
+                    {
+                        key: {
+                            "energies": energies,
+                            "COHP": populations,
+                            "ICOHP": int_populations,
+                            "efermi": cohp.efermi,
+                        }
+                    }
                 )
 
     def add_cohps_by_lobster_label(
@@ -400,13 +395,15 @@ class InteractiveCohpPlotter(CohpPlotter):
                 sorted_label[0] + "-" + sorted_label[1] + ": " + label + label_addition
             )
             outer_key = "All"
-            self._update_cohps_data(
-                label=outer_key,
-                key=key,
-                populations=populations,
-                energies=energies,
-                int_populations=int_populations,
-                efermi=cohp.efermi,
+            self._cohps[outer_key].update(
+                {
+                    key: {
+                        "energies": energies,
+                        "COHP": populations,
+                        "ICOHP": int_populations,
+                        "efermi": cohp.efermi,
+                    }
+                }
             )
 
     def add_cohps_from_plot_data(self, plot_data_dict: dict, label_addition: str = ""):
@@ -445,34 +442,16 @@ class InteractiveCohpPlotter(CohpPlotter):
             int_populations = cohps.get_icohp()
             outer_key = "All"
             key = bond_key + label_addition
-            self._update_cohps_data(
-                label=outer_key,
-                key=key,
-                populations=populations,
-                energies=energies,
-                int_populations=int_populations,
-                efermi=cohps.efermi,
-            )
-
-    def _update_cohps_data(
-        self,
-        label,
-        key,
-        energies,
-        populations,
-        int_populations,
-        efermi,
-    ):
-        self._cohps[label].update(
-            {
-                key: {
-                    "energies": energies,
-                    "COHP": populations,
-                    "ICOHP": int_populations,
-                    "efermi": efermi,
+            self._cohps[outer_key].update(
+                {
+                    key: {
+                        "energies": energies,
+                        "COHP": populations,
+                        "ICOHP": int_populations,
+                        "efermi": cohps.efermi,
+                    }
                 }
-            }
-        )
+            )
 
     def get_plot(
         self,
