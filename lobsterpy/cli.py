@@ -359,6 +359,10 @@ def run(args):
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
                     setattr(args, arg, gz_file_path)
+                else:
+                    raise ValueError(
+                        "Files necessary for automatic analysis of LOBSTER outputs not found in the current directory"
+                    )
 
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
         args.action = "automatic-plot"
