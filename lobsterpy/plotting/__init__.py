@@ -587,7 +587,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         if len(traces) > 2:
             # Update visibility of traces
             for i, _ in enumerate(fig.data):
-                if ":" in fig.data[i].name:
+                if i <= len(traces["All"]) - 1:
                     pass
                 else:
                     fig.data[i].visible = False
