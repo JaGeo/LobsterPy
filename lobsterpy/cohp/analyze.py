@@ -11,7 +11,10 @@ from collections import Counter
 
 import numpy as np
 from pymatgen.core.structure import Structure
+from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.electronic_structure.core import Spin
+from pymatgen.io.vasp.outputs import Vasprun
+from pymatgen.io.lobster import Lobsterin, Doscar, Lobsterout, Charge
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
@@ -869,3 +872,149 @@ class Analysis:
         self.final_dict_ions = {}
         for key, item in final_dict_ions.items():
             self.final_dict_ions[key] = dict(Counter(item))
+
+    @staticmethod
+    def get_lobster_calc_quality_summary(
+        path_to_poscar: str,
+        path_to_lobsterout: str,
+        path_to_potcar: str,
+        path_to_lobsterin: str,
+        path_to_charge: str | None = None,
+        path_to_doscar: str | None = None,
+        path_to_vasprun: str | None = None,
+        dos_comparison: bool = False,
+        bva_comp: bool = False,
+    ):
+        """
+        This method will analyze LOBSTER calculation quality
+
+        Returns:
+            A dict of summary of LOBSTER calculation quality by analyzing basis set used,
+            charge spilling from lobsterout/ PDOS comparisons of VASP and LOBSTER /
+            BVA charge comparisons
+
+        """
+
+        quality_dict = {}
+
+        potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=path_to_potcar)
+
+        struct = Structure.from_file(path_to_poscar)
+
+        ref_bases = Lobsterin.get_all_possible_basis_functions(
+            structure=struct, potcar_symbols=potcar_names
+        )
+
+        lobs_in = Lobsterin.from_file(path_to_lobsterin)
+        calc_basis = []
+        for basis in lobs_in["basisfunctions"]:
+            basis_sep = basis.split()[1:]
+            basis_comb = " ".join(basis_sep)
+            calc_basis.append(basis_comb)
+
+        if calc_basis == list(ref_bases[0].values()):
+            quality_dict["minimal_basis"] = True
+
+        else:
+            warnings.warn(
+                "Consider trying the minimum basis as well and only chose a "
+                "larger basis set if you see a significant improvement of "
+                "the charge spilling"
+            )
+
+        lob_out = Lobsterout(path_to_lobsterout)
+
+        quality_dict["charge_spilling"] = {
+            "abs_charge_spilling": (sum(lob_out.charge_spilling) / 2) * 100,
+            "abs_total_spilling": (sum(lob_out.total_spilling) / 2) * 100,
+        }
+
+        if bva_comp:
+            try:
+                bond_valence = BVAnalyzer()
+
+                bva_oxi = []
+                lobs_charge = Charge(filename=path_to_charge)
+                for i in bond_valence.get_valences(structure=struct):
+                    if i >= 0:
+                        bva_oxi.append("POS")
+                    else:
+                        bva_oxi.append("NEG")
+
+                mull_oxi = []
+                for i in lobs_charge.Mulliken:
+                    if i >= 0:
+                        mull_oxi.append("POS")
+                    else:
+                        mull_oxi.append("NEG")
+
+                loew_oxi = []
+                for i in lobs_charge.Loewdin:
+                    if i >= 0:
+                        loew_oxi.append("POS")
+                    else:
+                        loew_oxi.append("NEG")
+
+                quality_dict["Charges"] = {}
+                if mull_oxi == bva_oxi:
+                    quality_dict["Charges"]["BVA_Mulliken_agree"] = True
+                else:
+                    quality_dict["Charges"]["BVA_Mulliken_agree"] = False
+
+                if mull_oxi == bva_oxi:
+                    quality_dict["Charges"]["BVA_Loewdin_agree"] = True
+                else:
+                    quality_dict["Charges"]["BVA_Loewdin_agree"] = False
+            except ValueError:
+                warnings.warn(
+                    "Oxidation states from BVA analyzer cannot be determined. "
+                    "Thus BVA charge comparison will be skipped"
+                )
+        if dos_comparison:
+            if "LSO" not in str(path_to_doscar).split("."):
+                warnings.warn(
+                    "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have "
+                    "negative DOS values"
+                )
+            doscar_lobster = Doscar(
+                doscar=path_to_doscar, structure_file=path_to_poscar, dftprogram="Vasp"
+            )
+
+            dos_lobster = doscar_lobster.completedos
+
+            vasprun = Vasprun(path_to_vasprun)
+            dos_vasp = vasprun.complete_dos
+
+            quality_dict["DOS_comparisons"] = {}
+
+            for orb in dos_lobster.get_spd_dos():
+                fp_lobster_orb = dos_lobster.get_dos_fp(
+                    min_e=-15, max_e=0, n_bins=256, normalize=True, type=orb.name
+                )
+                fp_vasp_orb = dos_vasp.get_dos_fp(
+                    min_e=-15, max_e=0, n_bins=256, normalize=True, type=orb.name
+                )
+
+                tani_orb = round(
+                    dos_vasp.get_dos_fp_similarity(
+                        fp_lobster_orb, fp_vasp_orb, tanimoto=True
+                    ),
+                    4,
+                )
+                quality_dict["DOS_comparisons"][
+                    "tanimoto_orb_{}".format(orb.name)
+                ] = tani_orb
+
+            fp_lobster = dos_lobster.get_dos_fp(
+                min_e=-15, max_e=0, n_bins=256, normalize=True, type="summed_pdos"
+            )
+            fp_vasp = dos_vasp.get_dos_fp(
+                min_e=-15, max_e=0, n_bins=256, normalize=True, type="summed_pdos"
+            )
+
+            tanimoto_summed = round(
+                dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
+            )
+            quality_dict["DOS_comparisons"]["tanimoto_summed_pdos"] = tanimoto_summed
+
+        return quality_dict
