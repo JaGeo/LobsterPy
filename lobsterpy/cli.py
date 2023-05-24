@@ -335,6 +335,31 @@ def run(args):
         args: args for cli
 
     """
+    if args.action in [
+        "automaticplot",
+        "autoplot",
+        "auto-plot",
+        "description",
+        "automatic-plot",
+        "plot",
+    ]:
+        # Check for .gz files exist for default values and update accordingly
+        default_files = {
+            "poscar": "POSCAR",
+            "charge": "CHARGE.lobster",
+            "icohplist": "ICOHPLIST.lobster",
+            "cohpcar": "COHPCAR.lobster",
+            "incar": "INCAR",
+            "potcar": "POTCAR",
+        }
+
+        for arg, default_value in default_files.items():
+            file_path = getattr(args, arg)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg, gz_file_path)
+
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
         args.action = "automatic-plot"
 
@@ -343,6 +368,7 @@ def run(args):
             whichbonds = "all"
         else:
             whichbonds = "cation-anion"
+
         analyse = Analysis(
             path_to_poscar=args.poscar,
             path_to_charge=args.charge,
@@ -391,9 +417,13 @@ def run(args):
     if args.action == "plot":
         if args.cobis:
             filename = args.cohpcar.parent / "COBICAR.lobster"
+            if not filename.exists():
+                filename = filename.with_name(filename.name + ".gz")
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
             filename = args.cohpcar.parent / "COOPCAR.lobster"
+            if not filename.exists():
+                filename = filename.with_name(filename.name + ".gz")
             options = {"are_cobis": False, "are_coops": True}
         else:
             filename = args.cohpcar
