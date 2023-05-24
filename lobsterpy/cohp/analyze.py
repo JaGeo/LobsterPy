@@ -894,7 +894,6 @@ class Analysis:
             BVA charge comparisons
 
         """
-
         quality_dict = {}
 
         potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=path_to_potcar)
