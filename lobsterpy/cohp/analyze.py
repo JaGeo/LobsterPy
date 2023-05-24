@@ -884,7 +884,7 @@ class Analysis:
         path_to_vasprun: str | None = None,
         dos_comparison: bool = False,
         bva_comp: bool = False,
-    ):
+    ) -> dict:
         """
         This method will analyze LOBSTER calculation quality
 
@@ -913,7 +913,7 @@ class Analysis:
             calc_basis.append(basis_comb)
 
         if calc_basis == list(ref_bases[0].values()):
-            quality_dict["minimal_basis"] = True
+            quality_dict["minimal_basis"] = True  # type: ignore
 
         else:
             warnings.warn(
@@ -927,7 +927,7 @@ class Analysis:
         quality_dict["charge_spilling"] = {
             "abs_charge_spilling": (sum(lob_out.charge_spilling) / 2) * 100,
             "abs_total_spilling": (sum(lob_out.total_spilling) / 2) * 100,
-        }
+        }  # type: ignore
 
         if bva_comp:
             try:
@@ -955,16 +955,16 @@ class Analysis:
                     else:
                         loew_oxi.append("NEG")
 
-                quality_dict["Charges"] = {}
+                quality_dict["Charges"] = {}  # type: ignore
                 if mull_oxi == bva_oxi:
-                    quality_dict["Charges"]["BVA_Mulliken_agree"] = True
+                    quality_dict["Charges"]["BVA_Mulliken_agree"] = True  # type: ignore
                 else:
-                    quality_dict["Charges"]["BVA_Mulliken_agree"] = False
+                    quality_dict["Charges"]["BVA_Mulliken_agree"] = False  # type: ignore
 
                 if mull_oxi == bva_oxi:
-                    quality_dict["Charges"]["BVA_Loewdin_agree"] = True
+                    quality_dict["Charges"]["BVA_Loewdin_agree"] = True  # type: ignore
                 else:
-                    quality_dict["Charges"]["BVA_Loewdin_agree"] = False
+                    quality_dict["Charges"]["BVA_Loewdin_agree"] = False  # type: ignore
             except ValueError:
                 warnings.warn(
                     "Oxidation states from BVA analyzer cannot be determined. "
@@ -985,7 +985,7 @@ class Analysis:
             vasprun = Vasprun(path_to_vasprun)
             dos_vasp = vasprun.complete_dos
 
-            quality_dict["DOS_comparisons"] = {}
+            quality_dict["DOS_comparisons"] = {}  # type: ignore
 
             for orb in dos_lobster.get_spd_dos():
                 fp_lobster_orb = dos_lobster.get_dos_fp(
@@ -1003,7 +1003,7 @@ class Analysis:
                 )
                 quality_dict["DOS_comparisons"][
                     "tanimoto_orb_{}".format(orb.name)
-                ] = tani_orb
+                ] = tani_orb  # type: ignore
 
             fp_lobster = dos_lobster.get_dos_fp(
                 min_e=-15, max_e=0, n_bins=256, normalize=True, type="summed_pdos"
@@ -1015,6 +1015,6 @@ class Analysis:
             tanimoto_summed = round(
                 dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
             )
-            quality_dict["DOS_comparisons"]["tanimoto_summed_pdos"] = tanimoto_summed
+            quality_dict["DOS_comparisons"]["tanimoto_summed_pdos"] = tanimoto_summed  # type: ignore
 
         return quality_dict
