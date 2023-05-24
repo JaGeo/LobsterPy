@@ -349,8 +349,6 @@ def run(args):
             "charge": "CHARGE.lobster",
             "icohplist": "ICOHPLIST.lobster",
             "cohpcar": "COHPCAR.lobster",
-            "incar": "INCAR",
-            "potcar": "POTCAR",
         }
 
         for arg, default_value in default_files.items():
@@ -518,6 +516,23 @@ def run(args):
     if args.action == "create-inputs":
         from pymatgen.core.structure import Structure
         from pymatgen.io.lobster import Lobsterin
+
+        # Check for .gz files exist for default values and update accordingly
+        default_files = {
+            "potcar": "POTCAR",
+            "incar": "INCAR",
+        }
+
+        for arg, default_value in default_files.items():
+            file_path = getattr(args, arg)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg, gz_file_path)
+                else:
+                    raise ValueError(
+                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory"
+                    )
 
         if args.userbasis is None:
             # This will rely on standard basis files as stored in pymatgen
