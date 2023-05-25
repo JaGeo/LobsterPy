@@ -514,18 +514,16 @@ class Description:
                 )
             elif key == "Charges":
                 if val:
-                    for type in ["Mulliken", "Loewdin"]:
-                        if quality_dict[key]["BVA_{}_agree".format(type)]:
+                    for charge in ["Mulliken", "Loewdin"]:
+                        if val["BVA_{}_agree".format(charge)]:
                             text_des.append(
-                                "The {} charges agree with bond valence analysis.".format(
-                                    type
-                                )
+                                "The atomic charge signs from {} population analysis agree "
+                                "with Bond valence analysis.".format(charge)
                             )
-                        if not quality_dict[key]["BVA_{}_agree".format(type)]:
+                        if not val["BVA_{}_agree".format(charge)]:
                             text_des.append(
-                                "The {} charges does not agree with bond valence analysis.".format(
-                                    type
-                                )
+                                "The atomic charge signs from {} population analysis do not agree with "
+                                "Bond valence analysis.".format(charge)
                             )
                 else:
                     text_des.append(
@@ -546,4 +544,4 @@ class Description:
                     )
                 )
 
-        return " ".join(text_des)
+        print(" ".join(text_des))

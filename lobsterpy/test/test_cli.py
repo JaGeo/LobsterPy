@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import json
 import os
+import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -204,6 +205,35 @@ class TestCLI:
             self.assert_is_finite_file(filepath)
 
         os.chdir(TestDir / "TestData/NaCl")
+
+    def test_calc_quality_summary(self, tmp_path):
+        os.chdir(TestDir / "TestData/NaCl")
+        calc_quality_json_path = tmp_path / "calc_quality_json.json"
+        args = [
+            "calc-description",
+            "--bvacomp",
+            "--calcqualityjson",
+            str(calc_quality_json_path),
+        ]
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        calc_quality_text = captured_output.getvalue().strip()
+
+        sys.stdout = sys.__stdout__
+
+        ref_text = (
+            "The LOBSTER calculation used minimal basis. "
+            "The absolute and total charge spilling for the calculation are 0.3 and 5.58, respectively. "
+            "The atomic charge signs from Mulliken population analysis agree with Bond valence analysis. "
+            "The atomic charge signs from Loewdin population analysis agree with Bond valence analysis."
+        )
+
+        assert calc_quality_text == ref_text
+        self.assert_is_finite_file(calc_quality_json_path)
 
     @staticmethod
     def assert_is_finite_file(path: Path) -> None:

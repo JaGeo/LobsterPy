@@ -46,7 +46,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--charge",
         default="CHARGE.lobster",
         type=Path,
-        help='path to Charge.lobster. Default is "CHARGE.lobster"',
+        help='path to CHARGE.lobster. Default is "CHARGE.lobster"',
     )
     input_file_group.add_argument(
         "--icohplist",
@@ -284,7 +284,12 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "calc-description",
         parents=[input_parent, auto_parent],
-        help=("Deliver a text description of the LOBSTER calc quality analysis"),
+        help=(
+            "Deliver a text description of the LOBSTER calc quality analysis. "
+            "Mandatory required files: POSCAR, POTCAR, lobsterout, lobsterin. "
+            "Optional files (BVA comparison): CHARGE.lobster, "
+            "(DOS comparison): DOSCAR.lobster, Vasprun.xml."
+        ),
     )
 
     subparsers.add_parser(
@@ -614,17 +619,14 @@ def run(args):
 
     if args.action in ["calc-description"]:
         # Check for .gz files exist for default values and update accordingly
-        default_files = {
+        mandatory_files = {
             "potcar": "POTCAR",
             "poscar": "POSCAR",
-            "charge": "CHARGE.lobster",
             "lobsterin": "lobsterin",
             "lobsterout": "lobsterout",
-            "doscar": "DOSCAR.lobster",
-            "vasprun": "Vasprun.xml",
         }
 
-        for arg, default_value in default_files.items():
+        for arg, default_value in mandatory_files.items():
             file_path = getattr(args, arg)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
@@ -632,11 +634,45 @@ def run(args):
                     setattr(args, arg, gz_file_path)
                 else:
                     raise ValueError(
-                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory"
+                        "Mandatory files necessary for LOBSTER calc quality not found in the current directory"
                     )
 
         bva_comp = args.bvacomp
+
+        if bva_comp:
+            bva_files = {
+                "charge": "CHARGE.lobster",
+            }
+            for arg, default_value in bva_files.items():
+                file_path = getattr(args, arg)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "BVA charge requested but CHARGE.lobster file not found"
+                        )
+
         dos_comparison = args.doscomp
+
+        if dos_comparison:
+            dos_files = {
+                "doscar": "DOSCAR.lobster",
+                "vasprun": "Vasprun.xml",
+            }
+
+            for arg, default_value in dos_files.items():
+                file_path = getattr(args, arg)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "DOS comparisons requested but DOSCAR.lobster, Vasprun.xml file not found"
+                        )
+
         quality_dict = Analysis.get_lobster_calc_quality_summary(
             path_to_poscar=args.poscar,
             path_to_charge=args.charge,
@@ -649,9 +685,7 @@ def run(args):
             path_to_vasprun=args.vasprun,
         )
 
-        describe_calc = Description.write_calc_quality_description(quality_dict)
-
-        print(describe_calc)
+        Description.write_calc_quality_description(quality_dict)
 
         if args.calcqualityjson is not None:
             with open(args.calcqualityjson, "w") as fd:
