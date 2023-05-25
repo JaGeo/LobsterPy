@@ -913,19 +913,19 @@ class Analysis:
 
         if calc_basis == list(ref_bases[0].values()):
             quality_dict["minimal_basis"] = True  # type: ignore
-
         else:
+            quality_dict["minimal_basis"] = False  # type: ignore
             warnings.warn(
-                "Consider trying the minimum basis as well and only chose a "
-                "larger basis set if you see a significant improvement of "
-                "the charge spilling"
+                "Consider rerunning the calc with the minimum basis as well. Choosing is "
+                "larger basis set is recommended if you see a significant improvement of "
+                "the charge spilling and material has non-zero band gap."
             )
 
         lob_out = Lobsterout(path_to_lobsterout)
 
         quality_dict["charge_spilling"] = {
-            "abs_charge_spilling": (sum(lob_out.charge_spilling) / 2) * 100,
-            "abs_total_spilling": (sum(lob_out.total_spilling) / 2) * 100,
+            "abs_charge_spilling": round((sum(lob_out.charge_spilling) / 2) * 100, 4),
+            "abs_total_spilling": round((sum(lob_out.total_spilling) / 2) * 100, 4),
         }  # type: ignore
 
         if bva_comp:
@@ -965,6 +965,7 @@ class Analysis:
                 else:
                     quality_dict["Charges"]["BVA_Loewdin_agree"] = False  # type: ignore
             except ValueError:
+                quality_dict["Charges"] = {}  # type: ignore
                 warnings.warn(
                     "Oxidation states from BVA analyzer cannot be determined. "
                     "Thus BVA charge comparison will be skipped"
@@ -1014,6 +1015,6 @@ class Analysis:
             tanimoto_summed = round(
                 dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
             )
-            quality_dict["DOS_comparisons"]["tanimoto_summed_pdos"] = tanimoto_summed  # type: ignore
+            quality_dict["DOS_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
 
         return quality_dict

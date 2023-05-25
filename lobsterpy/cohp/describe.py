@@ -482,3 +482,68 @@ class Description:
         """
         for textpart in self.text:
             print(textpart)
+
+    @staticmethod
+    def write_calc_quality_description(quality_dict):
+        """
+        This method will generate a text description of the LOBSTER calculation quality
+
+        Args:
+            quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
+        """
+        text_des = []
+
+        for key, val in quality_dict.items():
+            if key == "minimal_basis":
+                if val:
+                    text_des.append("The LOBSTER calculation used minimal basis.")
+                if not val:
+                    text_des.append(
+                        "Consider rerunning the calc with the minimum basis as well. Choosing is "
+                        "larger basis set is recommended if you see a significant improvement of "
+                        "the charge spilling and material has non-zero band gap."
+                    )
+
+            elif key == "charge_spilling":
+                text_des.append(
+                    "The absolute and total charge spilling for the calculation are {} and {}, "
+                    "respectively.".format(
+                        quality_dict[key]["abs_charge_spilling"],
+                        quality_dict[key]["abs_total_spilling"],
+                    )
+                )
+            elif key == "Charges":
+                if val:
+                    for type in ["Mulliken", "Loewdin"]:
+                        if quality_dict[key]["BVA_{}_agree".format(type)]:
+                            text_des.append(
+                                "The {} charges agree with bond valence analysis.".format(
+                                    type
+                                )
+                            )
+                        if not quality_dict[key]["BVA_{}_agree".format(type)]:
+                            text_des.append(
+                                "The {} charges does not agree with bond valence analysis.".format(
+                                    type
+                                )
+                            )
+                else:
+                    text_des.append(
+                        "Oxidation states from BVA analyzer cannot be determined. "
+                        "Thus BVA charge comparison is not conducted."
+                    )
+
+            elif key == "DOS_comparisons":
+                comp_types = []
+                tani_index = []
+                for orb in val:
+                    comp_types.append(orb.split("_")[-1])
+                    tani_index.append(str(val[orb]))
+                text_des.append(
+                    "The Tanimoto index from DOS comparisons in energy range between -15, 0 eV "
+                    "for {} orbitals are : {}.".format(
+                        ", ".join(comp_types), ", ".join(tani_index)
+                    )
+                )
+
+        return " ".join(text_des)

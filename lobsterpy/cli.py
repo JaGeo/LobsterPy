@@ -76,6 +76,34 @@ def get_parser() -> argparse.ArgumentParser:
         help=('path to POTCAR. Default is "POTCAR".'),
     )
 
+    input_file_group.add_argument(
+        "--lobsterin",
+        default="lobsterin",
+        type=Path,
+        help=('path to lobsterin. Default is "lobsterin".'),
+    )
+
+    input_file_group.add_argument(
+        "--lobsterout",
+        default="lobsterout",
+        type=Path,
+        help=('path to lobsterout. Default is "lobsterout".'),
+    )
+
+    input_file_group.add_argument(
+        "--doscar",
+        default="DOSCAR.lobster",
+        type=Path,
+        help=('path to DOSCAR.lobster. Default is "DOSCAR.lobster".'),
+    )
+
+    input_file_group.add_argument(
+        "--vasprun",
+        default="Vasprun.xml",
+        type=Path,
+        help=('path to Vasprun.xml. Default is "Vasprun.xml".'),
+    )
+
     output_parent = argparse.ArgumentParser(add_help=False)
     output_file_group = output_parent.add_argument_group("Output files")
     output_file_group.add_argument(
@@ -213,6 +241,32 @@ def get_parser() -> argparse.ArgumentParser:
         " all bonds, not only cation-anion bonds (default) ",
     )
 
+    auto_group.add_argument(
+        "--calcqualityjson",
+        nargs="?",
+        type=Path,
+        default=None,
+        metavar="FILENAME",
+        const=Path("calc_quality_json.json"),
+        help="Write a JSON file with the LOBSTER calc quality analysis",
+    )
+
+    auto_group.add_argument(
+        "--doscomp",
+        "--dos-comp",
+        action="store_true",
+        default=False,
+        help="This option will force the DOS comparison in automatic LOBSTER calc quality  analysis ",
+    )
+
+    auto_group.add_argument(
+        "--bvacomp",
+        "--bva-comp",
+        action="store_true",
+        default=False,
+        help="This option will force the BVA charge comparison in automatic LOBSTER calc quality analysis ",
+    )
+
     subparsers = parser.add_subparsers(
         dest="action",
         required=True,
@@ -225,6 +279,12 @@ def get_parser() -> argparse.ArgumentParser:
             "Deliver a text description of the COHP results from Lobster "
             "and VASP. Implementation of COBIs and COOPs will follow."
         ),
+    )
+
+    subparsers.add_parser(
+        "calc-description",
+        parents=[input_parent, auto_parent],
+        help=("Deliver a text description of the LOBSTER calc quality analysis"),
     )
 
     subparsers.add_parser(
@@ -551,6 +611,51 @@ def run(args):
                 raise ValueError(
                     'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                 )
+
+    if args.action in ["calc-description"]:
+        # Check for .gz files exist for default values and update accordingly
+        default_files = {
+            "potcar": "POTCAR",
+            "poscar": "POSCAR",
+            "charge": "CHARGE.lobster",
+            "lobsterin": "lobsterin",
+            "lobsterout": "lobsterout",
+            "doscar": "DOSCAR.lobster",
+            "vasprun": "Vasprun.xml",
+        }
+
+        for arg, default_value in default_files.items():
+            file_path = getattr(args, arg)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg, gz_file_path)
+                else:
+                    raise ValueError(
+                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory"
+                    )
+
+        bva_comp = args.bvacomp
+        dos_comparison = args.doscomp
+        quality_dict = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=args.poscar,
+            path_to_charge=args.charge,
+            path_to_lobsterout=args.lobsterout,
+            path_to_lobsterin=args.lobsterin,
+            path_to_potcar=args.potcar,
+            dos_comparison=dos_comparison,
+            bva_comp=bva_comp,
+            path_to_doscar=args.doscar,
+            path_to_vasprun=args.vasprun,
+        )
+
+        describe_calc = Description.write_calc_quality_description(quality_dict)
+
+        print(describe_calc)
+
+        if args.calcqualityjson is not None:
+            with open(args.calcqualityjson, "w") as fd:
+                json.dump(quality_dict, fd)
 
 
 if __name__ == "__main__":
