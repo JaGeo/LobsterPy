@@ -329,17 +329,17 @@ class FeaturizeCOXX:
         if spin_type == "up":
             coxx_all = coxxcar_obj[Spin.up]
         elif spin_type == "down":
-            try:
+            if Spin.down in coxxcar_obj:
                 coxx_all = coxxcar_obj[Spin.down]
-            except KeyError:
+            else:
                 raise ValueError(
                     'LOSBTER calculation is non-spin polarized. Please switch spin_type to "up"'
                 )
         elif spin_type == "summed":
-            try:
+            if Spin.down in coxxcar_obj:
                 coxx_all = coxxcar_obj[Spin.up] + coxxcar_obj[Spin.down]
-            except KeyError:
-                coxx_all = coxxcar_obj[Spin.up]
+            else:
+                oxx_all = coxxcar_obj[Spin.up]
         else:
             raise Exception(
                 "Check the spin_type argument." "Possible options are summed/up/down"
