@@ -359,7 +359,8 @@ def run(args):
                     setattr(args, arg, gz_file_path)
                 else:
                     raise ValueError(
-                        "Files necessary for automatic analysis of LOBSTER outputs not found in the current directory"
+                        "Files necessary for automatic analysis of LOBSTER outputs "
+                        "not found in the current directory"
                     )
 
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
@@ -519,6 +520,7 @@ def run(args):
 
         # Check for .gz files exist for default values and update accordingly
         default_files = {
+            "poscar": "POSCAR",
             "potcar": "POTCAR",
             "incar": "INCAR",
         }
