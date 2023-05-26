@@ -110,6 +110,37 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(json_path)
 
+    def test_hideplot_cli(self, tmp_path, inject_mocks, clean_plot):
+        os.chdir(TestDir / "TestData/NaCl")
+        # tests skip showing plots generated using automaticplot
+        args = [
+            "automaticplot",
+            "--hideplot",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+
+        # tests tests skip showing plot and directly saves the generated figures
+        plot_path = tmp_path / "autoplot.png"
+        args = ["automaticplot", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        # tests plot hide and save case based on label
+        plot_path = tmp_path / "plot2.png"
+        args = ["plot", "2", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        # tests plot show and save case based on label
+        plot_path = tmp_path / "plot34.png"
+        args = ["plot", "3", "4", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
