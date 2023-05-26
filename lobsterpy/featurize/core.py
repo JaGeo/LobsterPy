@@ -339,7 +339,7 @@ class FeaturizeCOXX:
             if Spin.down in coxxcar_obj:
                 coxx_all = coxxcar_obj[Spin.up] + coxxcar_obj[Spin.down]
             else:
-                oxx_all = coxxcar_obj[Spin.up]
+                coxx_all = coxxcar_obj[Spin.up]
         else:
             raise Exception(
                 "Check the spin_type argument." "Possible options are summed/up/down"
