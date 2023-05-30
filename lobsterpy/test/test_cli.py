@@ -260,8 +260,8 @@ class TestCLI:
         ref_text = (
             "The LOBSTER calculation used minimal basis. "
             "The absolute and total charge spilling for the calculation are 0.3 and 5.58, respectively. "
-            "The atomic charge signs from Mulliken population analysis agree with Bond valence analysis. "
-            "The atomic charge signs from Loewdin population analysis agree with Bond valence analysis. "
+            "The atomic charge signs from Mulliken population analysis agree with bond valence analysis. "
+            "The atomic charge signs from Loewdin population analysis agree with bond valence analysis. "
             "The Tanimoto index from DOS comparisons in energy range between -15, 0 eV for s, p, summed orbitals "
             "are : 0.2762, 0.5273, 0.2737."
         )

@@ -502,7 +502,6 @@ class Description:
                         "Consider rerunning the calculation with the minimum basis as well. Choosing a "
                         "larger basis set is only recommended if you see a significant improvement of "
                         "the charge spilling."
-
                     )
 
             elif key == "charge_spilling":
@@ -520,13 +519,11 @@ class Description:
                             text_des.append(
                                 "The atomic charge signs from {} population analysis agree "
                                 "with bond valence analysis.".format(charge)
-
                             )
                         if not val["BVA_{}_agree".format(charge)]:
                             text_des.append(
                                 "The atomic charge signs from {} population analysis do not agree with "
                                 "bond valence analysis.".format(charge)
-
                             )
                 else:
                     text_des.append(
