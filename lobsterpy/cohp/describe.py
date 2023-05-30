@@ -499,9 +499,10 @@ class Description:
                     text_des.append("The LOBSTER calculation used minimal basis.")
                 if not val:
                     text_des.append(
-                        "Consider rerunning the calc with the minimum basis as well. Choosing is "
-                        "larger basis set is recommended if you see a significant improvement of "
-                        "the charge spilling and material has non-zero band gap."
+                        "Consider rerunning the calculation with the minimum basis as well. Choosing a "
+                        "larger basis set is only recommended if you see a significant improvement of "
+                        "the charge spilling."
+
                     )
 
             elif key == "charge_spilling":
