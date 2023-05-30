@@ -111,6 +111,37 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(json_path)
 
+    def test_hideplot_cli(self, tmp_path, inject_mocks, clean_plot):
+        os.chdir(TestDir / "TestData/NaCl")
+        # tests skip showing plots generated using automaticplot
+        args = [
+            "automaticplot",
+            "--hideplot",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+
+        # tests tests skip showing plot and directly saves the generated figures
+        plot_path = tmp_path / "autoplot.png"
+        args = ["automaticplot", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        # tests plot hide and save case based on label
+        plot_path = tmp_path / "plot2.png"
+        args = ["plot", "2", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        # tests plot show and save case based on label
+        plot_path = tmp_path / "plot34.png"
+        args = ["plot", "3", "4", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
@@ -217,10 +248,10 @@ class TestCLI:
         ]
         captured_output = io.StringIO()
         sys.stdout = captured_output
-
+        
         test = get_parser().parse_args(args)
         run(test)
-
+        
         calc_quality_text = captured_output.getvalue().strip()
 
         sys.stdout = sys.__stdout__
@@ -234,6 +265,58 @@ class TestCLI:
 
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
+        
+    def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
+        # test description from gz input files
+        os.chdir(TestDir / "TestData/CsH")
+        args = ["description", "--allbonds"]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        # test autoplot and json generation fron gz input files
+        json_path = tmp_path / "data.json"
+        args = ["automatic-plot", "--all-bonds", "--json", str(json_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(json_path)
+
+    def test_gz_file_cli_lobsterinput_generation(self, tmp_path):
+        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty/gz/")
+        lobsterinpath = tmp_path / "lobsterin.lobsterpy"
+        INCARpath = tmp_path / "INCAR.lobsterpy"
+        args = [
+            "create-inputs",
+            "--lobsterin-out",
+            str(lobsterinpath),
+            "--incar-out",
+            str(INCARpath),
+            "--userbasis",
+            "Na.3s.3p Cl.3s.3p",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        for basis in ["Na 3s 3p", "Cl 3s 3p"]:
+            assert basis in open(tmp_path / "lobsterin.lobsterpy-0").read()
+
+        for filepath in [
+            tmp_path / "lobsterin.lobsterpy-0",
+            tmp_path / "INCAR.lobsterpy-0",
+        ]:
+            self.assert_is_finite_file(filepath)
+
+        os.chdir(TestDir / "TestData/NaCl")
+
+    def test_gz_cli_plot(self, tmp_path):
+        plot_path = tmp_path / "plot.png"
+        args = ["plot", "3", "--saveplot", str(plot_path)]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        self.assert_is_finite_file(plot_path)
 
     @staticmethod
     def assert_is_finite_file(path: Path) -> None:
