@@ -248,10 +248,10 @@ class TestCLI:
         ]
         captured_output = io.StringIO()
         sys.stdout = captured_output
-        
+
         test = get_parser().parse_args(args)
         run(test)
-        
+
         calc_quality_text = captured_output.getvalue().strip()
 
         sys.stdout = sys.__stdout__
@@ -265,7 +265,7 @@ class TestCLI:
 
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
-        
+
     def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files
         os.chdir(TestDir / "TestData/CsH")
