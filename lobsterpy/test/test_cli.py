@@ -238,11 +238,12 @@ class TestCLI:
         os.chdir(TestDir / "TestData/NaCl")
 
     def test_calc_quality_summary(self, tmp_path):
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
             "calc-description",
             "--bvacomp",
+            "--doscomp",
             "--calcqualityjson",
             str(calc_quality_json_path),
         ]
@@ -260,11 +261,73 @@ class TestCLI:
             "The LOBSTER calculation used minimal basis. "
             "The absolute and total charge spilling for the calculation are 0.3 and 5.58, respectively. "
             "The atomic charge signs from Mulliken population analysis agree with Bond valence analysis. "
-            "The atomic charge signs from Loewdin population analysis agree with Bond valence analysis."
+            "The atomic charge signs from Loewdin population analysis agree with Bond valence analysis. "
+            "The Tanimoto index from DOS comparisons in energy range between -15, 0 eV for s, p, summed orbitals "
+            "are : 0.2762, 0.5273, 0.2737."
         )
 
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
+
+    def test_cli_exceptions(self):
+        # Calc files missing exception test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir)
+            args = [
+                "calc-description",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Mandatory files necessary for LOBSTER calc quality not found in the current directory.",
+            )
+
+        # doscar comparison exceptions test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/NaCl")
+            args = [
+                "calc-description",
+                "--doscomp",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found.",
+            )
+
+        # BVA comparison exceptions test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/NaCl")
+            args = ["calc-description", "--bvacomp", "--charge", "../CHARGE.lobster"]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "BVA charge requested but CHARGE.lobster file not found.",
+            )
+
+        # Create-inputs exceptions test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/CsH")
+            args = [
+                "create-inputs",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Files necessary for creating puts for LOBSTER calcs not found in the current directory.",
+            )
 
     def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files

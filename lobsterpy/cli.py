@@ -99,9 +99,9 @@ def get_parser() -> argparse.ArgumentParser:
 
     input_file_group.add_argument(
         "--vasprun",
-        default="Vasprun.xml",
+        default="vasprun.xml",
         type=Path,
-        help=('path to Vasprun.xml. Default is "Vasprun.xml".'),
+        help=('path to vasprun.xml. Default is "vasprun.xml".'),
     )
 
     output_parent = argparse.ArgumentParser(add_help=False)
@@ -610,7 +610,7 @@ def run(args):
                     setattr(args, arg, gz_file_path)
                 else:
                     raise ValueError(
-                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory"
+                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory."
                     )
 
         if args.userbasis is None:
@@ -697,7 +697,7 @@ def run(args):
                     setattr(args, arg, gz_file_path)
                 else:
                     raise ValueError(
-                        "Mandatory files necessary for LOBSTER calc quality not found in the current directory"
+                        "Mandatory files necessary for LOBSTER calc quality not found in the current directory."
                     )
 
         bva_comp = args.bvacomp
@@ -714,7 +714,7 @@ def run(args):
                         setattr(args, arg, gz_file_path)
                     else:
                         raise ValueError(
-                            "BVA charge requested but CHARGE.lobster file not found"
+                            "BVA charge requested but CHARGE.lobster file not found."
                         )
 
         dos_comparison = args.doscomp
@@ -722,7 +722,7 @@ def run(args):
         if dos_comparison:
             dos_files = {
                 "doscar": "DOSCAR.lobster",
-                "vasprun": "Vasprun.xml",
+                "vasprun": "vasprun.xml",
             }
 
             for arg, default_value in dos_files.items():
@@ -733,7 +733,7 @@ def run(args):
                         setattr(args, arg, gz_file_path)
                     else:
                         raise ValueError(
-                            "DOS comparisons requested but DOSCAR.lobster, Vasprun.xml file not found"
+                            "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
                         )
 
         quality_dict = Analysis.get_lobster_calc_quality_summary(
