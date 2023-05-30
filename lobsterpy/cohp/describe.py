@@ -518,7 +518,8 @@ class Description:
                         if val["BVA_{}_agree".format(charge)]:
                             text_des.append(
                                 "The atomic charge signs from {} population analysis agree "
-                                "with Bond valence analysis.".format(charge)
+                                "with bond valence analysis.".format(charge)
+
                             )
                         if not val["BVA_{}_agree".format(charge)]:
                             text_des.append(
