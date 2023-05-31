@@ -259,6 +259,23 @@ def get_parser() -> argparse.ArgumentParser:
     )
 
     auto_group.add_argument(
+        "--erange",
+        dest="erange",
+        nargs=2,
+        default=[-5, 0],
+        type=int,
+        help="Energy range for DOS comparisons",
+    )
+
+    auto_group.add_argument(
+        "--nbins",
+        dest="nbins",
+        default=None,
+        type=int,
+        help="Number of bins for DOS comparisons",
+    )
+
+    auto_group.add_argument(
         "--doscomp",
         "--dos-comp",
         action="store_true",
@@ -745,6 +762,8 @@ def run(args):
             dos_comparison=dos_comparison,
             bva_comp=bva_comp,
             path_to_doscar=args.doscar,
+            e_range=args.erange,
+            n_bins=args.nbins,
             path_to_vasprun=args.vasprun,
         )
 

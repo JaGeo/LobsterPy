@@ -244,6 +244,9 @@ class TestCLI:
             "calc-description",
             "--bvacomp",
             "--doscomp",
+            "--erange",
+            "-20",
+            "0",
             "--calcqualityjson",
             str(calc_quality_json_path),
         ]
@@ -262,8 +265,8 @@ class TestCLI:
             "The absolute and total charge spilling for the calculation are 0.3 and 5.58, respectively. "
             "The atomic charge signs from Mulliken population analysis agree with bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with bond valence analysis. "
-            "The Tanimoto index from DOS comparisons in energy range between -5, 0 eV for s, p, summed orbitals "
-            "are : 0.9785, 0.9973, 0.9953."
+            "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "
+            "are : 0.9966, 0.9977, 0.9822."
         )
 
         assert calc_quality_text == ref_text
