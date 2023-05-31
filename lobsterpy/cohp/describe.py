@@ -535,12 +535,16 @@ class Description:
                 comp_types = []
                 tani_index = []
                 for orb in val:
-                    comp_types.append(orb.split("_")[-1])
-                    tani_index.append(str(val[orb]))
+                    if orb.split("_")[-1] in ["s", "p", "d", "f", "summed"]:
+                        comp_types.append(orb.split("_")[-1])
+                        tani_index.append(str(val[orb]))
                 text_des.append(
-                    "The Tanimoto index from DOS comparisons in energy range between -15, 0 eV "
+                    "The Tanimoto index from DOS comparisons in energy range between {}, {} eV "
                     "for {} orbitals are : {}.".format(
-                        ", ".join(comp_types), ", ".join(tani_index)
+                        val["e_range"][0],
+                        val["e_range"][1],
+                        ", ".join(comp_types),
+                        ", ".join(tani_index),
                     )
                 )
 

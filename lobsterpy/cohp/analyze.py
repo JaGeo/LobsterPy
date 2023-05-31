@@ -883,6 +883,8 @@ class Analysis:
         path_to_doscar: str | None = None,
         path_to_vasprun: str | None = None,
         dos_comparison: bool = False,
+        e_range: list = [-5, 0],
+        n_bins: int | None = None,
         bva_comp: bool = False,
     ) -> dict:
         """
@@ -988,11 +990,55 @@ class Analysis:
             quality_dict["DOS_comparisons"] = {}  # type: ignore
 
             for orb in dos_lobster.get_spd_dos():
+                if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(
+                    dos_lobster.energies
+                ):
+                    min_e = e_range[0]
+                else:
+                    warnings.warn(
+                        "Mimimum energy range requested for DOS comparisons is not available "
+                        "in VASP or LOBSTER calculation. Thus, setting min_e to -5 eV"
+                    )
+                    min_e = -5
+
+                if e_range[-1] <= max(dos_vasp.energies) and e_range[-1] <= max(
+                    dos_lobster.energies
+                ):
+                    max_e = e_range[-1]
+                else:
+                    warnings.warn(
+                        "Maximum energy range requested for DOS comparisons is not available "
+                        "in VASP or LOBSTER calculation. Thus, setting max_e to 0 eV"
+                    )
+                    max_e = 0
+
+                if (
+                    np.diff(dos_vasp.energies)[0] >= 0.1
+                    and np.diff(dos_lobster.energies)[0] >= 0.1
+                ):
+                    warnings.warn(
+                        "Input DOS files have very few points in the energy interval and thus "
+                        "comparisons will not be reliable. Please rerun the calculations with "
+                        "higher number of DOS points. Set NEDOS and COHPSteps tags to >= 2000 in VASP and LOBSTER "
+                        "calculations, respectively."
+                    )
+
+                if not n_bins:
+                    n_bins = 56
+
                 fp_lobster_orb = dos_lobster.get_dos_fp(
-                    min_e=-15, max_e=0, n_bins=256, normalize=True, type=orb.name
+                    min_e=min_e,
+                    max_e=max_e,
+                    n_bins=n_bins,
+                    normalize=True,
+                    type=orb.name,
                 )
                 fp_vasp_orb = dos_vasp.get_dos_fp(
-                    min_e=-15, max_e=0, n_bins=256, normalize=True, type=orb.name
+                    min_e=min_e,
+                    max_e=max_e,
+                    n_bins=n_bins,
+                    normalize=True,
+                    type=orb.name,
                 )
 
                 tani_orb = round(
@@ -1006,15 +1052,25 @@ class Analysis:
                 ] = tani_orb  # type: ignore
 
             fp_lobster = dos_lobster.get_dos_fp(
-                min_e=-15, max_e=0, n_bins=256, normalize=True, type="summed_pdos"
+                min_e=min_e,
+                max_e=max_e,
+                n_bins=n_bins,
+                normalize=True,
+                type="summed_pdos",
             )
             fp_vasp = dos_vasp.get_dos_fp(
-                min_e=-15, max_e=0, n_bins=256, normalize=True, type="summed_pdos"
+                min_e=min_e,
+                max_e=max_e,
+                n_bins=n_bins,
+                normalize=True,
+                type="summed_pdos",
             )
 
             tanimoto_summed = round(
                 dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
             )
             quality_dict["DOS_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
+            quality_dict["DOS_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
+            quality_dict["DOS_comparisons"]["n_bins"] = n_bins  # type: ignore
 
         return quality_dict
