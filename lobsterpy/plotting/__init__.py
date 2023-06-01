@@ -91,10 +91,14 @@ class PlainCohpPlotter(CohpPlotter):
         Returns:
             A matplotlib object.
         """
-        if self.are_coops:
+        if self.are_coops and not self.are_cobis:
             cohp_label = "COOP"
-        elif self.are_cobis:
+        elif self.are_cobis and not self.are_coops:
             cohp_label = "COBI"
+        elif self.are_cobis and self.are_coops:
+            raise ValueError(
+                "Plot data should not contain COBI and COOP data at same time"
+            )
         else:
             cohp_label = "COHP"
 
@@ -301,7 +305,16 @@ class InteractiveCohpPlotter(CohpPlotter):
                     populations = cohp.get_cohp()
                     int_populations = cohp.get_icohp()
                     outer_key = label_with_count + label_addition
-                    key = label
+                    struct = analyse.structure
+                    atom_pairs = []
+                    for site in complete_cohp.bonds[label]["sites"]:
+                        atom = site.species_string + str(struct.sites.index(site) + 1)
+                        atom_pairs.append(atom)
+                    key = "{}: {} ({} \u00c5)".format(
+                        label,
+                        "-".join(atom_pairs),
+                        str(round(complete_cohp.bonds[label]["length"], 2)),
+                    )
                     self._cohps[outer_key].update(
                         {
                             key: {
@@ -313,16 +326,16 @@ class InteractiveCohpPlotter(CohpPlotter):
                         }
                     )
 
-                    alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    new_label = (
-                        bond_key.split(":")[0].strip(alpha)
-                        + "_"
-                        + bond_key.split(":")[1].strip()
-                        + ": "
-                        + label
-                    )
+                    # alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    # new_label = (
+                    #    bond_key.split(":")[0].strip(alpha)
+                    #    + "_"
+                    #    + bond_key.split(":")[1].strip()
+                    #    + ": "
+                    #    + label
+                    # )
                     outer_key = "All"
-                    key = new_label + label_addition
+                    key = key + label_addition
                     self._cohps[outer_key].update(
                         {
                             key: {
@@ -487,10 +500,14 @@ class InteractiveCohpPlotter(CohpPlotter):
         Returns:
             A  plotly.graph_objects.Figure object.
         """
-        if self.are_coops:
+        if self.are_coops and not self.are_cobis:
             cohp_label = "COOP"
-        elif self.are_cobis:
+        elif self.are_cobis and not self.are_coops:
             cohp_label = "COBI"
+        elif self.are_cobis and self.are_coops:
+            raise ValueError(
+                "Plot data should not contain COBI and COOP data at same time"
+            )
         else:
             cohp_label = "COHP"
 
@@ -631,10 +648,6 @@ class InteractiveCohpPlotter(CohpPlotter):
             fig.update_yaxes(range=ylim)
 
         fig.update_yaxes(automargin=True)
-        # TODO:
-        # improve display of legend
-        # somehow y axis scaling inside image?
-        # maybe dashed line at Ef
 
         return fig
 

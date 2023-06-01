@@ -210,6 +210,39 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
                 self.assertEqual(og_trace.line, ref_trace.line)
                 self.assertEqual(og_trace.visible, ref_trace.visible)
 
+    def test_plot_labels(self):
+        # plain cohp plotter
+        self.plotter = PlainCohpPlotter(are_cobis=True)
+        fig = self.plotter.get_plot().gca()
+
+        self.assertEqual(fig.get_xlabel(), "COBI")
+
+        self.plotter = PlainCohpPlotter(are_coops=True)
+        fig = self.plotter.get_plot().gca()
+
+        self.assertEqual(fig.get_xlabel(), "COOP")
+
+        self.plotter = PlainCohpPlotter()
+        fig = self.plotter.get_plot().gca()
+
+        self.assertEqual(fig.get_xlabel(), "$-$COHP")
+
+        # interactive plotter
+        self.iplotter = InteractiveCohpPlotter(are_cobis=True)
+        fig = self.iplotter.get_plot()
+
+        self.assertEqual(fig.layout.xaxis["title"]["text"], "COBI")
+
+        self.iplotter = InteractiveCohpPlotter(are_coops=True)
+        fig = self.iplotter.get_plot()
+
+        self.assertEqual(fig.layout.xaxis["title"]["text"], "COOP")
+
+        self.iplotter = InteractiveCohpPlotter()
+        fig = self.iplotter.get_plot()
+
+        self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP")
+
 
 class TestPlotterExceptions(unittest.TestCase):
     def test_plotter_exception(self):
@@ -225,4 +258,24 @@ class TestPlotterExceptions(unittest.TestCase):
             self.assertEqual(
                 err.exception.__str__(),
                 "The data provided could not be converted to cohp object.Please recheck the input data",
+            )
+
+        with self.assertRaises(Exception) as err:
+            self.iplotter = InteractiveCohpPlotter(are_cobis=True, are_coops=True)
+
+            fig = self.iplotter.get_plot()
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Plot data should not contain COBI and COOP data at same time",
+            )
+
+        with self.assertRaises(Exception) as err:
+            self.plotter = PlainCohpPlotter(are_cobis=True, are_coops=True)
+
+            fig = self.plotter.get_plot()
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Plot data should not contain COBI and COOP data at same time",
             )
