@@ -32,8 +32,9 @@ class FeaturizeLobsterpy:
     class to featurize lobsterpy data
 
     Args:
+        path_to_lobster_calc: path containing lobster calc outputs
         path_to_json: path to lobster lightweight json
-        bonds: "all_bonds" or "cation_anion_bonds"
+        bonds: "all" or "cation-anion" bonds
     Attributes:
         get_df: returns a pandas dataframe with relevant icohp statistical data as columns from
         lobsterpy automatic bonding analysis
@@ -44,7 +45,7 @@ class FeaturizeLobsterpy:
         self,
         path_to_lobster_calc: str | None = None,
         path_to_json: str | None = None,
-        bonds: str = "all_bonds",
+        bonds: str = "all",
     ):
         self.path_to_json = path_to_json
         self.path_to_lobster_calc = path_to_lobster_calc
@@ -61,13 +62,17 @@ class FeaturizeLobsterpy:
         """
         if self.path_to_json and not self.path_to_lobster_calc:
             # read the lightweight lobster json files using read_lobster_lightweight_json method
-            data = self._read_lobster_lightweight_json()
+            data = FeaturizeLobsterpy.read_lobster_lightweight_json(
+                path_to_json=self.path_to_json
+            )
             if not ids:
                 ids = Path(self.path_to_json).name.split(".")[0]
 
         elif self.path_to_lobster_calc and not self.path_to_json:
             # get lobsterpy condensed bonding analysis data using get_lobsterpy_cba_dict method
-            data = self._get_lobsterpy_cba_dict()
+            data = FeaturizeLobsterpy.get_lobsterpy_cba_dict(
+                path_to_lobster_calc=self.path_to_lobster_calc, bonds=self.bonds
+            )
 
             if not ids:
                 ids = Path(self.path_to_lobster_calc).name
@@ -84,8 +89,13 @@ class FeaturizeLobsterpy:
         bond = []
         antibond = []
         # extract lobsterpy icohp related data for bond type specified
-        if data[self.bonds]["lobsterpy_data"]["sites"]:
-            for k, v in data[self.bonds]["lobsterpy_data"]["sites"].items():
+        if self.bonds == "all":
+            bond_type = "all_bonds"
+        elif self.bonds == "cation-anion":
+            bond_type = "cation_anion_bonds"
+
+        if data[bond_type]["lobsterpy_data"]["sites"]:
+            for k, v in data[bond_type]["lobsterpy_data"]["sites"].items():
                 if v["bonds"]:
                     for k1, v1 in v["bonds"].items():
                         icohp_mean.append(float(v1["ICOHP_mean"]))
@@ -94,8 +104,8 @@ class FeaturizeLobsterpy:
                         antibond.append(v1["antibonding"]["perc"])
         else:
             raise Exception(
-                "There exist no data for {} for {} structure. "
-                'Please switch to "all_bonds" mode'.format(self.bonds, ids)
+                "No {} bonds detected for {} structure. "
+                "Please switch to ´all´ bonds mode".format(self.bonds, ids)
             )
 
         # add stats data as columns to the dataframe
@@ -125,16 +135,20 @@ class FeaturizeLobsterpy:
 
         return df
 
-    def _read_lobster_lightweight_json(self) -> dict:
+    @staticmethod
+    def read_lobster_lightweight_json(path_to_json: str) -> dict:
         """
-        This function reads loads the lightweight json.gz files and returns a python dictionary object
+        This method reads loads the lightweight json.gz files and returns a python dictionary object
         with lobster summmarized bonding analysis data.
+
+        Args:
+            path_to_json: path to lobsterpy lightweight json file
 
         Returns:
             Returns a dictionary with lobster summmarized bonding analysis data
 
         """
-        with gzip.open(str(self.path_to_json), "rb") as f:
+        with gzip.open(str(path_to_json), "rb") as f:
             data = json.loads(f.read().decode("utf-8"))
 
         lobster_data = {}
@@ -143,56 +157,79 @@ class FeaturizeLobsterpy:
 
         return lobster_data
 
-    def _get_lobsterpy_cba_dict(self) -> dict:
+    @staticmethod
+    def get_lobsterpy_cba_dict(path_to_lobster_calc: str, bonds: str) -> dict:
         """
         This function uses lobsterpy.cohp.analyze.Analysis class to generate a python dictionary object
         with lobster summmarized bonding analysis data.
+
+        Args:
+            path_to_lobster_calc: path to lobsterpy lightweight json file
+            bonds: "all" or "cation-anion" bonds
 
         Returns:
             Returns a dictionary with lobster summmarized bonding analysis data
 
         """
-        dir_name = Path(str(self.path_to_lobster_calc))
-        cohpcar_path = dir_name / "COHPCAR.lobster.gz"
-        charge_path = dir_name / "CHARGE.lobster.gz"
-        structure_path = dir_name / "POSCAR.gz"
-        icohplist_path = dir_name / "ICOHPLIST.lobster.gz"
-        madelung_energies_path = dir_name / "MadelungEnergies.lobster.gz"
+        dir_name = Path(str(path_to_lobster_calc))
 
-        if self.bonds == "all_bonds":
-            which_bonds = "all"
-        else:
-            which_bonds = "cation-anion"
+        # check if files are compressed (.gz) and update file paths
+        req_files_lobsterpy = {
+            "structure_path": "POSCAR",
+            "cohpcar_path": "COHPCAR.lobster",
+            "icohplist_path": "ICOHPLIST.lobster",
+            "charge_path": "CHARGE.lobster",
+        }
 
-        if (
-            icohplist_path.exists()
-            and cohpcar_path.exists()
-            and charge_path.exists()
-            and structure_path.exists()
-        ):
-            try:
-                analyse = Analysis(
-                    path_to_poscar=str(structure_path),
-                    path_to_icohplist=str(icohplist_path),
-                    path_to_cohpcar=str(cohpcar_path),
-                    path_to_charge=str(charge_path),
-                    summed_spins=False,  # we will always use spin polarization here
-                    cutoff_icohp=0.10,
-                    whichbonds=which_bonds,
-                )
-                data = {}
-                data.update(
-                    {self.bonds: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
-                )
-            except ValueError:
-                data = {}
-                data.update({self.bonds: {"lobsterpy_data": {}}})
-        else:
-            raise Exception(
-                "Path provided for Lobster calc directory seems incorrect."
-                "It does not contain COHPCAR.lobster.gz, ICOHPLIST.lobster.gz, POSCAR.gz and "
-                "CHARGE.lobster.gz files needed for automatic analysis using LobsterPy"
+        for file, default_value in req_files_lobsterpy.items():
+            file_path = dir_name / default_value
+            req_files_lobsterpy[file] = file_path
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    req_files_lobsterpy[file] = gz_file_path
+                else:
+                    raise Exception(
+                        "Path provided for Lobster calc directory seems incorrect."
+                        "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
+                        "CHARGE.lobster files needed for automatic analysis using LobsterPy"
+                    )
+
+        cohpcar_path = req_files_lobsterpy.get("cohpcar_path")
+        charge_path = req_files_lobsterpy.get("charge_path")
+        structure_path = req_files_lobsterpy.get("structure_path")
+        icohplist_path = req_files_lobsterpy.get("icohplist_path")
+
+        which_bonds = bonds
+
+        if which_bonds == "all":
+            bond_type = "all_bonds"
+        elif which_bonds == "cation-anion":
+            bond_type = "cation_anion_bonds"
+
+        try:
+            analyse = Analysis(
+                path_to_poscar=str(structure_path),
+                path_to_icohplist=str(icohplist_path),
+                path_to_cohpcar=str(cohpcar_path),
+                path_to_charge=str(charge_path),
+                summed_spins=False,  # we will always use spin polarization here
+                cutoff_icohp=0.10,
+                whichbonds=which_bonds,
             )
+
+            data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
+        except ValueError:
+            data = {bond_type: {"lobsterpy_data": {}}}
+
+        madelung_energies_path = dir_name / "MadelungEnergies.lobster"
+        # check if .gz file exists and update Madelung Energies path
+        if not madelung_energies_path.exists():
+            gz_file_path = madelung_energies_path.with_name(
+                madelung_energies_path.name + ".gz"
+            )
+            if gz_file_path.exists():
+                madelung_energies_path = gz_file_path
 
         if madelung_energies_path.exists():
             madelung_obj = MadelungEnergies(filename=str(madelung_energies_path))
@@ -202,19 +239,20 @@ class FeaturizeLobsterpy:
                 "Loewdin": madelung_obj.madelungenergies_Loewdin,
                 "Ewald_splitting": madelung_obj.ewald_splitting,
             }
-            data.update({"madelung_energies": madelung_energies})
+            data["madelung_energies"] = madelung_energies
+
         else:
             warnings.warn(
-                "MadelungEnergies.lobster.gz file not found in Lobster calc directory provided"
+                "MadelungEnergies.lobster file not found in Lobster calc directory provided"
                 " Will set Madelung Engeries for crystal structure values to NaN"
             )
-
             madelung_energies = {
                 "Mulliken": np.nan,
                 "Loewdin": np.nan,
                 "Ewald_splitting": np.nan,
             }
-            data.update({"madelung_energies": madelung_energies})
+
+            data["madelung_energies"] = madelung_energies
 
         return data
 
@@ -313,10 +351,10 @@ class FeaturizeCOXX:
         min_e = self.e_range[0]
         max_e = self.e_range[-1]
 
-        if max_e is None:
+        if not max_e:
             max_e = np.max(energies)
 
-        if min_e is None:
+        if not min_e:
             min_e = np.min(energies)
 
         if label_list:
@@ -333,7 +371,7 @@ class FeaturizeCOXX:
                 coxx_all = coxxcar_obj[Spin.down]
             else:
                 raise ValueError(
-                    'LOSBTER calculation is non-spin polarized. Please switch spin_type to "up"'
+                    "LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`"
                 )
         elif spin_type == "summed":
             if Spin.down in coxxcar_obj:
@@ -367,7 +405,9 @@ class FeaturizeCOXX:
             if ids:
                 df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
             else:
-                ids = os.path.basename(os.path.dirname(self.path_to_coxxcar))
+                ids = Path(
+                    self.path_to_coxxcar
+                ).parent.name  # os.path.basename(os.path.dirname(self.path_to_coxxcar))
                 df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
 
             coxxs = coxx_dict[self.feature_type]
@@ -504,18 +544,16 @@ class FeaturizeCOXX:
             coxxcar = self.completecoxx.get_summed_cohp_by_label_list(
                 label_list
             ).get_cohp()
-            try:
-                coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
-            except KeyError:
-                coxx_all = coxxcar[Spin.up]
-            energies = self.completecoxx.energies - self.completecoxx.efermi
+
         else:
             coxxcar = self.completecoxx.get_cohp()
-            try:
-                coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
-            except KeyError:
-                coxx_all = coxxcar[Spin.up]
-            energies = self.completecoxx.energies - self.completecoxx.efermi
+
+        if Spin.down in coxxcar:
+            coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
+        else:
+            coxx_all = coxxcar[Spin.up]
+
+        energies = self.completecoxx.energies - self.completecoxx.efermi
 
         coxx_dict = {}
         if not self.are_cobis and not self.are_coops:
@@ -627,14 +665,22 @@ class FeaturizeCOXX:
             COXX nth moment in eV
         """
         if e_range:
-            coxx = coxx[(energies >= self.e_range[0]) & (energies <= self.e_range[-1])]
-            energies = energies[
-                (energies >= self.e_range[0]) & (energies <= self.e_range[-1])
-            ]
+            min_e = self.e_range[0]
+            max_e = self.e_range[1]
+            if not min_e:
+                min_e = min(energies)
+            if not max_e:
+                max_e = max(energies)
+        else:
+            min_e = min(energies)
+            max_e = max(energies)
+
+        coxx = coxx[(energies >= min_e) & (energies <= max_e)]
+        energies = energies[(energies >= min_e) & (energies <= max_e)]
 
         if center:
             coxx_center = self._get_coxx_center(
-                coxx=coxx, energies=energies, e_range=self.e_range
+                coxx=coxx, energies=energies, e_range=[min_e, max_e]
             )
             p = energies - coxx_center
         else:
@@ -658,7 +704,9 @@ class FeaturizeCOXX:
         if ids:
             df = pd.DataFrame(index=[ids])
         else:
-            ids = os.path.basename(os.path.dirname(self.path_to_coxxcar))
+            ids = Path(
+                self.path_to_coxxcar
+            ).parent.name  # os.path.basename(os.path.dirname(self.path_to_coxxcar))
             df = pd.DataFrame(index=[ids])
 
         (
@@ -739,18 +787,16 @@ class FeaturizeCharges:
         chargeobj = Charge(filename=self.path_to_charge)
         structure = Structure.from_file(self.path_to_structure)
 
-        if self.charge_type.lower() == "mulliken":
-            charges = chargeobj.Mulliken
-        elif self.charge_type.lower() == "loewdin":
-            charges = chargeobj.Loewdin
-        else:
+        if self.charge_type.lower() not in ["mulliken", "loewdin"]:
             raise ValueError(
-                "Please check the requested charge_type, "
+                "Please check the requested charge_type. "
                 'Possible options are "Mulliken" or "Loewdin"'
             )
 
         ch_veff = []
-        for i, j in enumerate(charges):
+        for i, j in enumerate(
+            chargeobj.__getattribute__(self.charge_type.capitalize())
+        ):
             if (
                 j > 0
                 and not structure.species[i].is_transition_metal
@@ -761,18 +807,6 @@ class FeaturizeCharges:
             ):
                 valence_elec = element(structure.species[i].value)
                 val = j / (valence_elec.nvalence() - 0)
-                ch_veff.append(val)
-
-            elif (
-                j > 0
-                and not structure.species[i].is_transition_metal
-                and (
-                    not structure.species[i].is_actinoid
-                    and not structure.species[i].is_lanthanoid
-                )
-            ):
-                valence_elec = element(structure.species[i].value)
-                val = j / (valence_elec.nvalence() - 8)
                 ch_veff.append(val)
 
             elif (
@@ -787,20 +821,20 @@ class FeaturizeCharges:
                 val = j / (valence_elec.nvalence() - 8)
                 ch_veff.append(val)
 
-            elif j > 0 and structure.species[i].is_transition_metal:
+            elif j > 0 and (
+                structure.species[i].is_transition_metal
+                or structure.species[i].is_actinoid
+                or structure.species[i].is_lanthanoid
+            ):
                 val = j / (structure.species[i].max_oxidation_state - 0)
                 ch_veff.append(val)
 
-            elif j < 0 and structure.species[i].is_transition_metal:
-                val = j / (structure.species[i].max_oxidation_state - 8)
-                ch_veff.append(val)
-
-            elif j > 0 and structure.species[i].is_lanthanoid:
-                val = j / (structure.species[i].max_oxidation_state - 0)
-                ch_veff.append(val)
-
-            elif j < 0 and structure.species[i].is_actinoid:
-                val = j / (structure.species[i].max_oxidation_state - 8)
+            elif j < 0 and (
+                structure.species[i].is_transition_metal
+                or structure.species[i].is_actinoid
+                or structure.species[i].is_lanthanoid
+            ):
+                val = j / (structure.species[i].min_oxidation_state - 8)
                 ch_veff.append(val)
 
         ionicity = sum(ch_veff) / structure.num_sites
@@ -818,10 +852,12 @@ class FeaturizeCharges:
         if ids:
             df = pd.DataFrame(index=[ids])
         else:
-            ids = os.path.basename(os.path.dirname(self.path_to_charge))
+            ids = Path(
+                self.path_to_charge
+            ).parent.name  # os.path.basename(os.path.dirname(self.path_to_charge))
             df = pd.DataFrame(index=[ids])
 
-        if self.charge_type == "mulliken":
+        if self.charge_type.lower() == "mulliken":
             df.loc[ids, "Ionicity_Mull"] = self._calc_ionicity()
         else:
             df.loc[ids, "Ionicity_Loew"] = self._calc_ionicity()

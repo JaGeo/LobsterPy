@@ -49,7 +49,7 @@ class BatchSummaryFeaturizer:
         path_to_jsons: str | None = None,
         feature_type: str = "antibonding",
         charge_type: str = "both",
-        bonds: str = "all_bonds",
+        bonds: str = "all",
         include_cobi_data: bool = False,
         include_coop_data: bool = False,
         only_smallest_basis: bool = True,
@@ -77,7 +77,7 @@ class BatchSummaryFeaturizer:
             madelung energies
 
         """
-        if os.path.isfile(file_name_or_path):
+        if Path(file_name_or_path).is_file():
             featurize_lobsterpy = FeaturizeLobsterpy(
                 path_to_json=file_name_or_path,
                 bonds=self.bonds,
@@ -103,9 +103,23 @@ class BatchSummaryFeaturizer:
 
         """
         dir_name = Path(path_to_lobster_calc)
-        coxxcar_path = dir_name / "COHPCAR.lobster.gz"
-        structure_path = dir_name / "POSCAR.gz"
-        icoxxlist_path = dir_name / "ICOHPLIST.lobster.gz"
+
+        req_files = {
+            "structure_path": "POSCAR",
+            "coxxcar_path": "COHPCAR.lobster",
+            "icoxxlist_path": "ICOHPLIST.lobster",
+        }
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path
+
+        coxxcar_path = req_files.get("coxxcar_path")
+        structure_path = req_files.get("structure_path")
+        icoxxlist_path = req_files.get("icoxxlist_path")
 
         if (
             coxxcar_path.exists()
@@ -123,13 +137,25 @@ class BatchSummaryFeaturizer:
             df_cohp = coxx.get_summarized_coxx_df()
         else:
             raise Exception(
-                "COHPCAR.lobster.gz or POSCAR.gz or ICOHPLIST.lobster.gz file "
+                "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file "
                 "not found in {}".format(dir_name.name)
             )
 
         if self.include_cobi_data:
-            coxxcar_path = dir_name / "COBICAR.lobster.gz"
-            icoxxlist_path = dir_name / "ICOBILIST.lobster.gz"
+            req_files = {
+                "coxxcar_path": "COBICAR.lobster",
+                "icoxxlist_path": "ICOBILIST.lobster",
+            }
+            for file, default_value in req_files.items():
+                file_path = dir_name / default_value
+                req_files[file] = file_path
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path
+
+            coxxcar_path = req_files.get("coxxcar_path")
+            icoxxlist_path = req_files.get("icoxxlist_path")
 
             if coxxcar_path.exists() and icoxxlist_path.exists():
                 coxx = FeaturizeCOXX(
@@ -145,13 +171,25 @@ class BatchSummaryFeaturizer:
 
             else:
                 raise Exception(
-                    "COBICAR.lobster.gz or ICOBILIST.lobster.gz file "
+                    "COBICAR.lobster or ICOBILIST.lobster file "
                     "not found in {}".format(dir_name.name)
                 )
 
         if self.include_coop_data:
-            coxxcar_path = dir_name / "COOPCAR.lobster.gz"
-            icoxxlist_path = dir_name / "ICOOPLIST.lobster.gz"
+            req_files = {
+                "coxxcar_path": "COOPCAR.lobster",
+                "icoxxlist_path": "ICOOPLIST.lobster",
+            }
+            for file, default_value in req_files.items():
+                file_path = dir_name / default_value
+                req_files[file] = file_path
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path
+
+            coxxcar_path = req_files.get("coxxcar_path")
+            icoxxlist_path = req_files.get("icoxxlist_path")
 
             if coxxcar_path.exists() and icoxxlist_path.exists():
                 coxx = FeaturizeCOXX(
@@ -167,7 +205,7 @@ class BatchSummaryFeaturizer:
 
             else:
                 raise Exception(
-                    "COOPCAR.lobster.gz or ICOOPLIST.lobster.gz file "
+                    "COOPCAR.lobster or ICOOPLIST.lobster file "
                     "not found in {}".format(dir_name.name)
                 )
 
@@ -191,8 +229,21 @@ class BatchSummaryFeaturizer:
 
         """
         dir_name = Path(path_to_lobster_calc)
-        charge_path = dir_name / "CHARGE.lobster.gz"
-        structure_path = dir_name / "POSCAR.gz"
+
+        req_files = {
+            "charge_path": "CHARGE.lobster",
+            "structure_path": "POSCAR",
+        }
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path
+
+        charge_path = req_files.get("charge_path")
+        structure_path = req_files.get("structure_path")
 
         if charge_path.exists() and structure_path.exists():
             if self.charge_type == "mulliken":
@@ -229,7 +280,7 @@ class BatchSummaryFeaturizer:
             return df
         else:
             raise Exception(
-                "CHARGE.lobster.gz or POSCAR.gz not found in {}".format(dir_name.name)
+                "CHARGE.lobster or POSCAR not found in {}".format(dir_name.name)
             )
 
     def get_df(self) -> pd.DataFrame:
@@ -537,49 +588,84 @@ class BatchCoxxFingerprint:
         dir_name = Path(path_to_lobster_calc)
 
         if self.fingerprint_for.upper() == "COBI":
-            if (dir_name / "COBICAR.lobster.gz").exists() and (
-                dir_name / "ICOBILIST.lobster.gz"
-            ).exists():
-                coxxcar_path = dir_name / "COBICAR.lobster.gz"
-                icoxxlist_path = dir_name / "ICOBILIST.lobster.gz"
+            req_files = {
+                "coxxcar_path": "COBICAR.lobster",
+                "icoxxlist_path": "ICOBILIST.lobster",
+            }
+            for file, default_value in req_files.items():
+                file_path = dir_name / default_value
+                req_files[file] = file_path
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path
+
+            coxxcar_path = req_files.get("coxxcar_path")
+            icoxxlist_path = req_files.get("icoxxlist_path")
+            if coxxcar_path.exists() and icoxxlist_path.exists():
                 are_cobis = True
                 are_coops = False
             else:
                 raise Exception(
-                    "COBICAR.lobster.gz or ICOBILIST.lobster.gz file not found in "
+                    "COBICAR.lobster or ICOBILIST.lobster file not found in "
                     "{}".format(dir_name.name)
                 )
         elif self.fingerprint_for.upper() == "COOP":
-            if (dir_name / "COOPCAR.lobster.gz").exists() and (
-                dir_name / "ICOOPLIST.lobster.gz"
-            ).exists():
-                coxxcar_path = dir_name / "COOPCAR.lobster.gz"
-                icoxxlist_path = dir_name / "ICOOPLIST.lobster.gz"
+            req_files = {
+                "coxxcar_path": "COOPCAR.lobster",
+                "icoxxlist_path": "ICOOPLIST.lobster",
+            }
+            for file, default_value in req_files.items():
+                file_path = dir_name / default_value
+                req_files[file] = file_path
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path
+
+            coxxcar_path = req_files.get("coxxcar_path")
+            icoxxlist_path = req_files.get("icoxxlist_path")
+
+            if coxxcar_path.exists() and icoxxlist_path.exists():
                 are_cobis = False
                 are_coops = True
             else:
                 raise Exception(
-                    "COOPCAR.lobster.gz or ICOOPLIST.lobster.gz file not found in "
+                    "COOPCAR.lobster or ICOOPLIST.lobster file not found in "
                     "{}".format(dir_name.name)
                 )
         else:
-            if (dir_name / "COHPCAR.lobster.gz").exists() and (
-                dir_name / "ICOHPLIST.lobster.gz"
-            ).exists():
-                coxxcar_path = dir_name / "COHPCAR.lobster.gz"
-                icoxxlist_path = dir_name / "ICOHPLIST.lobster.gz"
+            req_files = {
+                "coxxcar_path": "COHPCAR.lobster",
+                "icoxxlist_path": "ICOHPLIST.lobster",
+            }
+            for file, default_value in req_files.items():
+                file_path = dir_name / default_value
+                req_files[file] = file_path
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path
+
+            coxxcar_path = req_files.get("coxxcar_path")
+            icoxxlist_path = req_files.get("icoxxlist_path")
+
+            if coxxcar_path.exists() and icoxxlist_path.exists():
                 are_cobis = False
                 are_coops = False
             else:
                 raise Exception(
-                    "COHPCAR.lobster.gz or ICOHPLIST.lobster.gz file not found in "
+                    "COHPCAR.lobster or ICOHPLIST.lobster file not found in "
                     "{}".format(dir_name.name)
                 )
 
-        if (dir_name / "POSCAR.gz").exists():
-            structure_path = dir_name / "POSCAR.gz"
-        else:
-            raise Exception("POSCAR.gz file not found in {}".format(dir_name.name))
+        structure_path = dir_name / "POSCAR"
+        if not structure_path.exists():
+            gz_file_path = structure_path.with_name(structure_path.name + ".gz")
+            if gz_file_path.exists():
+                structure_path = gz_file_path
+            else:
+                raise Exception("POSCAR file not found in {}".format(dir_name.name))
 
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(coxxcar_path),

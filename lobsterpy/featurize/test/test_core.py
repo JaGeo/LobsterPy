@@ -1,5 +1,6 @@
 import unittest
 import pandas as pd
+import numpy as np
 from pathlib import Path
 from lobsterpy.featurize.core import FeaturizeLobsterpy, FeaturizeCharges, FeaturizeCOXX
 
@@ -10,18 +11,22 @@ TestDir = CurrentDir / "../../"
 class TestFeaturizeLobsterpy(unittest.TestCase):
     def setUp(self):
         self.featurize_mp1249_json = FeaturizeLobsterpy(
-            path_to_json=TestDir / "TestData/JSONS/mp-1249.json.gz", bonds="all_bonds"
+            path_to_json=TestDir / "TestData/JSONS/mp-1249.json.gz", bonds="all"
         )
 
         self.featurize_mp1249_json_ca = FeaturizeLobsterpy(
             path_to_json=TestDir / "TestData/JSONS/mp-1249.json.gz",
-            bonds="cation_anion_bonds",
+            bonds="cation-anion",
         )
         self.featurize_mp1958_json = FeaturizeLobsterpy(
-            path_to_json=TestDir / "TestData/JSONS/mp-1958.json.gz", bonds="all_bonds"
+            path_to_json=TestDir / "TestData/JSONS/mp-1958.json.gz", bonds="all"
         )
         self.featurize_mp14652_json = FeaturizeLobsterpy(
-            path_to_json=TestDir / "TestData/JSONS/mp-14652.json.gz", bonds="all_bonds"
+            path_to_json=TestDir / "TestData/JSONS/mp-14652.json.gz", bonds="all"
+        )
+
+        self.featurize_CsH_madelung = FeaturizeLobsterpy(
+            path_to_lobster_calc=TestDir / "TestData/CsH/", bonds="all"
         )
 
     def test_featurize_mp1249_json(self):
@@ -193,6 +198,12 @@ class TestFeaturizeLobsterpy(unittest.TestCase):
             df.loc["mp-14652", "antibonding_perc_std"], 0.006339, places=5
         )
 
+    def test_featurize_CsH_madelung(self):
+        df = self.featurize_CsH_madelung.get_df()
+
+        self.assertTrue(np.isnan(df.loc["CsH", "Madelung_Mull"]))
+        self.assertTrue(np.isnan(df.loc["CsH", "Madelung_Loew"]))
+
 
 class TestFeaturizeCOXX(unittest.TestCase):
     def setUp(self):
@@ -246,10 +257,48 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertAlmostEqual(df.loc["NaCl", "w_ICOHP"], -0.150558, places=5)
 
         self.assertAlmostEqual(df.loc["NaCl", "EIN_ICOHP"], 27.843536, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "center_COHP"], -4.96241, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "width_COHP"], 8.881784e-16, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "skewness_COHP"], 1, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "kurtosis_COHP"], 1, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "center_COHP"], 2.79973, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "width_COHP"], 0.686836, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "skewness_COHP"], -1.072675, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "kurtosis_COHP"], 4.811448, places=5)
+
+    def test_featurize_NaCl_COXX_fingerprint(self):
+        df = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(n_bins=20000)
+
+        fingerprint = df.loc["NaCl", "COXX_FP"]
+
+        self.assertNotEqual(fingerprint.n_bins, 20000)
+
+        df1 = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(binning=False)
+
+        fingerprint = df1.loc["NaCl", "COXX_FP"]
+
+        self.assertEqual(fingerprint.n_bins, 401)
+
+        df2 = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(label_list=["3", "5"])
+
+        fingerprint_label = df2.loc["NaCl", "COXX_FP"]
+
+        self.assertNotEqual(fingerprint.__str__(), fingerprint_label.__str__())
+
+    def test_featurize_CdF_COXX_fingerprint(self):
+        df = self.featurize_CdF_COXX.get_coxx_fingerprint_df(n_bins=20000)
+
+        fingerprint = df.loc["CdF", "COXX_FP"]
+
+        self.assertNotEqual(fingerprint.n_bins, 20000)
+
+        df1 = self.featurize_CdF_COXX.get_coxx_fingerprint_df(binning=False)
+
+        fingerprint = df1.loc["CdF", "COXX_FP"]
+
+        self.assertEqual(fingerprint.n_bins, 401)
+
+        df2 = self.featurize_CdF_COXX.get_coxx_fingerprint_df(label_list=["3", "5"])
+
+        fingerprint_label = df2.loc["CdF", "COXX_FP"]
+
+        self.assertNotEqual(fingerprint.__str__(), fingerprint_label.__str__())
 
     def test_featurize_CdF_COXX(self):
         df = self.featurize_CdF_COXX.get_summarized_coxx_df()
@@ -283,6 +332,39 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertAlmostEqual(df.loc["CdF", "width_COHP"], 0.157761, places=5)
         self.assertAlmostEqual(df.loc["CdF", "skewness_COHP"], 0.910094, places=5)
         self.assertAlmostEqual(df.loc["CdF", "kurtosis_COHP"], 2.866611, places=5)
+
+    def test_featurize_K3Sb_COXX(self):
+        df = self.featurize_K3Sb_COXX.get_summarized_coxx_df(ids="K3Sb")
+
+        # Test that the function returns a pandas DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "bnd_wICOHP",
+            "antibnd_wICOHP",
+            "w_ICOHP",
+            "EIN_ICOHP",
+            "center_COHP",
+            "width_COHP",
+            "skewness_COHP",
+            "kurtosis_COHP",
+        ]
+        self.assertCountEqual(list(df.columns), expected_cols)
+
+        # Test that the DataFrame has the expected index
+        self.assertEqual(df.index[0], "K3Sb")
+
+        # Test that all the values in the DataFrame
+        self.assertAlmostEqual(df.loc["K3Sb", "bnd_wICOHP"], 97.053378, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "antibnd_wICOHP"], 2.946622, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "w_ICOHP"], -0.318218, places=5)
+
+        self.assertAlmostEqual(df.loc["K3Sb", "EIN_ICOHP"], 11.597595, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "center_COHP"], 2.786451, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "width_COHP"], 0.765492, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "skewness_COHP"], -1.52563, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "kurtosis_COHP"], 6.829327, places=5)
 
 
 class TestFeaturizeCharges(unittest.TestCase):
@@ -362,7 +444,7 @@ class TestExceptions(unittest.TestCase):
     def test_lobsterpy_featurize_exception(self):
         with self.assertRaises(Exception) as err:
             self.featurize_mp1249_json = FeaturizeLobsterpy(
-                path_to_json=None, path_to_lobster_calc=None, bonds="all_bonds"
+                path_to_json=None, path_to_lobster_calc=None, bonds="all"
             )
 
             self.featurize_mp1249_json.get_df()
@@ -373,15 +455,27 @@ class TestExceptions(unittest.TestCase):
 
         with self.assertRaises(Exception) as err:
             self.featurize_mp1249_json = FeaturizeLobsterpy(
-                path_to_json=None, path_to_lobster_calc=TestDir, bonds="all_bonds"
+                path_to_json=None, path_to_lobster_calc=TestDir, bonds="all"
             )
 
             self.featurize_mp1249_json.get_df()
         self.assertEqual(
             err.exception.__str__(),
             "Path provided for Lobster calc directory seems incorrect."
-            "It does not contain COHPCAR.lobster.gz, ICOHPLIST.lobster.gz, POSCAR.gz and "
-            "CHARGE.lobster.gz files needed for automatic analysis using LobsterPy",
+            "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
+            "CHARGE.lobster files needed for automatic analysis using LobsterPy",
+        )
+
+        with self.assertRaises(Exception) as err:
+            self.featurize_CsH_cation_anion = FeaturizeLobsterpy(
+                path_to_lobster_calc=TestDir / "TestData/CsH/", bonds="cation-anion"
+            )
+            _df = self.featurize_CsH_cation_anion.get_df()
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "No cation-anion bonds detected for CsH structure. "
+            "Please switch to ´all´ bonds mode",
         )
 
     def test_featurize_coxx(self):
@@ -433,6 +527,36 @@ class TestExceptions(unittest.TestCase):
         self.assertEqual(
             err3.exception.__str__(),
             "You cannot have info about COOPs and COBIs in the same file.",
+        )
+
+        with self.assertRaises(Exception) as err:
+            self.featurize_NaCl_COXX = FeaturizeCOXX(
+                path_to_coxxcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+                path_to_icoxxlist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+                path_to_structure=TestDir / "TestData/NaCl/POSCAR",
+                feature_type="antibond",
+                e_range=[-5, 0],
+            ).get_summarized_coxx_df()
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "Please recheck fp_type requested argument."
+            "Possible options are bonding/antibonding/overall",
+        )
+
+        with self.assertRaises(Exception) as err:
+            self.featurize_NaCl_COXX = FeaturizeCOXX(
+                path_to_coxxcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
+                path_to_icoxxlist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+                path_to_structure=TestDir / "TestData/NaCl/POSCAR",
+                feature_type="antibonding",
+                e_range=[-5, 0],
+            ).get_coxx_fingerprint_df(spin_type="down")
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "LOBSTER calculation is non-spin polarized. "
+            "Please switch spin_type to `up`",
         )
 
 

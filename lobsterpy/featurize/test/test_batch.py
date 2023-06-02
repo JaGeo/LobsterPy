@@ -12,7 +12,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
         self.summary_featurize_with_json = BatchSummaryFeaturizer(
             path_to_lobster_calcs=TestDir
             / "TestData/Featurizer_test_data/Lobster_calcs",
-            bonds="all_bonds",
+            bonds="all",
             path_to_jsons=TestDir / "TestData/Featurizer_test_data/JSONS",
             feature_type="antibonding",
             include_cobi_data=False,
@@ -24,7 +24,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
         self.summary_featurize_without_json = BatchSummaryFeaturizer(
             path_to_lobster_calcs=TestDir
             / "TestData/Featurizer_test_data/Lobster_calcs",
-            bonds="all_bonds",
+            bonds="all",
             include_cobi_data=False,
             include_coop_data=False,
             e_range=[-15, 0],
@@ -34,7 +34,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
         self.summary_featurize_with_json_overall = BatchSummaryFeaturizer(
             path_to_lobster_calcs=TestDir
             / "TestData/Featurizer_test_data/Lobster_calcs",
-            bonds="all_bonds",
+            bonds="all",
             path_to_jsons=TestDir / "TestData/Featurizer_test_data/JSONS",
             feature_type="overall",
             include_cobi_data=True,
@@ -46,7 +46,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
         self.summary_featurize_with_json_bonding = BatchSummaryFeaturizer(
             path_to_lobster_calcs=TestDir
             / "TestData/Featurizer_test_data/Lobster_calcs",
-            bonds="all_bonds",
+            bonds="all",
             path_to_jsons=TestDir / "TestData/Featurizer_test_data/JSONS",
             feature_type="bonding",
             include_cobi_data=False,
@@ -59,7 +59,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
         self.summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
             path_to_lobster_calcs=TestDir
             / "TestData/Featurizer_test_data/Lobster_calcs",
-            bonds="cation_anion_bonds",
+            bonds="cation-anion",
             path_to_jsons=TestDir / "TestData/Featurizer_test_data/JSONS",
             feature_type="antibonding",
             include_cobi_data=False,
@@ -333,16 +333,16 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
     def test_fp_cohp_overall(self):
         df = self.fp_cohp_overall.get_similarity_matrix_df()
 
-        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], -0.033251, places=5)
-        self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], -0.013751, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0.221446, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], -0.015035, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-463"], 1, places=5)
-        self.assertAlmostEqual(df.loc["mp-1000", "mp-2176"], 0.046889, places=5)
+        self.assertAlmostEqual(df.loc["mp-1000", "mp-2176"], 0.175085, places=5)
 
     def test_fp_cohp_bonding(self):
         fp_df = self.fp_cohp_bonding.fingerprint_df
         df = self.fp_cohp_bonding.get_similarity_matrix_df()
 
-        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0.0000171, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], 0.000000, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-463"], 1, places=5)
         for val in fp_df.loc["mp-1000", "COXX_FP"].coxx:
@@ -352,7 +352,7 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
         fp_df = self.fp_cobi.fingerprint_df
         df = self.fp_cobi.get_similarity_matrix_df()
 
-        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0.329883, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], 0, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-463"], 1, places=5)
         for val in fp_df.loc["mp-463", "COXX_FP"].coxx:
@@ -375,7 +375,7 @@ class TestExceptions(unittest.TestCase):
             self.summary_featurize_with_json = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
                 / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/1/",
-                bonds="all_bonds",
+                bonds="all",
                 feature_type="antibonding",
                 include_cobi_data=True,
                 include_coop_data=True,
@@ -386,14 +386,14 @@ class TestExceptions(unittest.TestCase):
             print(df.to_string())
         self.assertEqual(
             err.exception.__str__(),
-            "COBICAR.lobster.gz or ICOBILIST.lobster.gz file not found in mp-2176",
+            "COBICAR.lobster or ICOBILIST.lobster file not found in mp-2176",
         )
 
         with self.assertRaises(Exception) as err:
             self.summary_featurize_with_json = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
                 / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/2/",
-                bonds="all_bonds",
+                bonds="all",
                 feature_type="antibonding",
                 include_cobi_data=True,
                 include_coop_data=True,
@@ -404,7 +404,7 @@ class TestExceptions(unittest.TestCase):
             print(df.to_string())
         self.assertEqual(
             err.exception.__str__(),
-            "COOPCAR.lobster.gz or ICOOPLIST.lobster.gz file not found in mp-1000",
+            "COOPCAR.lobster or ICOOPLIST.lobster file not found in mp-1000",
         )
 
 
