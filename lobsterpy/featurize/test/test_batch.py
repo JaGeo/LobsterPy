@@ -371,7 +371,7 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
 
 class TestExceptions(unittest.TestCase):
     def test_batch_summary_featurizer_exception(self):
-        with self.assertRaises(Exception) as err:
+        with self.assertRaises(Exception) as err1:
             self.summary_featurize_with_json = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
                 / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/1/",
@@ -382,14 +382,14 @@ class TestExceptions(unittest.TestCase):
                 e_range=[-15, 0],
             )
 
-            df = self.summary_featurize_with_json.get_df()
-            print(df.to_string())
+            _ = self.summary_featurize_with_json.get_df()
+
         self.assertEqual(
-            err.exception.__str__(),
+            err1.exception.__str__(),
             "COBICAR.lobster or ICOBILIST.lobster file not found in mp-2176",
         )
 
-        with self.assertRaises(Exception) as err:
+        with self.assertRaises(Exception) as err2:
             self.summary_featurize_with_json = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
                 / "TestData/Featurizer_test_data/Lobster_calcs_exceptions/2/",
@@ -400,11 +400,68 @@ class TestExceptions(unittest.TestCase):
                 e_range=[-15, 0],
             )
 
-            df = self.summary_featurize_with_json.get_df()
-            print(df.to_string())
+            _ = self.summary_featurize_with_json.get_df()
+
         self.assertEqual(
-            err.exception.__str__(),
+            err2.exception.__str__(),
             "COOPCAR.lobster or ICOOPLIST.lobster file not found in mp-1000",
+        )
+
+        # COXX exception
+        with self.assertRaises(Exception) as err3:
+            self.raise_coxx_exception = BatchSummaryFeaturizer(
+                path_to_lobster_calcs=TestDir / "TestData/JSONS/"
+            )
+
+            _ = self.raise_coxx_exception._featurizecoxx(
+                path_to_lobster_calc=self.raise_coxx_exception.path_to_lobster_calcs
+            )
+
+        self.assertEqual(
+            err3.exception.__str__(),
+            "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file not found in JSONS",
+        )
+
+        # Charges exception
+        with self.assertRaises(Exception) as err4:
+            self.raise_ch_exception = BatchSummaryFeaturizer(
+                path_to_lobster_calcs=TestDir / "TestData/JSONS/"
+            )
+
+            _ = self.raise_ch_exception._featurizecharges(
+                path_to_lobster_calc=self.raise_ch_exception.path_to_lobster_calcs
+            )
+
+        self.assertEqual(
+            err4.exception.__str__(),
+            "CHARGE.lobster or POSCAR not found in JSONS",
+        )
+
+        # Fingerprint similarity exception
+        with self.assertRaises(Exception) as err8:
+            fp_cohp_bonding = BatchCoxxFingerprint(
+                path_to_lobster_calcs=TestDir
+                / "TestData/Featurizer_test_data/Lobster_calcs",
+                e_range=[-15, 0],
+                feature_type="bonding",
+                normalize=True,
+                tanimoto=True,
+                n_jobs=3,
+            )
+
+            fp_df = fp_cohp_bonding.fingerprint_df
+
+            _ = fp_cohp_bonding._get_fp_similarity(
+                fp_df.loc["mp-1000", "COXX_FP"],
+                fp_df.loc["mp-2176", "COXX_FP"],
+                tanimoto=True,
+                normalize=True,
+            )
+
+        self.assertEqual(
+            err8.exception.__str__(),
+            "Cannot compute similarity index. Please set either normalize=True or "
+            "tanimoto=True or both to False.",
         )
 
 

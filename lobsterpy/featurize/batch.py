@@ -52,7 +52,6 @@ class BatchSummaryFeaturizer:
         bonds: str = "all",
         include_cobi_data: bool = False,
         include_coop_data: bool = False,
-        only_smallest_basis: bool = True,
         e_range: List[float] = [-5.0, 0.0],
         n_jobs: int = 4,
     ):
@@ -63,7 +62,6 @@ class BatchSummaryFeaturizer:
         self.bonds = bonds
         self.include_cobi_data = include_cobi_data
         self.include_coop_data = include_coop_data
-        self.only_smallest_basis = only_smallest_basis
         self.e_range = e_range
         self.n_jobs = n_jobs
 
@@ -111,20 +109,20 @@ class BatchSummaryFeaturizer:
         }
         for file, default_value in req_files.items():
             file_path = dir_name / default_value
-            req_files[file] = file_path
+            req_files[file] = file_path  # type: ignore
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    req_files[file] = gz_file_path
+                    req_files[file] = gz_file_path  # type: ignore
 
         coxxcar_path = req_files.get("coxxcar_path")
         structure_path = req_files.get("structure_path")
         icoxxlist_path = req_files.get("icoxxlist_path")
 
         if (
-            coxxcar_path.exists()
-            and structure_path.exists()
-            and icoxxlist_path.exists()
+            coxxcar_path.exists()  # type: ignore
+            and structure_path.exists()  # type: ignore
+            and icoxxlist_path.exists()  # type: ignore
         ):
             coxx = FeaturizeCOXX(
                 path_to_coxxcar=str(coxxcar_path),
@@ -148,16 +146,16 @@ class BatchSummaryFeaturizer:
             }
             for file, default_value in req_files.items():
                 file_path = dir_name / default_value
-                req_files[file] = file_path
+                req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
                     if gz_file_path.exists():
-                        req_files[file] = gz_file_path
+                        req_files[file] = gz_file_path  # type: ignore
 
             coxxcar_path = req_files.get("coxxcar_path")
             icoxxlist_path = req_files.get("icoxxlist_path")
 
-            if coxxcar_path.exists() and icoxxlist_path.exists():
+            if coxxcar_path.exists() and icoxxlist_path.exists():  # type: ignore
                 coxx = FeaturizeCOXX(
                     path_to_coxxcar=str(coxxcar_path),
                     path_to_icoxxlist=str(icoxxlist_path),
@@ -182,16 +180,16 @@ class BatchSummaryFeaturizer:
             }
             for file, default_value in req_files.items():
                 file_path = dir_name / default_value
-                req_files[file] = file_path
+                req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
                     if gz_file_path.exists():
-                        req_files[file] = gz_file_path
+                        req_files[file] = gz_file_path  # type: ignore
 
             coxxcar_path = req_files.get("coxxcar_path")
             icoxxlist_path = req_files.get("icoxxlist_path")
 
-            if coxxcar_path.exists() and icoxxlist_path.exists():
+            if coxxcar_path.exists() and icoxxlist_path.exists():  # type: ignore
                 coxx = FeaturizeCOXX(
                     path_to_coxxcar=str(coxxcar_path),
                     path_to_icoxxlist=str(icoxxlist_path),
@@ -236,16 +234,16 @@ class BatchSummaryFeaturizer:
         }
         for file, default_value in req_files.items():
             file_path = dir_name / default_value
-            req_files[file] = file_path
+            req_files[file] = file_path  # type: ignore
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    req_files[file] = gz_file_path
+                    req_files[file] = gz_file_path  # type: ignore
 
         charge_path = req_files.get("charge_path")
         structure_path = req_files.get("structure_path")
 
-        if charge_path.exists() and structure_path.exists():
+        if charge_path.exists() and structure_path.exists():  # type: ignore
             if self.charge_type == "mulliken":
                 charge_mull = FeaturizeCharges(
                     path_to_charge=str(charge_path),
@@ -292,17 +290,7 @@ class BatchSummaryFeaturizer:
             Returns a pandas dataframe
 
         """
-        if self.path_to_jsons and self.only_smallest_basis:
-            file_name_or_path = [
-                os.path.join(self.path_to_jsons, f)
-                for f in os.listdir(self.path_to_jsons)
-                if not f.startswith("t")
-                and not f.startswith(".")
-                and not os.path.isdir(f)
-                and not len(f.split("_")) > 1
-            ]
-
-        elif self.path_to_jsons and not self.only_smallest_basis:
+        if self.path_to_jsons:
             file_name_or_path = [
                 os.path.join(self.path_to_jsons, f)
                 for f in os.listdir(self.path_to_jsons)
@@ -310,25 +298,8 @@ class BatchSummaryFeaturizer:
                 and not f.startswith(".")
                 and not os.path.isdir(f)
             ]
-        elif (
-            self.path_to_lobster_calcs
-            and self.only_smallest_basis
-            and not self.path_to_jsons
-        ):
-            file_name_or_path = [
-                os.path.join(self.path_to_lobster_calcs, f)
-                for f in os.listdir(self.path_to_lobster_calcs)
-                if not f.startswith("t")
-                and not f.startswith(".")
-                and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
-                and not len(f.split("_")) > 1
-            ]
 
-        elif (
-            self.path_to_lobster_calcs
-            and not self.only_smallest_basis
-            and not self.path_to_jsons
-        ):
+        elif self.path_to_lobster_calcs and not self.path_to_jsons:
             file_name_or_path = [
                 os.path.join(self.path_to_lobster_calcs, f)
                 for f in os.listdir(self.path_to_lobster_calcs)
@@ -354,23 +325,13 @@ class BatchSummaryFeaturizer:
         df_lobsterpy = pd.concat(row)
         df_lobsterpy.sort_index(inplace=True)
 
-        if self.only_smallest_basis:
-            paths = [
-                os.path.join(self.path_to_lobster_calcs, f)
-                for f in os.listdir(self.path_to_lobster_calcs)
-                if not f.startswith("t")
-                and not f.startswith(".")
-                and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
-                and not len(f.split("_")) > 1
-            ]
-        else:
-            paths = [
-                os.path.join(self.path_to_lobster_calcs, f)
-                for f in os.listdir(self.path_to_lobster_calcs)
-                if not f.startswith("t")
-                and not f.startswith(".")
-                and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
-            ]
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(
@@ -414,7 +375,6 @@ class BatchCoxxFingerprint:
 
     Args:
         path_to_lobster_calcs: path to root directory consisting of all lobster calc
-        only_smallest_basis: bool to state to include directories with smallest basis only
         feature_type: set the feature type for moment features.
         Possible options are "bonding", "antibonding" or "overall"
         label_list: bond labels list for which fingerprints needs to be generated.
@@ -436,7 +396,6 @@ class BatchCoxxFingerprint:
     def __init__(
         self,
         path_to_lobster_calcs: str,
-        only_smallest_basis: bool = True,
         feature_type: str = "overall",
         label_list: List[str] | None = None,
         tanimoto: bool = True,
@@ -448,7 +407,6 @@ class BatchCoxxFingerprint:
         fingerprint_for: str = "cohp",
     ):
         self.path_to_lobster_calcs = path_to_lobster_calcs
-        self.only_smallest_basis = only_smallest_basis
         self.feature_type = feature_type
         self.tanimoto = tanimoto
         self.normalize = normalize
@@ -594,22 +552,17 @@ class BatchCoxxFingerprint:
             }
             for file, default_value in req_files.items():
                 file_path = dir_name / default_value
-                req_files[file] = file_path
+                req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
                     if gz_file_path.exists():
-                        req_files[file] = gz_file_path
+                        req_files[file] = gz_file_path  # type: ignore
 
             coxxcar_path = req_files.get("coxxcar_path")
             icoxxlist_path = req_files.get("icoxxlist_path")
-            if coxxcar_path.exists() and icoxxlist_path.exists():
-                are_cobis = True
-                are_coops = False
-            else:
-                raise Exception(
-                    "COBICAR.lobster or ICOBILIST.lobster file not found in "
-                    "{}".format(dir_name.name)
-                )
+            are_cobis = True
+            are_coops = False
+
         elif self.fingerprint_for.upper() == "COOP":
             req_files = {
                 "coxxcar_path": "COOPCAR.lobster",
@@ -617,23 +570,17 @@ class BatchCoxxFingerprint:
             }
             for file, default_value in req_files.items():
                 file_path = dir_name / default_value
-                req_files[file] = file_path
+                req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
                     if gz_file_path.exists():
-                        req_files[file] = gz_file_path
+                        req_files[file] = gz_file_path  # type: ignore
 
             coxxcar_path = req_files.get("coxxcar_path")
             icoxxlist_path = req_files.get("icoxxlist_path")
+            are_cobis = False
+            are_coops = True
 
-            if coxxcar_path.exists() and icoxxlist_path.exists():
-                are_cobis = False
-                are_coops = True
-            else:
-                raise Exception(
-                    "COOPCAR.lobster or ICOOPLIST.lobster file not found in "
-                    "{}".format(dir_name.name)
-                )
         else:
             req_files = {
                 "coxxcar_path": "COHPCAR.lobster",
@@ -641,31 +588,22 @@ class BatchCoxxFingerprint:
             }
             for file, default_value in req_files.items():
                 file_path = dir_name / default_value
-                req_files[file] = file_path
+                req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
                     if gz_file_path.exists():
-                        req_files[file] = gz_file_path
+                        req_files[file] = gz_file_path  # type: ignore
 
             coxxcar_path = req_files.get("coxxcar_path")
             icoxxlist_path = req_files.get("icoxxlist_path")
-
-            if coxxcar_path.exists() and icoxxlist_path.exists():
-                are_cobis = False
-                are_coops = False
-            else:
-                raise Exception(
-                    "COHPCAR.lobster or ICOHPLIST.lobster file not found in "
-                    "{}".format(dir_name.name)
-                )
+            are_cobis = False
+            are_coops = False
 
         structure_path = dir_name / "POSCAR"
         if not structure_path.exists():
             gz_file_path = structure_path.with_name(structure_path.name + ".gz")
             if gz_file_path.exists():
                 structure_path = gz_file_path
-            else:
-                raise Exception("POSCAR file not found in {}".format(dir_name.name))
 
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(coxxcar_path),
@@ -683,6 +621,7 @@ class BatchCoxxFingerprint:
             normalize=self.normalize,
             label_list=self.label_list,
         )
+
         return df_fp
 
     def _get_fingerprints_df(self) -> pd.DataFrame:
@@ -694,23 +633,13 @@ class BatchCoxxFingerprint:
             A pandas dataframe with COXX fingerprint objects
 
         """
-        if self.only_smallest_basis:
-            paths = [
-                os.path.join(self.path_to_lobster_calcs, f)
-                for f in os.listdir(self.path_to_lobster_calcs)
-                if not f.startswith("t")
-                and not f.startswith(".")
-                and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
-                and not len(f.split("_")) > 1
-            ]
-        else:
-            paths = [
-                os.path.join(self.path_to_lobster_calcs, f)
-                for f in os.listdir(self.path_to_lobster_calcs)
-                if not f.startswith("t")
-                and not f.startswith(".")
-                and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
-            ]
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(

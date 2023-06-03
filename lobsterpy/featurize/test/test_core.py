@@ -447,7 +447,8 @@ class TestExceptions(unittest.TestCase):
                 path_to_json=None, path_to_lobster_calc=None, bonds="all"
             )
 
-            self.featurize_mp1249_json.get_df()
+            _ = self.featurize_mp1249_json.get_df()
+
         self.assertEqual(
             err.exception.__str__(),
             "Please provide either path to lightweight lobster jsons or path to lobster calc",
@@ -458,7 +459,8 @@ class TestExceptions(unittest.TestCase):
                 path_to_json=None, path_to_lobster_calc=TestDir, bonds="all"
             )
 
-            self.featurize_mp1249_json.get_df()
+            _ = self.featurize_mp1249_json.get_df()
+
         self.assertEqual(
             err.exception.__str__(),
             "Path provided for Lobster calc directory seems incorrect."
@@ -470,7 +472,8 @@ class TestExceptions(unittest.TestCase):
             self.featurize_CsH_cation_anion = FeaturizeLobsterpy(
                 path_to_lobster_calc=TestDir / "TestData/CsH/", bonds="cation-anion"
             )
-            _df = self.featurize_CsH_cation_anion.get_df()
+
+            _ = self.featurize_CsH_cation_anion.get_df()
 
         self.assertEqual(
             err.exception.__str__(),
@@ -488,7 +491,7 @@ class TestExceptions(unittest.TestCase):
                 e_range=[-5, 0],
             )
 
-            self.featurize_COXX.get_summarized_coxx_df()
+            _ = self.featurize_COXX.get_summarized_coxx_df()
 
         self.assertEqual(
             err.exception.__str__(),
@@ -504,7 +507,7 @@ class TestExceptions(unittest.TestCase):
                 e_range=[-5, 0],
             )
 
-            self.featurize_COXX.get_coxx_fingerprint_df(spin_type="-1")
+            _ = self.featurize_COXX.get_coxx_fingerprint_df(spin_type="-1")
 
         self.assertEqual(
             err2.exception.__str__(),
@@ -522,7 +525,7 @@ class TestExceptions(unittest.TestCase):
                 are_coops=True,
             )
 
-            self.featurize_COXX.get_coxx_fingerprint_df()
+            _ = self.featurize_COXX.get_coxx_fingerprint_df()
 
         self.assertEqual(
             err3.exception.__str__(),
@@ -536,7 +539,9 @@ class TestExceptions(unittest.TestCase):
                 path_to_structure=TestDir / "TestData/NaCl/POSCAR",
                 feature_type="antibond",
                 e_range=[-5, 0],
-            ).get_summarized_coxx_df()
+            )
+
+            _ = self.featurize_NaCl_COXX.get_summarized_coxx_df()
 
         self.assertEqual(
             err.exception.__str__(),
@@ -551,7 +556,9 @@ class TestExceptions(unittest.TestCase):
                 path_to_structure=TestDir / "TestData/NaCl/POSCAR",
                 feature_type="antibonding",
                 e_range=[-5, 0],
-            ).get_coxx_fingerprint_df(spin_type="down")
+            )
+
+            _ = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(spin_type="down")
 
         self.assertEqual(
             err.exception.__str__(),

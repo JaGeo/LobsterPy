@@ -183,11 +183,11 @@ class FeaturizeLobsterpy:
 
         for file, default_value in req_files_lobsterpy.items():
             file_path = dir_name / default_value
-            req_files_lobsterpy[file] = file_path
+            req_files_lobsterpy[file] = file_path  # type: ignore
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    req_files_lobsterpy[file] = gz_file_path
+                    req_files_lobsterpy[file] = gz_file_path  # type: ignore
                 else:
                     raise Exception(
                         "Path provided for Lobster calc directory seems incorrect."
@@ -794,9 +794,7 @@ class FeaturizeCharges:
             )
 
         ch_veff = []
-        for i, j in enumerate(
-            chargeobj.__getattribute__(self.charge_type.capitalize())
-        ):
+        for i, j in enumerate(getattr(chargeobj, self.charge_type.capitalize())):
             if (
                 j > 0
                 and not structure.species[i].is_transition_metal
