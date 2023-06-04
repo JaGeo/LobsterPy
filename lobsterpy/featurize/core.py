@@ -555,6 +555,7 @@ class FeaturizeCOXX:
             label_list: List of bond labels
             per_bond: Will scale cohp values by number of bonds i.e length of label_list arg
             (Only affects when label_list is not None)
+
         Returns:
             coxx center,width, skewness, and kurtosis in eV
         """
@@ -654,6 +655,8 @@ class FeaturizeCOXX:
         Args:
             coxx: COXX array
             energies: energies corresponding  COXX
+            e_range: range of energy to compute coxx center
+
         Returns:
             coxx center in eV
         """
