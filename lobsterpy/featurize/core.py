@@ -89,26 +89,33 @@ class FeaturizeLobsterpy:
         bond = []
         antibond = []
         # extract lobsterpy icohp related data for bond type specified
+        # Results will differ for "all" and "cation-anion" mode.
+        # In "all" bonds mode, the bonds will come up twice, also
+        # cation-cation, anion-anion bonds will also be considered
+
         if self.bonds == "all":
             bond_type = "all_bonds"
         elif self.bonds == "cation-anion":
             bond_type = "cation_anion_bonds"
 
-        if data[bond_type]["lobsterpy_data"]["sites"]:
-            for k, v in data[bond_type]["lobsterpy_data"]["sites"].items():
-                if v["bonds"]:
-                    for k1, v1 in v["bonds"].items():
-                        icohp_mean.append(float(v1["ICOHP_mean"]))
-                        icohp_sum.append(float(v1["ICOHP_sum"]))
-                        bond.append(v1["bonding"]["perc"])
-                        antibond.append(v1["antibonding"]["perc"])
-        else:
+        if (
+            not data[bond_type]["lobsterpy_data"]
+            or not data[bond_type]["lobsterpy_data"]["sites"]
+        ):
             raise Exception(
                 "No {} bonds detected for {} structure. "
                 "Please switch to ´all´ bonds mode".format(self.bonds, ids)
             )
 
-        # add stats data as columns to the dataframe
+        for k, v in data[bond_type]["lobsterpy_data"]["sites"].items():
+            if v["bonds"]:
+                for k1, v1 in v["bonds"].items():
+                    icohp_mean.append(float(v1["ICOHP_mean"]))
+                    icohp_sum.append(float(v1["ICOHP_sum"]))
+                    bond.append(v1["bonding"]["perc"])
+                    antibond.append(v1["antibonding"]["perc"])
+
+        # add ICOHP stats data (mean, min, max, standard deviation) as columns to the dataframe
         df.loc[ids, "Icohp_mean_avg"] = np.mean(icohp_mean)
         df.loc[ids, "Icohp_mean_max"] = np.max(icohp_mean)
         df.loc[ids, "Icohp_mean_min"] = np.min(icohp_mean)
@@ -316,6 +323,7 @@ class FeaturizeCOXX:
         self,
         ids: str | None = None,
         label_list: List[str] | None = None,
+        per_bond: bool = True,
         spin_type: str = "summed",
         binning: bool = True,
         n_bins: int = 56,
@@ -332,6 +340,9 @@ class FeaturizeCOXX:
             n_bins: Number of bins to be used in the fingerprint (default is 256)
             normalize: If true, normalizes the area under fp to equal to 1 (default is True)
             label_list: Specify bond lables as a list for which cohp fingerprints are needed
+            per_bond: Will scale cohp values by number of bonds i.e length of label_list arg
+            (Only affects when label_list is not None)
+
 
         Raises:
             Exception: If spin_type is not one of the accepted values {summed/up/down}.
@@ -344,9 +355,7 @@ class FeaturizeCOXX:
         """
         coxxcar_obj = self.completecoxx
 
-        energies = (
-            coxxcar_obj.energies - coxxcar_obj.efermi
-        )  # here substraction of efermi has impact on fp.
+        energies = coxxcar_obj.energies - coxxcar_obj.efermi
 
         min_e = self.e_range[0]
         max_e = self.e_range[-1]
@@ -358,8 +367,9 @@ class FeaturizeCOXX:
             min_e = np.min(energies)
 
         if label_list:
+            divisor = len(label_list) if per_bond else 1
             coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_list(
-                label_list
+                label_list, divisor=divisor
             ).get_cohp()
         else:
             coxxcar_obj = coxxcar_obj.get_cohp()
@@ -384,19 +394,20 @@ class FeaturizeCOXX:
             )
 
         coxx_dict = {}
+        tol = 1e-6
         if not self.are_cobis and not self.are_coops:
             coxx_dict["bonding"] = np.array(
-                [scohp if scohp <= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp <= tol else 0 for scohp in coxx_all]
             )
             coxx_dict["antibonding"] = np.array(
-                [scohp if scohp >= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp >= tol else 0 for scohp in coxx_all]
             )
         else:
             coxx_dict["antibonding"] = np.array(
-                [scohp if scohp <= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp <= tol else 0 for scohp in coxx_all]
             )
             coxx_dict["bonding"] = np.array(
-                [scohp if scohp >= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp >= tol else 0 for scohp in coxx_all]
             )
 
         coxx_dict["overall"] = coxx_all
@@ -405,14 +416,12 @@ class FeaturizeCOXX:
             if ids:
                 df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
             else:
-                ids = Path(
-                    self.path_to_coxxcar
-                ).parent.name  # os.path.basename(os.path.dirname(self.path_to_coxxcar))
+                ids = Path(self.path_to_coxxcar).parent.name
                 df = pd.DataFrame(index=[ids], columns=["COXX_FP"])
 
             coxxs = coxx_dict[self.feature_type]
             if len(energies) < n_bins:
-                inds = np.where((energies >= min_e) & (energies <= max_e))
+                inds = np.where((energies >= min_e - tol) & (energies <= max_e + tol))
                 fp = coxx_fingerprint(
                     energies[inds],
                     coxxs[inds],
@@ -479,8 +488,7 @@ class FeaturizeCOXX:
             Percent bonding, Percent anti-bonding, weighted icoxx, effective interaction number
 
         """
-        icoxx_dict = self.icoxxlist.icohpcollection.as_dict()
-        list_labels = icoxx_dict["list_labels"]
+        list_labels = list(self.icoxxlist.icohplist.keys())
         # Compute sum of icohps
         icoxx_total = self.icoxxlist.icohpcollection.get_summed_icohp_by_label_list(
             list_labels
@@ -515,9 +523,10 @@ class FeaturizeCOXX:
         )  # calc effective interaction number
 
         # percent bonding-anitbonding
+        tol = 1e-6
         if not self.icoxxlist.are_cobis and not self.icoxxlist.are_coops:
-            bonding_indices = coxx_bf <= 0
-            antibonding_indices = coxx_bf >= 0
+            bonding_indices = coxx_bf <= tol
+            antibonding_indices = coxx_bf >= tol
             bnd = abs(trapezoid(en_bf[bonding_indices], coxx_bf[bonding_indices]))
             antibnd = abs(
                 trapezoid(en_bf[antibonding_indices], coxx_bf[antibonding_indices])
@@ -526,8 +535,8 @@ class FeaturizeCOXX:
             per_antibnd = (antibnd / (bnd + antibnd)) * 100
 
         elif self.icoxxlist.are_cobis or self.icoxxlist.are_coops:
-            bonding_indices = coxx_bf >= 0
-            antibonding_indices = coxx_bf <= 0
+            bonding_indices = coxx_bf >= tol
+            antibonding_indices = coxx_bf <= tol
             bnd = abs(trapezoid(coxx_bf[bonding_indices], en_bf[bonding_indices]))
             antibnd = abs(
                 trapezoid(coxx_bf[antibonding_indices], en_bf[antibonding_indices])
@@ -538,11 +547,21 @@ class FeaturizeCOXX:
         return per_bnd, per_antibnd, w_icoxx, ein
 
     def _calc_moment_features(
-        self, label_list: List[str] | None = None
+        self, label_list: List[str] | None = None, per_bond=True
     ) -> Tuple[float, float, float, float]:
+        """
+        Wrapper method to calculate band center,width, skewness, and kurtosis of the COXX
+        Args:
+            label_list: List of bond labels
+            per_bond: Will scale cohp values by number of bonds i.e length of label_list arg
+            (Only affects when label_list is not None)
+        Returns:
+            coxx center,width, skewness, and kurtosis in eV
+        """
         if label_list:
+            divisor = len(label_list) if per_bond else 1
             coxxcar = self.completecoxx.get_summed_cohp_by_label_list(
-                label_list
+                label_list, divisor=divisor
             ).get_cohp()
 
         else:
@@ -556,20 +575,21 @@ class FeaturizeCOXX:
         energies = self.completecoxx.energies - self.completecoxx.efermi
 
         coxx_dict = {}
+        tol = 1e-6
         if not self.are_cobis and not self.are_coops:
             coxx_dict["bonding"] = np.array(
-                [scohp if scohp <= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp <= tol else 0 for scohp in coxx_all]
             )
             coxx_dict["antibonding"] = np.array(
-                [scohp if scohp >= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp >= tol else 0 for scohp in coxx_all]
             )
             coxx_dict["overall"] = coxx_all
         else:
             coxx_dict["antibonding"] = np.array(
-                [scohp if scohp <= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp <= tol else 0 for scohp in coxx_all]
             )
             coxx_dict["bonding"] = np.array(
-                [scohp if scohp >= 0 else 0 for scohp in coxx_all]
+                [scohp if scohp >= tol else 0 for scohp in coxx_all]
             )
             coxx_dict["overall"] = coxx_all
 
@@ -630,12 +650,12 @@ class FeaturizeCOXX:
         e_range: List[float],
     ) -> float:
         """
-        Get the band width, defined as the first moment of the orbital resolved COHP
+        Get the band width, defined as the first moment of the COXX
         Args:
-            cohp: Orbital COHP list
-            energies: energies corresponding orbital orbital interactions COHP
+            coxx: COXX array
+            energies: energies corresponding  COXX
         Returns:
-            Orbital-Orbital interaction band center in eV
+            coxx center in eV
         """
         coxx_center = self._get_n_moment(
             n=1, coxx=coxx, energies=energies, e_range=e_range, center=False
@@ -657,8 +677,8 @@ class FeaturizeCOXX:
 
         Args:
             n: The order for the moment
-            cohp: COXX list
-            energies: energies
+            coxx: COXX array
+            energies: energies array
             center: Take moments with respect to the COXX center
 
         Returns:
@@ -675,8 +695,12 @@ class FeaturizeCOXX:
             min_e = min(energies)
             max_e = max(energies)
 
-        coxx = coxx[(energies >= min_e) & (energies <= max_e)]
-        energies = energies[(energies >= min_e) & (energies <= max_e)]
+        tol = 1e-6
+
+        mask = (energies >= min_e - tol) & (energies <= max_e + tol)
+
+        coxx = coxx[mask]
+        energies = energies[mask]
 
         if center:
             coxx_center = self._get_coxx_center(
@@ -691,7 +715,10 @@ class FeaturizeCOXX:
         return nth_moment
 
     def get_summarized_coxx_df(
-        self, ids: str | None = None, label_list: List[str] | None = None
+        self,
+        ids: str | None = None,
+        label_list: List[str] | None = None,
+        per_bond=True,
     ) -> pd.DataFrame:
         """
         This function returns a pandas dataframe with weighted ICOXX, effective interaction number
@@ -704,9 +731,7 @@ class FeaturizeCOXX:
         if ids:
             df = pd.DataFrame(index=[ids])
         else:
-            ids = Path(
-                self.path_to_coxxcar
-            ).parent.name  # os.path.basename(os.path.dirname(self.path_to_coxxcar))
+            ids = Path(self.path_to_coxxcar).parent.name
             df = pd.DataFrame(index=[ids])
 
         (
@@ -717,7 +742,9 @@ class FeaturizeCOXX:
         ) = self._calculate_wicoxx_ein()
 
         if self.are_coops:
-            cc, cw, cs, ck = self._calc_moment_features(label_list=label_list)
+            cc, cw, cs, ck = self._calc_moment_features(
+                label_list=label_list, per_bond=per_bond
+            )
             df.loc[ids, "bnd_wICOOP"] = per_bnd_xx
             df.loc[ids, "antibnd_wICOOP"] = per_antibnd_xx
             df.loc[ids, "w_ICOOP"] = w_icoxx
@@ -727,7 +754,9 @@ class FeaturizeCOXX:
             df.loc[ids, "skewness_COOP"] = cs
             df.loc[ids, "kurtosis_COOP"] = ck
         elif self.are_cobis:
-            cc, cw, cs, ck = self._calc_moment_features(label_list=label_list)
+            cc, cw, cs, ck = self._calc_moment_features(
+                label_list=label_list, per_bond=per_bond
+            )
             df.loc[ids, "bnd_wICOBI"] = per_bnd_xx
             df.loc[ids, "antibnd_wICOBI"] = per_antibnd_xx
             df.loc[ids, "w_ICOBI"] = w_icoxx
@@ -737,7 +766,9 @@ class FeaturizeCOXX:
             df.loc[ids, "skewness_COBI"] = cs
             df.loc[ids, "kurtosis_COBI"] = ck
         else:
-            cc, cw, cs, ck = self._calc_moment_features(label_list=label_list)
+            cc, cw, cs, ck = self._calc_moment_features(
+                label_list=label_list, per_bond=per_bond
+            )
             df.loc[ids, "bnd_wICOHP"] = per_bnd_xx
             df.loc[ids, "antibnd_wICOHP"] = per_antibnd_xx
             df.loc[ids, "w_ICOHP"] = w_icoxx
@@ -790,13 +821,14 @@ class FeaturizeCharges:
         if self.charge_type.lower() not in ["mulliken", "loewdin"]:
             raise ValueError(
                 "Please check the requested charge_type. "
-                'Possible options are "Mulliken" or "Loewdin"'
+                "Possible options are `Mulliken` or `Loewdin`"
             )
 
         ch_veff = []
+        tol = 1e-6
         for i, j in enumerate(getattr(chargeobj, self.charge_type.capitalize())):
             if (
-                j > 0
+                j > tol
                 and not structure.species[i].is_transition_metal
                 and (
                     not structure.species[i].is_actinoid
@@ -808,7 +840,7 @@ class FeaturizeCharges:
                 ch_veff.append(val)
 
             elif (
-                j < 0
+                j < tol
                 and not structure.species[i].is_transition_metal
                 and (
                     not structure.species[i].is_actinoid
@@ -819,7 +851,7 @@ class FeaturizeCharges:
                 val = j / (valence_elec.nvalence() - 8)
                 ch_veff.append(val)
 
-            elif j > 0 and (
+            elif j > tol and (
                 structure.species[i].is_transition_metal
                 or structure.species[i].is_actinoid
                 or structure.species[i].is_lanthanoid
@@ -827,7 +859,7 @@ class FeaturizeCharges:
                 val = j / (structure.species[i].max_oxidation_state - 0)
                 ch_veff.append(val)
 
-            elif j < 0 and (
+            elif j < tol and (
                 structure.species[i].is_transition_metal
                 or structure.species[i].is_actinoid
                 or structure.species[i].is_lanthanoid
@@ -850,9 +882,7 @@ class FeaturizeCharges:
         if ids:
             df = pd.DataFrame(index=[ids])
         else:
-            ids = Path(
-                self.path_to_charge
-            ).parent.name  # os.path.basename(os.path.dirname(self.path_to_charge))
+            ids = Path(self.path_to_charge).parent.name
             df = pd.DataFrame(index=[ids])
 
         if self.charge_type.lower() == "mulliken":

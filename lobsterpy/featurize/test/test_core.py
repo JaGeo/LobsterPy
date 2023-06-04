@@ -252,8 +252,8 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertEqual(df.index[0], "NaCl")
 
         # Test that all the values in the DataFrame
-        self.assertAlmostEqual(df.loc["NaCl", "bnd_wICOHP"], 96.822857, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "antibnd_wICOHP"], 3.177143, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "bnd_wICOHP"], 97.233878, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "antibnd_wICOHP"], 2.766122, places=5)
         self.assertAlmostEqual(df.loc["NaCl", "w_ICOHP"], -0.150558, places=5)
 
         self.assertAlmostEqual(df.loc["NaCl", "EIN_ICOHP"], 27.843536, places=5)
@@ -261,6 +261,15 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertAlmostEqual(df.loc["NaCl", "width_COHP"], 0.686836, places=5)
         self.assertAlmostEqual(df.loc["NaCl", "skewness_COHP"], -1.072675, places=5)
         self.assertAlmostEqual(df.loc["NaCl", "kurtosis_COHP"], 4.811448, places=5)
+
+        # test summary features using label list
+        df1 = self.featurize_NaCl_COXX.get_summarized_coxx_df(
+            label_list=["2", "3", "30"]
+        )
+        self.assertNotEqual(
+            df.loc["NaCl", "center_COHP"],
+            df1.loc["NaCl", "center_COHP"],
+        )
 
     def test_featurize_NaCl_COXX_fingerprint(self):
         df = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(n_bins=20000)
@@ -323,8 +332,8 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertEqual(df.index[0], "CdF")
 
         # Test that all the values in the DataFrame
-        self.assertAlmostEqual(df.loc["CdF", "bnd_wICOHP"], 56.05771, places=5)
-        self.assertAlmostEqual(df.loc["CdF", "antibnd_wICOHP"], 43.94229, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "bnd_wICOHP"], 81.112732, places=5)
+        self.assertAlmostEqual(df.loc["CdF", "antibnd_wICOHP"], 18.887268, places=5)
         self.assertAlmostEqual(df.loc["CdF", "w_ICOHP"], -0.198235, places=5)
 
         self.assertAlmostEqual(df.loc["CdF", "EIN_ICOHP"], 18.76634, places=5)
@@ -332,6 +341,15 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertAlmostEqual(df.loc["CdF", "width_COHP"], 0.157761, places=5)
         self.assertAlmostEqual(df.loc["CdF", "skewness_COHP"], 0.910094, places=5)
         self.assertAlmostEqual(df.loc["CdF", "kurtosis_COHP"], 2.866611, places=5)
+
+        # test using label list
+        df1 = self.featurize_CdF_COXX.get_summarized_coxx_df(
+            label_list=["2", "3", "30"]
+        )
+        self.assertNotEqual(
+            df.loc["CdF", "center_COHP"],
+            df1.loc["CdF", "center_COHP"],
+        )
 
     def test_featurize_K3Sb_COXX(self):
         df = self.featurize_K3Sb_COXX.get_summarized_coxx_df(ids="K3Sb")
@@ -356,8 +374,8 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertEqual(df.index[0], "K3Sb")
 
         # Test that all the values in the DataFrame
-        self.assertAlmostEqual(df.loc["K3Sb", "bnd_wICOHP"], 97.053378, places=5)
-        self.assertAlmostEqual(df.loc["K3Sb", "antibnd_wICOHP"], 2.946622, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "bnd_wICOHP"], 97.019044, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "antibnd_wICOHP"], 2.980956, places=5)
         self.assertAlmostEqual(df.loc["K3Sb", "w_ICOHP"], -0.318218, places=5)
 
         self.assertAlmostEqual(df.loc["K3Sb", "EIN_ICOHP"], 11.597595, places=5)
@@ -479,6 +497,35 @@ class TestExceptions(unittest.TestCase):
             err.exception.__str__(),
             "No cation-anion bonds detected for CsH structure. "
             "Please switch to ´all´ bonds mode",
+        )
+
+        with self.assertRaises(Exception) as err:
+            self.featurize_C_cation_anion = FeaturizeLobsterpy(
+                path_to_lobster_calc=TestDir / "TestData/C/", bonds="cation-anion"
+            )
+
+            _ = self.featurize_C_cation_anion.get_df()
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "No cation-anion bonds detected for C structure. "
+            "Please switch to ´all´ bonds mode",
+        )
+
+    def test_featurize_charges(self):
+        with self.assertRaises(Exception) as err:
+            self.featurize_CdF_Charge = FeaturizeCharges(
+                path_to_structure=TestDir / "TestData/CdF/POSCAR",
+                path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
+                charge_type="Mull",
+            )
+
+            _ = self.featurize_CdF_Charge.get_df()
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "Please check the requested charge_type. "
+            "Possible options are `Mulliken` or `Loewdin`",
         )
 
     def test_featurize_coxx(self):
