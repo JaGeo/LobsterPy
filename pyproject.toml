@@ -103,9 +103,6 @@ isort.required-imports = ["from __future__ import annotations"]
 [tool.pytest.ini_options]
 addopts = "-x --durations=30 --quiet -rxXs --color=yes -p no:warnings"
 
-[tool.coverage.run]
-plugins = ["pytest_cov.plugin"]
-
 [tool.coverage.report]
 exclude_lines = [
   "pragma: no cover",
