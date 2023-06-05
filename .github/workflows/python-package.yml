@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        split-index: [1, 2, 3, 4]  # Number of splits
+        split: [1, 2, 3, 4]  # Number of splits
 
     steps:
     - uses: actions/checkout@v3
@@ -28,7 +28,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest pytest-mock
+        python -m pip install flake8 pytest pytest-mock pytest-split
         python -m pip install types-setuptools
         python -m pip install coverage
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -41,5 +41,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and coverage
       run: |
-        coverage run -m pytest -n ${{ matrix.split-index }} --durations-path ./lobsterpy/.pytest-split-durations --rootdir=./lobsterpy/
+        coverage run -m pytest --splits 10 --group ${{ matrix.split }} --durations-path ./lobsterpy/.pytest-split-durations
         coverage report
