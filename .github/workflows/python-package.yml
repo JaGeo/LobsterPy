@@ -41,5 +41,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and coverage
       run: |
-        coverage run -m pytest -n ${{ matrix.split-index+1 }}
+        coverage run -m pytest -n ${{ matrix.split-index }}
         coverage report
