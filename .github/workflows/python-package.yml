@@ -42,4 +42,7 @@ jobs:
     - name: Test with pytest and coverage
       run: |
         coverage run -m pytest --splits 10 --group ${{ matrix.split }} --durations-path ./lobsterpy/.pytest-split-durations
-        coverage report
+    - name: Combine coverage data
+      run: coverage combine
+    - name: Generate coverage report
+      run: coverage report
