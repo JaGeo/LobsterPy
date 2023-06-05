@@ -31,6 +31,7 @@ jobs:
         python -m pip install flake8 pytest pytest-mock pytest-split
         python -m pip install types-setuptools
         python -m pip install coverage
+        python -m pip install toml
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install -e .
     - name: Lint with flake8
