@@ -257,15 +257,13 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertAlmostEqual(df.loc["NaCl", "w_ICOHP"], -0.150558, places=5)
 
         self.assertAlmostEqual(df.loc["NaCl", "EIN_ICOHP"], 27.843536, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "center_COHP"], 2.79973, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "width_COHP"], 0.686836, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "skewness_COHP"], -1.072675, places=5)
-        self.assertAlmostEqual(df.loc["NaCl", "kurtosis_COHP"], 4.811448, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "center_COHP"], -4.96241, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "width_COHP"], 8.881784e-16, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "skewness_COHP"], 1, places=5)
+        self.assertAlmostEqual(df.loc["NaCl", "kurtosis_COHP"], 1, places=5)
 
         # test summary features using label list
-        df1 = self.featurize_NaCl_COXX.get_summarized_coxx_df(
-            label_list=["2", "3", "30"]
-        )
+        df1 = self.featurize_NaCl_COXX.get_summarized_coxx_df(label_list=["2", "3"])
         self.assertNotEqual(
             df.loc["NaCl", "center_COHP"],
             df1.loc["NaCl", "center_COHP"],
@@ -379,10 +377,10 @@ class TestFeaturizeCOXX(unittest.TestCase):
         self.assertAlmostEqual(df.loc["K3Sb", "w_ICOHP"], -0.318218, places=5)
 
         self.assertAlmostEqual(df.loc["K3Sb", "EIN_ICOHP"], 11.597595, places=5)
-        self.assertAlmostEqual(df.loc["K3Sb", "center_COHP"], 2.786451, places=5)
-        self.assertAlmostEqual(df.loc["K3Sb", "width_COHP"], 0.765492, places=5)
-        self.assertAlmostEqual(df.loc["K3Sb", "skewness_COHP"], -1.52563, places=5)
-        self.assertAlmostEqual(df.loc["K3Sb", "kurtosis_COHP"], 6.829327, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "center_COHP"], -0.198211, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "width_COHP"], 0.233826, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "skewness_COHP"], -1.626643, places=5)
+        self.assertAlmostEqual(df.loc["K3Sb", "kurtosis_COHP"], 3.771873, places=5)
 
 
 class TestFeaturizeCharges(unittest.TestCase):

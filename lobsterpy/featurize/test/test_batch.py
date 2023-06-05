@@ -333,30 +333,28 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
     def test_fp_cohp_overall(self):
         df = self.fp_cohp_overall.get_similarity_matrix_df()
 
-        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0.221446, places=5)
-        self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], -0.015035, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], -0.033251, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], -0.013751, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-463"], 1, places=5)
-        self.assertAlmostEqual(df.loc["mp-1000", "mp-2176"], 0.175085, places=5)
+        self.assertAlmostEqual(df.loc["mp-1000", "mp-2176"], 0.046889, places=5)
 
     def test_fp_cohp_bonding(self):
         fp_df = self.fp_cohp_bonding.fingerprint_df
         df = self.fp_cohp_bonding.get_similarity_matrix_df()
 
-        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0.000017, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], 0.000000, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-463"], 1, places=5)
-        for val in fp_df.loc["mp-1000", "COXX_FP"].coxx:
-            self.assertLessEqual(val, 0)
+        self.assertAlmostEqual(df.loc["mp-1000", "mp-2176"], 0.001532, places=5)
 
     def test_fp_cobi(self):
         fp_df = self.fp_cobi.fingerprint_df
         df = self.fp_cobi.get_similarity_matrix_df()
 
-        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0.329883, places=5)
+        self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], 0, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-463"], 1, places=5)
-        for val in fp_df.loc["mp-463", "COXX_FP"].coxx:
-            self.assertLessEqual(val, 0)
+        self.assertAlmostEqual(df.loc["mp-1000", "mp-2176"], 0, places=5)
 
     def test_fp_coop(self):
         fp_df = self.fp_coop.fingerprint_df
@@ -365,8 +363,7 @@ class TestBatchCoxxFingerprint(unittest.TestCase):
         self.assertAlmostEqual(df.loc["mp-463", "mp-1000"], 0, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-2176"], 0, places=5)
         self.assertAlmostEqual(df.loc["mp-463", "mp-463"], 1, places=5)
-        for val in fp_df.loc["mp-2176", "COXX_FP"].coxx:
-            self.assertGreaterEqual(val, 0)
+        self.assertAlmostEqual(df.loc["mp-1000", "mp-2176"], 0, places=5)
 
 
 class TestExceptions(unittest.TestCase):

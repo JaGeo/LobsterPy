@@ -360,10 +360,10 @@ class FeaturizeCOXX:
         min_e = self.e_range[0]
         max_e = self.e_range[-1]
 
-        if not max_e:
+        if locals()["max_e"] is None:
             max_e = np.max(energies)
 
-        if not min_e:
+        if locals()["min_e"] is None:
             min_e = np.min(energies)
 
         if label_list:
@@ -690,9 +690,9 @@ class FeaturizeCOXX:
         if e_range:
             min_e = self.e_range[0]
             max_e = self.e_range[1]
-            if not min_e:
+            if locals()["min_e"] is None:
                 min_e = min(energies)
-            if not max_e:
+            if locals()["max_e"] is None:
                 max_e = max(energies)
         else:
             min_e = min(energies)
