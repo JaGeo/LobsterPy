@@ -41,7 +41,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and coverage
       run: |
-        coverage run -m pytest --splits 10 --group ${{ matrix.split }} --durations-path ./lobsterpy/.pytest-split-durations
+        coverage run -m pytest --cov=lobsterpy --splits 10 --group ${{ matrix.split }} --durations-path ./lobsterpy/.pytest-split-durations --cov-append
     - name: Upload coverage
       uses: actions/upload-artifact@v3
       with:
