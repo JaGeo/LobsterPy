@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        split-index: [0, 1, 2, 4, 5, 6, 7, 8, 9, 10]  # Number of splits
+        split-index: [1, 2, 3, 4]  # Number of splits
 
     steps:
     - uses: actions/checkout@v3
@@ -41,5 +41,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and coverage
       run: |
-        coverage run -m pytest -n ${{ matrix.split-index }}
+        coverage run -m pytest --splits 4 --group ${{ matrix.split-index } 
         coverage report
