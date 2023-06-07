@@ -42,7 +42,7 @@ Please cite our paper: J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
 ## LobsterPy as part of an atomate2 workflow
-![LobsterWorkflow](https://github.com/JaGeo/LobsterPy/assets/22094846/080436b6-e25d-427f-b888-f7a1bea72d01)
+![LobsterWorkflow](https://github.com/JaGeo/LobsterPy/assets/22094846/fde3293d-da14-4a37-b7d4-573f99f9cf6e)
 
 We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in [atomate2](https://github.com/materialsproject/atomate2). More documentation and information will follow soon.
 
