@@ -19,6 +19,7 @@ You can also pip install the package in development mode by writing ``pip instal
 ## Basic usage
 
 * **Automatic analysis and plotting of COHPs:**
+
     <img src="https://github.com/JaGeo/LobsterPy/assets/22094846/6587e752-6ea4-4358-a763-3633d5a21869" alt="Output Automatic Analysis" width="300"/>
 
     
