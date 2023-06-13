@@ -3,9 +3,12 @@
 # Getting started
 <img src="https://raw.githubusercontent.com/JaGeo/LobsterPy/main/LobsterPyLogo.png" alt="LobsterPy Logo which consists of a green Python and a red Lobster" width="200"/>
 
-This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
+This is a package that enables automatic plotting and summaries of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
 
 Please note that LobsterPy relies on your Lobster outputs. Thus, please make sure that the outputs have enough information for our (automatic) analysis.
+
+![LobsterPyAnimation](https://github.com/JaGeo/LobsterPy/assets/22094846/8f06b84c-db6d-414c-8590-aa04c957c728)
+
 
 ## Installation
 
@@ -16,9 +19,9 @@ You can also pip install the package in development mode by writing ``pip instal
 ## Basic usage
 
 * **Automatic analysis and plotting of COHPs:**
-
     <img src="https://github.com/JaGeo/LobsterPy/assets/22094846/6587e752-6ea4-4358-a763-3633d5a21869" alt="Output Automatic Analysis" width="300"/>
 
+    
     You can use ``lobsterpy description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy automatic-plot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot --allbonds`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen. Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster.
 
     It is also possible to start this automatic analysis from Python script. See "examples" for scripts.
