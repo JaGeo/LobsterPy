@@ -235,13 +235,15 @@ class Analysis:
                     self.seq_ineq_ions.append(ice)
 
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
-                    self.seq_infos_bonds.append(self.chemenv.get_info_icohps_to_neighbors([ice]))
+                    self.seq_infos_bonds.append(
+                        self.chemenv.get_info_icohps_to_neighbors([ice])
+                    )
 
                     aniontype_labels = []
                     aniontype_cohps = []
 
                     # go through all anions in the structure!
-                    for anion in self.anion_types:
+                    for anion in self.get_anion_types():
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             self.path_to_cohpcar,
@@ -274,7 +276,9 @@ class Analysis:
                 if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.seq_ineq_ions.append(ice)
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
-                    self.seq_infos_bonds.append(self.chemenv.get_info_icohps_to_neighbors([ice]))
+                    self.seq_infos_bonds.append(
+                        self.chemenv.get_info_icohps_to_neighbors([ice])
+                    )
 
                     type_labels = []
                     type_cohps = []
@@ -805,9 +809,7 @@ class Analysis:
 
         """
         relevant_ion_ids = [
-            isite
-            for isite in self.list_equivalent_sites
-            if isite in self.seq_ineq_ions
+            isite for isite in self.list_equivalent_sites if isite in self.seq_ineq_ions
         ]
 
         # formula_units = self.structure.composition.num_atoms /
