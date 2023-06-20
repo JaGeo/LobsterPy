@@ -46,7 +46,7 @@ class Description:
                 [
                     str(site.specie) + str(isite + 1)
                     for isite, site in enumerate(self.analysis_object.structure)
-                    if isite in self.analysis_object.set_inequivalent_ions
+                    if isite in self.analysis_object.seq_ineq_ions
                 ]
             )
             self.text = []
@@ -120,7 +120,7 @@ class Description:
                 [
                     str(site.specie) + str(isite + 1)
                     for isite, site in enumerate(self.analysis_object.structure)
-                    if isite in self.analysis_object.set_inequivalent_ions
+                    if isite in self.analysis_object.seq_ineq_ions
                 ]
             )
             self.text = []
@@ -231,16 +231,16 @@ class Description:
             A matplotlib object.
 
         """
-        set_cohps = self.analysis_object.set_cohps
+        seq_cohps = self.analysis_object.seq_cohps
         if self.analysis_object.whichbonds == "cation-anion":
-            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
+            seq_ineq_cations = self.analysis_object.seq_ineq_ions
         elif self.analysis_object.whichbonds == "all":
-            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
-        set_labels_cohps = self.analysis_object.set_labels_cohps
+            seq_ineq_cations = self.analysis_object.seq_ineq_ions
+        seq_labels = self.analysis_object.seq_labels_cohps
         structure = self.analysis_object.structure
 
         for iplot, (ication, labels, cohps) in enumerate(
-            zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
+            zip(seq_ineq_cations, seq_labels, seq_cohps)
         ):
             namecation = str(structure[ication].specie)
 
@@ -255,7 +255,7 @@ class Description:
 
             plot.title(title)
             if save:
-                if len(set_inequivalent_cations) > 1:
+                if len(seq_ineq_cations) > 1:
                     if isinstance(filename, str):
                         filename = Path(filename)
                     filename_new = (
@@ -301,9 +301,9 @@ class Description:
         """
         cba_cohp_plot_data = {}  # Initialize dict to store plot data
 
-        set_cohps = self.analysis_object.set_cohps
-        set_labels_cohps = self.analysis_object.set_labels_cohps
-        set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
+        set_cohps = self.analysis_object.seq_cohps
+        set_labels_cohps = self.analysis_object.seq_labels_cohps
+        set_inequivalent_cations = self.analysis_object.seq_ineq_ions
         structure = self.analysis_object.structure
 
         for _iplot, (ication, labels, cohps) in enumerate(

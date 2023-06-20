@@ -259,9 +259,9 @@ class InteractiveCohpPlotter(CohpPlotter):
         complete_cohp = analyse.chemenv.completecohp
 
         # extract bond atom pairs and corresponding cohp bond label
-        bonds = [[] for _i in range(len(analyse.set_infos_bonds))]  # type: ignore
-        labels = [[] for _i in range(len(analyse.set_infos_bonds))]  # type: ignore
-        for inx, i in enumerate(analyse.set_infos_bonds):
+        bonds = [[] for _i in range(len(analyse.seq_infos_bonds))]  # type: ignore
+        labels = [[] for _i in range(len(analyse.seq_infos_bonds))]  # type: ignore
+        for inx, i in enumerate(analyse.seq_infos_bonds):
             for ixx, val in enumerate(i[4]):
                 label_srt = sorted(val.copy())
                 bonds[inx].append(
