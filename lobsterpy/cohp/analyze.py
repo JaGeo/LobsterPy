@@ -244,7 +244,7 @@ class Analysis:
                     aniontype_cohps = []
 
                     # go through all anions in the structure!
-                    for anion in self.get_anion_types():
+                    for anion in self.anion_types:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             self.path_to_cohpcar,
