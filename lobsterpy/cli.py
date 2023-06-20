@@ -422,7 +422,7 @@ def run(args):
             filename=args.save_plot,
             title=args.title,
             sigma=sigma,
-            skip_show=args.hideplot,
+            hide=args.hideplot,
         )
 
     if args.action == "plot":

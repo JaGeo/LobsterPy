@@ -211,7 +211,7 @@ class Description:
         integrated=False,
         title="",
         sigma=None,
-        skip_show=False,
+        hide=False,
     ):
         """
         Will automatically generate plots of the most relevant COHP
@@ -225,7 +225,7 @@ class Description:
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
             title: sets the title of figure generated
-            skip_show (bool): if True, the plot will not be shown.
+            hide (bool): if True, the plot will not be shown.
 
         Returns:
             A matplotlib object.
@@ -264,7 +264,7 @@ class Description:
                 else:
                     filename_new = filename
                 plot.savefig(filename_new)
-        if not skip_show:
+        if not hide:
             plot.show()
         else:
             if not save:
