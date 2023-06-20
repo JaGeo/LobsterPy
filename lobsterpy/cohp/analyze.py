@@ -40,7 +40,8 @@ class Analysis:
         seq_coord_ions: list of coodination environment strings for each cation
         set_equivalent_sites: set of inequivalent sites
         seq_ineq_ions: set of inequivalent cations/sites in the structure
-        seq_infos_bonds: information on cation anion bonds
+        seq_infos_bonds (list): information on cation anion bonds (lists
+            of pymatgen.io.lobster.lobsterenv.ICOHPNeighborsInfo)
         spg: space group information
         structure: Structure object
         type_charge: which charges are considered here
