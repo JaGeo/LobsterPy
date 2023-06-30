@@ -4,7 +4,7 @@ import unittest
 import gzip
 import json
 from pathlib import Path
-from plotly.io import read_json, write_json
+from plotly.io import read_json
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
