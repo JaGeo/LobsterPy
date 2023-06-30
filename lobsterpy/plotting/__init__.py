@@ -642,6 +642,21 @@ class InteractiveCohpPlotter(CohpPlotter):
         return fig
 
     @staticmethod
-    def _insert_number_of_bonds_in_label(label, character, number_of_bonds):
+    def _insert_number_of_bonds_in_label(
+        label: str, character: str, number_of_bonds: int
+    ):
+        """
+        Adds number of bonds to bond label.
+        For example : for input label 'Ba1: Ba-Ti', character ':', number_of_bonds: 3,
+        Will return 'Ba1: 4 x Ba-Ti'
+
+        Args:
+            label: bond label to which number of bonds needs to be inserted
+            character: string character where number of bonds needs to be inserted
+            number_of_bonds: number of bonds corresponding to the label
+
+        Returns:
+             bond label with number of bonds inserted
+        """
         number_of_bonds = str(number_of_bonds) + " x"
         return label.replace(character, character + " " + number_of_bonds, 1)
