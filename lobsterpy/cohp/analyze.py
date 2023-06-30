@@ -141,7 +141,7 @@ class Analysis:
                 if (
                     str(err) == "min() arg is an empty sequence"
                     or str(err)
-                    == "All valences are equal to 0, additional_conditions 1 and 3 and 5 and 6 will not work"
+                    == "All valences are equal to 0, additional_conditions 1, 3, 5 and 6 will not work"
                 ):
                     raise ValueError(
                         "Consider switching to an analysis of all bonds and not only cation-anion bonds."
