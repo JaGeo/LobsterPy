@@ -418,7 +418,7 @@ class InteractiveCohpPlotter(CohpPlotter):
 
         Args:
             plot_data_dict: Lobsterpy plot data dict
-            label_addition: Optional addition to LOBSTER label to avoid key
+            suffix: Optional addition to LOBSTER label to avoid key
             conflicts when plotting multiple calcs or just for additional legend information.
         """
         # convert to cohp objects
