@@ -261,18 +261,18 @@ class InteractiveCohpPlotter(CohpPlotter):
         # extract bond atom pairs and corresponding cohp bond label
         bonds = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
         labels = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        for inx, i in enumerate(analyse.seq_infos_bonds):
-            for ixx, val in enumerate(i[4]):
+        for inx, bond_info in enumerate(analyse.seq_infos_bonds):
+            for ixx, val in enumerate(bond_info.atoms):
                 label_srt = sorted(val.copy())
                 bonds[inx].append(
-                    analyse.structure.sites[i[5][0]].species_string
-                    + str(i[5][0] + 1)
+                    analyse.structure.sites[bond_info.central_isites[0]].species_string
+                    + str(bond_info.central_isites[0] + 1)
                     + ": "
                     + label_srt[0].strip("123456789")
                     + "-"
                     + label_srt[1].strip("123456789")
                 )
-                labels[inx].append(i[3][ixx])
+                labels[inx].append(bond_info.labels[ixx])
 
         # create a dict seperating the unique atom pairs for each site and corresponding cohp bond label
         plot_data = {}
@@ -658,5 +658,5 @@ class InteractiveCohpPlotter(CohpPlotter):
         Returns:
              bond label with number of bonds inserted
         """
-        number_of_bonds = str(number_of_bonds) + " x"
-        return label.replace(character, character + " " + number_of_bonds, 1)
+        str_number_of_bonds = str(number_of_bonds) + " x"
+        return label.replace(character, character + " " + str_number_of_bonds, 1)
