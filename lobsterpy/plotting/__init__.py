@@ -244,14 +244,14 @@ class InteractiveCohpPlotter(CohpPlotter):
     """
 
     def add_all_relevant_cohps(
-        self, analyse: Analysis, label_addition: str = "", label_resolved: bool = True
+        self, analyse: Analysis, suffix: str = "", label_resolved: bool = True
     ):
         """
         Adds all relevant COHPs from lobsterpy analyse object.
 
         Args:
             analyse: Analyse object from lobsterpy.
-            label_addition: Optional addition to LOBSTER label to avoid key conflicts when plotting multiple
+            suffix: Optional addition to LOBSTER label to avoid key conflicts when plotting multiple
             calcs or just for additional legend information.
             label_resolved: bool indicating to obtain label resolved interactive plots for relevant bonds.
             If false, will return summed cohp curves of unique relevant bonds.
@@ -259,8 +259,8 @@ class InteractiveCohpPlotter(CohpPlotter):
         complete_cohp = analyse.chemenv.completecohp
 
         # extract bond atom pairs and corresponding cohp bond label
-        bonds = [[] for _i in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        labels = [[] for _i in range(len(analyse.seq_infos_bonds))]  # type: ignore
+        bonds = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
+        labels = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
         for inx, i in enumerate(analyse.seq_infos_bonds):
             for ixx, val in enumerate(i[4]):
                 label_srt = sorted(val.copy())
@@ -283,18 +283,16 @@ class InteractiveCohpPlotter(CohpPlotter):
                 filtered_bond_label_list = [labels[indx][i] for i in indices]
                 plot_data.update({item: filtered_bond_label_list})
 
-        if "All" in self._cohps:
-            pass
-        else:
+        if "All" not in self._cohps:
             self._cohps["All"] = {}
 
         if label_resolved:
             for bond_key, labels in plot_data.items():
-                count = str(len(labels)) + " x"
+                count = len(labels)
                 label_with_count = self._insert_number_of_bonds_in_label(
                     label=bond_key, character=":", number_of_bonds=count
                 )
-                self._cohps[label_with_count + label_addition] = {}
+                self._cohps[label_with_count + suffix] = {}
                 for label in labels:
                     cohp = complete_cohp.get_cohp_by_label(label)
                     energies = (
@@ -304,7 +302,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                     )
                     populations = cohp.get_cohp()
                     int_populations = cohp.get_icohp()
-                    outer_key = label_with_count + label_addition
+                    outer_key = label_with_count + suffix
                     struct = analyse.structure
                     atom_pairs = []
                     for site in complete_cohp.bonds[label]["sites"]:
@@ -334,9 +332,8 @@ class InteractiveCohpPlotter(CohpPlotter):
                     #    + ": "
                     #    + label
                     # )
-                    outer_key = "All"
-                    key = key + label_addition
-                    self._cohps[outer_key].update(
+                    key = key + suffix
+                    self._cohps["All"].update(
                         {
                             key: {
                                 "energies": energies,
@@ -349,7 +346,7 @@ class InteractiveCohpPlotter(CohpPlotter):
 
         else:
             for bond_key, labels in plot_data.items():
-                count = str(len(labels)) + " x"
+                count = len(labels)
                 label_with_count = self._insert_number_of_bonds_in_label(
                     label=bond_key, character=":", number_of_bonds=count
                 )
@@ -362,9 +359,8 @@ class InteractiveCohpPlotter(CohpPlotter):
                 )
                 populations = cohp.get_cohp()
                 int_populations = cohp.get_icohp()
-                outer_key = "All"
-                key = label_with_count + label_addition
-                self._cohps[outer_key].update(
+                key = label_with_count + suffix
+                self._cohps["All"].update(
                     {
                         key: {
                             "energies": energies,
@@ -376,7 +372,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 )
 
     def add_cohps_by_lobster_label(
-        self, analyse: Analysis, label_list: list, label_addition: str = ""
+        self, analyse: Analysis, label_list: list, suffix: str = ""
     ):
         """
         Adds COHPs explicitly specified in label list.
@@ -384,7 +380,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         Args:
             analyse: Analyse object from lobsterpy.
             label_list: List of COHP labels as from LOBSTER.
-            label_addition: Optional addition to LOBSTER label to avoid key
+            suffix: Optional addition to LOBSTER label to avoid key
                 conflicts when plotting multiple calcs or just for additional legend information.
         """
         complete_cohp = analyse.chemenv.completecohp
@@ -404,11 +400,8 @@ class InteractiveCohpPlotter(CohpPlotter):
             )
             populations = cohp.get_cohp()
             int_populations = cohp.get_icohp()
-            key = (
-                sorted_label[0] + "-" + sorted_label[1] + ": " + label + label_addition
-            )
-            outer_key = "All"
-            self._cohps[outer_key].update(
+            key = sorted_label[0] + "-" + sorted_label[1] + ": " + label + suffix
+            self._cohps["All"].update(
                 {
                     key: {
                         "energies": energies,
@@ -419,7 +412,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 }
             )
 
-    def add_cohps_from_plot_data(self, plot_data_dict: dict, label_addition: str = ""):
+    def add_cohps_from_plot_data(self, plot_data_dict: dict, suffix: str = ""):
         """
         Adds all relevant COHPs for specified bond type from lobster lightweight json.gz file
 
@@ -442,20 +435,17 @@ class InteractiveCohpPlotter(CohpPlotter):
                         "The data provided could not be converted to cohp object.Please recheck the input data"
                     )
 
-        if "All" in self._cohps:
-            pass
-        else:
+        if "All" not in self._cohps:
             self._cohps["All"] = {}
 
-        for _, (bond_key, cohps) in enumerate(plot_data_dict.items()):
+        for bond_key, cohps in plot_data_dict.items():
             energies = (
                 cohps.energies - cohps.efermi if self.zero_at_efermi else cohps.energies
             )
             populations = cohps.get_cohp()
             int_populations = cohps.get_icohp()
-            outer_key = "All"
-            key = bond_key + label_addition
-            self._cohps[outer_key].update(
+            key = bond_key + suffix
+            self._cohps["All"].update(
                 {
                     key: {
                         "energies": energies,
@@ -653,4 +643,5 @@ class InteractiveCohpPlotter(CohpPlotter):
 
     @staticmethod
     def _insert_number_of_bonds_in_label(label, character, number_of_bonds):
+        number_of_bonds = str(number_of_bonds) + " x"
         return label.replace(character, character + " " + number_of_bonds, 1)

@@ -4,7 +4,7 @@ import unittest
 import gzip
 import json
 from pathlib import Path
-from plotly.io import read_json
+from plotly.io import read_json, write_json
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
@@ -64,7 +64,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False)
 
         self.iplotter.add_all_relevant_cohps(
-            analyse=self.analyse_NaCl, label_resolved=False, label_addition=""
+            analyse=self.analyse_NaCl, label_resolved=False, suffix=""
         )
         # self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
@@ -94,7 +94,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter = InteractiveCohpPlotter()
 
         self.iplotter.add_all_relevant_cohps(
-            analyse=self.analyse_K3Sb, label_resolved=True, label_addition=""
+            analyse=self.analyse_K3Sb, label_resolved=True, suffix=""
         )
         self.assertIn("All", self.iplotter._cohps)
         self.assertIn("K1: 8 x K-K", self.iplotter._cohps)
@@ -130,7 +130,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter = InteractiveCohpPlotter()
 
         self.iplotter.add_cohps_by_lobster_label(
-            analyse=self.analyse_NaCl, label_list=["5", "10", "15"], label_addition=""
+            analyse=self.analyse_NaCl, label_list=["5", "10", "15"], suffix=""
         )
         self.assertIn("All", self.iplotter._cohps)
         self.assertEqual(len(self.iplotter._cohps), 1)
@@ -183,7 +183,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter = InteractiveCohpPlotter()
 
         self.iplotter.add_cohps_from_plot_data(
-            plot_data_dict=self.lobsterpy_plot_data, label_addition=""
+            plot_data_dict=self.lobsterpy_plot_data, suffix=""
         )
 
         self.assertIn("All", self.iplotter._cohps)
@@ -251,9 +251,7 @@ class TestPlotterExceptions(unittest.TestCase):
 
             data = {"N4: 1 x N-N": []}
 
-            self.iplotter.add_cohps_from_plot_data(
-                plot_data_dict=data, label_addition=""
-            )
+            self.iplotter.add_cohps_from_plot_data(plot_data_dict=data, suffix="")
 
             self.assertEqual(
                 err.exception.__str__(),
