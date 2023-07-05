@@ -45,8 +45,7 @@ class DOS:
         ax.axvline(x=0.0, color='black', linestyle='-')
         ax.text(ax.get_xlim()[1]/0.90, 0, "$\epsilon_\mathrm{F}$", color="black", ha="right", va="center")
         ax.legend(fontsize=14)
-        outfile = "DOS_{states}.eps".format(states="_".join(states_string))
-        fig.savefig(outfile, format='eps', dpi=100, bbox_inches='tight')
+        fig.savefig("DOS.eps", format='eps', dpi=100, bbox_inches='tight')
 
     def _read_doscar(self, filename):
         """

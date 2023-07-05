@@ -263,6 +263,13 @@ def get_parser() -> argparse.ArgumentParser:
     )
 
     plot_states_bonds = plot_parser.add_mutually_exclusive_group()
+
+    plot_states_bonds.add_argument(
+        "--print_available_dos_states",
+        action="store_true",
+        help=('This flag tells LobsterPy to return a list of plotable DOS states. Useful to check before running "plot --dos_states".'),
+    )
+
     plot_states_bonds.add_argument(
         "--dos_states",
         nargs="+",
@@ -437,6 +444,11 @@ def run(args):
         )
 
     if args.action == "plot":
+        if args.print_available_dos_states:
+            dos = DOS()
+            for state in dos.get_dos_states():
+                print(state)
+            return
         if args.dos_states:
             dos = DOS()
             dos.print_plot(args.dos_states, args.ylim)
