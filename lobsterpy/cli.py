@@ -18,6 +18,8 @@ from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import PlainCohpPlotter, get_style_list
 
+from lobsterpy.dos.dos import DOS
+
 
 def main() -> None:
     """Entry point for setup.py installer"""
@@ -159,7 +161,7 @@ def get_parser() -> argparse.ArgumentParser:
         nargs=2,
         default=None,
         type=float,
-        help="COHP/COBI/COOP range for plots",
+        help="DOS/COHP/COBI/COOP range for plots",
     )
 
     plotting_group.add_argument(
@@ -257,11 +259,20 @@ def get_parser() -> argparse.ArgumentParser:
     plot_parser = subparsers.add_parser(
         "plot",
         parents=[input_parent, plotting_parent],
-        help="Plot specific COHPs/COBIs/COOPs based on bond numbers.",
+        help="Plot specific state DOS or specific COHPs/COBIs/COOPs based on bond numbers.",
     )
 
-    plot_parser.add_argument(
-        "bond_numbers",
+    plot_states_bonds = plot_parser.add_mutually_exclusive_group()
+    plot_states_bonds.add_argument(
+        "--dos_states",
+        nargs="+",
+        type=str,
+        help=('List of states to include in DOS plot. States be given as whitespace-separated list and summed up as '
+              'necessary by connecting states with a "+" character. Wildcards "*" and "?" allowed.'),
+    )
+
+    plot_states_bonds.add_argument(
+        "--bond_numbers",
         nargs="+",
         type=int,
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
@@ -349,7 +360,7 @@ def run(args):
         "description",
         "automatic-plot",
         "plot",
-    ]:
+    ] and not args.dos_states:
         # Check for .gz files exist for default values and update accordingly
         default_files = {
             "poscar": "POSCAR",
@@ -426,6 +437,10 @@ def run(args):
         )
 
     if args.action == "plot":
+        if args.dos_states:
+            dos = DOS()
+            dos.print_plot(args.dos_states, args.ylim)
+            return
         if args.cobis:
             filename = args.cohpcar.parent / "COBICAR.lobster"
             if not filename.exists():
