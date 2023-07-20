@@ -512,6 +512,36 @@ class Description:
                         quality_dict[key]["abs_total_spilling"],
                     )
                 )
+            elif key == "band_overlaps":
+                if quality_dict[key]["file_exists"]:
+                    if quality_dict[key]["file_exists"][
+                        "has_good_quality_maxDeviation"
+                    ]:
+                        text_des.append(
+                            "The bandOverlaps.lobster file is generated during LOBSTER run. This "
+                            "indicates that the projected wave function is not completely orthonormalized, "
+                            "however the maximal deviation values observed compared to the identity matrix "
+                            "is below the threshold 0.1"
+                        )
+                    else:
+                        text_des.append(
+                            "The bandOverlaps.lobster file is generated during LOBSTER run. This "
+                            "indicates that the projected wave function is not completely orthonormalized. "
+                            "The maximal deviation values from the identity matrix is {} and there exists "
+                            "{} percent k-points above the deviation threshold 0.1. Please check the "
+                            "results of other quality checks like dos comparisons, charges , "
+                            "charge spillings before using the results for further "
+                            "analysis.".format(
+                                quality_dict[key]["max_deviation"],
+                                quality_dict[key]["percent_kpoints_abv_limit"],
+                            )
+                        )
+                else:
+                    text_des.append(
+                        "The projected wave function is completely orthonormalized as no "
+                        "bandOverlaps.lobster file is generated during LOBSTER run."
+                    )
+
             elif key == "Charges":
                 if val:
                     for charge in ["Mulliken", "Loewdin"]:

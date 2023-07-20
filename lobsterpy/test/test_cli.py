@@ -263,6 +263,8 @@ class TestCLI:
         ref_text = (
             "The LOBSTER calculation used minimal basis. "
             "The absolute and total charge spilling for the calculation are 0.3 and 5.58, respectively. "
+            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
+            "generated during LOBSTER run. "
             "The atomic charge signs from Mulliken population analysis agree with bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with bond valence analysis. "
             "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "

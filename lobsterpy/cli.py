@@ -104,6 +104,13 @@ def get_parser() -> argparse.ArgumentParser:
         help=('path to vasprun.xml. Default is "vasprun.xml".'),
     )
 
+    input_file_group.add_argument(
+        "--bandoverlaps",
+        default="bandOverlaps.lobster",
+        type=Path,
+        help=('path to bandOverlaps.lobster. Default is "bandOverlaps.lobster".'),
+    )
+
     output_parent = argparse.ArgumentParser(add_help=False)
     output_file_group = output_parent.add_argument_group("Output files")
     output_file_group.add_argument(
@@ -717,6 +724,17 @@ def run(args):
                         "Mandatory files necessary for LOBSTER calc quality not found in the current directory."
                     )
 
+        optional_file = {
+            "bandoverlaps": "bandOverlaps.lobster",
+        }
+
+        for arg, default_value in optional_file.items():
+            file_path = getattr(args, arg)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg, gz_file_path)
+
         bva_comp = args.bvacomp
 
         if bva_comp:
@@ -759,6 +777,7 @@ def run(args):
             path_to_lobsterout=args.lobsterout,
             path_to_lobsterin=args.lobsterin,
             path_to_potcar=args.potcar,
+            path_to_bandoverlaps=args.bandoverlaps,
             dos_comparison=dos_comparison,
             bva_comp=bva_comp,
             path_to_doscar=args.doscar,
