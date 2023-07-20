@@ -144,7 +144,7 @@ class Analysis:
                 if (
                     str(err) == "min() arg is an empty sequence"
                     or str(err)
-                    == "All valences are equal to 0, additional_conditions 1 and 3 and 5 and 6 will not work"
+                    == "All valences are equal to 0, additional_conditions 1, 3, 5 and 6 will not work"
                 ):
                     raise ValueError(
                         "Consider switching to an analysis of all bonds and not only cation-anion bonds."
@@ -931,7 +931,7 @@ class Analysis:
             "abs_total_spilling": round((sum(lob_out.total_spilling) / 2) * 100, 4),
         }  # type: ignore
 
-        if Path(path_to_bandoverlaps).exists():
+        if Path(path_to_bandoverlaps).exists():  # type: ignore
             band_overlaps = Bandoverlaps(filename=path_to_bandoverlaps)
             for line in lob_out.warning_lines:
                 if "k-points could not be orthonormalized" in line:
