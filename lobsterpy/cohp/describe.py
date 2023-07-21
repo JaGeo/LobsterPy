@@ -514,14 +514,12 @@ class Description:
                 )
             elif key == "band_overlaps":
                 if quality_dict[key]["file_exists"]:
-                    if quality_dict[key]["file_exists"][
-                        "has_good_quality_maxDeviation"
-                    ]:
+                    if quality_dict[key]["has_good_quality_maxDeviation"]:
                         text_des.append(
                             "The bandOverlaps.lobster file is generated during LOBSTER run. This "
                             "indicates that the projected wave function is not completely orthonormalized, "
                             "however the maximal deviation values observed compared to the identity matrix "
-                            "is below the threshold 0.1"
+                            "is below the threshold 0.1."
                         )
                     else:
                         text_des.append(
