@@ -242,6 +242,18 @@ class InteractiveCohpPlotter(CohpPlotter):
     Interactive COHP plotter to view all relevant / multiple COHPs in one figure.
     """
 
+    COLOR_PALETTE = [
+        "#e41a1c",
+        "#377eb8",
+        "#4daf4a",
+        "#984ea3",
+        "#ff7f00",
+        "#ffff33",
+        "#a65628",
+        "#f781bf",
+        "#999999",
+    ]
+
     def add_all_relevant_cohps(
         self, analyse: Analysis, suffix: str = "", label_resolved: bool = True
     ) -> None:
@@ -285,12 +297,13 @@ class InteractiveCohpPlotter(CohpPlotter):
         if "All" not in self._cohps:
             self._cohps["All"] = {}
 
-        if label_resolved:
-            for bond_key, labels in plot_data.items():
-                count = len(labels)
-                label_with_count = self._insert_number_of_bonds_in_label(
-                    label=bond_key, character=":", number_of_bonds=count
-                )
+        # iterate and extract the data to be plotted from cohp objects
+        for bond_key, labels in plot_data.items():
+            count = len(labels)
+            label_with_count = self._insert_number_of_bonds_in_label(
+                label=bond_key, character=":", number_of_bonds=count
+            )
+            if label_resolved: # will add cohp data for each relevant bond label iteratively
                 self._cohps[label_with_count + suffix] = {}
                 for label in labels:
                     cohp = complete_cohp.get_cohp_by_label(label)
@@ -335,13 +348,8 @@ class InteractiveCohpPlotter(CohpPlotter):
                         }
                     )
 
-        else:
-            for bond_key, labels in plot_data.items():
-                count = len(labels)
-                label_with_count = self._insert_number_of_bonds_in_label(
-                    label=bond_key, character=":", number_of_bonds=count
-                )
-
+            else:
+                # add summed cohps for each relevant bond sites
                 cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
                 energies = (
                     cohp.energies - cohp.efermi
@@ -456,6 +464,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         integrated=False,
         invert_axes=True,
         sigma=None,
+        colors=None,
     ):
         """
         Get an interactive plotly figure showing the COHPs.
@@ -477,6 +486,7 @@ class InteractiveCohpPlotter(CohpPlotter):
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If this is unset (None) no broadening will be
                 added.
+            colors: list of hex color codes to be used in plot
 
         Returns:
             A  plotly.graph_objects.Figure object.
@@ -507,17 +517,9 @@ class InteractiveCohpPlotter(CohpPlotter):
             energy_label = "$E$ (eV)"
 
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
-        palette = [
-            "#e41a1c",
-            "#377eb8",
-            "#4daf4a",
-            "#984ea3",
-            "#ff7f00",
-            "#ffff33",
-            "#a65628",
-            "#f781bf",
-            "#999999",
-        ]
+        if colors is None:
+            palette = InteractiveCohpPlotter.COLOR_PALETTE
+
         pal_iter = cycle(palette)
 
         traces = {}
