@@ -4,8 +4,8 @@
 """
 Here classes and functions to plot Lobster outputs are provided
 """
-from __future__ import annotations
-from typing import Any, List
+
+from typing import Any
 
 from itertools import cycle
 import matplotlib
@@ -25,9 +25,9 @@ base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 def get_style_list(
     no_base_style: bool = False,
-    styles: list[str | dict[str, Any]] | None = None,
+    styles: "list[str | dict[str, Any]] | None" = None,
     **kwargs,
-) -> list[str | dict[str, Any]]:
+) -> "list[str | dict[str, Any]]":
     """Get *args for matplotlib.style from user input
 
     Args:
@@ -59,13 +59,13 @@ class PlainCohpPlotter(CohpPlotter):
 
     def get_plot(
         self,
-        ax: matplotlib.axes.Axes | None = None,
-        xlim: tuple[float, float] | None = None,
-        ylim: tuple[float, float] | None = None,
-        plot_negative: bool | None = None,
+        ax: "matplotlib.axes.Axes | None" = None,
+        xlim: "tuple[float, float] | None" = None,
+        ylim: "tuple[float, float] | None" = None,
+        plot_negative: "bool | None" = None,
         integrated: bool = False,
         invert_axes: bool = True,
-        sigma: float | None = None,
+        sigma: "float | None" = None,
     ):
         """
         Get a matplotlib plot showing the COHP.
