@@ -5,7 +5,6 @@
 Here classes and functions to plot Lobster outputs are provided
 """
 from __future__ import annotations
-
 from typing import Any, List
 
 from itertools import cycle
@@ -245,7 +244,7 @@ class InteractiveCohpPlotter(CohpPlotter):
 
     def add_all_relevant_cohps(
         self, analyse: Analysis, suffix: str = "", label_resolved: bool = True
-    ):
+    ) -> None:
         """
         Adds all relevant COHPs from lobsterpy analyse object.
 
@@ -324,14 +323,6 @@ class InteractiveCohpPlotter(CohpPlotter):
                         }
                     )
 
-                    # alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    # new_label = (
-                    #    bond_key.split(":")[0].strip(alpha)
-                    #    + "_"
-                    #    + bond_key.split(":")[1].strip()
-                    #    + ": "
-                    #    + label
-                    # )
                     key = key + suffix
                     self._cohps["All"].update(
                         {
@@ -644,11 +635,11 @@ class InteractiveCohpPlotter(CohpPlotter):
     @staticmethod
     def _insert_number_of_bonds_in_label(
         label: str, character: str, number_of_bonds: int
-    ):
+    ) -> str:
         """
         Adds number of bonds to bond label.
         For example : for input label 'Ba1: Ba-Ti', character ':', number_of_bonds: 3,
-        Will return 'Ba1: 4 x Ba-Ti'
+        Will return 'Ba1: 3 x Ba-Ti'
 
         Args:
             label: bond label to which number of bonds needs to be inserted
@@ -658,5 +649,4 @@ class InteractiveCohpPlotter(CohpPlotter):
         Returns:
              bond label with number of bonds inserted
         """
-        str_number_of_bonds = str(number_of_bonds) + " x"
-        return label.replace(character, character + " " + str_number_of_bonds, 1)
+        return label.replace(character, f"{character} {number_of_bonds} x", 1)
