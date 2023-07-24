@@ -314,8 +314,6 @@ class InteractiveCohpPlotter(CohpPlotter):
                         if self.zero_at_efermi
                         else cohp.energies
                     )
-                    populations = cohp.get_cohp()
-                    int_populations = cohp.get_icohp()
                     outer_key = label_with_count + suffix
                     struct = analyse.structure
                     atom_pairs = []
@@ -331,8 +329,8 @@ class InteractiveCohpPlotter(CohpPlotter):
                         {
                             key: {
                                 "energies": energies,
-                                "COHP": populations,
-                                "ICOHP": int_populations,
+                                "COHP": cohp.get_cohp(),
+                                "ICOHP": cohp.get_icohp(),
                                 "efermi": cohp.efermi,
                             }
                         }
@@ -343,8 +341,8 @@ class InteractiveCohpPlotter(CohpPlotter):
                         {
                             key: {
                                 "energies": energies,
-                                "COHP": populations,
-                                "ICOHP": int_populations,
+                                "COHP": cohp.get_cohp(),
+                                "ICOHP": cohp.get_icohp(),
                                 "efermi": cohp.efermi,
                             }
                         }
@@ -358,15 +356,13 @@ class InteractiveCohpPlotter(CohpPlotter):
                     if self.zero_at_efermi
                     else cohp.energies
                 )
-                populations = cohp.get_cohp()
-                int_populations = cohp.get_icohp()
                 key = label_with_count + suffix
                 self._cohps["All"].update(
                     {
                         key: {
                             "energies": energies,
-                            "COHP": populations,
-                            "ICOHP": int_populations,
+                            "COHP": cohp.get_cohp(),
+                            "ICOHP": cohp.get_icohp(),
                             "efermi": cohp.efermi,
                         }
                     }
@@ -399,15 +395,13 @@ class InteractiveCohpPlotter(CohpPlotter):
             energies = (
                 cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
             )
-            populations = cohp.get_cohp()
-            int_populations = cohp.get_icohp()
             key = sorted_label[0] + "-" + sorted_label[1] + ": " + label + suffix
             self._cohps["All"].update(
                 {
                     key: {
                         "energies": energies,
-                        "COHP": populations,
-                        "ICOHP": int_populations,
+                        "COHP": cohp.get_cohp(),
+                        "ICOHP": cohp.get_icohp(),
                         "efermi": cohp.efermi,
                     }
                 }
@@ -443,15 +437,13 @@ class InteractiveCohpPlotter(CohpPlotter):
             energies = (
                 cohps.energies - cohps.efermi if self.zero_at_efermi else cohps.energies
             )
-            populations = cohps.get_cohp()
-            int_populations = cohps.get_icohp()
             key = bond_key + suffix
             self._cohps["All"].update(
                 {
                     key: {
                         "energies": energies,
-                        "COHP": populations,
-                        "ICOHP": int_populations,
+                        "COHP": cohps.get_cohp(),
+                        "ICOHP": cohps.get_icohp(),
                         "efermi": cohps.efermi,
                     }
                 }
