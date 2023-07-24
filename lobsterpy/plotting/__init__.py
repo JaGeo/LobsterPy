@@ -5,7 +5,7 @@
 Here classes and functions to plot Lobster outputs are provided
 """
 
-from typing import Any
+from typing import Any, Tuple, List, Dict
 
 from itertools import cycle
 import matplotlib
@@ -25,9 +25,9 @@ base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 def get_style_list(
     no_base_style: bool = False,
-    styles: "list[str | dict[str, Any]] | None" = None,
+    styles: "List[str | Dict[str, Any]] | None" = None,
     **kwargs,
-) -> "list[str | dict[str, Any]]":
+) -> "List[str | Dict[str, Any]]":
     """Get *args for matplotlib.style from user input
 
     Args:
@@ -60,8 +60,8 @@ class PlainCohpPlotter(CohpPlotter):
     def get_plot(
         self,
         ax: "matplotlib.axes.Axes | None" = None,
-        xlim: "tuple[float, float] | None" = None,
-        ylim: "tuple[float, float] | None" = None,
+        xlim: "Tuple[float, float] | None" = None,
+        ylim: "Tuple[float, float] | None" = None,
         plot_negative: "bool | None" = None,
         integrated: bool = False,
         invert_axes: bool = True,
