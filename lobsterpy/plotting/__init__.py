@@ -303,7 +303,9 @@ class InteractiveCohpPlotter(CohpPlotter):
             label_with_count = self._insert_number_of_bonds_in_label(
                 label=bond_key, character=":", number_of_bonds=count
             )
-            if label_resolved: # will add cohp data for each relevant bond label iteratively
+            if (
+                label_resolved
+            ):  # will add cohp data for each relevant bond label iteratively
                 self._cohps[label_with_count + suffix] = {}
                 for label in labels:
                     cohp = complete_cohp.get_cohp_by_label(label)
