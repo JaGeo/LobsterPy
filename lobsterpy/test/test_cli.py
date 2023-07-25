@@ -265,8 +265,8 @@ class TestCLI:
             "The absolute and total charge spilling for the calculation are 0.3 and 5.58, respectively. "
             "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
             "generated during LOBSTER run. "
-            "The atomic charge signs from Mulliken population analysis agree with bond valence analysis. "
-            "The atomic charge signs from Loewdin population analysis agree with bond valence analysis. "
+            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
+            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
             "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "
             "are : 0.9966, 0.9977, 0.9822."
         )
@@ -305,44 +305,10 @@ class TestCLI:
             "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that "
             "the projected wave function is not completely orthonormalized, however the "
             "maximal deviation values observed compared to the identity matrix is below the threshold 0.1. "
-            "The atomic charge signs from Mulliken population analysis agree with bond valence analysis. "
-            "The atomic charge signs from Loewdin population analysis agree with bond valence analysis. "
+            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
+            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
             "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "
             "are : 0.8367, 0.9565, 0.9357."
-        )
-
-        assert calc_quality_text == ref_text
-        self.assert_is_finite_file(calc_quality_json_path)
-
-    def test_calc_quality_summary_CsH(self, tmp_path):
-        os.chdir(TestDir / "TestData/CsH")
-        calc_quality_json_path = tmp_path / "calc_quality_json.json"
-        args = [
-            "calc-description",
-            "--bvacomp",
-            "--calcqualityjson",
-            str(calc_quality_json_path),
-        ]
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-
-        test = get_parser().parse_args(args)
-        run(test)
-
-        calc_quality_text = captured_output.getvalue().strip()
-
-        sys.stdout = sys.__stdout__
-
-        ref_text = (
-            "The LOBSTER calculation used minimal basis. "
-            "The absolute and total charge spilling for the calculation are 3.01 and 13.73, respectively. "
-            "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that the "
-            "projected wave function is not completely orthonormalized. The maximal deviation values "
-            "from the identity matrix is 0.4285 and there exists 0.1822 percent k-points above the "
-            "deviation threshold 0.1. Please check the results of other quality checks like dos "
-            "comparisons, charges , charge spillings before using the results for further analysis. "
-            "The atomic charge signs from Mulliken population analysis agree with bond valence analysis. "
-            "The atomic charge signs from Loewdin population analysis agree with bond valence analysis."
         )
 
         assert calc_quality_text == ref_text

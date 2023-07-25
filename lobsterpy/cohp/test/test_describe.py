@@ -443,5 +443,64 @@ class TestDescribe(unittest.TestCase):
         )
 
 
+class TestCalcQualityDescribe(unittest.TestCase):
+    def setUp(self):
+        self.calc_quality_K3Sb = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            path_to_lobsterout=TestDir / "TestData/K3Sb/lobsterout.gz",
+            path_to_lobsterin=TestDir / "TestData/K3Sb/lobsterin.gz",
+            path_to_potcar=TestDir / "TestData/K3Sb/POTCAR.gz",
+            path_to_bandoverlaps=TestDir / "TestData/K3Sb/bandOverlaps.lobster.gz",
+            dos_comparison=True,
+            bva_comp=True,
+            path_to_doscar=TestDir / "TestData/K3Sb/DOSCAR.LSO.lobster.gz",
+            e_range=[-20, 0],
+            path_to_vasprun=TestDir / "TestData/K3Sb/vasprun.xml.gz",
+            n_bins=256,
+        )
+
+        self.calc_quality_CsH = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=TestDir / "TestData/CsH/POSCAR.gz",
+            path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
+            path_to_lobsterout=TestDir / "TestData/CsH/lobsterout.gz",
+            path_to_lobsterin=TestDir / "TestData/CsH/lobsterin.gz",
+            path_to_potcar=TestDir / "TestData/CsH/POTCAR.gz",
+            path_to_bandoverlaps=TestDir / "TestData/CsH/bandOverlaps.lobster.gz",
+            dos_comparison=False,
+            bva_comp=True,
+        )
+
+    def test_calc_quality_description_text(self):
+        calc_quality_k3sb_des = Description.get_calc_quality_description(
+            self.calc_quality_K3Sb
+        )
+        self.assertEqual(
+            calc_quality_k3sb_des,
+            [
+                "The LOBSTER calculation used minimal basis.",
+                "The absolute and total charge spilling for the calculation are 0.83 and 6.36, respectively.",
+                "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that the projected wave function is not completely orthonormalized, however the maximal deviation values observed compared to the identity matrix is below the threshold 0.1.",
+                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+                "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals are : 0.8532, 0.9481, 0.9275.",
+            ],
+        )
+
+        calc_quality_csh_des = Description.get_calc_quality_description(
+            self.calc_quality_CsH
+        )
+        self.assertEqual(
+            calc_quality_csh_des,
+            [
+                "The LOBSTER calculation used minimal basis.",
+                "The absolute and total charge spilling for the calculation are 3.01 and 13.73, respectively.",
+                "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that the projected wave function is not completely orthonormalized. The maximal deviation values from the identity matrix is 0.4285 and there exists 0.1822 percent k-points above the deviation threshold 0.1. Please check the results of other quality checks like dos comparisons, charges , charge spillings before using the results for further analysis.",
+                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+            ],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

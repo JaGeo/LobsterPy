@@ -484,7 +484,7 @@ class Description:
             print(textpart)
 
     @staticmethod
-    def write_calc_quality_description(quality_dict):
+    def get_calc_quality_description(quality_dict):
         """
         This method will generate a text description of the LOBSTER calculation quality
 
@@ -546,12 +546,12 @@ class Description:
                         if val["BVA_{}_agree".format(charge)]:
                             text_des.append(
                                 "The atomic charge signs from {} population analysis agree "
-                                "with bond valence analysis.".format(charge)
+                                "with the bond valence analysis.".format(charge)
                             )
                         if not val["BVA_{}_agree".format(charge)]:
                             text_des.append(
                                 "The atomic charge signs from {} population analysis do not agree with "
-                                "bond valence analysis.".format(charge)
+                                "the bond valence analysis.".format(charge)
                             )
                 else:
                     text_des.append(
@@ -576,4 +576,8 @@ class Description:
                     )
                 )
 
-        print(" ".join(text_des))
+        return text_des
+
+    @staticmethod
+    def write_calc_quality_description(calc_quality_text):
+        print(" ".join(calc_quality_text))

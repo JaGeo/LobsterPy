@@ -786,7 +786,8 @@ def run(args):
             path_to_vasprun=args.vasprun,
         )
 
-        Description.write_calc_quality_description(quality_dict)
+        quality_text = Description.get_calc_quality_description(quality_dict)
+        Description.write_calc_quality_description(quality_text)
 
         if args.calcqualityjson is not None:
             with open(args.calcqualityjson, "w") as fd:
