@@ -580,4 +580,8 @@ class Description:
 
     @staticmethod
     def write_calc_quality_description(calc_quality_text):
+        """
+        This method will print the calculation quality description to the screen
+
+        """
         print(" ".join(calc_quality_text))
