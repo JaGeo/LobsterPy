@@ -158,7 +158,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
     def test_add_cohps_from_plot_data(self):
         self.des = Description(analysis_object=self.analyse_NaSi)
 
-        fig = self.des.plot_interactive_cohps(skip_show=True)
+        fig = self.des.plot_interactive_cohps(hide=True)
         ref_fig = read_json(
             TestDir / "TestData/interactive_plotter_ref/analyse_NaSi.json",
             engine="json",
@@ -209,6 +209,22 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
                 self.assertEqual(og_trace.line, ref_trace.line)
                 self.assertEqual(og_trace.line, ref_trace.line)
                 self.assertEqual(og_trace.visible, ref_trace.visible)
+
+    def test_plot_colors(self):
+        self.iplotter = InteractiveCohpPlotter()
+
+        self.iplotter.add_all_relevant_cohps(
+            analyse=self.analyse_K3Sb, label_resolved=True, suffix=""
+        )
+
+        Fig_ref = self.iplotter.get_plot()
+
+        color = ["#00FFFF", "#008080", "#00008B", "#808000"]
+        # custom color plot
+        Fig_cust_col = self.iplotter.get_plot(colors=color)
+
+        for ref, cust in zip(Fig_ref.data, Fig_cust_col.data):
+            self.assertNotEqual(ref.line.color, cust.line.color)
 
     def test_plot_labels(self):
         # plain cohp plotter

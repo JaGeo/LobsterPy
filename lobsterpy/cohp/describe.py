@@ -279,7 +279,8 @@ class Description:
         integrated=False,
         title="",
         sigma=None,
-        skip_show=False,
+        label_resolved=False,
+        hide=False,
     ):
         """
         Will automatically generate interactive plots of the most relevant COHP
@@ -293,14 +294,13 @@ class Description:
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
             title : Title of the interactive plot
-            skip_show (bool): if True, the plot will not be shown.
+            hide (bool): if True, the plot will not be shown.
 
         Returns:
             A plotly.graph_objects.Figure object.
 
         """
         cba_cohp_plot_data = {}  # Initialize dict to store plot data
-
         set_cohps = self.analysis_object.seq_cohps
         set_labels_cohps = self.analysis_object.seq_labels_cohps
         set_inequivalent_cations = self.analysis_object.seq_ineq_ions
@@ -314,14 +314,20 @@ class Description:
                 if label is not None:
                     cba_cohp_plot_data[label_str + label] = cohp
 
-        ia = InteractiveCohpPlotter()
-        ia.add_cohps_from_plot_data(plot_data_dict=cba_cohp_plot_data)
-        plot = ia.get_plot(integrated=integrated, xlim=xlim, ylim=ylim, sigma=sigma)
+        ip = InteractiveCohpPlotter()
+        if label_resolved:
+            ip.add_all_relevant_cohps(
+                analyse=self.analysis_object, label_resolved=label_resolved
+            )
+        else:
+            ip.add_cohps_from_plot_data(plot_data_dict=cba_cohp_plot_data)
+
+        plot = ip.get_plot(integrated=integrated, xlim=xlim, ylim=ylim, sigma=sigma)
 
         plot.update_layout(title_text=title)
         if save_as_html:
             plot.write_html(filename, include_mathjax="cdn")
-        if not skip_show:
+        if not hide:
             return plot.show()
 
         return plot

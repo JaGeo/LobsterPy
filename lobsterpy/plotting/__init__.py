@@ -279,9 +279,9 @@ class InteractiveCohpPlotter(CohpPlotter):
                     analyse.structure.sites[bond_info.central_isites[0]].species_string
                     + str(bond_info.central_isites[0] + 1)
                     + ": "
-                    + label_srt[0].strip("123456789")
+                    + label_srt[0].strip("0123456789")
                     + "-"
-                    + label_srt[1].strip("123456789")
+                    + label_srt[1].strip("0123456789")
                 )
                 labels[inx].append(bond_info.labels[ixx])
 
@@ -513,6 +513,8 @@ class InteractiveCohpPlotter(CohpPlotter):
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
         if colors is None:
             palette = InteractiveCohpPlotter.COLOR_PALETTE
+        else:
+            palette = colors
 
         pal_iter = cycle(palette)
 
