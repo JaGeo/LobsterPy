@@ -48,8 +48,8 @@ Import the necessary modules
     # Automatic interactive plots
     describe.plot_interactive_cohps()
 
-.. include:: Lobsterpy_tutorial_files/CdF2.html
-   :literal:
+.. raw:: html
+   :file: Lobsterpy_tutorial_files/CdF2.html
 
 
 .. code:: ipython3
