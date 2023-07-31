@@ -40,6 +40,10 @@ class Description:
         self.condensed_bonding_analysis = (
             self.analysis_object.condensed_bonding_analysis
         )
+        # set type of population analyzed
+        type_pop = self.analysis_object._get_pop_type()
+        # set units for populations
+        units = " eV" if type_pop == "COHP" else ""
         if self.analysis_object.whichbonds == "cation-anion":
             relevant_cations = ", ".join(
                 [
@@ -70,10 +74,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, 0.0 percent antibonding interaction below EFermi)"
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
                     else:
                         bond_info.append(
@@ -82,10 +86,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, "
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, "
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
@@ -144,10 +148,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, 0.0 percent antibonding interaction below EFermi)"
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
                     else:
                         bond_info.append(
@@ -156,10 +160,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, "
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, "
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
@@ -213,7 +217,7 @@ class Description:
         skip_show=False,
     ):
         """
-        Will automatically generate plots of the most relevant COHP
+        Will automatically generate plots of the most relevant COHP or COOP or COBI
 
         Args:
             save (bool): will save the plot to a file
@@ -242,7 +246,10 @@ class Description:
         ):
             namecation = str(structure[ication].specie)
 
-            cp = PlainCohpPlotter()
+            cp = PlainCohpPlotter(
+                are_coops=self.analysis_object.are_coops,
+                are_cobis=self.analysis_object.are_cobis,
+            )
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)

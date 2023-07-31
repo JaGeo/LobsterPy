@@ -36,6 +36,8 @@ class Analysis:
         path_to_icohplist: str that describes the path to ICOHPLIST.lobster
         path_to_poscar: str that describes path to POSCAR
         path_to_madelung: str that describes path to POSCAR
+        are_cobis : bool indicating if file contains COBI/ICOBI data
+        are_coops : bool indicating if file contains COOP/ICOOP data
         set_cohps: list of cohps
         set_coordination_ions: list of coodination environment strings for each cation
         set_equivalent_sites: set of inequivalent sites
@@ -72,6 +74,8 @@ class Analysis:
             path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster")
             path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster")
             path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
+            are_cobis : bool indicating if file contains COBI/ICOBI data
+            are_coops : bool indicating if file contains COOP/ICOOP data
             whichbonds: selects which kind of bonds are analyzed. "cation-anion" is the default
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             summed_spins: if true, spins will be summed
@@ -141,13 +145,13 @@ class Analysis:
                     valences_from_charges=True,
                     adapt_extremum_to_add_cond=True,
                     are_cobis=self.are_cobis,
-                    are_coops=self.are_coops
+                    are_coops=self.are_coops,
                 )
             except ValueError as err:
                 if (
                     str(err) == "min() arg is an empty sequence"
                     or str(err)
-                    == "All valences are equal to 0, additional_conditions 1 and 3 and 5 and 6 will not work"
+                    == "All valences are equal to 0, additional_conditions 1, 3, 5 and 6 will not work"
                 ):
                     raise ValueError(
                         "Consider switching to an analysis of all bonds and not only cation-anion bonds."
@@ -165,7 +169,7 @@ class Analysis:
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,
                 are_cobis=self.are_cobis,
-                are_coops=self.are_coops
+                are_coops=self.are_coops,
             )
 
         else:
@@ -580,9 +584,29 @@ class Analysis:
             np.round(abs(bonding) / (abs(bonding) + abs(antibonding)), 5),
         )
 
+    def _get_pop_type(self):
+        """
+        Convenience method to return the type of input population file
+
+        Returns:
+            A String of analysed population can be COOP/COBI/COHP
+        """
+        if self.are_cobis:
+            type_pop = "COBI"
+        elif self.are_coops:
+            type_pop = "COOP"
+        else:
+            type_pop = "COHP"
+
+        return type_pop
+
     @staticmethod
     def _get_bond_dict(
-        bond_strength_dict, small_antbd_dict, nameion=None, large_antbd_dict=None
+        bond_strength_dict,
+        small_antbd_dict,
+        nameion=None,
+        large_antbd_dict=None,
+        type_pop=None,
     ):
         """
         Will return a bond_dict including information for each site
@@ -592,9 +616,11 @@ class Analysis:
             small_antbd_dict (dict): dict including if there are antibonding interactions, {'Yb-Sb': False}
             nameion (str): name of the cation, e.g. Yb
             large_antbdg_dict: will be implemented later
+            type_pop: population type analyzed. eg. COHP
 
 
         Returns:
+            Eg., if type_pop == 'COHP', will return
             dict including information on the anion (as label) and the ICOHPs in the item of the dict
             ICOHP_mean refers to the mean ICOHP in eV
             ICOHP_sum refers to the sum of the ICOHPs in eV
@@ -608,12 +634,6 @@ class Analysis:
 
         """
         bond_dict = {}
-        if self.are_cobis:
-            type_pop = 'BI'
-        elif self.are_coops:
-            type_pop = 'OP'
-        else:
-            type_pop = 'HP'
 
         for key, item in bond_strength_dict.items():
             if nameion is not None:
@@ -626,15 +646,15 @@ class Analysis:
 
             if large_antbd_dict is None:
                 bond_dict[key_here] = {
-                    f"ICO{type_pop}_mean": str(round(np.mean(item), 2)),
-                    f"ICO{type_pop}_sum": str(round(np.sum(item), 2)),
+                    f"I{type_pop}_mean": str(round(np.mean(item), 2)),
+                    f"I{type_pop}_sum": str(round(np.sum(item), 2)),
                     "has_antibdg_states_below_Efermi": small_antbd_dict[key],
                     "number_of_bonds": len(item),
                 }
             else:
                 bond_dict[key_here] = {
-                    f"ICO{type_pop}_mean": str(round(np.mean(item), 2)),
-                    f"ICO{type_pop}_sum": str(round(np.sum(item), 2)),
+                    f"I{type_pop}_mean": str(round(np.mean(item), 2)),
+                    f"I{type_pop}_sum": str(round(np.sum(item), 2)),
                     "has_antibdg_states_below_Efermi": small_antbd_dict[key],
                     "number_of_bonds": len(item),
                     "perc_antibdg_states_below_Efermi": large_antbd_dict[key],
@@ -668,7 +688,8 @@ class Analysis:
             )
             # formula of the compound
         formula = str(self.structure.composition.reduced_formula)
-
+        # set population type
+        type_pop = self._get_pop_type()
         # how many inequivalent cations are in the structure
         if self.whichbonds == "cation-anion":
             number_considered_ions = len(self.set_inequivalent_ions)
@@ -708,7 +729,9 @@ class Analysis:
                     )
                 )
 
-                bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation)
+                bond_dict = self._get_bond_dict(
+                    mean_icohps, antbdg, namecation, type_pop=type_pop
+                )
 
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
@@ -747,7 +770,9 @@ class Analysis:
                     )
                 )
 
-                bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
+                bond_dict = self._get_bond_dict(
+                    mean_icohps, antbdg, nameion=nameion, type_pop=type_pop
+                )
 
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
@@ -762,12 +787,6 @@ class Analysis:
                     "charge": charge_list[iion],
                     "relevant_bonds": bond_infos[3],
                 }
-        if self.are_cobis:
-            type_pop = 'bi'
-        elif self.are_coops:
-            type_pop = 'op'
-        else:
-            type_pop = 'hp'
 
         if self.path_to_madelung is None:
             if self.whichbonds == "cation-anion":
@@ -775,7 +794,7 @@ class Analysis:
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
-                    f"limit_ico{type_pop}": limit_icohps,
+                    f"limit_i{type_pop.lower()}": limit_icohps,
                     "number_of_considered_ions": number_considered_ions,
                     "sites": site_dict,
                     "type_charges": self.type_charge,
@@ -784,7 +803,7 @@ class Analysis:
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
-                    f"limit_ico{type_pop}": limit_icohps,
+                    f"limit_i{type_pop.lower()}": limit_icohps,
                     "number_of_considered_ions": number_considered_ions,
                     "sites": site_dict,
                     "type_charges": self.type_charge,
@@ -802,7 +821,7 @@ class Analysis:
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
-                    f"limit_ico{type_pop}": limit_icohps,
+                    f"limit_i{type_pop.lower()}": limit_icohps,
                     "number_of_considered_ions": number_considered_ions,
                     "sites": site_dict,
                     "type_charges": self.type_charge,
@@ -812,7 +831,7 @@ class Analysis:
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
-                    f"limit_ico{type_pop}": limit_icohps,
+                    f"limit_i{type_pop.lower()}": limit_icohps,
                     "number_of_considered_ions": number_considered_ions,
                     "sites": site_dict,
                     "type_charges": self.type_charge,
@@ -843,16 +862,8 @@ class Analysis:
             for isite in self.list_equivalent_sites
             if isite in self.set_inequivalent_ions
         ]
-
-        # formula_units = self.structure.composition.num_atoms /
-        # self.structure.composition.reduced_composition.num_atoms
-
-        if self.are_cobis:
-            type_pop = 'BI'
-        elif self.are_coops:
-            type_pop = 'OP'
-        else:
-            type_pop = 'HP'
+        # set population type
+        type_pop = self._get_pop_type()
 
         final_dict_bonds = {}
         for key in relevant_ion_ids:
@@ -865,15 +876,15 @@ class Analysis:
                 if label not in final_dict_bonds:
                     final_dict_bonds[label] = {
                         "number_of_bonds": int(properties["number_of_bonds"]),
-                        f"ICO{type_pop}_sum": float(properties[f"ICO{type_pop}_sum"]),
+                        f"I{type_pop}_sum": float(properties[f"I{type_pop}_sum"]),
                         "has_antbdg": properties["has_antibdg_states_below_Efermi"],
                     }
                 else:
                     final_dict_bonds[label]["number_of_bonds"] += int(
                         properties["number_of_bonds"]
                     )
-                    final_dict_bonds[label][f"ICO{type_pop}_sum"] += float(
-                        properties[f"ICO{type_pop}_sum"]
+                    final_dict_bonds[label][f"I{type_pop}_sum"] += float(
+                        properties[f"I{type_pop}_sum"]
                     )
                     final_dict_bonds[label]["has_antbdg"] = (
                         final_dict_bonds[label]["has_antbdg"]
@@ -882,9 +893,9 @@ class Analysis:
         self.final_dict_bonds = {}
         for key, item in final_dict_bonds.items():
             self.final_dict_bonds[key] = {}
-            self.final_dict_bonds[key][f"ICO{type_pop}_mean"] = item[f"ICO{type_pop}_sum"] / (
-                item["number_of_bonds"]
-            )
+            self.final_dict_bonds[key][f"I{type_pop}_mean"] = item[
+                f"I{type_pop}_sum"
+            ] / (item["number_of_bonds"])
             self.final_dict_bonds[key]["has_antbdg"] = item["has_antbdg"]
 
         # rework, add all environments!
