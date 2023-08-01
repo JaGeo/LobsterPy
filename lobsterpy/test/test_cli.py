@@ -142,6 +142,23 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(plot_path)
 
+    def test_cli_interactive_plotter(self):
+        os.chdir(TestDir / "TestData/NaCl")
+        # tests skip showing plots generated using automatic interactive plotter
+        args = [
+            "automaticplotia",
+            "--hideplot",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+
+    def test_iaplot_saved(self, tmp_path, inject_mocks, clean_plot):
+        plot_path = tmp_path / "plot.html"
+        args = ["automaticplotia", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"

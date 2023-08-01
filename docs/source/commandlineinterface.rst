@@ -227,6 +227,20 @@ command. Below is an example and sample output using this command.
    
 .. image:: Lobsterpy_tutorial_files/ICOHP.png
 
+-  ``lobsterpy automatic-plot-ia`` command can be used to obtain a interactive plot of analysis automatically. It will evaluate all COHPs with ICOHP values down to
+   10% of the strongest ICOHP. You can enforce an analysis of all bonds
+   by using ``lobsterpy automatic-plot-ia --allbonds``. Currently, the
+   computed Mulliken charges will be used to determine cations and
+   anions. If no CHARGE.lobster is available, the algorithm will fall
+   back to the BondValence analysis from pymatgen. Please be aware that
+   LobsterPy can only analyze bonds that have been included in the
+   initial Lobster computation. Below is an example and sample output
+   using this command. You can also obtain label resolved plot using
+   ``lobsterpy automatic-plot-ia --allbonds --label-resolved`` option
+
+.. raw:: html
+   :file: Lobsterpy_tutorial_files/CdF2.html
+
 2. Plotting of COHPs/COBIs/COOPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
