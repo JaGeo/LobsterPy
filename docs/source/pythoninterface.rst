@@ -41,9 +41,15 @@ Import the necessary modules
     # Automatic plots
     describe.plot_cohps(ylim=[-10, 2], xlim=[-4, 4])
 
-
-
 .. image:: Lobsterpy_tutorial_files/Lobsterpy_tutorial_38_0.png
+
+.. code:: ipython3
+
+    # Automatic interactive plots
+    describe.plot_interactive_cohps()
+
+.. raw:: html
+   :file: Lobsterpy_tutorial_files/CdF2.html
 
 
 .. code:: ipython3

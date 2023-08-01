@@ -16,7 +16,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, get_style_list
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list, InteractiveCohpPlotter
 
 
 def main() -> None:
@@ -234,6 +234,14 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument(
         "--fontsize", "--font-size", type=float, default=None, help="Base font size"
     )
+    plotting_group.add_argument(
+        "--labelresolved",
+        "--label-resolved",
+        action="store_true",
+        help="Will create automatic interactive plots with all relevant bond labels. "
+        "If not set, plots will consists of summed cohps. (This argument works only"
+        "for interactive plots) ",
+    )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Automatic analysis")
@@ -330,6 +338,16 @@ def get_parser() -> argparse.ArgumentParser:
         help=(
             "Plot most important COHPs automatically. Implementation "
             "of COBIs and COOPs will follow. This option also includes an automatic description."
+        ),
+    )
+
+    subparsers.add_parser(
+        "automatic-plot-ia",
+        aliases=["automaticplotia", "autoplotia", "auto-plot-ia"],
+        parents=[input_parent, auto_parent, plotting_parent],
+        help=(
+            "Creates an interactive plot of most important COHPs automatically. Implementation "
+            "of COBIs and COOPs will follow."
         ),
     )
 
@@ -438,6 +456,11 @@ def run(args):
         "description",
         "automatic-plot",
         "plot",
+        "automatic-plot-ia",
+        "interactplot",
+        "automaticplotia",
+        "auto-plot-ia",
+        "autoplotia",
     ]:
         # Check for .gz files exist for default values and update accordingly
         default_files = {
@@ -462,7 +485,17 @@ def run(args):
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
         args.action = "automatic-plot"
 
-    if args.action in ["description", "automatic-plot"]:
+    if args.action in ["automaticplotia", "automatic-plot-ia", "auto-plot-ia"]:
+        args.action = "automaticplotia"
+
+    if args.action in [
+        "description",
+        "automatic-plot",
+        "automatic-plot-ia",
+        "automaticplotia",
+        "auto-plot-ia",
+        "autoplotia",
+    ]:
         if args.allbonds:
             whichbonds = "all"
         else:
@@ -484,7 +517,14 @@ def run(args):
             with open(args.json, "w") as fd:
                 json.dump(analysedict, fd)
 
-    if args.action in ["plot", "automatic-plot"]:
+    if args.action in [
+        "plot",
+        "automatic-plot",
+        "automaticplotia",
+        "automatic-plot-ia",
+        "auto-plot-ia",
+        "autoplotia",
+    ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
         if args.fontsize:
@@ -511,7 +551,25 @@ def run(args):
             filename=args.save_plot,
             title=args.title,
             sigma=sigma,
-            skip_show=args.hideplot,
+            hide=args.hideplot,
+        )
+
+    if args.action in [
+        "automatic-plot-ia",
+        "automaticplotia",
+        "auto-plot-ia",
+        "autoplotia",
+    ]:
+        describe.plot_interactive_cohps(
+            ylim=args.ylim,
+            xlim=args.xlim,
+            integrated=args.integrated,
+            save_as_html=args.save_plot,
+            filename=args.save_plot,
+            title=args.title,
+            sigma=sigma,
+            hide=args.hideplot,
+            label_resolved=args.labelresolved,
         )
 
     if args.action == "plot":
