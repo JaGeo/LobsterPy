@@ -39,8 +39,10 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and coverage
+      # run this locally to update tests durations
+      # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./lobsterpy/TestData/.pytest-split-durations --store-durations
       run: |
-        pytest --cov=lobsterpy --cov-append --splits 5 --group ${{ matrix.split }} --durations-path ./lobsterpy/.pytest-split-durations --store-durations
+        pytest --cov=lobsterpy --cov-append --splits 5 --group ${{ matrix.split }} --durations-path ./lobsterpy/TestData/.pytest-split-durations
     - name: Upload coverage
       uses: actions/upload-artifact@v3
       with:
