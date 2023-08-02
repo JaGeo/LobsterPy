@@ -79,6 +79,7 @@ class Analysis:
             summed_spins: if true, spins will be summed
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
                         Löwdin charges cannot be selected at the moment.
+            orbital_resolved: bool indicating whether analysis is performed orbital wise
             start: start energy for integration
         """
         self.start = start
