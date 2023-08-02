@@ -46,6 +46,8 @@ class Analysis:
         structure: Structure object
         type_charge: which charges are considered here
         whichbonds: which bonds will be considered in analysis
+        orbital_resolved: bool indicating whether analysis is performed
+        orbital wise
 
     """
 
@@ -61,6 +63,7 @@ class Analysis:
         summed_spins=True,
         type_charge=None,
         start=None,
+        orbital_resolved=False,
     ):
         """
         This is a class to analyse bonding information automatically
@@ -88,6 +91,7 @@ class Analysis:
         self.path_to_madelung = path_to_madelung
         self.setup_env()
         self.get_information_all_bonds(summed_spins=summed_spins)
+        self.orbital_resolved = orbital_resolved
 
         # This determines how cations and anions
         if path_to_charge is None:
@@ -300,6 +304,106 @@ class Analysis:
 
                     self.seq_labels_cohps.append(type_labels)
                     self.seq_cohps.append(type_cohps)
+
+    def _get_bond_resolved_labels(self):
+        """
+
+        Returns:
+            dict with bond labels for each site, e.g.
+            {'Yb-Sb': ['1', '2', '3', '4', '5', '6']}
+
+        """
+        bonds = [[] for _ in range(len(self.seq_infos_bonds))]  # type: ignore
+        labels = [[] for _ in range(len(self.seq_infos_bonds))]  # type: ignore
+        for inx, bond_info in enumerate(self.seq_infos_bonds):
+            for ixx, val in enumerate(bond_info.atoms):
+                label_srt = sorted(val.copy())
+                bonds[inx].append(
+                    self.structure.sites[bond_info.central_isites[0]].species_string
+                    + str(bond_info.central_isites[0] + 1)
+                    + ": "
+                    + label_srt[0].strip("0123456789")
+                    + "-"
+                    + label_srt[1].strip("0123456789")
+                )
+                labels[inx].append(bond_info.labels[ixx])
+
+        label_data = {}
+        for indx, atom_pairs in enumerate(bonds):
+            search_items = set(atom_pairs)
+            for item in search_items:
+                indices = [i for i, x in enumerate(atom_pairs) if x == item]
+                filtered_bond_label_list = [labels[indx][i] for i in indices]
+                label_data.update({item: filtered_bond_label_list})
+
+        return label_data
+
+    def get_orbital_resolved_data(self, nameion, iion, labels, bond_resolved_labels):
+        """
+        Method to retrieve orbital wise analysis data
+
+        Args:
+            nameion: name of symmetrically relevant cation or anion
+            iion: index of symmetrically relevant cation or anion
+            labels: list of bond label names
+            bond_resolved_labels: dict of bond labels from ICOHPLIST resolved for each bond
+
+        Returns:
+            dict consisting of relevant orbitals (contribution > 10 % to overall ICOHP),
+            bonding and antibonding percentages with bond label names as keys.
+        """
+        orb_resolved_bond_info = {}
+        for label in labels:
+            if label is not None:
+                bond_resolved_label_key = (
+                    nameion + str(iion + 1) + ":" + label.split("x")[-1]
+                )
+                bond_labels = bond_resolved_labels[bond_resolved_label_key]
+                available_orbitals = list(
+                    self.chemenv.completecohp.orb_res_cohp[bond_labels[0]].keys()
+                )
+                orb_list = []
+                orb_contri = []
+                for bond_label in bond_labels:
+                    for orb in available_orbitals:
+                        icohp_summed = self.chemenv.Icohpcollection.get_icohp_by_label(
+                            label=bond_label
+                        )
+                        orb_icohp = self.chemenv.Icohpcollection.get_icohp_by_label(
+                            label=bond_label, orbitals=orb
+                        )
+                        contri_perc = round((orb_icohp / icohp_summed), 4)
+                        if contri_perc * 100 >= self.cutoff_icohp * 100:
+                            if orb not in orb_list:
+                                orb_list.append(orb)
+                                orb_contri.append(contri_perc)
+
+                orb_bonding_dict_data = {}
+                for indx, orbital in enumerate(orb_list):
+                    cohps = self.chemenv.completecohp.get_summed_cohp_by_label_and_orbital_list(
+                        label_list=bond_labels,
+                        orbital_list=[orbital] * len(bond_labels),
+                    )
+
+                    (
+                        antibndg,
+                        per_anti,
+                        bndg,
+                        per_bndg,
+                    ) = self._integrate_antbdstates_below_efermi(
+                        cohp=cohps, start=self.start
+                    )
+                    orb_bonding_dict_data[orbital] = {
+                        "orb_contribution": orb_contri[indx],
+                        "bonding": {"integral": bndg, "perc": per_bndg},
+                        "antibonding": {"integral": antibndg, "perc": per_anti},
+                    }
+                # print(label_resolved_data_key, 'Done')
+                # orb_resolved_bond_info[label_resolved_data_key]=list(set(orb_list))
+                orb_resolved_bond_info[bond_resolved_label_key] = orb_bonding_dict_data
+                # print(orb_resolved_bond_info)
+
+        return orb_resolved_bond_info
 
     @staticmethod
     def _get_strenghts_for_each_bond(pairs, strengths, nameion=None):
@@ -692,6 +796,24 @@ class Analysis:
                         if namecation == k2.split("-")[0] and k == k2.split("-")[1]:
                             v["bonding"] = v2["bonding"]
                             v["antibonding"] = v2["antibonding"]
+                            if self.orbital_resolved:
+                                bond_resolved_labels = self._get_bond_resolved_labels()
+                                orb_resolved_bond_info = self.get_orbital_resolved_data(
+                                    nameion=namecation,
+                                    iion=ication,
+                                    labels=labels,
+                                    bond_resolved_labels=bond_resolved_labels,
+                                )
+                                for k3, v3 in orb_resolved_bond_info.items():
+                                    orb_key = k3.split(": ")[-1]
+                                    k2_here = k2.split("-")
+                                    k2_here.sort()
+                                    if (
+                                        orb_key == "-".join(k2_here)
+                                        and (namecation + str(ication + 1) + ":") in k3
+                                    ):
+                                        # print(orb_key)
+                                        v["orbital_data"] = orb_resolved_bond_info[k3]
 
                 site_dict[ication] = {
                     "env": ce,
@@ -731,6 +853,24 @@ class Analysis:
                         if nameion == k2.split("-")[0] and k == k2.split("-")[1]:
                             v["bonding"] = v2["bonding"]
                             v["antibonding"] = v2["antibonding"]
+                            if self.orbital_resolved:
+                                bond_resolved_labels = self._get_bond_resolved_labels()
+                                orb_resolved_bond_info = self.get_orbital_resolved_data(
+                                    nameion=nameion,
+                                    iion=iion,
+                                    labels=labels,
+                                    bond_resolved_labels=bond_resolved_labels,
+                                )
+                                for k3, v3 in orb_resolved_bond_info.items():
+                                    orb_key = k3.split(": ")[-1]
+                                    k2_here = k2.split("-")
+                                    k2_here.sort()
+                                    if (
+                                        orb_key == "-".join(k2_here)
+                                        and (nameion + str(iion + 1) + ":") in k3
+                                    ):
+                                        # print(orb_key)
+                                        v["orbital_data"] = orb_resolved_bond_info[k3]
 
                 site_dict[iion] = {
                     "env": ce,
