@@ -269,30 +269,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         complete_cohp = analyse.chemenv.completecohp
 
-        # extract bond atom pairs and corresponding cohp bond label
-        bonds = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        labels = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        for inx, bond_info in enumerate(analyse.seq_infos_bonds):
-            for ixx, val in enumerate(bond_info.atoms):
-                label_srt = sorted(val.copy())
-                bonds[inx].append(
-                    analyse.structure.sites[bond_info.central_isites[0]].species_string
-                    + str(bond_info.central_isites[0] + 1)
-                    + ": "
-                    + label_srt[0].strip("0123456789")
-                    + "-"
-                    + label_srt[1].strip("0123456789")
-                )
-                labels[inx].append(bond_info.labels[ixx])
-
-        # create a dict seperating the unique atom pairs for each site and corresponding cohp bond label
-        plot_data = {}
-        for indx, atom_pairs in enumerate(bonds):
-            search_items = set(atom_pairs)
-            for item in search_items:
-                indices = [i for i, x in enumerate(atom_pairs) if x == item]
-                filtered_bond_label_list = [labels[indx][i] for i in indices]
-                plot_data.update({item: filtered_bond_label_list})
+        plot_data = analyse._get_bond_resolved_labels()
 
         if "All" not in self._cohps:
             self._cohps["All"] = {}
