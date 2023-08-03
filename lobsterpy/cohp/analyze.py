@@ -364,7 +364,6 @@ class Analysis:
                     self.chemenv.completecohp.orb_res_cohp[bond_labels[0]].keys()
                 )
                 orb_list = []
-                orb_contri = []
                 for bond_label in bond_labels:
                     for orb in available_orbitals:
                         icohp_summed = self.chemenv.Icohpcollection.get_icohp_by_label(
@@ -377,7 +376,6 @@ class Analysis:
                         if contri_perc * 100 >= self.cutoff_icohp * 100:
                             if orb not in orb_list:
                                 orb_list.append(orb)
-                                orb_contri.append(contri_perc)
 
                 orb_bonding_dict_data = {}
                 for indx, orbital in enumerate(orb_list):
@@ -394,15 +392,29 @@ class Analysis:
                     ) = self._integrate_antbdstates_below_efermi(
                         cohp=cohps, start=self.start
                     )
+                    orb_icohp_list = []
+                    orb_contri = []
+                    for label in bond_labels:
+                        icohp_summed = self.chemenv.Icohpcollection.get_icohp_by_label(
+                            label=label
+                        )
+                        orb_icohp = self.chemenv.Icohpcollection.get_icohp_by_label(
+                            label=label, orbitals=orbital
+                        )
+                        contri_perc = round((orb_icohp / icohp_summed), 4)
+                        orb_icohp_list.append(orb_icohp)
+                        orb_contri.append(contri_perc)
+
                     orb_bonding_dict_data[orbital] = {
-                        "orb_contribution": orb_contri[indx],
+                        "ICOHP_mean": round(np.mean(orb_icohp_list), 2),
+                        "ICOHP_sum": round(sum(orb_icohp_list), 2),
+                        "orb_contribution_max_perc": max(orb_contri),
+                        "orb_contribution_min_perc": min(orb_contri),
+                        "orb_contribution_mean_perc": round(np.mean(orb_contri), 4),
                         "bonding": {"integral": bndg, "perc": per_bndg},
                         "antibonding": {"integral": antibndg, "perc": per_anti},
                     }
-                # print(label_resolved_data_key, 'Done')
-                # orb_resolved_bond_info[label_resolved_data_key]=list(set(orb_list))
                 orb_resolved_bond_info[bond_resolved_label_key] = orb_bonding_dict_data
-                # print(orb_resolved_bond_info)
 
         return orb_resolved_bond_info
 
@@ -813,7 +825,6 @@ class Analysis:
                                         orb_key == "-".join(k2_here)
                                         and (namecation + str(ication + 1) + ":") in k3
                                     ):
-                                        # print(orb_key)
                                         v["orbital_data"] = orb_resolved_bond_info[k3]
 
                 site_dict[ication] = {
@@ -870,7 +881,6 @@ class Analysis:
                                         orb_key == "-".join(k2_here)
                                         and (nameion + str(iion + 1) + ":") in k3
                                     ):
-                                        # print(orb_key)
                                         v["orbital_data"] = orb_resolved_bond_info[k3]
 
                 site_dict[iion] = {
