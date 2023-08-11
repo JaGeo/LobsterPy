@@ -9,6 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from lobsterpy.plotting import PlainCohpPlotter
+from lobsterpy.plotting import InteractiveCohpPlotter
 
 
 class Description:
@@ -49,7 +50,7 @@ class Description:
                 [
                     str(site.specie) + str(isite + 1)
                     for isite, site in enumerate(self.analysis_object.structure)
-                    if isite in self.analysis_object.set_inequivalent_ions
+                    if isite in self.analysis_object.seq_ineq_ions
                 ]
             )
             self.text = []
@@ -123,7 +124,7 @@ class Description:
                 [
                     str(site.specie) + str(isite + 1)
                     for isite, site in enumerate(self.analysis_object.structure)
-                    if isite in self.analysis_object.set_inequivalent_ions
+                    if isite in self.analysis_object.seq_ineq_ions
                 ]
             )
             self.text = []
@@ -214,7 +215,7 @@ class Description:
         integrated=False,
         title="",
         sigma=None,
-        skip_show=False,
+        hide=False,
     ):
         """
         Will automatically generate plots of the most relevant COHP or COOP or COBI
@@ -227,22 +228,23 @@ class Description:
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
-            skip_show (bool): if True, the plot will not be shown.
+            title: sets the title of figure generated
+            hide (bool): if True, the plot will not be shown.
 
         Returns:
             A matplotlib object.
 
         """
-        set_cohps = self.analysis_object.set_cohps
+        seq_cohps = self.analysis_object.seq_cohps
         if self.analysis_object.whichbonds == "cation-anion":
-            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
+            seq_ineq_cations = self.analysis_object.seq_ineq_ions
         elif self.analysis_object.whichbonds == "all":
-            set_inequivalent_cations = self.analysis_object.set_inequivalent_ions
-        set_labels_cohps = self.analysis_object.set_labels_cohps
+            seq_ineq_cations = self.analysis_object.seq_ineq_ions
+        seq_labels = self.analysis_object.seq_labels_cohps
         structure = self.analysis_object.structure
 
         for iplot, (ication, labels, cohps) in enumerate(
-            zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
+            zip(seq_ineq_cations, seq_labels, seq_cohps)
         ):
             namecation = str(structure[ication].specie)
 
@@ -260,7 +262,7 @@ class Description:
 
             plot.title(title)
             if save:
-                if len(set_inequivalent_cations) > 1:
+                if len(seq_ineq_cations) > 1:
                     if isinstance(filename, str):
                         filename = Path(filename)
                     filename_new = (
@@ -269,11 +271,73 @@ class Description:
                 else:
                     filename_new = filename
                 plot.savefig(filename_new)
-        if not skip_show:
+        if not hide:
             plot.show()
         else:
             if not save:
                 plot.close()
+
+    def plot_interactive_cohps(
+        self,
+        save_as_html=False,
+        filename=None,
+        ylim=None,
+        xlim=None,
+        integrated=False,
+        title="",
+        sigma=None,
+        label_resolved=False,
+        hide=False,
+    ):
+        """
+        Will automatically generate interactive plots of the most relevant COHP
+
+        Args:
+            save_as_html (bool): will save the plot to a html file
+            filename (str/Path):
+            ylim (list of float): energy scale that is shown in plot (eV)
+            xlim (list of float): energy range for COHPs in eV
+            integrated (bool): if True, integrated COHPs will be shown
+            sigma: Standard deviation of Gaussian broadening applied to
+                population data. If None, no broadening will be added.
+            title : Title of the interactive plot
+            hide (bool): if True, the plot will not be shown.
+
+        Returns:
+            A plotly.graph_objects.Figure object.
+
+        """
+        cba_cohp_plot_data = {}  # Initialize dict to store plot data
+        set_cohps = self.analysis_object.seq_cohps
+        set_labels_cohps = self.analysis_object.seq_labels_cohps
+        set_inequivalent_cations = self.analysis_object.seq_ineq_ions
+        structure = self.analysis_object.structure
+
+        for _iplot, (ication, labels, cohps) in enumerate(
+            zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
+        ):
+            label_str = f"{str(structure[ication].specie)}{str(ication + 1)}: "
+            for label, cohp in zip(labels, cohps):
+                if label is not None:
+                    cba_cohp_plot_data[label_str + label] = cohp
+
+        ip = InteractiveCohpPlotter()
+        if label_resolved:
+            ip.add_all_relevant_cohps(
+                analyse=self.analysis_object, label_resolved=label_resolved
+            )
+        else:
+            ip.add_cohps_from_plot_data(plot_data_dict=cba_cohp_plot_data)
+
+        plot = ip.get_plot(integrated=integrated, xlim=xlim, ylim=ylim, sigma=sigma)
+
+        plot.update_layout(title_text=title)
+        if save_as_html:
+            plot.write_html(filename, include_mathjax="cdn")
+        if not hide:
+            return plot.show()
+
+        return plot
 
     @staticmethod
     def _coordination_environment_to_text(ce):

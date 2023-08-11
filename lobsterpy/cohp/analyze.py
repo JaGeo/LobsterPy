@@ -41,8 +41,9 @@ class Analysis:
         set_cohps: list of cohps
         set_coordination_ions: list of coodination environment strings for each cation
         set_equivalent_sites: set of inequivalent sites
-        set_inequivalent_ions: set of inequivalent cations/sites in the structure
-        set_infos_bonds: information on cation anion bonds
+        seq_ineq_ions: set of inequivalent cations/sites in the structure
+        seq_infos_bonds (list): information on cation anion bonds (lists
+            of pymatgen.io.lobster.lobsterenv.ICOHPNeighborsInfo)
         spg: space group information
         structure: Structure object
         type_charge: which charges are considered here
@@ -232,11 +233,11 @@ class Analysis:
         """
         if self.whichbonds == "cation-anion":
             # this will only analyze cation anion bonds which simplifies the analysis
-            self.set_inequivalent_ions = []
-            self.set_coordination_ions = []
-            self.set_infos_bonds = []
-            self.set_labels_cohps = []
-            self.set_cohps = []
+            self.seq_ineq_ions = []
+            self.seq_coord_ions = []
+            self.seq_infos_bonds = []
+            self.seq_labels_cohps = []
+            self.seq_cohps = []
             # only_bonds_to
 
             self.anion_types = self.chemenv.get_anion_types()
@@ -244,13 +245,12 @@ class Analysis:
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
                 if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
-                    self.set_inequivalent_ions.append(ice)
-                    ce = ce[0]["ce_symbol"]
-                    self.set_coordination_ions.append(ce)
-                    cation_anion_infos = self.chemenv.get_info_icohps_to_neighbors(
-                        [ice]
+                    self.seq_ineq_ions.append(ice)
+
+                    self.seq_coord_ions.append(ce[0]["ce_symbol"])
+                    self.seq_infos_bonds.append(
+                        self.chemenv.get_info_icohps_to_neighbors([ice])
                     )
-                    self.set_infos_bonds.append(cation_anion_infos)
 
                     aniontype_labels = []
                     aniontype_cohps = []
@@ -269,17 +269,17 @@ class Analysis:
                         aniontype_labels.append(labels)
                         aniontype_cohps.append(summedcohps)
 
-                    self.set_labels_cohps.append(aniontype_labels)
-                    self.set_cohps.append(aniontype_cohps)
+                    self.seq_labels_cohps.append(aniontype_labels)
+                    self.seq_cohps.append(aniontype_cohps)
 
         elif self.whichbonds == "all":
             # this will only analyze all bonds
 
-            self.set_inequivalent_ions = []
-            self.set_coordination_ions = []
-            self.set_infos_bonds = []
-            self.set_labels_cohps = []
-            self.set_cohps = []
+            self.seq_ineq_ions = []
+            self.seq_coord_ions = []
+            self.seq_infos_bonds = []
+            self.seq_labels_cohps = []
+            self.seq_cohps = []
             # only_bonds_to
             self.elements = self.structure.composition.elements
             # self.anion_types = self.chemenv.get_anion_types()
@@ -287,11 +287,11 @@ class Analysis:
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
                 if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
-                    self.set_inequivalent_ions.append(ice)
-                    ce = ce[0]["ce_symbol"]
-                    self.set_coordination_ions.append(ce)
-                    bonds_infos = self.chemenv.get_info_icohps_to_neighbors([ice])
-                    self.set_infos_bonds.append(bonds_infos)
+                    self.seq_ineq_ions.append(ice)
+                    self.seq_coord_ions.append(ce[0]["ce_symbol"])
+                    self.seq_infos_bonds.append(
+                        self.chemenv.get_info_icohps_to_neighbors([ice])
+                    )
 
                     type_labels = []
                     type_cohps = []
@@ -310,8 +310,8 @@ class Analysis:
                         type_labels.append(labels)
                         type_cohps.append(summedcohps)
 
-                    self.set_labels_cohps.append(type_labels)
-                    self.set_cohps.append(type_cohps)
+                    self.seq_labels_cohps.append(type_labels)
+                    self.seq_cohps.append(type_cohps)
 
     @staticmethod
     def _get_strenghts_for_each_bond(pairs, strengths, nameion=None):
@@ -692,9 +692,9 @@ class Analysis:
         type_pop = self._get_pop_type()
         # how many inequivalent cations are in the structure
         if self.whichbonds == "cation-anion":
-            number_considered_ions = len(self.set_inequivalent_ions)
+            number_considered_ions = len(self.seq_ineq_ions)
         elif self.whichbonds == "all":
-            number_considered_ions = len(self.set_inequivalent_ions)
+            number_considered_ions = len(self.seq_ineq_ions)
 
         # what was the maximum bond lengths that was considered
         max_bond_lengths = max(self.chemenv.Icohpcollection._list_length)
@@ -706,11 +706,11 @@ class Analysis:
         site_dict = {}
         if self.whichbonds == "cation-anion":
             for ication, ce, cation_anion_infos, labels, cohps in zip(
-                self.set_inequivalent_ions,
-                self.set_coordination_ions,
-                self.set_infos_bonds,
-                self.set_labels_cohps,
-                self.set_cohps,
+                self.seq_ineq_ions,
+                self.seq_coord_ions,
+                self.seq_infos_bonds,
+                self.seq_labels_cohps,
+                self.seq_cohps,
             ):
                 namecation = str(self.structure[ication].specie)
 
@@ -748,11 +748,11 @@ class Analysis:
                 }
         elif self.whichbonds == "all":
             for iion, ce, bond_infos, labels, cohps in zip(
-                self.set_inequivalent_ions,
-                self.set_coordination_ions,
-                self.set_infos_bonds,
-                self.set_labels_cohps,
-                self.set_cohps,
+                self.seq_ineq_ions,
+                self.seq_coord_ions,
+                self.seq_infos_bonds,
+                self.seq_labels_cohps,
+                self.seq_cohps,
             ):
                 nameion = str(self.structure[iion].specie)
 
@@ -858,9 +858,7 @@ class Analysis:
 
         """
         relevant_ion_ids = [
-            isite
-            for isite in self.list_equivalent_sites
-            if isite in self.set_inequivalent_ions
+            isite for isite in self.list_equivalent_sites if isite in self.seq_ineq_ions
         ]
         # set population type
         type_pop = self._get_pop_type()
