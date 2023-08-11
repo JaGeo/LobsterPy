@@ -374,6 +374,7 @@ class Analysis:
                         )
                         contri_perc = round((orb_icohp / icohp_summed), 4)
                         if contri_perc * 100 >= self.cutoff_icohp * 100:
+                            # print(bond_label, orb, contri_perc)
                             if orb not in orb_list:
                                 orb_list.append(orb)
 
@@ -394,6 +395,7 @@ class Analysis:
                     )
                     orb_icohp_list = []
                     orb_contri = []
+                    label_list = []
                     for label in bond_labels:
                         icohp_summed = self.chemenv.Icohpcollection.get_icohp_by_label(
                             label=label
@@ -402,17 +404,18 @@ class Analysis:
                             label=label, orbitals=orbital
                         )
                         contri_perc = round((orb_icohp / icohp_summed), 4)
-                        orb_icohp_list.append(orb_icohp)
-                        orb_contri.append(contri_perc)
+                        if contri_perc * 100 >= 10:
+                            orb_icohp_list.append(orb_icohp)
+                            orb_contri.append(contri_perc)
+                            label_list.append(label)
 
                     orb_bonding_dict_data[orbital] = {
                         "ICOHP_mean": round(np.mean(orb_icohp_list), 2),
                         "ICOHP_sum": round(sum(orb_icohp_list), 2),
-                        "orb_contribution_max_perc": max(orb_contri),
-                        "orb_contribution_min_perc": min(orb_contri),
                         "orb_contribution_mean_perc": round(np.mean(orb_contri), 4),
                         "bonding": {"integral": bndg, "perc": per_bndg},
                         "antibonding": {"integral": antibndg, "perc": per_anti},
+                        "relevant_bonds": label_list,
                     }
                 orb_resolved_bond_info[bond_resolved_label_key] = orb_bonding_dict_data
 
