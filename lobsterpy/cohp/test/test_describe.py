@@ -356,7 +356,7 @@ class TestDescribe(unittest.TestCase):
             self.assertFalse(Path(filename_test).exists())
             self.assertTrue(Path(filename_test_1).exists())
 
-    def test_write_descritoin(self):
+    def test_write_description(self):
         self.describe_NaCl.write_description()
         self.describe_NaSi_madelung_all.write_description()
         self.describe_NaSbF6.write_description()
