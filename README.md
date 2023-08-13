@@ -27,7 +27,7 @@ You can also pip install the package in development mode by writing ``pip instal
   
 An interactive plot is available via ``lobsterpy automatic-plot-ia``.
 
-    It is also possible to start this automatic analysis from a Python script. See "examples" for scripts.
+It is also possible to start this automatic analysis from a Python script. See "examples" for scripts.
 
 
 * **Command line plotter**:
