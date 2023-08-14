@@ -211,6 +211,7 @@ class Description:
         integrated=False,
         title="",
         sigma=None,
+        orbital_resolved=False,
         hide=False,
     ):
         """
@@ -224,6 +225,7 @@ class Description:
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
+            orbital_resolved: Add orbital resolved cohp curves to the plots
             title: sets the title of figure generated
             hide (bool): if True, the plot will not be shown.
 
@@ -248,6 +250,27 @@ class Description:
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
+            if orbital_resolved:
+                data = self.analysis_object.condensed_bonding_analysis["sites"][ication]
+                for k, v in data["bonds"].items():
+                    try:
+                        if v["orbital_data"]:
+                            for k2, v2 in v["orbital_data"].items():
+                                label_list = v2["relevant_bonds"]
+                                orbital_list = [k2] * len(label_list)
+                                completecohp = self.analysis_object.chemenv.completecohp
+                                cohp_sum_orb = completecohp.get_summed_cohp_by_label_and_orbital_list(
+                                    label_list=label_list, orbital_list=orbital_list
+                                )
+                                cp.add_cohp(
+                                    data["ion"] + "-" + k + ":" + k2, cohp_sum_orb
+                                )
+                    except KeyError:
+                        raise ValueError(
+                            "Orbital resolved plot requested, "
+                            "Switch on orbital resolved analysis to get necessary data"
+                        )
+
             plot = cp.get_plot(integrated=integrated, sigma=sigma)
             plot.ylim(ylim)
             if xlim is not None:
