@@ -306,12 +306,12 @@ class Analysis:
                     self.seq_labels_cohps.append(type_labels)
                     self.seq_cohps.append(type_cohps)
 
-    def _get_bond_resolved_labels(self):
+    def get_site_bond_resolved_labels(self):
         """
 
         Returns:
             dict with bond labels for each site, e.g.
-            {'Yb-Sb': ['1', '2', '3', '4', '5', '6']}
+            {'Na1: Na-Cl': ['21', '23', '24', '27', '28', '30']}
 
         """
         bonds = [[] for _ in range(len(self.seq_infos_bonds))]  # type: ignore
@@ -374,7 +374,6 @@ class Analysis:
                         )
                         contri_perc = round((orb_icohp / icohp_summed), 4)
                         if contri_perc * 100 >= self.cutoff_icohp * 100:
-                            # print(bond_label, orb, contri_perc)
                             if orb not in orb_list:
                                 orb_list.append(orb)
 
@@ -806,14 +805,16 @@ class Analysis:
                 )
 
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation)
+                bond_resolved_labels = self.get_site_bond_resolved_labels()
 
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
                         if namecation == k2.split("-")[0] and k == k2.split("-")[1]:
                             v["bonding"] = v2["bonding"]
                             v["antibonding"] = v2["antibonding"]
+                            atom_pair = k2.split("-")
+                            atom_pair.sort()
                             if self.orbital_resolved:
-                                bond_resolved_labels = self._get_bond_resolved_labels()
                                 orb_resolved_bond_info = self.get_orbital_resolved_data(
                                     nameion=namecation,
                                     iion=ication,
@@ -862,14 +863,16 @@ class Analysis:
                 )
 
                 bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion)
+                bond_resolved_labels = self.get_site_bond_resolved_labels()
 
                 for k, v in bond_dict.items():
                     for k2, v2 in dict_antibonding.items():
                         if nameion == k2.split("-")[0] and k == k2.split("-")[1]:
+                            atom_pair = k2.split("-")
+                            atom_pair.sort()
                             v["bonding"] = v2["bonding"]
                             v["antibonding"] = v2["antibonding"]
                             if self.orbital_resolved:
-                                bond_resolved_labels = self._get_bond_resolved_labels()
                                 orb_resolved_bond_info = self.get_orbital_resolved_data(
                                     nameion=nameion,
                                     iion=iion,
@@ -878,10 +881,8 @@ class Analysis:
                                 )
                                 for k3, v3 in orb_resolved_bond_info.items():
                                     orb_key = k3.split(": ")[-1]
-                                    k2_here = k2.split("-")
-                                    k2_here.sort()
                                     if (
-                                        orb_key == "-".join(k2_here)
+                                        orb_key == "-".join(atom_pair)
                                         and (nameion + str(iion + 1) + ":") in k3
                                     ):
                                         v["orbital_data"] = orb_resolved_bond_info[k3]

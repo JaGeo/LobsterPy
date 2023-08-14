@@ -269,7 +269,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         complete_cohp = analyse.chemenv.completecohp
 
-        plot_data = analyse._get_bond_resolved_labels()
+        plot_data = analyse.get_site_bond_resolved_labels()
 
         if "All" not in self._cohps:
             self._cohps["All"] = {}
