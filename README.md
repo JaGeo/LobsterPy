@@ -24,8 +24,10 @@ You can also pip install the package in development mode by writing ``pip instal
 
     
     You can use ``lobsterpy description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy automatic-plot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot --allbonds`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen. Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster.
+  
+    An interactive plot is available via ``lobsterpy automatic-plot-ia``.
 
-    It is also possible to start this automatic analysis from Python script. See "examples" for scripts.
+    It is also possible to start this automatic analysis from a Python script. See "examples" for scripts.
 
 
 * **Command line plotter**:
