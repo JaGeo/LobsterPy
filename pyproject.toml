@@ -12,7 +12,7 @@ readme = "README.md"
 keywords = ["high-throughput", "automated", "lobsteroutput", "bonding-analysis"]
 license = { text = "BSD 3-Clause" }
 authors = [{ name = "Janine George", email = "janine.george@bam.de" }]
-version = "0.2.9"
+version = "0.3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
