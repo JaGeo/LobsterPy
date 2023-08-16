@@ -255,7 +255,11 @@ class InteractiveCohpPlotter(CohpPlotter):
     ]
 
     def add_all_relevant_cohps(
-        self, analyse: Analysis, suffix: str = "", label_resolved: bool = True
+        self,
+        analyse: Analysis,
+        suffix: str = "",
+        label_resolved: bool = True,
+        orbital_resolved: bool = False,
     ) -> None:
         """
         Adds all relevant COHPs from lobsterpy analyse object.
@@ -266,6 +270,7 @@ class InteractiveCohpPlotter(CohpPlotter):
             calcs or just for additional legend information.
             label_resolved: bool indicating to obtain label resolved interactive plots for relevant bonds.
             If false, will return summed cohp curves of unique relevant bonds.
+            orbital_resolved: bool indicating to include orbital resolved interactive cohps for relevant bonds.
         """
         complete_cohp = analyse.chemenv.completecohp
 
@@ -280,6 +285,26 @@ class InteractiveCohpPlotter(CohpPlotter):
             label_with_count = self._insert_number_of_bonds_in_label(
                 label=bond_key, character=":", number_of_bonds=count
             )
+            # else:
+            # add summed cohps for each relevant bond sites
+            if not label_resolved and not orbital_resolved:
+                cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
+                energies = (
+                    cohp.energies - cohp.efermi
+                    if self.zero_at_efermi
+                    else cohp.energies
+                )
+                key = label_with_count + suffix
+                self._cohps["All"].update(
+                    {
+                        key: {
+                            "energies": energies,
+                            "COHP": cohp.get_cohp(),
+                            "ICOHP": cohp.get_icohp(),
+                            "efermi": cohp.efermi,
+                        }
+                    }
+                )
             if (
                 label_resolved
             ):  # will add cohp data for each relevant bond label iteratively
@@ -325,25 +350,51 @@ class InteractiveCohpPlotter(CohpPlotter):
                         }
                     )
 
-            else:
-                # add summed cohps for each relevant bond sites
-                cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
-                energies = (
-                    cohp.energies - cohp.efermi
-                    if self.zero_at_efermi
-                    else cohp.energies
-                )
-                key = label_with_count + suffix
-                self._cohps["All"].update(
-                    {
-                        key: {
-                            "energies": energies,
-                            "COHP": cohp.get_cohp(),
-                            "ICOHP": cohp.get_icohp(),
-                            "efermi": cohp.efermi,
-                        }
-                    }
-                )
+            if orbital_resolved:
+                plot_data_orb = analyse.get_site_orbital_resolved_labels()
+                for bond_key, labels in plot_data.items():
+                    count = len(labels)
+                    label_with_count = self._insert_number_of_bonds_in_label(
+                        label=bond_key, character=":", number_of_bonds=count
+                    )
+                    outer_key = label_with_count + suffix
+                    if outer_key not in self._cohps:
+                        self._cohps[outer_key] = {}
+                    key_val = plot_data_orb[bond_key]
+                    for orb, val in key_val.items():
+                        cohp_sum_orb = (
+                            complete_cohp.get_summed_cohp_by_label_and_orbital_list(
+                                label_list=val, orbital_list=[orb] * len(val)
+                            )
+                        )
+
+                        energies = (
+                            cohp_sum_orb.energies - cohp_sum_orb.efermi
+                            if self.zero_at_efermi
+                            else cohp_sum_orb.energies
+                        )
+                        key = bond_key + " (" + orb + suffix + ")"
+                        self._cohps[outer_key].update(
+                            {
+                                key: {
+                                    "energies": energies,
+                                    "COHP": cohp_sum_orb.get_cohp(),
+                                    "ICOHP": cohp_sum_orb.get_icohp(),
+                                    "efermi": cohp_sum_orb.efermi,
+                                }
+                            }
+                        )
+
+                        self._cohps["All"].update(
+                            {
+                                key: {
+                                    "energies": energies,
+                                    "COHP": cohp_sum_orb.get_cohp(),
+                                    "ICOHP": cohp_sum_orb.get_icohp(),
+                                    "efermi": cohp_sum_orb.efermi,
+                                }
+                            }
+                        )
 
     def add_cohps_by_lobster_label(
         self, analyse: Analysis, label_list: list, suffix: str = ""

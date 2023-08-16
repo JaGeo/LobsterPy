@@ -339,7 +339,7 @@ class Analysis:
 
         return label_data
 
-    def get_orbital_resolved_data(self, nameion, iion, labels, bond_resolved_labels):
+    def _get_orbital_resolved_data(self, nameion, iion, labels, bond_resolved_labels):
         """
         Method to retrieve orbital wise analysis data
 
@@ -419,6 +419,25 @@ class Analysis:
                 orb_resolved_bond_info[bond_resolved_label_key] = orb_bonding_dict_data
 
         return orb_resolved_bond_info
+
+    def get_site_orbital_resolved_labels(self):
+        dict_keys = list(self.get_site_bond_resolved_labels().keys())
+        plot_data = {i: {} for i in dict_keys}
+        for k, v in self.condensed_bonding_analysis["sites"].items():
+            for k2, v2 in v["bonds"].items():
+                for k3, v3 in v["bonds"][k2]["orbital_data"].items():
+                    label_list = v["bonds"][k2]["orbital_data"][k3]["relevant_bonds"]
+                    atom_pair = [v["ion"], k2]
+                    atom_pair.sort()
+                    key = (
+                        self.structure.sites[k].species_string
+                        + str(k + 1)
+                        + ": "
+                        + "-".join(atom_pair)
+                    )
+                    plot_data[key].update({k3: label_list})
+
+        return plot_data
 
     @staticmethod
     def _get_strenghts_for_each_bond(pairs, strengths, nameion=None):
@@ -815,11 +834,13 @@ class Analysis:
                             atom_pair = k2.split("-")
                             atom_pair.sort()
                             if self.orbital_resolved:
-                                orb_resolved_bond_info = self.get_orbital_resolved_data(
-                                    nameion=namecation,
-                                    iion=ication,
-                                    labels=labels,
-                                    bond_resolved_labels=bond_resolved_labels,
+                                orb_resolved_bond_info = (
+                                    self._get_orbital_resolved_data(
+                                        nameion=namecation,
+                                        iion=ication,
+                                        labels=labels,
+                                        bond_resolved_labels=bond_resolved_labels,
+                                    )
                                 )
                                 for k3, v3 in orb_resolved_bond_info.items():
                                     orb_key = k3.split(": ")[-1]
@@ -873,11 +894,13 @@ class Analysis:
                             v["bonding"] = v2["bonding"]
                             v["antibonding"] = v2["antibonding"]
                             if self.orbital_resolved:
-                                orb_resolved_bond_info = self.get_orbital_resolved_data(
-                                    nameion=nameion,
-                                    iion=iion,
-                                    labels=labels,
-                                    bond_resolved_labels=bond_resolved_labels,
+                                orb_resolved_bond_info = (
+                                    self._get_orbital_resolved_data(
+                                        nameion=nameion,
+                                        iion=iion,
+                                        labels=labels,
+                                        bond_resolved_labels=bond_resolved_labels,
+                                    )
                                 )
                                 for k3, v3 in orb_resolved_bond_info.items():
                                     orb_key = k3.split(": ")[-1]
