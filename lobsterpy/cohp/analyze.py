@@ -421,6 +421,13 @@ class Analysis:
         return orb_resolved_bond_info
 
     def get_site_orbital_resolved_labels(self):
+        """
+
+        Returns:
+            dict with bond labels for each site for relevant orbitals, e.g.
+            {'Na1: Na-Cl': {'3s-3s': ['21', '23', '24', '27', '28', '30']}
+
+        """
         dict_keys = list(self.get_site_bond_resolved_labels().keys())
         plot_data = {i: {} for i in dict_keys}
         for k, v in self.condensed_bonding_analysis["sites"].items():
