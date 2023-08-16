@@ -570,7 +570,7 @@ class Description:
 
             elif key == "charge_spilling":
                 text_des.append(
-                    "The absolute and total charge spilling for the calculation are {} and {}, "
+                    "The absolute and total charge spilling for the calculation are {} and {} %, "
                     "respectively.".format(
                         quality_dict[key]["abs_charge_spilling"],
                         quality_dict[key]["abs_total_spilling"],
