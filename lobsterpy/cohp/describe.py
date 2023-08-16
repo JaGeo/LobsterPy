@@ -254,6 +254,7 @@ class Description:
                         plot_data = (
                             self.analysis_object.get_site_orbital_resolved_labels()
                         )
+                        complete_cohp = self.analysis_object.chemenv.completecohp
                         for key in plot_data:
                             atom_pair = label.split("x")[-1]
                             if (
@@ -262,7 +263,7 @@ class Description:
                             ):
                                 key_val = plot_data[key]
                                 for orb, val in key_val.items():
-                                    cohp_sum_orb = self.analysis_object.chemenv.completecohp.get_summed_cohp_by_label_and_orbital_list(
+                                    cohp_sum_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
                                         label_list=val, orbital_list=[orb] * len(val)
                                     )
                                     cp.add_cohp(orb, cohp_sum_orb)
