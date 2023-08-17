@@ -38,6 +38,7 @@ class Analysis:
         path_to_madelung: str that describes path to POSCAR
         are_cobis : bool indicating if file contains COBI/ICOBI data
         are_coops : bool indicating if file contains COOP/ICOOP data
+        noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
         set_cohps: list of cohps
         set_coordination_ions: list of coodination environment strings for each cation
         set_equivalent_sites: set of inequivalent sites
@@ -60,6 +61,7 @@ class Analysis:
         path_to_madelung: str | None = None,
         whichbonds: str = "cation-anion",
         cutoff_icohp: float = 0.1,
+        noise_cutoff: float = 0.1,
         summed_spins=True,
         are_cobis=False,
         are_coops=False,
@@ -77,6 +79,7 @@ class Analysis:
             path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
             are_cobis : bool indicating if file contains COBI/ICOBI data
             are_coops : bool indicating if file contains COOP/ICOOP data
+            noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
             whichbonds: selects which kind of bonds are analyzed. "cation-anion" is the default
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             summed_spins: if true, spins will be summed
@@ -94,6 +97,7 @@ class Analysis:
         self.path_to_madelung = path_to_madelung
         self.are_cobis = are_cobis
         self.are_coops = are_coops
+        self.noise_cutoff = noise_cutoff
         self.setup_env()
         self.get_information_all_bonds(summed_spins=summed_spins)
 
@@ -147,6 +151,7 @@ class Analysis:
                     adapt_extremum_to_add_cond=True,
                     are_cobis=self.are_cobis,
                     are_coops=self.are_coops,
+                    noise_cutoff=self.noise_cutoff,
                 )
             except ValueError as err:
                 if (
@@ -171,6 +176,7 @@ class Analysis:
                 adapt_extremum_to_add_cond=True,
                 are_cobis=self.are_cobis,
                 are_coops=self.are_coops,
+                noise_cutoff=self.noise_cutoff,
             )
 
         else:
