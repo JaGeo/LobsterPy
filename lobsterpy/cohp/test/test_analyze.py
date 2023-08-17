@@ -1415,15 +1415,15 @@ class TestAnalyse(unittest.TestCase):
 
         self.assertEqual(
             self.analyse_K3Sb_all_cobi.condensed_bonding_analysis["sites"][1]["env"],
-            "14",
+            "8",
         )
         self.assertAlmostEqual(
             float(
                 self.analyse_K3Sb_all_cobi.condensed_bonding_analysis["sites"][1][
                     "bonds"
-                ]["Sb"]["ICOHP_sum"]
+                ]["Sb"]["ICOBI_sum"]
             ),
-            0.13,
+            0.54,
         )
         self.assertEqual(
             self.analyse_K3Sb_all_cobi.condensed_bonding_analysis["sites"][1]["bonds"][
