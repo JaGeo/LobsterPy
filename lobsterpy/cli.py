@@ -16,7 +16,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, get_style_list, InteractiveCohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list
 
 
 def main() -> None:
@@ -470,12 +470,12 @@ def run(args):
             "cohpcar": "COHPCAR.lobster",
         }
 
-        for arg, default_value in default_files.items():
-            file_path = getattr(args, arg)
+        for arg_name, _ in default_files.items():
+            file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    setattr(args, arg, gz_file_path)
+                    setattr(args, arg_name, gz_file_path)
                 else:
                     raise ValueError(
                         "Files necessary for automatic analysis of LOBSTER outputs "
@@ -684,12 +684,12 @@ def run(args):
             "incar": "INCAR",
         }
 
-        for arg, default_value in default_files.items():
-            file_path = getattr(args, arg)
+        for arg_name, _ in default_files.items():
+            file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    setattr(args, arg, gz_file_path)
+                    setattr(args, arg_name, gz_file_path)
                 else:
                     raise ValueError(
                         "Files necessary for creating puts for LOBSTER calcs not found in the current directory."
@@ -771,12 +771,12 @@ def run(args):
             "lobsterout": "lobsterout",
         }
 
-        for arg, default_value in mandatory_files.items():
-            file_path = getattr(args, arg)
+        for arg_name, _ in mandatory_files.items():
+            file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    setattr(args, arg, gz_file_path)
+                    setattr(args, arg_name, gz_file_path)
                 else:
                     raise ValueError(
                         "Mandatory files necessary for LOBSTER calc quality not found in the current directory."
@@ -786,12 +786,12 @@ def run(args):
             "bandoverlaps": "bandOverlaps.lobster",
         }
 
-        for arg, default_value in optional_file.items():
-            file_path = getattr(args, arg)
+        for arg_name, _ in optional_file.items():
+            file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    setattr(args, arg, gz_file_path)
+                    setattr(args, arg_name, gz_file_path)
 
         bva_comp = args.bvacomp
 
@@ -799,12 +799,12 @@ def run(args):
             bva_files = {
                 "charge": "CHARGE.lobster",
             }
-            for arg, default_value in bva_files.items():
-                file_path = getattr(args, arg)
+            for arg_name, _ in bva_files.items():
+                file_path = getattr(args, arg_name)
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
                     if gz_file_path.exists():
-                        setattr(args, arg, gz_file_path)
+                        setattr(args, arg_name, gz_file_path)
                     else:
                         raise ValueError(
                             "BVA charge requested but CHARGE.lobster file not found."
@@ -818,12 +818,12 @@ def run(args):
                 "vasprun": "vasprun.xml",
             }
 
-            for arg, default_value in dos_files.items():
-                file_path = getattr(args, arg)
+            for arg_name, _ in dos_files.items():
+                file_path = getattr(args, arg_name)
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
                     if gz_file_path.exists():
-                        setattr(args, arg, gz_file_path)
+                        setattr(args, arg_name, gz_file_path)
                     else:
                         raise ValueError(
                             "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
