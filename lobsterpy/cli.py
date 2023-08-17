@@ -228,14 +228,14 @@ def get_parser() -> argparse.ArgumentParser:
         "for interactive plots) ",
     )
     auto_group.add_argument(
-        "--arecobis",
-        "--are-cobis",
+        "--cobis",
+        "--cobis",
         action="store_true",
         help="This option will start automatc bonding analysis of" " COBIs",
     )
     auto_group.add_argument(
-        "--arecoops",
-        "--are-coops",
+        "--coops",
+        "--coops",
         action="store_true",
         help="This option will start automatc bonding analysis of" " COOPs",
     )
@@ -260,10 +260,10 @@ def get_parser() -> argparse.ArgumentParser:
     )
     subparsers.add_parser(
         "description",
-        parents=[input_parent, auto_parent, plotting_parent],
+        parents=[input_parent, auto_parent],
         help=(
-            "Deliver a text description of the COHP results from Lobster "
-            "and VASP. Implementation of COBIs and COOPs will follow."
+            "Deliver a text description of the COHPs or COBIS or COOP results from Lobster "
+            "and VASP"
         ),
     )
 
@@ -272,8 +272,8 @@ def get_parser() -> argparse.ArgumentParser:
         aliases=["automaticplot", "auto-plot", "autoplot"],
         parents=[input_parent, auto_parent, plotting_parent],
         help=(
-            "Plot most important COHPs automatically. Implementation "
-            "of COBIs and COOPs will follow. This option also includes an automatic description."
+            "Plot most important COHPs or COBIs or COOPs automatically."
+            " This option also includes an automatic description."
         ),
     )
 
@@ -282,8 +282,7 @@ def get_parser() -> argparse.ArgumentParser:
         aliases=["automaticplotia", "autoplotia", "auto-plot-ia"],
         parents=[input_parent, auto_parent, plotting_parent],
         help=(
-            "Creates an interactive plot of most important COHPs automatically. Implementation "
-            "of COBIs and COOPs will follow."
+            "Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."
         ),
     )
 
@@ -308,19 +307,6 @@ def get_parser() -> argparse.ArgumentParser:
         nargs="+",
         type=int,
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
-    )
-    plot_coops_cobis = plot_parser.add_mutually_exclusive_group()
-    plot_coops_cobis.add_argument(
-        "--cobis",
-        "--cobi",
-        action="store_true",
-        help="Plot COBIs",
-    )
-    plot_coops_cobis.add_argument(
-        "--coops",
-        "--coop",
-        action="store_true",
-        help="Plot COOPs",
     )
     plot_grouping = plot_parser.add_mutually_exclusive_group()
     plot_grouping.add_argument(
@@ -418,11 +404,16 @@ def run(args):
                         "not found in the current directory"
                     )
 
-        if args.arecoops:
-            default_files_coops = {
-                "icohplist": "ICOOPLIST.lobster",
-                "cohpcar": "COOPCAR.lobster",
-            }
+        if args.coops:
+            if args.action != "plot":
+                default_files_coops = {
+                    "icohplist": "ICOOPLIST.lobster",
+                    "cohpcar": "COOPCAR.lobster",
+                }
+            else:
+                default_files_coops = {
+                    "cohpcar": "COOPCAR.lobster",
+                }
             for arg_name, file_name in default_files_coops.items():
                 setattr(args, arg_name, Path(file_name))
                 file_path = getattr(args, arg_name)
@@ -436,11 +427,16 @@ def run(args):
                             " COOPCAR.lobster) not found in the directory"
                         )
 
-        if args.arecobis:
-            default_files_cobis = {
-                "icohplist": "ICOBILIST.lobster",
-                "cohpcar": "COBICAR.lobster",
-            }
+        if args.cobis:
+            if args.action != "plot":
+                default_files_cobis = {
+                    "icohplist": "ICOBILIST.lobster",
+                    "cohpcar": "COBICAR.lobster",
+                }
+            else:
+                default_files_cobis = {
+                    "cohpcar": "COBICAR.lobster",
+                }
             for arg_name, file_name in default_files_cobis.items():
                 setattr(args, arg_name, Path(file_name))
                 file_path = getattr(args, arg_name)
@@ -479,8 +475,8 @@ def run(args):
             path_to_cohpcar=args.cohpcar,
             path_to_icohplist=args.icohplist,
             whichbonds=whichbonds,
-            are_coops=args.arecoops,
-            are_cobis=args.arecobis,
+            are_coops=args.coops,
+            are_cobis=args.cobis,
             noise_cutoff=args.noisecutoff,
             cutoff_icohp=args.cutofficohp,
         )
