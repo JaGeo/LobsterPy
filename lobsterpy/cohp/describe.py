@@ -321,7 +321,10 @@ class Description:
                 if label is not None:
                     cba_cohp_plot_data[label_str + label] = cohp
 
-        ip = InteractiveCohpPlotter()
+        ip = InteractiveCohpPlotter(
+            are_coops=self.analysis_object.are_coops,
+            are_cobis=self.analysis_object.are_cobis,
+        )
         if label_resolved:
             ip.add_all_relevant_cohps(
                 analyse=self.analysis_object, label_resolved=label_resolved

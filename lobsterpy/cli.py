@@ -16,7 +16,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, get_style_list, InteractiveCohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list
 
 
 def main() -> None:
@@ -227,6 +227,34 @@ def get_parser() -> argparse.ArgumentParser:
         help="This option will force the automatc analysis to consider"
         " all bonds, not only cation-anion bonds (default) ",
     )
+    auto_group.add_argument(
+        "--arecobis",
+        "--are-cobis",
+        action="store_true",
+        default=False,
+        help="This option will start automatc bonding analysis of" " COBIs",
+    )
+    auto_group.add_argument(
+        "--arecoops",
+        "--are-coops",
+        action="store_true",
+        default=False,
+        help="This option will start automatc bonding analysis of" " COOPs",
+    )
+    auto_group.add_argument(
+        "--noisecutoff",
+        type=float,
+        default=None,
+        help="Sets the lower limit of icohps or icoops or icobis considered",
+    )
+
+    auto_group.add_argument(
+        "--cutofficohp",
+        type=float,
+        default=0.1,
+        help="Only bonds that are stronger than cutoff_icoxx *strongest ICOHP "
+        " (ICOBI or ICOOP) will be considered",
+    )
 
     subparsers = parser.add_subparsers(
         dest="action",
@@ -393,6 +421,42 @@ def run(args):
                         "not found in the current directory"
                     )
 
+        if args.arecoops:
+            default_files_coops = {
+                "icohplist": "ICOOPLIST.lobster",
+                "cohpcar": "COOPCAR.lobster",
+            }
+            for arg_name, file_name in default_files_coops.items():
+                setattr(args, arg_name, Path(file_name))
+                file_path = getattr(args, arg_name)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg_name, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and"
+                            "COOPCAR.lobster) not found in the directory"
+                        )
+
+        if args.arecobis:
+            default_files_cobis = {
+                "icohplist": "ICOBILIST.lobster",
+                "cohpcar": "COBICAR.lobster",
+            }
+            for arg_name, file_name in default_files_cobis.items():
+                setattr(args, arg_name, Path(file_name))
+                file_path = getattr(args, arg_name)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg_name, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "Files required for automatic analysis of COOPs (ICOBILIST.lobster and"
+                            "COBICAR.lobster) not found in the directory"
+                        )
+
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
         args.action = "automatic-plot"
 
@@ -418,6 +482,10 @@ def run(args):
             path_to_cohpcar=args.cohpcar,
             path_to_icohplist=args.icohplist,
             whichbonds=whichbonds,
+            are_coops=args.arecoops,
+            are_cobis=args.arecobis,
+            noise_cutoff=args.noisecutoff,
+            cutoff_icohp=args.cutofficohp,
         )
 
         describe = Description(analysis_object=analyse)
