@@ -199,14 +199,6 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument(
         "--fontsize", "--font-size", type=float, default=None, help="Base font size"
     )
-    plotting_group.add_argument(
-        "--labelresolved",
-        "--label-resolved",
-        action="store_true",
-        help="Will create automatic interactive plots with all relevant bond labels. "
-        "If not set, plots will consists of summed cohps. (This argument works only"
-        "for interactive plots) ",
-    )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Automatic analysis")
@@ -228,17 +220,23 @@ def get_parser() -> argparse.ArgumentParser:
         " all bonds, not only cation-anion bonds (default) ",
     )
     auto_group.add_argument(
+        "--labelresolved",
+        "--label-resolved",
+        action="store_true",
+        help="Will create automatic interactive plots with all relevant bond labels. "
+        "If not set, plots will consists of summed cohps. (This argument works only"
+        "for interactive plots) ",
+    )
+    auto_group.add_argument(
         "--arecobis",
         "--are-cobis",
         action="store_true",
-        default=False,
         help="This option will start automatc bonding analysis of" " COBIs",
     )
     auto_group.add_argument(
         "--arecoops",
         "--are-coops",
         action="store_true",
-        default=False,
         help="This option will start automatc bonding analysis of" " COOPs",
     )
     auto_group.add_argument(
@@ -247,7 +245,6 @@ def get_parser() -> argparse.ArgumentParser:
         default=None,
         help="Sets the lower limit of icohps or icoops or icobis considered",
     )
-
     auto_group.add_argument(
         "--cutofficohp",
         type=float,
@@ -263,7 +260,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
     subparsers.add_parser(
         "description",
-        parents=[input_parent, auto_parent],
+        parents=[input_parent, auto_parent, plotting_parent],
         help=(
             "Deliver a text description of the COHP results from Lobster "
             "and VASP. Implementation of COBIs and COOPs will follow."
@@ -302,7 +299,7 @@ def get_parser() -> argparse.ArgumentParser:
     # Mode for normal plotting (without automatic detection of relevant COHPs)
     plot_parser = subparsers.add_parser(
         "plot",
-        parents=[input_parent, plotting_parent],
+        parents=[input_parent, plotting_parent, auto_parent],
         help="Plot specific COHPs/COBIs/COOPs based on bond numbers.",
     )
 
@@ -436,7 +433,7 @@ def run(args):
                     else:
                         raise ValueError(
                             "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and"
-                            "COOPCAR.lobster) not found in the directory"
+                            " COOPCAR.lobster) not found in the directory"
                         )
 
         if args.arecobis:
@@ -454,7 +451,7 @@ def run(args):
                     else:
                         raise ValueError(
                             "Files required for automatic analysis of COOPs (ICOBILIST.lobster and"
-                            "COBICAR.lobster) not found in the directory"
+                            " COBICAR.lobster) not found in the directory"
                         )
 
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
