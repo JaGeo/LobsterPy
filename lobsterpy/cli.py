@@ -220,37 +220,51 @@ def get_parser() -> argparse.ArgumentParser:
         " all bonds, not only cation-anion bonds (default) ",
     )
     auto_group.add_argument(
-        "--labelresolved",
-        "--label-resolved",
-        action="store_true",
-        help="Will create automatic interactive plots with all relevant bond labels. "
-        "If not set, plots will consists of summed cohps. (This argument works only"
-        "for interactive plots) ",
-    )
-    auto_group.add_argument(
-        "--cobis",
-        "--cobis",
-        action="store_true",
-        help="This option will start automatc bonding analysis of" " COBIs",
-    )
-    auto_group.add_argument(
-        "--coops",
-        "--coops",
-        action="store_true",
-        help="This option will start automatc bonding analysis of" " COOPs",
-    )
-    auto_group.add_argument(
         "--noisecutoff",
         type=float,
         default=None,
-        help="Sets the lower limit of icohps or icoops or icobis considered",
+        help="Sets the lower limit of icohps or icoops or icobis considered in"
+        " automatic analysis",
     )
     auto_group.add_argument(
         "--cutofficohp",
         type=float,
         default=0.1,
         help="Only bonds that are stronger than cutoff_icoxx *strongest ICOHP "
-        " (ICOBI or ICOOP) will be considered",
+        " (ICOBI or ICOOP) will be considered for automatic analysis.",
+    )
+
+    analysis_switch = argparse.ArgumentParser(add_help=False)
+    analysis_group = analysis_switch.add_argument_group(
+        "Switch type of analysis or plots"
+    )
+    analysis_group.add_argument(
+        "--cobis",
+        "--cobis",
+        action="store_true",
+        help="This option will start automatic bonding analysis of COBIs or"
+        " plot COBIs",
+    )
+    analysis_group.add_argument(
+        "--coops",
+        "--coops",
+        action="store_true",
+        help="This option will start automatic bonding analysis of COOPs or"
+        " plot COOPs",
+    )
+
+    interactive_plotter_args = argparse.ArgumentParser(add_help=False)
+    interactive_plotter_group = interactive_plotter_args.add_argument_group(
+        "Options specific to interactive plotter"
+    )
+
+    interactive_plotter_group.add_argument(
+        "--labelresolved",
+        "--label-resolved",
+        action="store_true",
+        help="Will create automatic interactive plots with all relevant bond labels. "
+        "If not set, plots will consists of summed cohps. (This argument works only"
+        "for interactive plots) ",
     )
 
     subparsers = parser.add_subparsers(
@@ -260,17 +274,16 @@ def get_parser() -> argparse.ArgumentParser:
     )
     subparsers.add_parser(
         "description",
-        parents=[input_parent, auto_parent],
+        parents=[input_parent, auto_parent, analysis_switch],
         help=(
             "Deliver a text description of the COHPs or COBIS or COOP results from Lobster "
             "and VASP"
         ),
     )
-
     subparsers.add_parser(
         "automatic-plot",
         aliases=["automaticplot", "auto-plot", "autoplot"],
-        parents=[input_parent, auto_parent, plotting_parent],
+        parents=[input_parent, auto_parent, plotting_parent, analysis_switch],
         help=(
             "Plot most important COHPs or COBIs or COOPs automatically."
             " This option also includes an automatic description."
@@ -280,7 +293,13 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "automatic-plot-ia",
         aliases=["automaticplotia", "autoplotia", "auto-plot-ia"],
-        parents=[input_parent, auto_parent, plotting_parent],
+        parents=[
+            input_parent,
+            auto_parent,
+            plotting_parent,
+            interactive_plotter_args,
+            analysis_switch,
+        ],
         help=(
             "Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."
         ),
@@ -298,7 +317,7 @@ def get_parser() -> argparse.ArgumentParser:
     # Mode for normal plotting (without automatic detection of relevant COHPs)
     plot_parser = subparsers.add_parser(
         "plot",
-        parents=[input_parent, plotting_parent, auto_parent],
+        parents=[input_parent, plotting_parent, analysis_switch],
         help="Plot specific COHPs/COBIs/COOPs based on bond numbers.",
     )
 
