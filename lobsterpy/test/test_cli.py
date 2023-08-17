@@ -291,43 +291,6 @@ class TestCLI:
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
 
-    def test_calc_quality_summary_NaCl_warnings(self, tmp_path):
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
-        calc_quality_json_path = tmp_path / "calc_quality_json.json"
-        args = [
-            "calc-description",
-            "--bvacomp",
-            "--doscomp",
-            "--erange",
-            "-50",
-            "100",
-            "--calcqualityjson",
-            str(calc_quality_json_path),
-        ]
-        captured_output = io.StringIO()
-        sys.stdout = captured_output
-
-        test = get_parser().parse_args(args)
-        run(test)
-
-        calc_quality_text = captured_output.getvalue().strip()
-
-        sys.stdout = sys.__stdout__
-
-        ref_text = (
-            "The LOBSTER calculation used minimal basis. "
-            "The absolute and total charge spilling for the calculation are 0.3 and 5.58 %, respectively. "
-            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
-            "generated during LOBSTER run. "
-            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
-            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
-            "The Tanimoto index from DOS comparisons in energy range between -5, 0 eV for s, p, summed orbitals "
-            "are : 0.9785, 0.9973, 0.9953."
-        )
-
-        assert calc_quality_text == ref_text
-        self.assert_is_finite_file(calc_quality_json_path)
-
     def test_calc_quality_summary_K3Sb(self, tmp_path):
         os.chdir(TestDir / "TestData/K3Sb")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"

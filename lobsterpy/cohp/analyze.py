@@ -929,38 +929,39 @@ class Analysis:
             "abs_total_spilling": round((sum(lob_out.total_spilling) / 2) * 100, 4),
         }  # type: ignore
 
-        if Path(path_to_bandoverlaps).exists():  # type: ignore
-            band_overlaps = Bandoverlaps(filename=path_to_bandoverlaps)
-            for line in lob_out.warning_lines:
-                if "k-points could not be orthonormalized" in line:
-                    total_kpoints = int(line.split(" ")[2])
+        if path_to_bandoverlaps is not None:
+            if Path(path_to_bandoverlaps).exists():  # type: ignore
+                band_overlaps = Bandoverlaps(filename=path_to_bandoverlaps)
+                for line in lob_out.warning_lines:
+                    if "k-points could not be orthonormalized" in line:
+                        total_kpoints = int(line.split(" ")[2])
 
-            # store actual number of devations above pymatgen default limit of 0.1
-            dev_val = []
-            for dev in band_overlaps.max_deviation:
-                if dev > 0.1:
-                    dev_val.append(dev)
+                # store actual number of devations above pymatgen default limit of 0.1
+                dev_val = []
+                for dev in band_overlaps.max_deviation:
+                    if dev > 0.1:
+                        dev_val.append(dev)
 
-            quality_dict["band_overlaps"] = {
-                "file_exists": True,
-                "limit_maxDeviation": 0.1,
-                "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
-                    limit_maxDeviation=0.1
-                ),
-                "max_deviation": round(max(band_overlaps.max_deviation), 4),
-                "percent_kpoints_abv_limit": round(
-                    (len(dev_val) / total_kpoints) * 100, 4
-                ),
-            }  # type: ignore
+                quality_dict["band_overlaps"] = {
+                    "file_exists": True,
+                    "limit_maxDeviation": 0.1,
+                    "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
+                        limit_maxDeviation=0.1
+                    ),
+                    "max_deviation": round(max(band_overlaps.max_deviation), 4),
+                    "percent_kpoints_abv_limit": round(
+                        (len(dev_val) / total_kpoints) * 100, 4
+                    ),
+                }  # type: ignore
 
-        else:
-            quality_dict["band_overlaps"] = {
-                "file_exists": False,
-                "limit_maxDeviation": None,
-                "has_good_quality_maxDeviation": True,
-                "max_deviation": None,
-                "percent_kpoints_abv_limit": None,
-            }  # type: ignore
+            else:
+                quality_dict["band_overlaps"] = {
+                    "file_exists": False,
+                    "limit_maxDeviation": None,
+                    "has_good_quality_maxDeviation": True,
+                    "max_deviation": None,
+                    "percent_kpoints_abv_limit": None,
+                }  # type: ignore
 
         if bva_comp:
             try:
@@ -1047,7 +1048,7 @@ class Analysis:
 
                 if (
                     np.diff(dos_vasp.energies)[0] >= 0.1
-                    and np.diff(dos_lobster.energies)[0] >= 0.1
+                    or np.diff(dos_lobster.energies)[0] >= 0.1
                 ):
                     warnings.warn(
                         "Input DOS files have very few points in the energy interval and thus "
