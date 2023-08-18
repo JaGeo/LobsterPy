@@ -63,6 +63,7 @@ class Description:
             for key, item in self.condensed_bonding_analysis["sites"].items():
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
+                orb_info = []
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
@@ -76,6 +77,26 @@ class Description:
                             + properties["ICOHP_mean"]
                             + " eV, 0.0 percent antibonding interaction below EFermi)"
                         )
+                        if properties["orbital_data"]:
+                            orb_names = []
+                            orb_contri = []
+                            for orb, data in properties["orbital_data"].items():
+                                orb_names.append(orb)
+                                orb_contri.append(
+                                    str(data["orb_contribution_mean_perc"] * 100)
+                                )
+                            orb_info.append(
+                                "The orbitals "
+                                + ", ".join(orb_names)
+                                + " contribute "
+                                + ", ".join(orb_contri)
+                                + " percent in this bond, respectively."
+                            )
+                        else:
+                            orb_info.append(
+                                "No individual orbital interactions detected above 10 percent"
+                                " with summed ICOHP as reference for this bond."
+                            )
                     else:
                         bond_info.append(
                             str(properties["number_of_bonds"])
@@ -90,11 +111,39 @@ class Description:
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
+                        if properties["orbital_data"]:
+                            orb_names = []
+                            orb_contri = []
+                            for orb, data in properties["orbital_data"].items():
+                                orb_names.append(orb)
+                                orb_contri.append(
+                                    str(data["orb_contribution_mean_perc"] * 100)
+                                )
+                            orb_info.append(
+                                "The orbitals "
+                                + ", ".join(orb_names)
+                                + " contribute "
+                                + ", ".join(orb_contri)
+                                + " percent in this bond, respectively."
+                            )
+                        else:
+                            orb_info.append(
+                                "No individual orbital interactions detected above 10 percent"
+                                " with summed ICOHP as reference for this bond."
+                            )
 
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
                     bonds = bond_info[0]
+
+                if len(orb_info) > 1:
+                    orb_bonds = ",".join(orb_info[0:-1]) + ", and " + orb_info[-1]
+                else:
+                    if orb_info:
+                        orb_bonds = orb_info[0]
+                    else:
+                        orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -105,6 +154,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
                 else:
                     self.text.append(
                         str(item["ion"])
@@ -115,6 +166,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
         elif self.analysis_object.whichbonds == "all":
             relevant_ions = ", ".join(
                 [
@@ -137,6 +190,7 @@ class Description:
             for key, item in self.condensed_bonding_analysis["sites"].items():
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
+                orb_info = []
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
@@ -150,6 +204,26 @@ class Description:
                             + properties["ICOHP_mean"]
                             + " eV, 0.0 percent antibonding interaction below EFermi)"
                         )
+                        if properties["orbital_data"]:
+                            orb_names = []
+                            orb_contri = []
+                            for orb, data in properties["orbital_data"].items():
+                                orb_names.append(orb)
+                                orb_contri.append(
+                                    str(data["orb_contribution_mean_perc"] * 100)
+                                )
+                            orb_info.append(
+                                "The orbitals "
+                                + ", ".join(orb_names)
+                                + " contribute "
+                                + ", ".join(orb_contri)
+                                + " percent in this bond, respectively."
+                            )
+                        else:
+                            orb_info.append(
+                                "No individual orbital interactions detected above 10 percent"
+                                " with summed ICOHP as reference for this bond."
+                            )
                     else:
                         bond_info.append(
                             str(properties["number_of_bonds"])
@@ -165,6 +239,27 @@ class Description:
                             + " percent antibonding interaction below EFermi)"
                         )
 
+                        if properties["orbital_data"]:
+                            orb_names = []
+                            orb_contri = []
+                            for orb, data in properties["orbital_data"].items():
+                                orb_names.append(orb)
+                                orb_contri.append(
+                                    str(data["orb_contribution_mean_perc"] * 100)
+                                )
+                            orb_info.append(
+                                "The orbitals "
+                                + ", ".join(orb_names)
+                                + " contribute "
+                                + ", ".join(orb_contri)
+                                + " percent in this bond, respectively."
+                            )
+                        else:
+                            orb_info.append(
+                                "No individual orbital interactions detected above 10 percent"
+                                " with summed ICOHP as reference for this bond."
+                            )
+
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
@@ -172,6 +267,13 @@ class Description:
                         bonds = bond_info[0]
                     else:
                         bonds = 0
+                if len(orb_info) > 1:
+                    orb_bonds = ",".join(orb_info[0:-1]) + ", and " + orb_info[-1]
+                else:
+                    if orb_info:
+                        orb_bonds = orb_info[0]
+                    else:
+                        orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -182,6 +284,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
                 else:
                     self.text.append(
                         str(item["ion"])
@@ -192,6 +296,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
 
         if "madelung_energy" in self.analysis_object.condensed_bonding_analysis:
             self.text.append(
