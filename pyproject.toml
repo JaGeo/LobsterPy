@@ -121,6 +121,7 @@ exclude_lines = [
 omit = [
     # omit anything in test directory anywhere
     "*/test/*",
+    "*/*/test/",
 ]
 
 [tool.mypy]
