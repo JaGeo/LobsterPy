@@ -84,19 +84,33 @@ class Description:
                                 for orb, data in properties["orbital_data"].items():
                                     orb_names.append(orb)
                                     orb_contri.append(
-                                        str(data["orb_contribution_mean_perc"] * 100)
+                                        str(
+                                            round(
+                                                data["orb_contribution_mean_perc"]
+                                                * 100,
+                                                3,
+                                            )
+                                        )
                                     )
                                 orb_info.append(
                                     "The orbitals "
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in this bond, respectively."
+                                    + " percent in "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + " bond, respectively."
                                 )
                             else:
                                 orb_info.append(
                                     "No individual orbital interactions detected above 10 percent"
-                                    " with summed ICOHP as reference for this bond."
+                                    " with summed ICOHP as reference for "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + "bond."
                                 )
                     else:
                         bond_info.append(
@@ -119,19 +133,33 @@ class Description:
                                 for orb, data in properties["orbital_data"].items():
                                     orb_names.append(orb)
                                     orb_contri.append(
-                                        str(data["orb_contribution_mean_perc"] * 100)
+                                        str(
+                                            round(
+                                                data["orb_contribution_mean_perc"]
+                                                * 100,
+                                                3,
+                                            )
+                                        )
                                     )
                                 orb_info.append(
                                     "The orbitals "
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in this bond, respectively."
+                                    + " percent in "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + " bond, respectively."
                                 )
                             else:
                                 orb_info.append(
                                     "No individual orbital interactions detected above 10 percent"
-                                    " with summed ICOHP as reference for this bond."
+                                    " with summed ICOHP as reference for "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + "bond."
                                 )
 
                 if len(bond_info) > 1:
@@ -213,19 +241,33 @@ class Description:
                                 for orb, data in properties["orbital_data"].items():
                                     orb_names.append(orb)
                                     orb_contri.append(
-                                        str(data["orb_contribution_mean_perc"] * 100)
+                                        str(
+                                            round(
+                                                data["orb_contribution_mean_perc"]
+                                                * 100,
+                                                3,
+                                            )
+                                        )
                                     )
                                 orb_info.append(
                                     "The orbitals "
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in this bond, respectively."
+                                    + " percent in "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + " bond, respectively."
                                 )
                             else:
                                 orb_info.append(
                                     "No individual orbital interactions detected above 10 percent"
-                                    " with summed ICOHP as reference for this bond."
+                                    " with summed ICOHP as reference for "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + "bond."
                                 )
                     else:
                         bond_info.append(
@@ -249,19 +291,33 @@ class Description:
                                 for orb, data in properties["orbital_data"].items():
                                     orb_names.append(orb)
                                     orb_contri.append(
-                                        str(data["orb_contribution_mean_perc"] * 100)
+                                        str(
+                                            round(
+                                                data["orb_contribution_mean_perc"]
+                                                * 100,
+                                                3,
+                                            )
+                                        )
                                     )
                                 orb_info.append(
                                     "The orbitals "
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in this bond, respectively."
+                                    + " percent in "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + " bond, respectively."
                                 )
                             else:
                                 orb_info.append(
                                     "No individual orbital interactions detected above 10 percent"
-                                    " with summed ICOHP as reference for this bond."
+                                    " with summed ICOHP as reference for "
+                                    + item["ion"]
+                                    + "-"
+                                    + str(type)
+                                    + "bond."
                                 )
 
                 if len(bond_info) > 1:

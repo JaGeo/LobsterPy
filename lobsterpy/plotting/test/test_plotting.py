@@ -25,6 +25,17 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             summed_spins=False,
         )
 
+        self.analyse_CdF_orb = Analysis(
+            path_to_poscar=TestDir / "TestData/CdF_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/CdF_comp_range/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/CdF_comp_range/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/CdF_comp_range/CHARGE.lobster.gz",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+            summed_spins=False,
+            orbital_resolved=True,
+        )
+
         self.analyse_NaSi = Analysis(
             path_to_poscar=TestDir / "TestData/NaSi/POSCAR",
             path_to_cohpcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
@@ -33,6 +44,16 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             whichbonds="all",
             cutoff_icohp=0.1,
             summed_spins=True,
+        )
+
+        self.analyse_BaTiO3 = Analysis(
+            path_to_poscar=TestDir / "TestData/BaTiO3/POSCAR",
+            path_to_cohpcar=TestDir / "TestData/BaTiO3/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "TestData/BaTiO3/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
+            whichbonds="all",
+            summed_spins=False,
+            orbital_resolved=True,
         )
 
         self.analyse_K3Sb = Analysis(
@@ -77,6 +98,69 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         )
         self.assertEqual(len(fig.data), len(ref_fig.data))
         self.assertEqual(fig.layout, ref_fig.layout)
+        for og_trace in fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
+
+    def test_add_all_relevant_cohps_BaTiO3(self):
+        self.iplotter = InteractiveCohpPlotter()
+
+        self.iplotter.add_all_relevant_cohps(
+            analyse=self.analyse_BaTiO3,
+            label_resolved=True,
+            orbital_resolved=True,
+            suffix="",
+        )
+        self.assertIn("All", self.iplotter._cohps)
+        self.assertEqual(len(self.iplotter._cohps), 6)
+
+        fig = self.iplotter.get_plot()
+        ref_fig = read_json(
+            TestDir
+            / "TestData/interactive_plotter_ref/analyse_BaTiO3_orb_label_resol.json",
+            engine="json",
+        )
+        self.assertEqual(len(fig.data), len(ref_fig.data))
+        for og_trace in fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
+
+    def test_add_all_relevant_cohps_CdF(self):
+        self.iplotter = InteractiveCohpPlotter()
+
+        self.iplotter.add_all_relevant_cohps(
+            analyse=self.analyse_CdF_orb,
+            label_resolved=False,
+            orbital_resolved=True,
+            suffix="",
+        )
+        self.assertIn("All", self.iplotter._cohps)
+        self.assertEqual(len(self.iplotter._cohps), 3)
+
+        fig = self.iplotter.get_plot()
+        ref_fig = read_json(
+            TestDir / "TestData/interactive_plotter_ref/analyse_CdF_orb_resol.json",
+            engine="json",
+        )
+        self.assertEqual(len(fig.data), len(ref_fig.data))
         for og_trace in fig.data:
             if og_trace in ref_fig.data:
                 ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]

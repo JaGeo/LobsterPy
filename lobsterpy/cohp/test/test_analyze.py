@@ -29,6 +29,16 @@ class TestAnalyse(unittest.TestCase):
             cutoff_icohp=0.1,
         )
 
+        self.analyse_NaCl_comp_range_orb = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            orbital_resolved=True,
+        )
+
         self.analyse_NaCl_nan = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
@@ -469,6 +479,82 @@ class TestAnalyse(unittest.TestCase):
         )
         self.assertEqual(
             self.analyse_NaCl_all.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+    def test_all_attributes_NaCl_comp_range_orbital(self):
+        self.assertAlmostEqual(
+            self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis[
+                "number_of_considered_ions"
+            ],
+            1,
+        )
+        self.assertEqual(
+            self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                "env"
+            ],
+            "O:6",
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3s-3s"]["ICOHP_mean"]
+            ),
+            -0.32,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3s-3s"]["bonding"]["integral"]
+            ),
+            2.18,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3s-3s"]["antibonding"]["integral"]
+            ),
+            0.23,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3px-3s"]["ICOHP_sum"]
+            ),
+            -0.48,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3py-3s"]["orb_contribution_mean_perc"]
+            ),
+            0.4264,
+        )
+        self.assertListEqual(
+            self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                "bonds"
+            ]["Cl"]["orbital_data"]["3pz-3s"]["relevant_bonds"],
+            ["24", "27"],
+        )
+        self.assertEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3pz-3s"]["bonding"]["perc"]
+            ),
+            1.0,
+        )
+        self.assertEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3pz-3s"]["antibonding"]["perc"]
+            ),
+            0.0,
         )
 
     def test_final_dicts(self):
