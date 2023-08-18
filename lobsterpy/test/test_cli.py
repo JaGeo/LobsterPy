@@ -159,6 +159,25 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(plot_path)
 
+    def test_cli_interactive_plotter_cobi(self):
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        # tests skip showing plots generated using automatic interactive plotter
+        args = ["automatic-plot-ia", "--hideplot", "--cobis"]
+        test = get_parser().parse_args(args)
+        run(test)
+
+    def test_cli_interactive_plotter_coops(self):
+        os.chdir(TestDir / "TestData/CdF_comp_range")
+        # tests skip showing plots generated using automatic interactive plotter
+        args = [
+            "auto-plot-ia",
+            "--hideplot",
+            "--coops",
+            "--allbonds",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
@@ -225,6 +244,24 @@ class TestCLI:
         with pytest.raises(ValueError):
             run(test)
         os.chdir(TestDir / "TestData/NaCl")
+
+    def test_cli_automatic_analysis_error(self):
+        os.chdir(TestDir / "TestData/NaCl")
+        args1 = [
+            "description",
+            "--cobis",
+        ]
+        test1 = get_parser().parse_args(args1)
+        with pytest.raises(ValueError):
+            run(test1)
+
+        args2 = [
+            "description",
+            "--coops",
+        ]
+        test2 = get_parser().parse_args(args2)
+        with pytest.raises(ValueError):
+            run(test2)
 
     def test_lobsterin_generation_error_userbasis(self, tmp_path):
         # This is a test for the user-defined basis set.

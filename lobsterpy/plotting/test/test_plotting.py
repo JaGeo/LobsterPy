@@ -5,6 +5,7 @@ import gzip
 import json
 from pathlib import Path
 from plotly.io import read_json
+from pymatgen.electronic_structure.cohp import Cohp
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
@@ -13,7 +14,7 @@ CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
 
 
-class InteractiveCohpPlotterTest(unittest.TestCase):
+class PlainInteractiveCohpPlotterTest(unittest.TestCase):
     def setUp(self):
         self.analyse_NaCl = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
@@ -23,6 +24,18 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
             summed_spins=False,
+        )
+
+        self.analyse_NaCl_cobi = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            summed_spins=False,
+            noise_cutoff=0.001,
+            are_cobis=True,
         )
 
         self.analyse_NaSi = Analysis(
@@ -66,13 +79,41 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter.add_all_relevant_cohps(
             analyse=self.analyse_NaCl, label_resolved=False, suffix=""
         )
-        # self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
         self.assertEqual(len(self.iplotter._cohps), 1)
 
         fig = self.iplotter.get_plot(invert_axes=False)
         ref_fig = read_json(
             TestDir / "TestData/interactive_plotter_ref/analyse_NaCl.json",
+            engine="json",
+        )
+        self.assertEqual(len(fig.data), len(ref_fig.data))
+        self.assertEqual(fig.layout, ref_fig.layout)
+        for og_trace in fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
+
+    def test_add_all_relevant_cohps_NaCl_cobi(self):
+        self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False, are_cobis=True)
+
+        self.iplotter.add_all_relevant_cohps(
+            analyse=self.analyse_NaCl_cobi, label_resolved=False, suffix=""
+        )
+        self.assertIn("All", self.iplotter._cohps)
+        self.assertEqual(len(self.iplotter._cohps), 1)
+
+        fig = self.iplotter.get_plot()
+        ref_fig = read_json(
+            TestDir / "TestData/interactive_plotter_ref/analyse_NaCl_cobi.json",
             engine="json",
         )
         self.assertEqual(len(fig.data), len(ref_fig.data))
@@ -258,6 +299,19 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         fig = self.iplotter.get_plot()
 
         self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP")
+
+    def test_plaincohp_plotter_options(self):
+        self.plotter = PlainCohpPlotter(zero_at_efermi=False)
+
+        for label, cohp in self.lobsterpy_plot_data.items():
+            cohp_obj = Cohp.from_dict(cohp)
+            self.plotter.add_cohp(label=label, cohp=cohp_obj)
+
+        fig = self.plotter.get_plot(
+            integrated=True, xlim=(-5, 2), ylim=(-4, 4), invert_axes=False
+        ).gca()
+        self.assertEqual(fig.get_ylabel(), "$-$ICOHP (eV)")
+        self.assertEqual(fig.get_xlabel(), "$E$ (eV)")
 
 
 class TestPlotterExceptions(unittest.TestCase):
