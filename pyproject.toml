@@ -117,6 +117,12 @@ exclude_lines = [
   "show_plot",
 ]
 
+[tool.coverage.run]
+omit = [
+    # omit anything in test directory anywhere
+    "*/test/*",
+]
+
 [tool.mypy]
 ignore_missing_imports = true
 namespace_packages = true
