@@ -77,26 +77,27 @@ class Description:
                             + properties["ICOHP_mean"]
                             + " eV, 0.0 percent antibonding interaction below EFermi)"
                         )
-                        if properties["orbital_data"]:
-                            orb_names = []
-                            orb_contri = []
-                            for orb, data in properties["orbital_data"].items():
-                                orb_names.append(orb)
-                                orb_contri.append(
-                                    str(data["orb_contribution_mean_perc"] * 100)
+                        if self.analysis_object.orbital_resolved:
+                            if properties["orbital_data"]:
+                                orb_names = []
+                                orb_contri = []
+                                for orb, data in properties["orbital_data"].items():
+                                    orb_names.append(orb)
+                                    orb_contri.append(
+                                        str(data["orb_contribution_mean_perc"] * 100)
+                                    )
+                                orb_info.append(
+                                    "The orbitals "
+                                    + ", ".join(orb_names)
+                                    + " contribute "
+                                    + ", ".join(orb_contri)
+                                    + " percent in this bond, respectively."
                                 )
-                            orb_info.append(
-                                "The orbitals "
-                                + ", ".join(orb_names)
-                                + " contribute "
-                                + ", ".join(orb_contri)
-                                + " percent in this bond, respectively."
-                            )
-                        else:
-                            orb_info.append(
-                                "No individual orbital interactions detected above 10 percent"
-                                " with summed ICOHP as reference for this bond."
-                            )
+                            else:
+                                orb_info.append(
+                                    "No individual orbital interactions detected above 10 percent"
+                                    " with summed ICOHP as reference for this bond."
+                                )
                     else:
                         bond_info.append(
                             str(properties["number_of_bonds"])
@@ -111,26 +112,27 @@ class Description:
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
-                        if properties["orbital_data"]:
-                            orb_names = []
-                            orb_contri = []
-                            for orb, data in properties["orbital_data"].items():
-                                orb_names.append(orb)
-                                orb_contri.append(
-                                    str(data["orb_contribution_mean_perc"] * 100)
+                        if self.analysis_object.orbital_resolved:
+                            if properties["orbital_data"]:
+                                orb_names = []
+                                orb_contri = []
+                                for orb, data in properties["orbital_data"].items():
+                                    orb_names.append(orb)
+                                    orb_contri.append(
+                                        str(data["orb_contribution_mean_perc"] * 100)
+                                    )
+                                orb_info.append(
+                                    "The orbitals "
+                                    + ", ".join(orb_names)
+                                    + " contribute "
+                                    + ", ".join(orb_contri)
+                                    + " percent in this bond, respectively."
                                 )
-                            orb_info.append(
-                                "The orbitals "
-                                + ", ".join(orb_names)
-                                + " contribute "
-                                + ", ".join(orb_contri)
-                                + " percent in this bond, respectively."
-                            )
-                        else:
-                            orb_info.append(
-                                "No individual orbital interactions detected above 10 percent"
-                                " with summed ICOHP as reference for this bond."
-                            )
+                            else:
+                                orb_info.append(
+                                    "No individual orbital interactions detected above 10 percent"
+                                    " with summed ICOHP as reference for this bond."
+                                )
 
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
@@ -239,26 +241,27 @@ class Description:
                             + " percent antibonding interaction below EFermi)"
                         )
 
-                        if properties["orbital_data"]:
-                            orb_names = []
-                            orb_contri = []
-                            for orb, data in properties["orbital_data"].items():
-                                orb_names.append(orb)
-                                orb_contri.append(
-                                    str(data["orb_contribution_mean_perc"] * 100)
+                        if self.analysis_object.orbital_resolved:
+                            if properties["orbital_data"]:
+                                orb_names = []
+                                orb_contri = []
+                                for orb, data in properties["orbital_data"].items():
+                                    orb_names.append(orb)
+                                    orb_contri.append(
+                                        str(data["orb_contribution_mean_perc"] * 100)
+                                    )
+                                orb_info.append(
+                                    "The orbitals "
+                                    + ", ".join(orb_names)
+                                    + " contribute "
+                                    + ", ".join(orb_contri)
+                                    + " percent in this bond, respectively."
                                 )
-                            orb_info.append(
-                                "The orbitals "
-                                + ", ".join(orb_names)
-                                + " contribute "
-                                + ", ".join(orb_contri)
-                                + " percent in this bond, respectively."
-                            )
-                        else:
-                            orb_info.append(
-                                "No individual orbital interactions detected above 10 percent"
-                                " with summed ICOHP as reference for this bond."
-                            )
+                            else:
+                                orb_info.append(
+                                    "No individual orbital interactions detected above 10 percent"
+                                    " with summed ICOHP as reference for this bond."
+                                )
 
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
