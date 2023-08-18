@@ -211,7 +211,6 @@ class Description:
         integrated=False,
         title="",
         sigma=None,
-        orbital_resolved=False,
         hide=False,
     ):
         """
@@ -225,7 +224,6 @@ class Description:
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
-            orbital_resolved: Add orbital resolved cohp curves to the plots
             title: sets the title of figure generated
             hide (bool): if True, the plot will not be shown.
 
@@ -250,23 +248,6 @@ class Description:
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
-                    if orbital_resolved:
-                        plot_data = (
-                            self.analysis_object.get_site_orbital_resolved_labels()
-                        )
-                        complete_cohp = self.analysis_object.chemenv.completecohp
-                        for key in plot_data:
-                            atom_pair = label.split("x")[-1]
-                            if (
-                                namecation + str(ication + 1) in key
-                                and atom_pair in key
-                            ):
-                                key_val = plot_data[key]
-                                for orb, val in key_val.items():
-                                    cohp_sum_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
-                                        label_list=val, orbital_list=[orb] * len(val)
-                                    )
-                                    cp.add_cohp(orb, cohp_sum_orb)
 
             plot = cp.get_plot(integrated=integrated, sigma=sigma)
             plot.ylim(ylim)
