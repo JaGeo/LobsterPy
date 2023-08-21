@@ -12,6 +12,7 @@ import matplotlib
 import numpy as np
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
+from pymatgen.io.lobster import Icohplist
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.cohp import Cohp
 from pymatgen.electronic_structure.plotter import CohpPlotter
@@ -648,3 +649,81 @@ class InteractiveCohpPlotter(CohpPlotter):
              bond label with number of bonds inserted
         """
         return label.replace(character, f"{character} {number_of_bonds} x", 1)
+
+
+class IcohpPlotter:
+    """
+    Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots
+    """
+
+    def __init__(self, icohplist: Icohplist):
+        """
+        Args:
+            icohplist: pymatgen icohplist list object
+        """
+        self.icohplist = icohplist
+
+    def get_plot(
+        self,
+        ax: "matplotlib.axes.Axes | None" = None,
+        style: "matplotlib.plot.style| None" = None,
+        marker_size: float = 50,
+        marker_style: str = "o",
+        xlim: "Tuple[float, float] | None" = None,
+        ylim: "Tuple[float, float] | None" = None,
+    ):
+        """
+        Get a matplotlib plot showing the COHP or COBI or COOP with respect to bond lengths.
+
+        Args:
+            ax: Existing Matplotlib Axes object to plot to.
+            style: matplotlib style string, if None, will
+                use lobsterpy style by default.
+            marker_size: sets the size of markers in scatter plots
+            marker_style: sets type of marker used in plot
+            xlim: Specifies the x-axis limits. Defaults to None for
+                automatic determination.
+            ylim: Specifies the y-axis limits. Defaults to None for
+                automatic determination.
+        Returns:
+            A matplotlib object.
+        """
+        if self.icohplist.are_coops and not self.icohplist.are_cobis:
+            cohp_label = "ICOOP"
+        elif self.icohplist.are_cobis and not self.icohplist.are_coops:
+            cohp_label = "ICOBI"
+        elif self.icohplist.are_cobis and self.icohplist.are_coops:
+            raise ValueError(
+                "Plot data should not contain ICOBI and ICOOP data at same time"
+            )
+        else:
+            cohp_label = "ICOHP (eV)"
+
+        if style is None:
+            style = get_style_list()[0]
+            plt.style.use(style)
+
+        if ax is None:
+            _, ax = plt.subplots()
+
+        if xlim:
+            ax.set_xlim(xlim)
+        if ylim:
+            ax.set_ylim(ylim)
+
+        ax.set_ylabel(cohp_label)
+        ax.set_xlabel("Bond lengths (\u00c5)")
+
+        icohps = []
+        bond_len = []
+        orb_data = {}
+        for label, data in self.icohplist.icohplist.items():
+            orb_data.update({label: {}})
+            for k, v in data["orbitals"].items():
+                orb_data[label].update({k: sum(v["icohp"].values())})
+            icohps.append(sum(data["icohp"].values()))
+            bond_len.append(data["length"])
+
+        ax.scatter(bond_len, icohps, s=marker_size, marker=marker_style)
+
+        return plt

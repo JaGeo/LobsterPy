@@ -5,9 +5,10 @@ import gzip
 import json
 from pathlib import Path
 from plotly.io import read_json
+from pymatgen.io.lobster import Icohplist
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter, IcohpPlotter
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
@@ -258,6 +259,33 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         fig = self.iplotter.get_plot()
 
         self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP")
+
+
+class IcohpPlotterTest(unittest.TestCase):
+
+    def setUp(self):
+
+        self.icohplist_nacl = Icohplist(filename=TestDir / "TestData/NaCl/ICOHPLIST.lobster")
+        self.icohplist_nasi = Icohplist(filename=TestDir / "TestData/NaSi/ICOHPLIST.lobster", are_cobis=True)
+        self.icohplist_k3sb = Icohplist(filename=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz", are_coops=True)
+
+    def test_icohp_plotter_labels(self):
+
+        self.icohp_plotter = IcohpPlotter(icohplist=self.icohplist_nacl)
+        fig = self.icohp_plotter.get_plot().gca()
+
+        self.assertEqual(fig.get_ylabel(), "ICOHP (eV)")
+
+        self.icohp_plotter = IcohpPlotter(icohplist=self.icohplist_nasi)
+        fig = self.icohp_plotter.get_plot().gca()
+
+        self.assertEqual(fig.get_ylabel(), "ICOBI")
+
+        self.icohp_plotter = IcohpPlotter(icohplist=self.icohplist_k3sb)
+        fig = self.icohp_plotter.get_plot().gca()
+
+        self.assertEqual(fig.get_ylabel(), "ICOOP")
+        self.assertEqual(fig.get_xlabel(), "Bond lengths (Å)")
 
 
 class TestPlotterExceptions(unittest.TestCase):
