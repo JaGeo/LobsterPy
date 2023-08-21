@@ -716,7 +716,7 @@ class IcohpPlotter:
 
         icohps = []
         bond_len = []
-        orb_data = {}
+        orb_data = {} # type: ignore
         for label, data in self.icohplist.icohplist.items():
             orb_data.update({label: {}})
             for k, v in data["orbitals"].items():
