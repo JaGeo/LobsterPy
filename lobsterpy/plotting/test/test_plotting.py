@@ -262,15 +262,18 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
 
 
 class IcohpPlotterTest(unittest.TestCase):
-
     def setUp(self):
-
-        self.icohplist_nacl = Icohplist(filename=TestDir / "TestData/NaCl/ICOHPLIST.lobster")
-        self.icohplist_nasi = Icohplist(filename=TestDir / "TestData/NaSi/ICOHPLIST.lobster", are_cobis=True)
-        self.icohplist_k3sb = Icohplist(filename=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz", are_coops=True)
+        self.icohplist_nacl = Icohplist(
+            filename=TestDir / "TestData/NaCl/ICOHPLIST.lobster"
+        )
+        self.icohplist_nasi = Icohplist(
+            filename=TestDir / "TestData/NaSi/ICOHPLIST.lobster", are_cobis=True
+        )
+        self.icohplist_k3sb = Icohplist(
+            filename=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz", are_coops=True
+        )
 
     def test_icohp_plotter_labels(self):
-
         self.icohp_plotter = IcohpPlotter(icohplist=self.icohplist_nacl)
         fig = self.icohp_plotter.get_plot().gca()
 

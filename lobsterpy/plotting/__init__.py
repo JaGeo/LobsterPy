@@ -685,6 +685,7 @@ class IcohpPlotter:
                 automatic determination.
             ylim: Specifies the y-axis limits. Defaults to None for
                 automatic determination.
+
         Returns:
             A matplotlib object.
         """
@@ -716,7 +717,7 @@ class IcohpPlotter:
 
         icohps = []
         bond_len = []
-        orb_data = {} # type: ignore
+        orb_data = {}  # type: ignore
         for label, data in self.icohplist.icohplist.items():
             orb_data.update({label: {}})
             for k, v in data["orbitals"].items():
