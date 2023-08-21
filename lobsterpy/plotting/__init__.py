@@ -99,13 +99,13 @@ class PlainCohpPlotter(CohpPlotter):
                 "Plot data should not contain COBI and COOP data at same time"
             )
         else:
-            cohp_label = "COHP"
+            cohp_label = "COHP" + " (eV)"
 
         if plot_negative is None:
             plot_negative = (not self.are_coops) and (not self.are_cobis)
 
         if integrated:
-            cohp_label = "I" + cohp_label + " (eV)"
+            cohp_label = "I" + cohp_label
 
         if plot_negative:
             cohp_label = "$-$" + cohp_label
@@ -494,13 +494,13 @@ class InteractiveCohpPlotter(CohpPlotter):
                 "Plot data should not contain COBI and COOP data at same time"
             )
         else:
-            cohp_label = "COHP"
+            cohp_label = "COHP" + " (eV)"
 
         if plot_negative is None:
             plot_negative = (not self.are_coops) and (not self.are_cobis)
 
         if integrated:
-            cohp_label = "I" + cohp_label + " (eV)"
+            cohp_label = "I" + cohp_label
 
         if plot_negative:
             cohp_label = "\u2212" + cohp_label
