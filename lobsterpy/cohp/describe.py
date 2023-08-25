@@ -165,7 +165,7 @@ class Description:
                                     + item["ion"]
                                     + "-"
                                     + str(type)
-                                    + "bond."
+                                    + " bond."
                                 )
 
                 if len(bond_info) > 1:
@@ -273,7 +273,7 @@ class Description:
                                     + item["ion"]
                                     + "-"
                                     + str(type)
-                                    + "bond."
+                                    + " bond."
                                 )
                     else:
                         bond_info.append(
