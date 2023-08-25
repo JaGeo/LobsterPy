@@ -31,6 +31,7 @@ class LobsterGraph:
         path_to_icooplist: Optional[str] = None,
         path_to_icobilist: Optional[str] = None,
         which_bonds: str = "all",
+        cutoff_icohp: float = 0.10,
         start: str = None,
     ):
         """
@@ -44,6 +45,7 @@ class LobsterGraph:
             path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster")
             path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster")
             path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
+            cutoff_icohp : only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             add_additional_data_sg: (bool) if True will add the information from ICOOPLIST.lobster
             and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond
             which_bonds: selects which kind of bonds are analyzed. "all" is the default
@@ -68,6 +70,7 @@ class LobsterGraph:
         self.path_to_icohplist = path_to_icohplist
         self.path_to_madelung = path_to_madelung
         self.which_bonds = which_bonds
+        self.cutoff_icohp = cutoff_icohp
 
         if self.which_bonds == "all":
             self.additional_condition = 0
@@ -92,6 +95,7 @@ class LobsterGraph:
             chemenvlobster = LobsterNeighbors(
                 are_coops=False,
                 filename_ICOHP=self.path_to_icohplist,
+                perc_strength_ICOHP=self.cutoff_icohp,
                 structure=Structure.from_file(self.path_to_poscar),
                 additional_condition=self.additional_condition,
                 filename_CHARGE=self.path_to_charge,
@@ -106,17 +110,17 @@ class LobsterGraph:
             chemenvlobster = LobsterNeighbors(
                 are_coops=False,
                 filename_ICOHP=self.path_to_icohplist,
+                perc_strength_ICOHP=self.cutoff_icohp,
                 structure=Structure.from_file(self.path_to_poscar),
                 additional_condition=self.additional_condition,
                 filename_CHARGE=self.path_to_charge,
                 add_additional_data_sg=self.add_additional_data_sg,
             )
 
-        chemenvlobster.get_info_cohps_to_neighbors(path_to_COHPCAR=self.path_to_cohpcar)
-
+        # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)
         decorated_structure = Charge(self.path_to_charge).get_structure_with_charges(
             self.path_to_poscar
-        )  # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)
+        )
 
         # Create the structure graph object decorated with site and edge properties based on ICOHP/ICOBI/ICOOP data
         lobster_env = chemenvlobster.get_bonded_structure(
@@ -131,6 +135,7 @@ class LobsterGraph:
             path_to_icohplist=self.path_to_icohplist,
             path_to_madelung=self.path_to_madelung,
             whichbonds=self.which_bonds,
+            cutoff_icohp=self.cutoff_icohp,
         )
 
         # Store the summarized dictionary object containing bonding information
@@ -147,16 +152,16 @@ class LobsterGraph:
             edge_prop
         ) in lobster_env.graph.edges.data():  # Iterate over structure graph edges
             _ab, ab_p, _b, b_p = analyze._integrate_antbdstates_below_efermi(
-                cohp=chemenvlobster.completecohp.get_cohp_by_label(
+                cohp=analyze.chemenv.completecohp.get_cohp_by_label(
                     edge_prop[2]["bond_label"]
                 ),
                 start=self.start,
             )  # Compute bonding- antibonding percentages for each bond in structure graph object
             edge_prop[2][
                 "ICOHP_bonding_perc"
-            ] = b_p  # Store bonding percentage in structure graph object
+            ] = b_p  # Store bonding percentage in edge of graph object
             edge_prop[2][
                 "ICOHP_antibonding_perc"
-            ] = ab_p  # Store anti-bonding percentage in structure graph object
+            ] = ab_p  # Store anti-bonding percentage in edge graph object
 
         return lobster_env
