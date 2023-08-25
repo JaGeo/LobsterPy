@@ -42,7 +42,7 @@ jobs:
       # run this locally to update tests durations
       # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./lobsterpy/TestData/.pytest-split-durations --store-durations
       run: |
-        pytest --cov=lobsterpy --cov-report --cov-append --splits 5 --group ${{ matrix.split }} --durations-path ./lobsterpy/TestData/.pytest-split-durations
+        pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 5 --group ${{ matrix.split }} --durations-path ./lobsterpy/TestData/.pytest-split-durations
     - name: Upload coverage
       uses: actions/upload-artifact@v3
       with:
