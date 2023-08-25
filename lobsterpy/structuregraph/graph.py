@@ -104,6 +104,8 @@ class LobsterGraph:
                 id_blist_sg1="ICOBI",
                 filename_blist_sg2=self.path_to_icooplist,
                 id_blist_sg2="ICOOP",
+                valences_from_charges=True,
+                adapt_extremum_to_add_cond=True,
             )
 
         else:
@@ -115,6 +117,8 @@ class LobsterGraph:
                 additional_condition=self.additional_condition,
                 filename_CHARGE=self.path_to_charge,
                 add_additional_data_sg=self.add_additional_data_sg,
+                valences_from_charges=True,
+                adapt_extremum_to_add_cond=True,
             )
 
         # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)
