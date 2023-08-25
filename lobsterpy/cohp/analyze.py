@@ -403,7 +403,7 @@ class Analysis:
                             label=label, orbitals=orbital
                         )
                         contri_perc = round((orb_icohp / icohp_summed), 4)
-                        if contri_perc * 100 >= 10:
+                        if contri_perc * 100 >= self.cutoff_icohp * 100:
                             orb_icohp_list.append(orb_icohp)
                             orb_contri.append(contri_perc)
                             label_list.append(label)
