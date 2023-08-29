@@ -5,8 +5,18 @@
 Here classes and functions to plot Lobster outputs are provided
 """
 
-from typing import Any, Tuple, List, Dict
-
+import typing
+from typing import (
+    Any,
+    Tuple,
+    Dict,
+    TYPE_CHECKING,
+    List,
+    Literal,
+    Sequence,
+    cast,
+    no_type_check,
+)
 from itertools import cycle
 import matplotlib
 import numpy as np
@@ -20,8 +30,6 @@ from pymatgen.electronic_structure.dos import LobsterCompleteDos
 import plotly.graph_objs as go
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
-
-from typing import TYPE_CHECKING, List, Literal, Sequence, cast
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
@@ -357,13 +365,14 @@ class PlainDosPlotter(DosPlotter):
             "efermi": efermi,
         }
 
+    @typing.no_type_check
     def get_plot(
         self,
         ax: "matplotlib.axes.Axes | None" = None,
         xlim: "Tuple[float, float] | None" = None,
         ylim: "Tuple[float, float] | None" = None,
         invert_axes: bool = False,
-        beta_dashed: bool = True,
+        beta_dashed: bool = False,
         sigma: "float | None" = None,
     ):
         """
@@ -375,13 +384,9 @@ class PlainDosPlotter(DosPlotter):
                 automatic determination.
             ylim: Specifies the y-axis limits. Defaults to None for
                 automatic determination.
-            plot_negative: It is common to plot -COHP(E) so that the
-                sign means the same for COOPs and COHPs. Defaults to None
-                for automatic determination: If are_coops is True, this
-                will be set to False, else it will be set to True.
-            integrated: Switch to plot ICOHPs. Defaults to False.
             invert_axes: Put the energies onto the y-axis, which is
                 common in chemistry.
+            beta_dashed: Plots the beta spin channel with a dashed line. Defaults to False
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If this is unset (None) no broadening will be
                 added.
