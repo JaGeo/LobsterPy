@@ -279,7 +279,7 @@ class PlainDosPlotter(DosPlotter):
                 Literal["energies", "densities", "efermi"],
                 "float | ArrayLike | dict[Spin, ArrayLike]",
             ],
-        ] = {}
+        ] = {} # type: ignore
         self.summed = summed
 
     def add_dos(self, label: str, dos: LobsterCompleteDos) -> None:
