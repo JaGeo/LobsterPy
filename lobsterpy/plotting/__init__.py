@@ -242,10 +242,10 @@ class PlainCohpPlotter(CohpPlotter):
 
 class PlainDosplotter(DosPlotter):
     """
-    Modified Pymatgen CohpPlotter with styling removed
+    Modified Pymatgen DosPlotter with styling removed
 
     This allows the styling to be manipulated more easily using matplotlib
-    style sheets.
+    style sheets. It also adds additional functionalities to plotter
     """
 
     def __init__(
