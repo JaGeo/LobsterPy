@@ -240,7 +240,7 @@ class PlainCohpPlotter(CohpPlotter):
         return convolve(population, kernel, mode="same") / kernel.sum()
 
 
-class PlainDosplotter(DosPlotter):
+class PlainDosPlotter(DosPlotter):
     """
     Modified Pymatgen DosPlotter with styling removed
 
