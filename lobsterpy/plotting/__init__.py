@@ -273,13 +273,7 @@ class PlainDosPlotter(DosPlotter):
         self.stack = stack
         self.sigma = sigma
         self._norm_val = True
-        self._doses: dict[
-            str,
-            dict[
-                Literal["energies", "densities", "efermi"],
-                "float | ArrayLike | dict[Spin, ArrayLike]",
-            ],
-        ] = {} # type: ignore
+        self._doses = {}  # type: ignore
         self.summed = summed
 
     def add_dos(self, label: str, dos: LobsterCompleteDos) -> None:
