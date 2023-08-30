@@ -283,6 +283,8 @@ class PlainDosPlotter(DosPlotter):
             label: label for the DOS. Must be unique.
             dos: LobsterCompleteDos object
         """
+        if dos.norm_vol is None:
+            self._norm_val = False
         energies = dos.energies
         if self.summed:
             if self.sigma:
@@ -318,6 +320,8 @@ class PlainDosPlotter(DosPlotter):
             orbital: Orbitals name at the site. Must be unique.
             site_index: site index in the structure
         """
+        if dos.norm_vol is None:
+            self._norm_val = False
         site = dos.structure.sites[site_index]
 
         avail_orbs = list(dos.pdos[site])

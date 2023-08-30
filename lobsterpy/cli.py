@@ -16,7 +16,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, get_style_list
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list, PlainDosPlotter
 
 
 def main() -> None:
@@ -58,57 +58,55 @@ def get_parser() -> argparse.ArgumentParser:
         "--cohpcar",
         default="COHPCAR.lobster",
         type=Path,
-        help=(
-            'path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument '
-            "will also be read when COBICARs or COOPCARs are plotted."
-        ),
+        help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument'
+        "will also be read when COBICARs or COOPCARs are plotted.",
     )
     input_file_group.add_argument(
         "--incar",
         default="INCAR",
         type=Path,
-        help=('path to INCAR. Default is "INCAR".'),
+        help='path to INCAR. Default is "INCAR".',
     )
     input_file_group.add_argument(
         "--potcar",
         default="POTCAR",
         type=Path,
-        help=('path to POTCAR. Default is "POTCAR".'),
+        help='path to POTCAR. Default is "POTCAR".',
     )
 
     input_file_group.add_argument(
         "--lobsterin",
         default="lobsterin",
         type=Path,
-        help=('path to lobsterin. Default is "lobsterin".'),
+        help='path to lobsterin. Default is "lobsterin".',
     )
 
     input_file_group.add_argument(
         "--lobsterout",
         default="lobsterout",
         type=Path,
-        help=('path to lobsterout. Default is "lobsterout".'),
+        help='path to lobsterout. Default is "lobsterout".',
     )
 
     input_file_group.add_argument(
         "--doscar",
         default="DOSCAR.lobster",
         type=Path,
-        help=('path to DOSCAR.lobster. Default is "DOSCAR.lobster".'),
+        help='path to DOSCAR.lobster. Default is "DOSCAR.lobster".',
     )
 
     input_file_group.add_argument(
         "--vasprun",
         default="vasprun.xml",
         type=Path,
-        help=('path to vasprun.xml. Default is "vasprun.xml".'),
+        help='path to vasprun.xml. Default is "vasprun.xml".',
     )
 
     input_file_group.add_argument(
         "--bandoverlaps",
         default="bandOverlaps.lobster",
         type=Path,
-        help=('path to bandOverlaps.lobster. Default is "bandOverlaps.lobster".'),
+        help='path to bandOverlaps.lobster. Default is "bandOverlaps.lobster".',
     )
 
     output_parent = argparse.ArgumentParser(add_help=False)
@@ -242,6 +240,46 @@ def get_parser() -> argparse.ArgumentParser:
         "If not set, plots will consists of summed cohps. (This argument works only"
         "for interactive plots) ",
     )
+    group = plotting_group.add_mutually_exclusive_group()
+    group.add_argument(
+        "--spddos",
+        "--spd-dos",
+        action="store_true",
+        help="Will add spd projected dos to the DOS plot",
+    )
+    group.add_argument(
+        "--elementdos",
+        "--el-dos",
+        action="store_true",
+        help="Will add DOS projections for each element to the DOS plot",
+    )
+    plotting_group.add_argument(
+        "--summedspins",
+        "--summed-spins",
+        action="store_true",
+        help="Will plot summed DOS",
+    )
+    plotting_group.add_argument(
+        "--element",
+        "--el",
+        type=str,
+        nargs="+",
+        default=None,
+        help="Will add spd DOS projections for requested element to the DOS plot",
+    )
+    plotting_group.add_argument(
+        "--orbital",
+        "--orb",
+        type=str,
+        default=None,
+        help="Orbital name for the site for which DOS are to be added",
+    )
+    plotting_group.add_argument(
+        "--site",
+        type=int,
+        default=None,
+        help="Site index in the crystal structure for " "which DOS need to be added",
+    )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Automatic analysis")
@@ -358,6 +396,13 @@ def get_parser() -> argparse.ArgumentParser:
         help=(
             "Will create inputs for lobster computation. It only works with PBE POTCARs."
         ),
+    )
+
+    subparsers.add_parser(
+        "plot-dos",
+        aliases=["plotdos"],
+        parents=[input_parent, plotting_parent],
+        help=("Will plot DOS from lobster computation."),
     )
 
     # Mode for normal plotting (without automatic detection of relevant COHPs)
@@ -524,6 +569,8 @@ def run(args):
         "automatic-plot-ia",
         "auto-plot-ia",
         "autoplotia",
+        "plot-dos",
+        "plotdos",
     ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
@@ -850,6 +897,67 @@ def run(args):
         if args.calcqualityjson is not None:
             with open(args.calcqualityjson, "w") as fd:
                 json.dump(quality_dict, fd)
+
+    if args.action in ["plot-dos", "plotdos"]:
+        mandatory_files = {
+            "doscar": "DOSCAR.lobster",
+            "poscar": "POSCAR",
+        }
+
+        for arg_name, _ in mandatory_files.items():
+            file_path = getattr(args, arg_name)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg_name, gz_file_path)
+                else:
+                    raise ValueError(
+                        f"{file_path.name} necessary for plotting DOS not found in "
+                        f"the current directory."
+                    )
+
+        from pymatgen.io.lobster import Doscar
+
+        lobs_dos = Doscar(doscar=args.doscar, structure_file=args.poscar).completedos
+
+        dos_plotter = PlainDosPlotter(summed=args.summedspins, sigma=args.sigma)
+
+        dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
+        if args.spddos:
+            dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_spd_dos())
+
+        if args.elementdos:
+            dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_element_dos())
+
+        if args.element:
+            for element in args.element:
+                element_spddos = lobs_dos.get_element_spd_dos(el=element)
+                for orbital, dos in element_spddos.items():
+                    label = f"{element}: {orbital.name}"
+                    dos_plotter.add_dos_dict(dos_dict={label: dos})
+
+        if args.site and args.orbital:
+            dos_plotter.add_site_orbital_dos(
+                site_index=args.site, orbital=args.orbital, dos=lobs_dos
+            )
+        elif args.site and not args.orbital:
+            raise ValueError(
+                "Please set both args i.e site and orbital to generate the plot"
+            )
+
+        plt = dos_plotter.get_plot(xlim=args.xlim, ylim=args.ylim, beta_dashed=True)
+
+        ax = plt.gca()
+        ax.set_title(args.title)
+
+        if not args.hideplot and not args.save_plot:
+            plt.show()
+        elif args.save_plot and not args.hideplot:
+            plt.show()
+            fig = plt.gcf()
+            fig.savefig(args.save_plot)
+        if args.save_plot and args.hideplot:
+            plt.savefig(args.save_plot)
 
 
 if __name__ == "__main__":
