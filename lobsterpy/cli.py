@@ -442,6 +442,8 @@ def run(args):
         "automatic-plot-ia",
         "auto-plot-ia",
         "autoplotia",
+        "plot-icohps",
+        "ploticohps"
     ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
