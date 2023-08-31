@@ -442,8 +442,6 @@ def run(args):
         "automatic-plot-ia",
         "auto-plot-ia",
         "autoplotia",
-        "plot-icohps",
-        "ploticohps",
     ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
@@ -701,24 +699,24 @@ def run(args):
                 filename = filename.with_name(filename.name + ".gz")
             options = {"are_cobis": False, "are_coops": False}
 
-    icohplist = Icohplist(filename=filename, **options)
-    icohp_plotter = IcohpPlotter(**options)
+        icohplist = Icohplist(filename=filename, **options)
+        icohp_plotter = IcohpPlotter(**options)
 
-    icohp_plotter.add_icohps(icohplist=icohplist, label="")
+        icohp_plotter.add_icohps(icohplist=icohplist, label="")
 
-    plt = icohp_plotter.get_plot(xlim=args.xlim, ylim=args.ylim)
+        plt = icohp_plotter.get_plot(xlim=args.xlim, ylim=args.ylim)
 
-    ax = plt.gca()
-    ax.set_title(args.title)
+        ax = plt.gca()
+        ax.set_title(args.title)
 
-    if not args.hideplot and not args.save_plot:
-        plt.show()
-    elif args.save_plot and not args.hideplot:
-        plt.show()
-        fig = plt.gcf()
-        fig.savefig(args.save_plot)
-    if args.save_plot and args.hideplot:
-        plt.savefig(args.save_plot)
+        if not args.hideplot and not args.save_plot:
+            plt.show()
+        elif args.save_plot and not args.hideplot:
+            plt.show()
+            fig = plt.gcf()
+            fig.savefig(args.save_plot)
+        if args.save_plot and args.hideplot:
+            plt.savefig(args.save_plot)
 
 
 if __name__ == "__main__":
