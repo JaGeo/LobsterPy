@@ -340,6 +340,8 @@ class TestCLI:
             "--spddos",
             "--doscar",
             "DOSCAR.LSO.lobster",
+            "--sigma",
+            "0.2",
             "--xlim",
             "-5",
             "0.5",
@@ -453,6 +455,38 @@ class TestCLI:
             self.assertEqual(
                 err.exception.__str__(),
                 "Files necessary for creating puts for LOBSTER calcs not found in the current directory.",
+            )
+
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/CsH")
+            args = [
+                "plot-dos",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "DOSCAR.lobster necessary for plotting DOS not found in the current directory.",
+            )
+
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/K3Sb")
+            args = [
+                "plot-dos",
+                "--doscar",
+                "DOSCAR.LSO.lobster",
+                "--site",
+                "1",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Please set both args i.e site and orbital to generate the plot",
             )
 
     def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):

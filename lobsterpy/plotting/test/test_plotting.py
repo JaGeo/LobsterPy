@@ -270,30 +270,30 @@ class TestPlotterExceptions(unittest.TestCase):
 
             self.iplotter.add_cohps_from_plot_data(plot_data_dict=data, suffix="")
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "The data provided could not be converted to cohp object.Please recheck the input data",
-            )
+        self.assertEqual(
+            err.exception.__str__(),
+            "The data provided could not be converted to cohp object.Please recheck the input data",
+        )
 
         with self.assertRaises(Exception) as err:
             self.iplotter = InteractiveCohpPlotter(are_cobis=True, are_coops=True)
 
-            fig = self.iplotter.get_plot()
+            _ = self.iplotter.get_plot()
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "Plot data should not contain COBI and COOP data at same time",
-            )
+        self.assertEqual(
+            err.exception.__str__(),
+            "Plot data should not contain COBI and COOP data at same time",
+        )
 
         with self.assertRaises(Exception) as err:
             self.plotter = PlainCohpPlotter(are_cobis=True, are_coops=True)
 
-            fig = self.plotter.get_plot()
+            _ = self.plotter.get_plot()
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "Plot data should not contain COBI and COOP data at same time",
-            )
+        self.assertEqual(
+            err.exception.__str__(),
+            "Plot data should not contain COBI and COOP data at same time",
+        )
 
 
 class PlainDosPlotterTest(unittest.TestCase):
@@ -377,3 +377,41 @@ class PlainDosPlotterTest(unittest.TestCase):
 
         self.assertEqual(plt_axes.get_ylabel(), "Energies (eV)")
         self.assertEqual(plt_axes.get_xlabel(), "Density of states (states/eV)")
+
+        # add and test total non normalized smeared dos data and axis labels in the plot
+        dp = PlainDosPlotter(summed=True, stack=False, sigma=0.1)
+        dp.add_dos(dos=complete_dos_obj, label="Total")
+        plt = dp.get_plot(invert_axes=False, beta_dashed=True).gcf()
+
+        for energies in plt.axes[0].get_lines()[:1]:
+            plot_en = energies.get_data()[0].tolist()
+            ref_en = complete_dos_obj.energies.tolist()
+            self.assertListEqual(plot_en, ref_en)
+
+        for plot_dos in plt.axes[0].get_lines()[:1]:
+            dos_plot = [abs(dos) for dos in plot_dos.get_data()[1].tolist()]
+            dos_ref = [
+                abs(dos)
+                for dos in sum(
+                    complete_dos_obj.get_smeared_densities(sigma=0.1).values()
+                ).tolist()
+            ]
+            self.assertListEqual(dos_plot, dos_ref)
+
+        plt_axes = dp.get_plot(invert_axes=False, beta_dashed=True).gca()
+
+        self.assertEqual(plt_axes.get_xlabel(), "Energies (eV)")
+        self.assertEqual(plt_axes.get_ylabel(), "Density of states (states/eV)")
+
+    def test_dos_plotter_exceptions(self):
+        with self.assertRaises(ValueError) as err:
+            self.dp = PlainDosPlotter(summed=True, stack=False, sigma=None)
+
+            _ = self.dp.add_site_orbital_dos(
+                site_index=0, orbital="5_s", dos=self.NaCl_dos.completedos
+            )
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "Requested orbital is not available for this site, available orbitals are 3s, 2p_y, 2p_z, 2p_x",
+        )
