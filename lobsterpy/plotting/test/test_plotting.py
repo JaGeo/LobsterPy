@@ -277,7 +277,7 @@ class IcohpPlotterTest(unittest.TestCase):
         self.icohp_plotter = IcohpPlotter()
         self.icohp_plotter.add_icohps(label="NaCl", icohplist=self.icohplist_nacl)
         fig = self.icohp_plotter.get_plot().gca()
-        self.assertEqual(fig.get_ylabel(), "ICOHP (eV)")
+        self.assertEqual(fig.get_ylabel(), "$-$" + "ICOHP (eV)")
 
         self.icohp_plotter = IcohpPlotter()
         self.icohp_plotter.add_icohps(label="NaCl", icohplist=self.icohplist_nacl)
