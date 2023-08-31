@@ -656,12 +656,41 @@ class IcohpPlotter:
     Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots
     """
 
-    def __init__(self, icohplist: Icohplist):
+    def __init__(self, are_coops: bool = False, are_cobis: bool = False):
         """
         Args:
-            icohplist: pymatgen icohplist list object
+            are_coops: Switch to indicate that these are ICOOPs, not ICOHPs.
+                Defaults to False for ICOHPs.
+            are_cobis: Switch to indicate that these are ICOBIs, not ICOHPs/COOPs.
+                Defaults to False for ICOHPs.
         """
-        self.icohplist = icohplist
+        self.are_coops = are_coops
+        self.are_cobis = are_cobis
+        self._icohps = {}  # type: ignore
+
+    def add_icohps(self, label, icohplist: Icohplist):
+        """
+        Adds a ICOHPs or ICOBIs or ICOOPS for plotting.
+
+        Args:
+            label: Label for the ICOHPs. Must be unique.
+            icohplist: Icohplist object.
+        """
+        icohps = []
+        bond_len = []
+        orb_data = {}  # type: ignore
+        for bond_label, data in icohplist.icohplist.items():
+            orb_data.update({bond_label: {}})
+            for k, v in data["orbitals"].items():
+                orb_data[bond_label].update({k: sum(v["icohp"].values())})
+            icohps.append(sum(data["icohp"].values()))
+            bond_len.append(data["length"])
+
+        self._icohps[label] = {
+            "icohps": icohps,
+            "bond_lengths": bond_len,
+            "orb_data": orb_data,
+        }
 
     def get_plot(
         self,
@@ -671,6 +700,7 @@ class IcohpPlotter:
         marker_style: str = "o",
         xlim: "Tuple[float, float] | None" = None,
         ylim: "Tuple[float, float] | None" = None,
+        plot_negative: bool = True,
     ):
         """
         Get a matplotlib plot showing the COHP or COBI or COOP with respect to bond lengths.
@@ -685,15 +715,16 @@ class IcohpPlotter:
                 automatic determination.
             ylim: Specifies the y-axis limits. Defaults to None for
                 automatic determination.
+            plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
 
         Returns:
             A matplotlib object.
         """
-        if self.icohplist.are_coops and not self.icohplist.are_cobis:
+        if self.are_coops and not self.are_cobis:
             cohp_label = "ICOOP"
-        elif self.icohplist.are_cobis and not self.icohplist.are_coops:
+        elif self.are_cobis and not self.are_coops:
             cohp_label = "ICOBI"
-        elif self.icohplist.are_cobis and self.icohplist.are_coops:
+        elif self.are_cobis and self.are_coops:
             raise ValueError(
                 "Plot data should not contain ICOBI and ICOOP data at same time"
             )
@@ -715,16 +746,14 @@ class IcohpPlotter:
         ax.set_ylabel(cohp_label)
         ax.set_xlabel("Bond lengths (\u00c5)")
 
-        icohps = []
-        bond_len = []
-        orb_data = {}  # type: ignore
-        for label, data in self.icohplist.icohplist.items():
-            orb_data.update({label: {}})
-            for k, v in data["orbitals"].items():
-                orb_data[label].update({k: sum(v["icohp"].values())})
-            icohps.append(sum(data["icohp"].values()))
-            bond_len.append(data["length"])
+        for label, data in self._icohps.items():
+            x = data["bond_lengths"]
+            if plot_negative and cohp_label == "ICOHP (eV)":
+                ax.set_ylabel("$-$" + cohp_label)
+                y = [-1 * icohp for icohp in data["icohps"]]
+            else:
+                y = data["icohps"]
 
-        ax.scatter(bond_len, icohps, s=marker_size, marker=marker_style)
+            ax.scatter(x, y, s=marker_size, marker=marker_style, label=label)
 
         return plt

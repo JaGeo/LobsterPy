@@ -274,19 +274,24 @@ class IcohpPlotterTest(unittest.TestCase):
         )
 
     def test_icohp_plotter_labels(self):
-        self.icohp_plotter = IcohpPlotter(icohplist=self.icohplist_nacl)
+        self.icohp_plotter = IcohpPlotter()
+        self.icohp_plotter.add_icohps(label="NaCl", icohplist=self.icohplist_nacl)
         fig = self.icohp_plotter.get_plot().gca()
-
         self.assertEqual(fig.get_ylabel(), "ICOHP (eV)")
 
-        self.icohp_plotter = IcohpPlotter(icohplist=self.icohplist_nasi)
-        fig = self.icohp_plotter.get_plot().gca()
+        self.icohp_plotter = IcohpPlotter()
+        self.icohp_plotter.add_icohps(label="NaCl", icohplist=self.icohplist_nacl)
+        fig = self.icohp_plotter.get_plot(plot_negative=True).gca()
+        self.assertEqual(fig.get_ylabel(), "$-$" + "ICOHP (eV)")
 
+        self.icohp_plotter = IcohpPlotter(are_cobis=True)
+        self.icohp_plotter.add_icohps(label="NaSi", icohplist=self.icohplist_nasi)
+        fig = self.icohp_plotter.get_plot().gca()
         self.assertEqual(fig.get_ylabel(), "ICOBI")
 
-        self.icohp_plotter = IcohpPlotter(icohplist=self.icohplist_k3sb)
+        self.icohp_plotter = IcohpPlotter(are_coops=True)
+        self.icohp_plotter.add_icohps(label="K3Sb", icohplist=self.icohplist_k3sb)
         fig = self.icohp_plotter.get_plot().gca()
-
         self.assertEqual(fig.get_ylabel(), "ICOOP")
         self.assertEqual(fig.get_xlabel(), "Bond lengths (Å)")
 
