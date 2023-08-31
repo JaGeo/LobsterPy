@@ -331,6 +331,70 @@ class TestCLI:
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
 
+    def test_dos_plot(self, tmp_path):
+        os.chdir(TestDir / "TestData/K3Sb")
+        plot_path = tmp_path / "autoplot.png"
+
+        args = [
+            "plot-dos",
+            "--spddos",
+            "--doscar",
+            "DOSCAR.LSO.lobster",
+            "--xlim",
+            "-5",
+            "0.5",
+            "--hideplot",
+            "--saveplot",
+            str(plot_path),
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        plot_path = tmp_path / "autoplot.png"
+        args = [
+            "plot-dos",
+            "--elementdos",
+            "--doscar",
+            "DOSCAR.LSO.lobster",
+            "--ylim",
+            "-5",
+            "0.5",
+            "--hideplot",
+            "--saveplot",
+            str(plot_path),
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        os.chdir(TestDir / "TestData/K3Sb")
+        args = [
+            "plot-dos",
+            "--doscar",
+            "DOSCAR.LSO.lobster",
+            "--element",
+            "K",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        args = [
+            "plot-dos",
+            "--site",
+            "1",
+            "--orbital",
+            "3s",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
     def test_cli_exceptions(self):
         # Calc files missing exception test
         with pytest.raises(ValueError) as err:
