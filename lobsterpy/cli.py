@@ -443,7 +443,7 @@ def run(args):
         "auto-plot-ia",
         "autoplotia",
         "plot-icohps",
-        "ploticohps"
+        "ploticohps",
     ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
