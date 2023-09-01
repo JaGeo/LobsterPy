@@ -701,10 +701,10 @@ def run(args):
                 filename = filename.with_name(filename.name + ".gz")
             options = {"are_cobis": False, "are_coops": False}
 
-        icohplist = Icohplist(filename=filename, **options)
+        icohpcollection = Icohplist(filename=filename, **options).icohpcollection
         icohp_plotter = IcohpPlotter(**options)
 
-        icohp_plotter.add_icohps(icohplist=icohplist, label="")
+        icohp_plotter.add_icohps(icohpcollection=icohpcollection, label="")
 
         plt = icohp_plotter.get_plot(xlim=args.xlim, ylim=args.ylim)
 

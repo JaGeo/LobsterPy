@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 from pymatgen.io.lobster import Icohplist
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.electronic_structure.cohp import Cohp
+from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection
 from pymatgen.electronic_structure.plotter import CohpPlotter
 import plotly.graph_objs as go
 from lobsterpy.cohp.analyze import Analysis
@@ -668,25 +668,31 @@ class IcohpPlotter:
         self.are_cobis = are_cobis
         self._icohps = {}  # type: ignore
 
-    def add_icohps(self, label, icohplist: Icohplist):
+    def add_icohps(self, label, icohpcollection: IcohpCollection):
         """
         Adds a ICOHPs or ICOBIs or ICOOPS for plotting.
 
         Args:
             label: Label for the ICOHPs. Must be unique.
-            icohplist: Icohplist object.
+            icohpcollection: IcohpCollection object.
         """
         icohps = []
         bond_len = []
+        atom_pairs = []
         orb_data = {}  # type: ignore
-        for bond_label, data in icohplist.icohplist.items():
+        for indx, bond_label in enumerate(icohpcollection._list_labels):
             orb_data.update({bond_label: {}})
-            for k, v in data["orbitals"].items():
+            for k, v in icohpcollection._list_orb_icohp[indx].items():
                 orb_data[bond_label].update({k: sum(v["icohp"].values())})
-            icohps.append(sum(data["icohp"].values()))
-            bond_len.append(data["length"])
+            icohps.append(sum(icohpcollection._list_icohp[indx].values()))
+            bond_len.append(icohpcollection._list_length[indx])
+            atom1 = icohpcollection._list_atom1[indx]
+            atom2 = icohpcollection._list_atom2[indx]
+            atom_pairs.append(atom1 + "-" + atom2)
 
         self._icohps[label] = {
+            "atom_pairs": atom_pairs,
+            "bond_labels": icohpcollection._list_labels,
             "icohps": icohps,
             "bond_lengths": bond_len,
             "orb_data": orb_data,
@@ -730,10 +736,6 @@ class IcohpPlotter:
             )
         else:
             cohp_label = "ICOHP (eV)"
-
-        if style is None:
-            style = get_style_list()[0]
-            plt.style.use(style)
 
         if ax is None:
             _, ax = plt.subplots()

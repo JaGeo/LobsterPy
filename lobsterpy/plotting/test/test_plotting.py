@@ -264,36 +264,156 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
 class IcohpPlotterTest(unittest.TestCase):
     def setUp(self):
         self.icohplist_nacl = Icohplist(
-            filename=TestDir / "TestData/NaCl/ICOHPLIST.lobster"
+            filename=TestDir / "TestData/NaCl_comp_range/ICOHPLIST.lobster.gz"
         )
-        self.icohplist_nasi = Icohplist(
-            filename=TestDir / "TestData/NaSi/ICOHPLIST.lobster", are_cobis=True
+        self.icobilist_nacl = Icohplist(
+            filename=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
+            are_cobis=True,
         )
-        self.icohplist_k3sb = Icohplist(
-            filename=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz", are_coops=True
+        self.icooplist_nacl = Icohplist(
+            filename=TestDir / "TestData/NaCl_comp_range/ICOOPLIST.lobster.gz",
+            are_coops=True,
         )
 
     def test_icohp_plotter_labels(self):
         self.icohp_plotter = IcohpPlotter()
-        self.icohp_plotter.add_icohps(label="NaCl", icohplist=self.icohplist_nacl)
+        self.icohp_plotter.add_icohps(
+            label="NaCl", icohpcollection=self.icohplist_nacl.icohpcollection
+        )
         fig = self.icohp_plotter.get_plot().gca()
         self.assertEqual(fig.get_ylabel(), "$-$" + "ICOHP (eV)")
 
         self.icohp_plotter = IcohpPlotter()
-        self.icohp_plotter.add_icohps(label="NaCl", icohplist=self.icohplist_nacl)
+        self.icohp_plotter.add_icohps(
+            label="NaCl_icohp", icohpcollection=self.icohplist_nacl.icohpcollection
+        )
         fig = self.icohp_plotter.get_plot(plot_negative=True).gca()
         self.assertEqual(fig.get_ylabel(), "$-$" + "ICOHP (eV)")
 
         self.icohp_plotter = IcohpPlotter(are_cobis=True)
-        self.icohp_plotter.add_icohps(label="NaSi", icohplist=self.icohplist_nasi)
+        self.icohp_plotter.add_icohps(
+            label="NaCl_icobi", icohpcollection=self.icobilist_nacl.icohpcollection
+        )
         fig = self.icohp_plotter.get_plot().gca()
         self.assertEqual(fig.get_ylabel(), "ICOBI")
 
         self.icohp_plotter = IcohpPlotter(are_coops=True)
-        self.icohp_plotter.add_icohps(label="K3Sb", icohplist=self.icohplist_k3sb)
+        self.icohp_plotter.add_icohps(
+            label="NaCl_icoop", icohpcollection=self.icooplist_nacl.icohpcollection
+        )
         fig = self.icohp_plotter.get_plot().gca()
         self.assertEqual(fig.get_ylabel(), "ICOOP")
         self.assertEqual(fig.get_xlabel(), "Bond lengths (Å)")
+
+    def test_plot_data(self):
+        self.icohp_plotter = IcohpPlotter()
+        self.icohp_plotter.add_icohps(
+            label="NaCl", icohpcollection=self.icohplist_nacl.icohpcollection
+        )
+
+        ref_xdata = self.icohplist_nacl.icohpcollection._list_length
+        ref_ydata = []
+        for ydata in self.icohplist_nacl.icohpcollection._list_icohp:
+            ref_ydata.append(
+                abs(sum(ydata.values()))
+            )  # get absolute icohp values as in plots
+
+        fig_xydata = (
+            self.icohp_plotter.get_plot()
+            .gcf()
+            .axes[0]
+            .get_children()[0]
+            .get_offsets()
+            .data
+        )
+
+        fig_xdata = [row[0] for row in fig_xydata]
+        fig_ydata = [row[1] for row in fig_xydata]
+
+        self.assertListEqual(ref_xdata, fig_xdata)
+        self.assertListEqual(ref_ydata, fig_ydata)
+
+        fig_xydata = self.icohp_plotter.get_plot(xlim=(0, 4), ylim=(0, 6)).gcf()
+
+        fig_x_lims = list(fig_xydata.axes[0].get_children()[5].get_view_interval())
+        fig_y_lims = list(fig_xydata.axes[0].get_children()[6].get_view_interval())
+
+        self.assertListEqual([0, 4], fig_x_lims)
+        self.assertListEqual([0, 6], fig_y_lims)
+
+        # icobi
+
+        self.icobi_plotter = IcohpPlotter(are_cobis=True)
+        self.icobi_plotter.add_icohps(
+            label="NaCl", icohpcollection=self.icobilist_nacl.icohpcollection
+        )
+
+        ref_xdata = self.icobilist_nacl.icohpcollection._list_length
+        ref_ydata = []
+        for ydata in self.icobilist_nacl.icohpcollection._list_icohp:
+            ref_ydata.append(
+                sum(ydata.values())
+            )  # get absolute icohp values as in plots
+
+        fig_xydata = (
+            self.icobi_plotter.get_plot()
+            .gcf()
+            .axes[0]
+            .get_children()[0]
+            .get_offsets()
+            .data
+        )
+
+        fig_xdata = [row[0] for row in fig_xydata]
+        fig_ydata = [row[1] for row in fig_xydata]
+
+        self.assertListEqual(ref_xdata, fig_xdata)
+        self.assertListEqual(ref_ydata, fig_ydata)
+
+        fig_xydata = self.icobi_plotter.get_plot(xlim=(0, 4), ylim=(0, 6)).gcf()
+
+        fig_x_lims = list(fig_xydata.axes[0].get_children()[5].get_view_interval())
+        fig_y_lims = list(fig_xydata.axes[0].get_children()[6].get_view_interval())
+
+        self.assertListEqual([0, 4], fig_x_lims)
+        self.assertListEqual([0, 6], fig_y_lims)
+
+        # icoop
+
+        self.icoop_plotter = IcohpPlotter(are_coops=True)
+        self.icoop_plotter.add_icohps(
+            label="NaCl", icohpcollection=self.icooplist_nacl.icohpcollection
+        )
+
+        ref_xdata = self.icooplist_nacl.icohpcollection._list_length
+        ref_ydata = []
+        for ydata in self.icooplist_nacl.icohpcollection._list_icohp:
+            ref_ydata.append(
+                sum(ydata.values())
+            )  # get absolute icohp values as in plots
+
+        fig_xydata = (
+            self.icoop_plotter.get_plot()
+            .gcf()
+            .axes[0]
+            .get_children()[0]
+            .get_offsets()
+            .data
+        )
+
+        fig_xdata = [row[0] for row in fig_xydata]
+        fig_ydata = [row[1] for row in fig_xydata]
+
+        self.assertListEqual(ref_xdata, fig_xdata)
+        self.assertListEqual(ref_ydata, fig_ydata)
+
+        fig_xydata = self.icoop_plotter.get_plot(xlim=(0, 4), ylim=(0, 6)).gcf()
+
+        fig_x_lims = list(fig_xydata.axes[0].get_children()[5].get_view_interval())
+        fig_y_lims = list(fig_xydata.axes[0].get_children()[6].get_view_interval())
+
+        self.assertListEqual([0, 4], fig_x_lims)
+        self.assertListEqual([0, 6], fig_y_lims)
 
 
 class TestPlotterExceptions(unittest.TestCase):
