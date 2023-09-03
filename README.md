@@ -3,9 +3,12 @@
 # Getting started
 <img src="https://raw.githubusercontent.com/JaGeo/LobsterPy/main/LobsterPyLogo.png" alt="LobsterPy Logo which consists of a green Python and a red Lobster" width="200"/>
 
-This is a package that enables automatic plotting of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
+This is a package that enables automatic plotting and summaries of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
 
 Please note that LobsterPy relies on your Lobster outputs. Thus, please make sure that the outputs have enough information for our (automatic) analysis.
+
+![LobsterPyAnimation](https://github.com/JaGeo/LobsterPy/assets/22094846/8f06b84c-db6d-414c-8590-aa04c957c728)
+
 
 ## Installation
 
@@ -17,9 +20,14 @@ You can also pip install the package in development mode by writing ``pip instal
 
 * **Automatic analysis and plotting of COHPs:**
 
-    You can use ``lobsterpy description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy automatic-plot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot --allbonds`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen. Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster.
+    <img src="https://github.com/JaGeo/LobsterPy/assets/22094846/6587e752-6ea4-4358-a763-3633d5a21869" alt="Output Automatic Analysis" width="300"/>
 
-    It is also possible to start this automatic analysis from Python script. See "examples" for scripts.
+    
+    You can use ``lobsterpy description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy automatic-plot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot --allbonds`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen. Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster.
+  
+    An interactive plot is available via ``lobsterpy automatic-plot-ia``.
+
+    It is also possible to start this automatic analysis from a Python script. See "examples" for scripts.
 
 
 * **Command line plotter**:
@@ -31,9 +39,7 @@ You can also pip install the package in development mode by writing ``pip instal
 
     ``lobsterpy create-inputs`` will create standard inputs based on existing POSCAR, POTCAR, INCAR files. It will allow to test for different basis sets that are available in Lobster. Currently only available for PBE_54 POTCARs.
 
-* **LobsterPy as part of an atomate2 workflow**
 
-    We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in [atomate2](https://github.com/materialsproject/atomate2). More documentation and information will follow soon.
 
 * **Further help?**
 
@@ -43,6 +49,10 @@ You can also pip install the package in development mode by writing ``pip instal
 Please cite our paper: J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, **ChemPlusChem**, [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123).
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
+## LobsterPy as part of an atomate2 workflow
+![LobsterWorkflow](https://github.com/JaGeo/LobsterPy/assets/22094846/337615ac-542e-446c-bc63-fb5946b16544)
+
+We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in [atomate2](https://github.com/materialsproject/atomate2). More documentation and information will follow soon.
 
 ## Future plans:
 * Include automatic plotting for COBIs/COOPs
@@ -51,3 +61,6 @@ Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](
 ## Contributions
 * Contributions and suggestions for features are also welcome. Please write an Issue to describe your potential contribution or feature request.
 * We are planning to submit a paper for the code LobsterPy when more features have been added (~ mid of 2023). Major contributors will of course have the chance to be co-authors. Please talk to us if you are interested in contributing :).
+
+## Acknowledgements
+The development of the program has been supported by a computing time grant. We gratefully acknowledge the Gauss Centre for Supercomputing e.V.(www.gauss-centre.eu) for funding this project by providing computing time on the GCS Supercomputer SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de) (project pn73da).

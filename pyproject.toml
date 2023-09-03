@@ -15,7 +15,7 @@ readme = "README.md"
 keywords = ["high-throughput", "automated", "lobsteroutput", "bonding-analysis"]
 license = { text = "BSD 3-Clause" }
 authors = [{ name = "Janine George", email = "janine.george@bam.de" }]
-version = "0.2.9"
+version = "0.3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
@@ -106,7 +106,6 @@ isort.required-imports = ["from __future__ import annotations"]
 
 [tool.pytest.ini_options]
 addopts = "-x --durations=30 --quiet -rxXs --color=yes -p no:warnings"
-
 
 [tool.coverage.report]
 exclude_lines = [
