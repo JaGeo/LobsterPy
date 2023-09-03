@@ -10,7 +10,7 @@ authors:
     orcid: 0000-0002-6071-6786
     affiliation: "1 , 2"
   - name: Katharina Ueltzen
-    orcid: XXXX-XXXX-XXXX-XXXX
+    orcid: 0000-0000-0000-0000
     affiliation: 1
   - name: Christina Ertural
     orcid: 0000-0002-7696-5824
@@ -24,10 +24,10 @@ authors:
 affiliations:
  - name: Federal Institute for Materials Research and Testing, Department Materials Chemistry, Berlin, 12205, Germany
    index: 1
-- name: Friedrich Schiller University Jena, Institute of Condensed Matter Theory and Solid-State Optics, Jena, 07743, Germany
-    index: 2
-- name: Science and Technology Facilities Council, Didcot, Oxfordshire, GB
-    index: 3
+ - name: Friedrich Schiller University Jena, Institute of Condensed Matter Theory and Solid-State Optics, Jena, 07743, Germany
+   index: 2
+ - name: Science and Technology Facilities Council, Didcot, Oxfordshire, GB
+   index: 3
 date: August 2023
 bibliography: paper.bib
 
