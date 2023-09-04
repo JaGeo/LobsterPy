@@ -33,13 +33,21 @@ bibliography: paper.bib
 
 ---
 # Summary
-Lobsterpy is a Python package developed to systematically analyze, describe, and visualize LOBSTER computations results. 
-It also provides an easy-to-use command line interface that runs automatic analysis of the computations and generates 
-a summary of results and publication-ready figures alongside its Python interface. Since its first release, its capabilities 
-have been extended significantly. Lobsterpy can now also analyze crystal orbital overlap populations (COOP) and Crystal orbital bond index (COBI) files 
-to extract summarized bonding information comprising coordination environments bond strengths, most relevant bonds, and their corresponding bonding and anti-bonding contributions. 
-Obtaining the most relevant orbital interaction information in each detected bond is also possible. It also includes featurize and structure graphs modules that provide 
-a pathway to get features to be used further for machine learning studies. The features section comprehensively overviews previously existing and newly added functionalities. 
+Lobsterpy is a Python package developed to systematically analyze, 
+describe, and visualize LOBSTER computations results. It also provides 
+an easy-to-use command line interface that runs automatic analysis of 
+the computations and generates a summary of results and publication-ready 
+figures alongside its Python interface. Since its first release, its 
+capabilities have been extended significantly. Lobsterpy can now also 
+analyze crystal orbital overlap populations (COOP)[@hughbanks1983chains] and Crystal orbital 
+bond index (COBI)[@müller2021crystal] files to extract summarized bonding information 
+comprising coordination environments bond strengths, most relevant bonds, 
+and their corresponding bonding and anti-bonding contributions. Obtaining
+the most relevant orbital interaction information in each detected bond is
+also possible. It also includes featurize and structure graphs modules that 
+provide a pathway to get features to be used further for machine learning studies. 
+The features section comprehensively overviews previously existing and newly 
+added functionalities. 
 
 Lobsterpy was used to produce the results in [@naik2023quantumchemical]
 
