@@ -10,7 +10,7 @@ authors:
     orcid: 0000-0002-6071-6786
     affiliation: "1 , 2"
   - name: Katharina Ueltzen
-    orcid: 0000-0000-0000-0000
+    orcid: 0009-0003-2967-1182
     affiliation: 1
   - name: Christina Ertural
     orcid: 0000-0002-7696-5824
