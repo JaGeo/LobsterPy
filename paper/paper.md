@@ -33,48 +33,52 @@ bibliography: paper.bib
 
 ---
 # Summary
-Lobsterpy is a Python package developed to systematically analyze, 
-describe, and visualize LOBSTER computations results. It also provides 
-an easy-to-use command line interface that runs automatic analysis of 
+_Lobsterpy_ is a Python package developed to systematically analyze, 
+describe, and visualize LOBSTER computations results. Alongside its python 
+interface, it also provides an easy-to-use command line interface (CLI) that runs automatic analysis of 
 the computations and generates a summary of results and publication-ready 
-figures alongside its Python interface. Since its first release, its 
-capabilities have been extended significantly. Lobsterpy can now also 
+figures. Since its first release, its capabilities have been extended significantly. 
+Unlike earlier versions which could only automatically analyze Crystal Orbital Hamilton 
+Populations (COHPs)[@dronskowski1993crystal], Lobsterpy can now also 
 analyze crystal orbital overlap populations (COOP)[@hughbanks1983chains] and Crystal orbital 
-bond index (COBI)[@müller2021crystal] files to extract summarized bonding information 
-comprising coordination environments bond strengths, most relevant bonds, 
-and their corresponding bonding and anti-bonding contributions. Obtaining
-the most relevant orbital interaction information in each detected bond is
-also possible. It also includes featurize and structure graphs modules that 
-provide a pathway to get features to be used further for machine learning studies. 
-The features section comprehensively overviews previously existing and newly 
-added functionalities. 
+bond index (COBI)[@müller2021crystal] to extract summarized bonding information 
+comprising of electronic-structure based coordination environments, bond strengths, 
+most relevant bonds, and their corresponding bonding and anti-bonding contributions. 
+Furthermore, one can now also extract the most relevant orbital interaction information. 
+Additionally, featurize and structure graphs modules provide a pathway to generate features to be used further for machine learning studies. 
+The features section comprehensively overviews the functionalities of this package. 
 
-Lobsterpy was used to produce the results in [@naik2023quantumchemical]
+_Lobsterpy_ was used to produce the results in [@ngo2023dft, @naik2023quantumchemical]
 
 # Statement of need
 Although the idea of "chemical bonding" might seem perplexing from a 
 physical standpoint, it has been employed several times to explain 
-various chemical phenomena and material properties. With the recent 
+various chemical phenomena and material properties.[@das2023strong, @ertural2022first,
+@hu2023mechanism] With the recent 
 advances in automation frameworks for high-throughput computational 
 investigations, bonding analysis for thousands of crystalline materials 
 could be performed with few lines of code.[@george2022automated] This 
 automation helps reduce the common mistakes inexperienced users make 
-while performing bonding analysis. However, to make the inputs consistent 
-and interpret the results correctly, it is necessary to systematically 
-generate inputs and analyze the vast number of output files. Furthermore, 
+while performing bonding analysis. However, it is essential to systematically 
+generate inputs and post-process the output files consistently to have 
+reliable and reproducible results. Furthermore, 
 having data from high-throughput calculations ready to utilize as inputs 
-would benefit data-driven material science research.
+would benefit data-driven material science research. _Lobsterpy_ fullfills 
+this missing link.
 
 # Features
+- Automatic summarized bonding analysis JSONs and text descriptions based on COHPs, COBIs and COOPs
+- JSONs and textual description of LOBSTER calculation quality
+- Static and interactive plots of most relevant COHPs, COBIs and COOPs
+- Generate inputs for bonding analysis calculations
+- Generate features to be used for ML studies 
+
 
 # Availability
-Lobsterpy can be found on GitHub and is also available from PyPi. 
-Software documentation and installation instructions, along with 
-tutorials, can be found in the documentation. The package also 
-comes with several Jupyter Notebook tutorials illustrating the 
-features. Several examples for demonstrating the cli features 
-are also included and can be found in the software documentation.
-
+Lobsterpy can be found on GitHub and is also available from PyPI. 
+Detailed software documentation and installation instructions are provided. 
+The package also comes with several Jupyter Notebook and CLI tutorials 
+illustrating the usage and features. 
 
 # Acknowledgements
 The authors would like to acknowledge the Gauss Centre for Super 
