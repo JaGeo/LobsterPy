@@ -262,6 +262,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         fig = self.iplotter.get_plot()
 
         self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP (eV)")
+        self.assertEqual(fig.layout.yaxis["title"]["text"], "$E - E_f \\text{ (eV)}$")
 
 
 class IcohpDistancePlotterTest(unittest.TestCase):

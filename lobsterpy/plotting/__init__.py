@@ -507,9 +507,9 @@ class InteractiveCohpPlotter(CohpPlotter):
             cohp_label = "\u2212" + cohp_label
 
         if self.zero_at_efermi:
-            energy_label = "$E - E_f$ (eV)"
+            energy_label = "$E - E_f \\text{ (eV)}$"
         else:
-            energy_label = "$E$ (eV)"
+            energy_label = "$E \\text{ (eV)}$"
 
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
         if colors is None:
