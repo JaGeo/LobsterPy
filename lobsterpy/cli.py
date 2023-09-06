@@ -13,10 +13,10 @@ from pathlib import Path
 
 import matplotlib.style
 from pymatgen.electronic_structure.cohp import CompleteCohp
-
+from pymatgen.io.lobster import Icohplist
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, get_style_list, InteractiveCohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list, IcohpDistancePlotter
 
 
 def main() -> None:
@@ -74,6 +74,19 @@ def get_parser() -> argparse.ArgumentParser:
         default="POTCAR",
         type=Path,
         help=('path to POTCAR. Default is "POTCAR".'),
+    )
+    input_coops_cobis = input_file_group.add_mutually_exclusive_group()
+    input_coops_cobis.add_argument(
+        "--cobis",
+        "--cobi",
+        action="store_true",
+        help="Specifies input file contains COBIS",
+    )
+    input_coops_cobis.add_argument(
+        "--coops",
+        "--coop",
+        action="store_true",
+        help="Specifies input file contains COOPS",
     )
 
     output_parent = argparse.ArgumentParser(add_help=False)
@@ -271,6 +284,13 @@ def get_parser() -> argparse.ArgumentParser:
         ),
     )
 
+    subparsers.add_parser(
+        "plot-icohps-distances",
+        aliases=["ploticohpsdistances"],
+        parents=[input_parent, plotting_parent],
+        help=("Will plot icohps with respect to bond lengths"),
+    )
+
     # Mode for normal plotting (without automatic detection of relevant COHPs)
     plot_parser = subparsers.add_parser(
         "plot",
@@ -283,19 +303,6 @@ def get_parser() -> argparse.ArgumentParser:
         nargs="+",
         type=int,
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
-    )
-    plot_coops_cobis = plot_parser.add_mutually_exclusive_group()
-    plot_coops_cobis.add_argument(
-        "--cobis",
-        "--cobi",
-        action="store_true",
-        help="Plot COBIs",
-    )
-    plot_coops_cobis.add_argument(
-        "--coops",
-        "--coop",
-        action="store_true",
-        help="Plot COOPs",
     )
     plot_grouping = plot_parser.add_mutually_exclusive_group()
     plot_grouping.add_argument(
@@ -435,6 +442,8 @@ def run(args):
         "automatic-plot-ia",
         "auto-plot-ia",
         "autoplotia",
+        "plot-icohps-distances",
+        "ploticohpsdistances",
     ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
@@ -495,7 +504,9 @@ def run(args):
                 filename = filename.with_name(filename.name + ".gz")
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = args.cohpcar
+            filename = args.cohpcar.parent / "COHPCAR.lobster"
+            if not filename.exists():
+                filename = filename.with_name(filename.name + ".gz")
             options = {"are_cobis": False, "are_coops": False}
 
         completecohp = CompleteCohp.from_file(
@@ -672,6 +683,42 @@ def run(args):
                 raise ValueError(
                     'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                 )
+
+    if args.action in ["plot-icohps-distances", "ploticohpsdistances"]:
+        if args.cobis:
+            filename = args.icohplist.parent / "ICOBILIST.lobster"
+            if not filename.exists():
+                filename = filename.with_name(filename.name + ".gz")
+            options = {"are_cobis": True, "are_coops": False}
+        elif args.coops:
+            filename = args.icohplist.parent / "ICOOPLIST.lobster"
+            if not filename.exists():
+                filename = filename.with_name(filename.name + ".gz")
+            options = {"are_cobis": False, "are_coops": True}
+        else:
+            filename = args.icohplist.parent / "ICOHPLIST.lobster"
+            if not filename.exists():
+                filename = filename.with_name(filename.name + ".gz")
+            options = {"are_cobis": False, "are_coops": False}
+
+        icohpcollection = Icohplist(filename=filename, **options).icohpcollection
+        icohp_plotter = IcohpDistancePlotter(**options)
+
+        icohp_plotter.add_icohps(icohpcollection=icohpcollection, label="")
+
+        plt = icohp_plotter.get_plot(xlim=args.xlim, ylim=args.ylim)
+
+        ax = plt.gca()
+        ax.set_title(args.title)
+
+        if not args.hideplot and not args.save_plot:
+            plt.show()
+        elif args.save_plot and not args.hideplot:
+            plt.show()
+            fig = plt.gcf()
+            fig.savefig(args.save_plot)
+        if args.save_plot and args.hideplot:
+            plt.savefig(args.save_plot)
 
 
 if __name__ == "__main__":
