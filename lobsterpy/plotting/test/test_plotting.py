@@ -8,7 +8,11 @@ from plotly.io import read_json
 from pymatgen.io.lobster import Icohplist
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter, IcohpDistancePlotter
+from lobsterpy.plotting import (
+    PlainCohpPlotter,
+    InteractiveCohpPlotter,
+    IcohpDistancePlotter,
+)
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
