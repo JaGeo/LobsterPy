@@ -8,7 +8,7 @@ from plotly.io import read_json
 from pymatgen.io.lobster import Icohplist
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter, IcohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, InteractiveCohpPlotter, IcohpDistancePlotter
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
@@ -261,7 +261,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP")
 
 
-class IcohpPlotterTest(unittest.TestCase):
+class IcohpDistancePlotterTest(unittest.TestCase):
     def setUp(self):
         self.icohplist_nacl = Icohplist(
             filename=TestDir / "TestData/NaCl_comp_range/ICOHPLIST.lobster.gz"
@@ -276,28 +276,28 @@ class IcohpPlotterTest(unittest.TestCase):
         )
 
     def test_icohp_plotter_labels(self):
-        self.icohp_plotter = IcohpPlotter()
+        self.icohp_plotter = IcohpDistancePlotter()
         self.icohp_plotter.add_icohps(
             label="NaCl", icohpcollection=self.icohplist_nacl.icohpcollection
         )
         fig = self.icohp_plotter.get_plot().gca()
         self.assertEqual(fig.get_ylabel(), "$-$" + "ICOHP (eV)")
 
-        self.icohp_plotter = IcohpPlotter()
+        self.icohp_plotter = IcohpDistancePlotter()
         self.icohp_plotter.add_icohps(
             label="NaCl_icohp", icohpcollection=self.icohplist_nacl.icohpcollection
         )
         fig = self.icohp_plotter.get_plot(plot_negative=True).gca()
         self.assertEqual(fig.get_ylabel(), "$-$" + "ICOHP (eV)")
 
-        self.icohp_plotter = IcohpPlotter(are_cobis=True)
+        self.icohp_plotter = IcohpDistancePlotter(are_cobis=True)
         self.icohp_plotter.add_icohps(
             label="NaCl_icobi", icohpcollection=self.icobilist_nacl.icohpcollection
         )
         fig = self.icohp_plotter.get_plot().gca()
         self.assertEqual(fig.get_ylabel(), "ICOBI")
 
-        self.icohp_plotter = IcohpPlotter(are_coops=True)
+        self.icohp_plotter = IcohpDistancePlotter(are_coops=True)
         self.icohp_plotter.add_icohps(
             label="NaCl_icoop", icohpcollection=self.icooplist_nacl.icohpcollection
         )
@@ -306,7 +306,7 @@ class IcohpPlotterTest(unittest.TestCase):
         self.assertEqual(fig.get_xlabel(), "Bond lengths (Å)")
 
     def test_plot_data(self):
-        self.icohp_plotter = IcohpPlotter()
+        self.icohp_plotter = IcohpDistancePlotter()
         self.icohp_plotter.add_icohps(
             label="NaCl", icohpcollection=self.icohplist_nacl.icohpcollection
         )
@@ -343,7 +343,7 @@ class IcohpPlotterTest(unittest.TestCase):
 
         # icobi
 
-        self.icobi_plotter = IcohpPlotter(are_cobis=True)
+        self.icobi_plotter = IcohpDistancePlotter(are_cobis=True)
         self.icobi_plotter.add_icohps(
             label="NaCl", icohpcollection=self.icobilist_nacl.icohpcollection
         )
@@ -380,7 +380,7 @@ class IcohpPlotterTest(unittest.TestCase):
 
         # icoop
 
-        self.icoop_plotter = IcohpPlotter(are_coops=True)
+        self.icoop_plotter = IcohpDistancePlotter(are_coops=True)
         self.icoop_plotter.add_icohps(
             label="NaCl", icohpcollection=self.icooplist_nacl.icohpcollection
         )

@@ -16,7 +16,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Icohplist
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, get_style_list, IcohpPlotter
+from lobsterpy.plotting import PlainCohpPlotter, get_style_list, IcohpDistancePlotter
 
 
 def main() -> None:
@@ -285,8 +285,8 @@ def get_parser() -> argparse.ArgumentParser:
     )
 
     subparsers.add_parser(
-        "plot-icohps",
-        aliases=["ploticohps"],
+        "plot-icohps-distances",
+        aliases=["ploticohpsdistances"],
         parents=[input_parent, plotting_parent],
         help=("Will plot icohps with respect to bond lengths"),
     )
@@ -442,8 +442,8 @@ def run(args):
         "automatic-plot-ia",
         "auto-plot-ia",
         "autoplotia",
-        "plot-icohps",
-        "ploticohps",
+        "plot-icohps-distances",
+        "ploticohpsdistances",
     ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
@@ -684,7 +684,7 @@ def run(args):
                     'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                 )
 
-    if args.action in ["plot-icohps", "ploticohps"]:
+    if args.action in ["plot-icohps-distances", "ploticohpsdistances"]:
         if args.cobis:
             filename = args.icohplist.parent / "ICOBILIST.lobster"
             if not filename.exists():
@@ -702,7 +702,7 @@ def run(args):
             options = {"are_cobis": False, "are_coops": False}
 
         icohpcollection = Icohplist(filename=filename, **options).icohpcollection
-        icohp_plotter = IcohpPlotter(**options)
+        icohp_plotter = IcohpDistancePlotter(**options)
 
         icohp_plotter.add_icohps(icohpcollection=icohpcollection, label="")
 

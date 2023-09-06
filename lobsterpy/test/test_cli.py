@@ -161,7 +161,7 @@ class TestCLI:
 
     def test_icohpplot_saved(self, tmp_path, inject_mocks, clean_plot):
         plot_path = tmp_path / "plot.png"
-        args = ["ploticohps", "--hideplot", "--saveplot", str(plot_path)]
+        args = ["ploticohpsdistances", "--hideplot", "--saveplot", str(plot_path)]
         test = get_parser().parse_args(args)
         run(test)
         self.assert_is_finite_file(plot_path)

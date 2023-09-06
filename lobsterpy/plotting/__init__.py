@@ -651,7 +651,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         return label.replace(character, f"{character} {number_of_bonds} x", 1)
 
 
-class IcohpPlotter:
+class IcohpDistancePlotter:
     """
     Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots
     """
