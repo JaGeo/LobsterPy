@@ -286,13 +286,13 @@ class TestCLI:
 
         ref_text = (
             "The LOBSTER calculation used minimal basis. "
-            "The absolute and total charge spilling for the calculation are 0.3 and 5.58 %, respectively. "
+            "The absolute and total charge spilling for the calculation is 0.3 and 5.58 %, respectively. "
             "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
-            "generated during LOBSTER run. "
+            "generated during the LOBSTER run. "
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
-            "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "
-            "are : 0.9966, 0.9977, 0.9822."
+            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
+            "are: 0.9966, 0.9977, 0.9822."
         )
 
         assert calc_quality_text == ref_text
@@ -325,14 +325,14 @@ class TestCLI:
 
         ref_text = (
             "The LOBSTER calculation used minimal basis. "
-            "The absolute and total charge spilling for the calculation are 0.83 and 6.36 %, respectively. "
-            "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that "
-            "the projected wave function is not completely orthonormalized, however the "
-            "maximal deviation values observed compared to the identity matrix is below the threshold 0.1. "
+            "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively. "
+            "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that "
+            "the projected wave function is not completely orthonormalized; however, the "
+            "maximal deviation values observed compared to the identity matrix is below the threshold of 0.1. "
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
-            "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "
-            "are : 0.8367, 0.9565, 0.9357."
+            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
+            "are: 0.8367, 0.9565, 0.9357."
         )
 
         assert calc_quality_text == ref_text
