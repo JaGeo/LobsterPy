@@ -159,6 +159,13 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(plot_path)
 
+    def test_icohpplot_saved(self, tmp_path, inject_mocks, clean_plot):
+        plot_path = tmp_path / "plot.png"
+        args = ["ploticohpsdistances", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
@@ -259,6 +266,8 @@ class TestCLI:
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
             "calc-description",
+            "--potcar-symbols",
+            "Na_pv Cl",
             "--bvacomp",
             "--doscomp",
             "--erange",
@@ -279,13 +288,13 @@ class TestCLI:
 
         ref_text = (
             "The LOBSTER calculation used minimal basis. "
-            "The absolute and total charge spilling for the calculation are 0.3 and 5.58 %, respectively. "
+            "The absolute and total charge spilling for the calculation is 0.3 and 5.58 %, respectively. "
             "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
-            "generated during LOBSTER run. "
+            "generated during the LOBSTER run. "
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
-            "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "
-            "are : 0.9966, 0.9977, 0.9822."
+            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
+            "are: 0.9966, 0.9977, 0.9822."
         )
 
         assert calc_quality_text == ref_text
@@ -297,6 +306,8 @@ class TestCLI:
         args = [
             "calc-description",
             "--bvacomp",
+            "--potcar-symbols",
+            "K_sv Sb",
             "--doscomp",
             "--doscar",
             "DOSCAR.LSO.lobster",
@@ -318,14 +329,14 @@ class TestCLI:
 
         ref_text = (
             "The LOBSTER calculation used minimal basis. "
-            "The absolute and total charge spilling for the calculation are 0.83 and 6.36 %, respectively. "
-            "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that "
-            "the projected wave function is not completely orthonormalized, however the "
-            "maximal deviation values observed compared to the identity matrix is below the threshold 0.1. "
+            "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively. "
+            "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that "
+            "the projected wave function is not completely orthonormalized; however, the "
+            "maximal deviation values observed compared to the identity matrix is below the threshold of 0.1. "
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
-            "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals "
-            "are : 0.8367, 0.9565, 0.9357."
+            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
+            "are: 0.8367, 0.9565, 0.9357."
         )
 
         assert calc_quality_text == ref_text

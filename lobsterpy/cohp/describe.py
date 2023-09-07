@@ -570,7 +570,7 @@ class Description:
 
             elif key == "charge_spilling":
                 text_des.append(
-                    "The absolute and total charge spilling for the calculation are {} and {} %, "
+                    "The absolute and total charge spilling for the calculation is {} and {} %, "
                     "respectively.".format(
                         quality_dict[key]["abs_charge_spilling"],
                         quality_dict[key]["abs_total_spilling"],
@@ -580,18 +580,18 @@ class Description:
                 if quality_dict[key]["file_exists"]:
                     if quality_dict[key]["has_good_quality_maxDeviation"]:
                         text_des.append(
-                            "The bandOverlaps.lobster file is generated during LOBSTER run. This "
-                            "indicates that the projected wave function is not completely orthonormalized, "
-                            "however the maximal deviation values observed compared to the identity matrix "
-                            "is below the threshold 0.1."
+                            "The bandOverlaps.lobster file is generated during the LOBSTER run. This "
+                            "indicates that the projected wave function is not completely orthonormalized; "
+                            "however, the maximal deviation values observed compared to the identity matrix "
+                            "is below the threshold of 0.1."
                         )
                     else:
                         text_des.append(
-                            "The bandOverlaps.lobster file is generated during LOBSTER run. This "
+                            "The bandOverlaps.lobster file is generated during the LOBSTER run. This "
                             "indicates that the projected wave function is not completely orthonormalized. "
-                            "The maximal deviation values from the identity matrix is {} and there exists "
-                            "{} percent k-points above the deviation threshold 0.1. Please check the "
-                            "results of other quality checks like dos comparisons, charges , "
+                            "The maximal deviation value from the identity matrix is {}, and there exist "
+                            "{} percent k-points above the deviation threshold of 0.1. Please check the "
+                            "results of other quality checks like dos comparisons, charges, "
                             "charge spillings before using the results for further "
                             "analysis.".format(
                                 quality_dict[key]["max_deviation"],
@@ -601,7 +601,7 @@ class Description:
                 else:
                     text_des.append(
                         "The projected wave function is completely orthonormalized as no "
-                        "bandOverlaps.lobster file is generated during LOBSTER run."
+                        "bandOverlaps.lobster file is generated during the LOBSTER run."
                     )
 
             elif key == "Charges":
@@ -631,8 +631,8 @@ class Description:
                         comp_types.append(orb.split("_")[-1])
                         tani_index.append(str(val[orb]))
                 text_des.append(
-                    "The Tanimoto index from DOS comparisons in energy range between {}, {} eV "
-                    "for {} orbitals are : {}.".format(
+                    "The Tanimoto index from DOS comparisons in the energy range between {}, {} eV "
+                    "for {} orbitals are: {}.".format(
                         val["e_range"][0],
                         val["e_range"][1],
                         ", ".join(comp_types),

@@ -875,8 +875,9 @@ class Analysis:
     def get_lobster_calc_quality_summary(
         path_to_poscar: str,
         path_to_lobsterout: str,
-        path_to_potcar: str,
         path_to_lobsterin: str,
+        path_to_potcar: str | None = None,
+        potcar_symbols: list | None = None,
         path_to_charge: str | None = None,
         path_to_bandoverlaps: str | None = None,
         path_to_doscar: str | None = None,
@@ -889,6 +890,21 @@ class Analysis:
         """
         This method will analyze LOBSTER calculation quality
 
+        Args:
+            path_to_poscar: path to structure file
+            path_to_lobsterout: path to lobsterout file
+            path_to_lobsterin: path to lobsterin file
+            path_to_potcar: path to VASP potcar file
+            potcar_symbols: list of potcar symbols from postcar file (can be used if no potcar available)
+            path_to_charge: path to CHARGE.lobster file
+            path_to_bandoverlaps: path to bandOverlaps.lobster file
+            path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster file
+            path_to_vasprun: path to vasprun.xml file
+            dos_comparison: will compare DOS from VASP and LOBSTER and return tanimoto index
+            e_range: energy range for DOS comparisons
+            n_bins: number of bins to discretize DOS for comparisons
+            bva_comp: Compares LOBSTER charge signs with Bond valence charge signs
+
         Returns:
             A dict of summary of LOBSTER calculation quality by analyzing basis set used,
             charge spilling from lobsterout/ PDOS comparisons of VASP and LOBSTER /
@@ -897,7 +913,15 @@ class Analysis:
         """
         quality_dict = {}
 
-        potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=path_to_potcar)
+        if path_to_potcar and not potcar_symbols:
+            potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=path_to_potcar)
+        elif not path_to_potcar and potcar_symbols:
+            potcar_names = potcar_symbols
+        else:
+            raise ValueError(
+                "Please provide either path_to_potcar or list of "
+                "potcar_symbols used for the calculations"
+            )
 
         struct = Structure.from_file(path_to_poscar)
 

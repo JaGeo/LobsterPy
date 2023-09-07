@@ -451,7 +451,7 @@ class TestCalcQualityDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "TestData/K3Sb/lobsterout.gz",
             path_to_lobsterin=TestDir / "TestData/K3Sb/lobsterin.gz",
-            path_to_potcar=TestDir / "TestData/K3Sb/POTCAR.gz",
+            potcar_symbols=["K_sv", "Sb"],
             path_to_bandoverlaps=TestDir / "TestData/K3Sb/bandOverlaps.lobster.gz",
             dos_comparison=True,
             bva_comp=True,
@@ -466,7 +466,7 @@ class TestCalcQualityDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "TestData/CsH/lobsterout.gz",
             path_to_lobsterin=TestDir / "TestData/CsH/lobsterin.gz",
-            path_to_potcar=TestDir / "TestData/CsH/POTCAR.gz",
+            potcar_symbols=["Cs_sv", "H"],
             path_to_bandoverlaps=TestDir / "TestData/CsH/bandOverlaps.lobster.gz",
             dos_comparison=False,
             bva_comp=True,
@@ -480,11 +480,14 @@ class TestCalcQualityDescribe(unittest.TestCase):
             calc_quality_k3sb_des,
             [
                 "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation are 0.83 and 6.36 %, respectively.",
-                "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that the projected wave function is not completely orthonormalized, however the maximal deviation values observed compared to the identity matrix is below the threshold 0.1.",
+                "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
+                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
+                "projected wave function is not completely orthonormalized; however, the maximal deviation values "
+                "observed compared to the identity matrix is below the threshold of 0.1.",
                 "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
                 "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
-                "The Tanimoto index from DOS comparisons in energy range between -20, 0 eV for s, p, summed orbitals are : 0.8532, 0.9481, 0.9275.",
+                "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p,"
+                " summed orbitals are: 0.8532, 0.9481, 0.9275.",
             ],
         )
 
@@ -495,8 +498,12 @@ class TestCalcQualityDescribe(unittest.TestCase):
             calc_quality_csh_des,
             [
                 "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation are 3.01 and 13.73 %, respectively.",
-                "The bandOverlaps.lobster file is generated during LOBSTER run. This indicates that the projected wave function is not completely orthonormalized. The maximal deviation values from the identity matrix is 0.4285 and there exists 0.1822 percent k-points above the deviation threshold 0.1. Please check the results of other quality checks like dos comparisons, charges , charge spillings before using the results for further analysis.",
+                "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
+                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
+                "wave function is not completely orthonormalized. "
+                "The maximal deviation value from the identity matrix is 0.4285, and there exist 0.1822 percent "
+                "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
+                "like dos comparisons, charges, charge spillings before using the results for further analysis.",
                 "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
                 "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
             ],
@@ -512,17 +519,17 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
                 path_to_charge=TestDir / "TestData/BaTe_low_quality/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "TestData/BaTe_low_quality/lobsterout.gz",
                 path_to_lobsterin=TestDir / "TestData/BaTe_low_quality/lobsterin.gz",
-                path_to_potcar=TestDir / "TestData/BaTe_low_quality/POTCAR.gz",
+                potcar_symbols=["Ba_sv", "Te"],
                 path_to_doscar=TestDir / "TestData/BaTe_low_quality/DOSCAR.lobster.gz",
                 path_to_vasprun=TestDir / "TestData/BaTe_low_quality/vasprun.xml.gz",
                 e_range=[-50, 60],
                 dos_comparison=True,
                 bva_comp=False,
             )
-        self.assertIn("Consider using DOSCAR.LSO.lobster", str(w[2].message))
-        self.assertIn("Mimimum energy range requested", str(w[3].message))
-        self.assertIn("Maximum energy range requested", str(w[4].message))
-        self.assertIn("Input DOS files have very few points", str(w[5].message))
+        self.assertIn("Consider using DOSCAR.LSO.lobster", str(w[0].message))
+        self.assertIn("Mimimum energy range requested", str(w[2].message))
+        self.assertIn("Maximum energy range requested", str(w[3].message))
+        self.assertIn("Input DOS files have very few points", str(w[4].message))
 
         calc_des = Description.get_calc_quality_description(self.calc_quality_warnings)
 
@@ -530,9 +537,9 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
             calc_des,
             [
                 "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation are 2.255 and 12.72 %, respectively.",
-                "The Tanimoto index from DOS comparisons in energy range between -5, 0 eV for s, p, summed orbitals "
-                "are : 0.4057, 0.2831, 0.2762.",
+                "The absolute and total charge spilling for the calculation is 2.255 and 12.72 %, respectively.",
+                "The Tanimoto index from DOS comparisons in the energy range between -5, 0 eV for s, p, summed orbitals "
+                "are: 0.4057, 0.2831, 0.2762.",
             ],
         )
 
@@ -543,10 +550,10 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
                 path_to_charge=TestDir / "TestData/C/CHARGE.lobster",
                 path_to_lobsterout=TestDir / "TestData/C/lobsterout",
                 path_to_lobsterin=TestDir / "TestData/C/lobsterin",
-                path_to_potcar=TestDir / "TestData/C/POTCAR",
+                potcar_symbols=["C"],
                 bva_comp=True,
             )
-        self.assertIn("Oxidation states from BVA analyzer cannot", str(w2[1].message))
+        self.assertIn("Oxidation states from BVA analyzer cannot", str(w2[0].message))
 
         calc_des2 = Description.get_calc_quality_description(
             self.calc_quality_warnings2
@@ -556,7 +563,7 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
             calc_des2,
             [
                 "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation are 0.98 and 8.93 %, respectively.",
+                "The absolute and total charge spilling for the calculation is 0.98 and 8.93 %, respectively.",
                 "Oxidation states from BVA analyzer cannot be determined. Thus BVA charge comparison is not conducted.",
             ],
         )
@@ -568,11 +575,11 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
                 path_to_charge=TestDir / "TestData/BeTe/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "TestData/BeTe/lobsterout.gz",
                 path_to_lobsterin=TestDir / "TestData/BeTe/lobsterin.gz",
-                path_to_potcar=TestDir / "TestData/BeTe/POTCAR.gz",
+                potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
         self.assertIn(
-            "Consider rerunning the calc with the minimum basis", str(w3[2].message)
+            "Consider rerunning the calc with the minimum basis", str(w3[0].message)
         )
 
         calc_des3 = Description.get_calc_quality_description(
@@ -584,7 +591,7 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
             [
                 "Consider rerunning the calculation with the minimum basis as well. "
                 "Choosing a larger basis set is only recommended if you see a significant improvement of the charge spilling.",
-                "The absolute and total charge spilling for the calculation are 1.48 and 13.99 %, respectively.",
+                "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
                 "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
                 "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",
             ],
