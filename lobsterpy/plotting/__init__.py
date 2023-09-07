@@ -746,6 +746,7 @@ class InteractiveCohpPlotter(CohpPlotter):
 
         return plot_label
 
+
 class IcohpDistancePlotter:
     """
     Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots
