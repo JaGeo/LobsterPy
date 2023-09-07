@@ -75,19 +75,6 @@ def get_parser() -> argparse.ArgumentParser:
         type=Path,
         help=('path to POTCAR. Default is "POTCAR".'),
     )
-    input_coops_cobis = input_file_group.add_mutually_exclusive_group()
-    input_coops_cobis.add_argument(
-        "--cobis",
-        "--cobi",
-        action="store_true",
-        help="Specifies input file contains COBIS",
-    )
-    input_coops_cobis.add_argument(
-        "--coops",
-        "--coop",
-        action="store_true",
-        help="Specifies input file contains COOPS",
-    )
 
     output_parent = argparse.ArgumentParser(add_help=False)
     output_file_group = output_parent.add_argument_group("Output files")
@@ -330,7 +317,7 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "plot-icohps-distances",
         aliases=["ploticohpsdistances"],
-        parents=[input_parent, plotting_parent],
+        parents=[input_parent, plotting_parent, analysis_switch],
         help=("Will plot icohps with respect to bond lengths"),
     )
 
