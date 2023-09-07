@@ -266,6 +266,8 @@ class TestCLI:
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
             "calc-description",
+            "--potcar-symbols",
+            "Na_pv Cl",
             "--bvacomp",
             "--doscomp",
             "--erange",
@@ -304,6 +306,8 @@ class TestCLI:
         args = [
             "calc-description",
             "--bvacomp",
+            "--potcar-symbols",
+            "K_sv Sb",
             "--doscomp",
             "--doscar",
             "DOSCAR.LSO.lobster",

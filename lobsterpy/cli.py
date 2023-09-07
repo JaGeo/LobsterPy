@@ -75,6 +75,13 @@ def get_parser() -> argparse.ArgumentParser:
         type=Path,
         help=('path to POTCAR. Default is "POTCAR".'),
     )
+    input_file_group.add_argument(
+        "--potcar-symbols",
+        dest="potcarsymbols",
+        type=_potcar_symbols,
+        # nargs="+",
+        help="List of potcar symbols",
+    )
     input_coops_cobis = input_file_group.add_mutually_exclusive_group()
     input_coops_cobis.add_argument(
         "--cobis",
@@ -428,6 +435,20 @@ def _element_basis(string: str):
     return element, basis
 
 
+def _potcar_symbols(string: str):
+    """
+    Parse string of potcar symbols and return a list
+    Args:
+        string:
+
+    Returns:
+        list of potcar symbols
+    """
+    potcar_symbols_list = string.split(" ")
+
+    return potcar_symbols_list
+
+
 def _user_figsize(width, height, aspect=None):
     """Get figsize options from user input, if any
 
@@ -776,7 +797,6 @@ def run(args):
     if args.action in ["calc-description"]:
         # Check for .gz files exist for default values and update accordingly
         mandatory_files = {
-            "potcar": "POTCAR",
             "poscar": "POSCAR",
             "lobsterin": "lobsterin",
             "lobsterout": "lobsterout",
@@ -795,6 +815,7 @@ def run(args):
 
         optional_file = {
             "bandoverlaps": "bandOverlaps.lobster",
+            "potcar": "POTCAR",
         }
 
         for arg_name, _ in optional_file.items():
@@ -839,13 +860,15 @@ def run(args):
                         raise ValueError(
                             "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
                         )
+        potcar_file_path = getattr(args, "potcar")
 
         quality_dict = Analysis.get_lobster_calc_quality_summary(
             path_to_poscar=args.poscar,
             path_to_charge=args.charge,
             path_to_lobsterout=args.lobsterout,
             path_to_lobsterin=args.lobsterin,
-            path_to_potcar=args.potcar,
+            path_to_potcar=None if not potcar_file_path.exists() else potcar_file_path,
+            potcar_symbols=args.potcarsymbols,
             path_to_bandoverlaps=args.bandoverlaps,
             dos_comparison=dos_comparison,
             bva_comp=bva_comp,

@@ -451,7 +451,6 @@ class TestCalcQualityDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "TestData/K3Sb/lobsterout.gz",
             path_to_lobsterin=TestDir / "TestData/K3Sb/lobsterin.gz",
-            path_to_potcar=None,
             potcar_symbols=["K_sv", "Sb"],
             path_to_bandoverlaps=TestDir / "TestData/K3Sb/bandOverlaps.lobster.gz",
             dos_comparison=True,
@@ -467,7 +466,6 @@ class TestCalcQualityDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "TestData/CsH/lobsterout.gz",
             path_to_lobsterin=TestDir / "TestData/CsH/lobsterin.gz",
-            path_to_potcar=None,
             potcar_symbols=["Cs_sv", "H"],
             path_to_bandoverlaps=TestDir / "TestData/CsH/bandOverlaps.lobster.gz",
             dos_comparison=False,
@@ -521,7 +519,6 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
                 path_to_charge=TestDir / "TestData/BaTe_low_quality/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "TestData/BaTe_low_quality/lobsterout.gz",
                 path_to_lobsterin=TestDir / "TestData/BaTe_low_quality/lobsterin.gz",
-                path_to_potcar=None,
                 potcar_symbols=["Ba_sv", "Te"],
                 path_to_doscar=TestDir / "TestData/BaTe_low_quality/DOSCAR.lobster.gz",
                 path_to_vasprun=TestDir / "TestData/BaTe_low_quality/vasprun.xml.gz",
@@ -529,10 +526,10 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
                 dos_comparison=True,
                 bva_comp=False,
             )
-        self.assertIn("Consider using DOSCAR.LSO.lobster", str(w[2].message))
-        self.assertIn("Mimimum energy range requested", str(w[3].message))
-        self.assertIn("Maximum energy range requested", str(w[4].message))
-        self.assertIn("Input DOS files have very few points", str(w[5].message))
+        self.assertIn("Consider using DOSCAR.LSO.lobster", str(w[0].message))
+        self.assertIn("Mimimum energy range requested", str(w[2].message))
+        self.assertIn("Maximum energy range requested", str(w[3].message))
+        self.assertIn("Input DOS files have very few points", str(w[4].message))
 
         calc_des = Description.get_calc_quality_description(self.calc_quality_warnings)
 
@@ -553,11 +550,10 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
                 path_to_charge=TestDir / "TestData/C/CHARGE.lobster",
                 path_to_lobsterout=TestDir / "TestData/C/lobsterout",
                 path_to_lobsterin=TestDir / "TestData/C/lobsterin",
-                path_to_potcar=None,
                 potcar_symbols=["C"],
                 bva_comp=True,
             )
-        self.assertIn("Oxidation states from BVA analyzer cannot", str(w2[1].message))
+        self.assertIn("Oxidation states from BVA analyzer cannot", str(w2[0].message))
 
         calc_des2 = Description.get_calc_quality_description(
             self.calc_quality_warnings2
@@ -567,7 +563,7 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
             calc_des2,
             [
                 "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation are 0.98 and 8.93 %, respectively.",
+                "The absolute and total charge spilling for the calculation is 0.98 and 8.93 %, respectively.",
                 "Oxidation states from BVA analyzer cannot be determined. Thus BVA charge comparison is not conducted.",
             ],
         )
@@ -579,12 +575,11 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
                 path_to_charge=TestDir / "TestData/BeTe/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "TestData/BeTe/lobsterout.gz",
                 path_to_lobsterin=TestDir / "TestData/BeTe/lobsterin.gz",
-                path_to_potcar=None,
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
         self.assertIn(
-            "Consider rerunning the calc with the minimum basis", str(w3[2].message)
+            "Consider rerunning the calc with the minimum basis", str(w3[0].message)
         )
 
         calc_des3 = Description.get_calc_quality_description(
@@ -596,7 +591,7 @@ class TestCalcQualityDescribeWarnings(unittest.TestCase):
             [
                 "Consider rerunning the calculation with the minimum basis as well. "
                 "Choosing a larger basis set is only recommended if you see a significant improvement of the charge spilling.",
-                "The absolute and total charge spilling for the calculation are 1.48 and 13.99 %, respectively.",
+                "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
                 "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
                 "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",
             ],

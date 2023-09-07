@@ -876,7 +876,7 @@ class Analysis:
         path_to_poscar: str,
         path_to_lobsterout: str,
         path_to_lobsterin: str,
-        path_to_potcar: str | None,
+        path_to_potcar: str | None = None,
         potcar_symbols: list | None = None,
         path_to_charge: str | None = None,
         path_to_bandoverlaps: str | None = None,
