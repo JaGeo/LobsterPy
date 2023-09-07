@@ -501,7 +501,7 @@ class TestCalcQualityDescribe(unittest.TestCase):
                 "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
                 "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
                 "wave function is not completely orthonormalized. "
-                "The maximal deviation value from the identity matrix is 0.4285, and there exist 0.1822 percent "
+                "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
                 "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
                 "like dos comparisons, charges, charge spillings before using the results for further analysis.",
                 "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",

@@ -589,7 +589,7 @@ class Description:
                         text_des.append(
                             "The bandOverlaps.lobster file is generated during the LOBSTER run. This "
                             "indicates that the projected wave function is not completely orthonormalized. "
-                            "The maximal deviation value from the identity matrix is {}, and there exist "
+                            "The maximal deviation value from the identity matrix is {}, and there are "
                             "{} percent k-points above the deviation threshold of 0.1. Please check the "
                             "results of other quality checks like dos comparisons, charges, "
                             "charge spillings before using the results for further "
