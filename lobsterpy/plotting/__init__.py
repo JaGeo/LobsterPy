@@ -12,8 +12,9 @@ import matplotlib
 import numpy as np
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
+from pymatgen.io.lobster import Icohplist
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.electronic_structure.cohp import Cohp
+from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection
 from pymatgen.electronic_structure.plotter import CohpPlotter
 import plotly.graph_objs as go
 from lobsterpy.cohp.analyze import Analysis
@@ -744,3 +745,112 @@ class InteractiveCohpPlotter(CohpPlotter):
         plot_label = f"{label}: {atom_pair_str} {orb} ({bond_length} \u00c5)"
 
         return plot_label
+
+class IcohpDistancePlotter:
+    """
+    Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots
+    """
+
+    def __init__(self, are_coops: bool = False, are_cobis: bool = False):
+        """
+        Args:
+            are_coops: Switch to indicate that these are ICOOPs, not ICOHPs.
+                Defaults to False for ICOHPs.
+            are_cobis: Switch to indicate that these are ICOBIs, not ICOHPs/COOPs.
+                Defaults to False for ICOHPs.
+        """
+        self.are_coops = are_coops
+        self.are_cobis = are_cobis
+        self._icohps = {}  # type: ignore
+
+    def add_icohps(self, label, icohpcollection: IcohpCollection):
+        """
+        Adds a ICOHPs or ICOBIs or ICOOPS for plotting.
+
+        Args:
+            label: Label for the ICOHPs. Must be unique.
+            icohpcollection: IcohpCollection object.
+        """
+        icohps = []
+        bond_len = []
+        atom_pairs = []
+        orb_data = {}  # type: ignore
+        for indx, bond_label in enumerate(icohpcollection._list_labels):
+            orb_data.update({bond_label: {}})
+            for k, v in icohpcollection._list_orb_icohp[indx].items():
+                orb_data[bond_label].update({k: sum(v["icohp"].values())})
+            icohps.append(sum(icohpcollection._list_icohp[indx].values()))
+            bond_len.append(icohpcollection._list_length[indx])
+            atom1 = icohpcollection._list_atom1[indx]
+            atom2 = icohpcollection._list_atom2[indx]
+            atom_pairs.append(atom1 + "-" + atom2)
+
+        self._icohps[label] = {
+            "atom_pairs": atom_pairs,
+            "bond_labels": icohpcollection._list_labels,
+            "icohps": icohps,
+            "bond_lengths": bond_len,
+            "orb_data": orb_data,
+        }
+
+    def get_plot(
+        self,
+        ax: "matplotlib.axes.Axes | None" = None,
+        style: "matplotlib.plot.style| None" = None,
+        marker_size: float = 50,
+        marker_style: str = "o",
+        xlim: "Tuple[float, float] | None" = None,
+        ylim: "Tuple[float, float] | None" = None,
+        plot_negative: bool = True,
+    ):
+        """
+        Get a matplotlib plot showing the COHP or COBI or COOP with respect to bond lengths.
+
+        Args:
+            ax: Existing Matplotlib Axes object to plot to.
+            style: matplotlib style string, if None, will
+                use lobsterpy style by default.
+            marker_size: sets the size of markers in scatter plots
+            marker_style: sets type of marker used in plot
+            xlim: Specifies the x-axis limits. Defaults to None for
+                automatic determination.
+            ylim: Specifies the y-axis limits. Defaults to None for
+                automatic determination.
+            plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
+
+        Returns:
+            A matplotlib object.
+        """
+        if self.are_coops and not self.are_cobis:
+            cohp_label = "ICOOP"
+        elif self.are_cobis and not self.are_coops:
+            cohp_label = "ICOBI"
+        elif self.are_cobis and self.are_coops:
+            raise ValueError(
+                "Plot data should not contain ICOBI and ICOOP data at same time"
+            )
+        else:
+            cohp_label = "ICOHP (eV)"
+
+        if ax is None:
+            _, ax = plt.subplots()
+
+        if xlim:
+            ax.set_xlim(xlim)
+        if ylim:
+            ax.set_ylim(ylim)
+
+        ax.set_ylabel(cohp_label)
+        ax.set_xlabel("Bond lengths (\u00c5)")
+
+        for label, data in self._icohps.items():
+            x = data["bond_lengths"]
+            if plot_negative and cohp_label == "ICOHP (eV)":
+                ax.set_ylabel("$-$" + cohp_label)
+                y = [-1 * icohp for icohp in data["icohps"]]
+            else:
+                y = data["icohps"]
+
+            ax.scatter(x, y, s=marker_size, marker=marker_style, label=label)
+
+        return plt
