@@ -73,7 +73,6 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter.add_all_relevant_cohps(
             analyse=self.analyse_NaCl, label_resolved=False, suffix=""
         )
-        # self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
         self.assertEqual(len(self.iplotter._cohps), 1)
 
@@ -248,7 +247,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.plotter = PlainCohpPlotter()
         fig = self.plotter.get_plot().gca()
 
-        self.assertEqual(fig.get_xlabel(), "$-$COHP")
+        self.assertEqual(fig.get_xlabel(), "$-$COHP (eV)")
 
         # interactive plotter
         self.iplotter = InteractiveCohpPlotter(are_cobis=True)
@@ -264,7 +263,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter = InteractiveCohpPlotter()
         fig = self.iplotter.get_plot()
 
-        self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP")
+        self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP (eV)")
+        self.assertEqual(fig.layout.yaxis["title"]["text"], "$E - E_f \\text{ (eV)}$")
 
 
 class IcohpDistancePlotterTest(unittest.TestCase):
