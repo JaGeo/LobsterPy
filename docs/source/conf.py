@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "Lobsterpy"
+project = "LobsterPy"
 copyright = "2022-2023, LobsterPy Development Team"
 author = "Janine George"
 
