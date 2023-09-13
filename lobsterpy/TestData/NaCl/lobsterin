@@ -1,0 +1,12 @@
+COHPstartEnergy -27.3718729
+COHPendEnergy 115.03002710000001
+basisSet pbeVaspFit2015
+cohpGenerator from 0.1 to 6.0 orbitalwise
+loadProjectionFromFile
+basisfunctions Na 2p 3s
+basisfunctions Cl 3p 3s
+
+LSODOS
+skipCOOP
+skipCOBI
+skipCOHP
