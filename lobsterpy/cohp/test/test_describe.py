@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+import warnings
 from pathlib import Path
 
 from lobsterpy.cohp.analyze import Analysis
@@ -439,6 +440,160 @@ class TestDescribe(unittest.TestCase):
                 "The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.",
                 "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 percent antibonding interaction below EFermi) bonds.",
                 "H2 has a 0 coordination environment. It has 0 bonds.",
+            ],
+        )
+
+
+class TestCalcQualityDescribe(unittest.TestCase):
+    def setUp(self):
+        self.calc_quality_K3Sb = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            path_to_lobsterout=TestDir / "TestData/K3Sb/lobsterout.gz",
+            path_to_lobsterin=TestDir / "TestData/K3Sb/lobsterin.gz",
+            potcar_symbols=["K_sv", "Sb"],
+            path_to_bandoverlaps=TestDir / "TestData/K3Sb/bandOverlaps.lobster.gz",
+            dos_comparison=True,
+            bva_comp=True,
+            path_to_doscar=TestDir / "TestData/K3Sb/DOSCAR.LSO.lobster.gz",
+            e_range=[-20, 0],
+            path_to_vasprun=TestDir / "TestData/K3Sb/vasprun.xml.gz",
+            n_bins=256,
+        )
+
+        self.calc_quality_CsH = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=TestDir / "TestData/CsH/POSCAR.gz",
+            path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
+            path_to_lobsterout=TestDir / "TestData/CsH/lobsterout.gz",
+            path_to_lobsterin=TestDir / "TestData/CsH/lobsterin.gz",
+            potcar_symbols=["Cs_sv", "H"],
+            path_to_bandoverlaps=TestDir / "TestData/CsH/bandOverlaps.lobster.gz",
+            dos_comparison=False,
+            bva_comp=True,
+        )
+
+    def test_calc_quality_description_text(self):
+        calc_quality_k3sb_des = Description.get_calc_quality_description(
+            self.calc_quality_K3Sb
+        )
+        self.assertEqual(
+            calc_quality_k3sb_des,
+            [
+                "The LOBSTER calculation used minimal basis.",
+                "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
+                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
+                "projected wave function is not completely orthonormalized; however, the maximal deviation values "
+                "observed compared to the identity matrix is below the threshold of 0.1.",
+                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+                "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p,"
+                " summed orbitals are: 0.8532, 0.9481, 0.9275.",
+            ],
+        )
+
+        calc_quality_csh_des = Description.get_calc_quality_description(
+            self.calc_quality_CsH
+        )
+        self.assertEqual(
+            calc_quality_csh_des,
+            [
+                "The LOBSTER calculation used minimal basis.",
+                "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
+                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
+                "wave function is not completely orthonormalized. "
+                "The maximal deviation value from the identity matrix is 0.4285, and there exist 0.1822 percent "
+                "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
+                "like dos comparisons, charges, charge spillings before using the results for further analysis.",
+                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+            ],
+        )
+
+
+class TestCalcQualityDescribeWarnings(unittest.TestCase):
+    def test_warnings(self):
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("once")
+            self.calc_quality_warnings = Analysis.get_lobster_calc_quality_summary(
+                path_to_poscar=TestDir / "TestData/BaTe_low_quality/POSCAR.gz",
+                path_to_charge=TestDir / "TestData/BaTe_low_quality/CHARGE.lobster.gz",
+                path_to_lobsterout=TestDir / "TestData/BaTe_low_quality/lobsterout.gz",
+                path_to_lobsterin=TestDir / "TestData/BaTe_low_quality/lobsterin.gz",
+                potcar_symbols=["Ba_sv", "Te"],
+                path_to_doscar=TestDir / "TestData/BaTe_low_quality/DOSCAR.lobster.gz",
+                path_to_vasprun=TestDir / "TestData/BaTe_low_quality/vasprun.xml.gz",
+                e_range=[-50, 60],
+                dos_comparison=True,
+                bva_comp=False,
+            )
+        self.assertIn("Consider using DOSCAR.LSO.lobster", str(w[0].message))
+        self.assertIn("Mimimum energy range requested", str(w[2].message))
+        self.assertIn("Maximum energy range requested", str(w[3].message))
+        self.assertIn("Input DOS files have very few points", str(w[4].message))
+
+        calc_des = Description.get_calc_quality_description(self.calc_quality_warnings)
+
+        self.assertEqual(
+            calc_des,
+            [
+                "The LOBSTER calculation used minimal basis.",
+                "The absolute and total charge spilling for the calculation is 2.255 and 12.72 %, respectively.",
+                "The Tanimoto index from DOS comparisons in the energy range between -5, 0 eV for s, p, summed orbitals "
+                "are: 0.4057, 0.2831, 0.2762.",
+            ],
+        )
+
+        with warnings.catch_warnings(record=True) as w2:
+            warnings.simplefilter("once")
+            self.calc_quality_warnings2 = Analysis.get_lobster_calc_quality_summary(
+                path_to_poscar=TestDir / "TestData/C/POSCAR",
+                path_to_charge=TestDir / "TestData/C/CHARGE.lobster",
+                path_to_lobsterout=TestDir / "TestData/C/lobsterout",
+                path_to_lobsterin=TestDir / "TestData/C/lobsterin",
+                potcar_symbols=["C"],
+                bva_comp=True,
+            )
+        self.assertIn("Oxidation states from BVA analyzer cannot", str(w2[0].message))
+
+        calc_des2 = Description.get_calc_quality_description(
+            self.calc_quality_warnings2
+        )
+
+        self.assertEqual(
+            calc_des2,
+            [
+                "The LOBSTER calculation used minimal basis.",
+                "The absolute and total charge spilling for the calculation is 0.98 and 8.93 %, respectively.",
+                "Oxidation states from BVA analyzer cannot be determined. Thus BVA charge comparison is not conducted.",
+            ],
+        )
+
+        with warnings.catch_warnings(record=True) as w3:
+            warnings.simplefilter("once")
+            self.calc_quality_warnings3 = Analysis.get_lobster_calc_quality_summary(
+                path_to_poscar=TestDir / "TestData/BeTe/POSCAR.gz",
+                path_to_charge=TestDir / "TestData/BeTe/CHARGE.lobster.gz",
+                path_to_lobsterout=TestDir / "TestData/BeTe/lobsterout.gz",
+                path_to_lobsterin=TestDir / "TestData/BeTe/lobsterin.gz",
+                potcar_symbols=["Be_sv", "Te"],
+                bva_comp=True,
+            )
+        self.assertIn(
+            "Consider rerunning the calc with the minimum basis", str(w3[0].message)
+        )
+
+        calc_des3 = Description.get_calc_quality_description(
+            self.calc_quality_warnings3
+        )
+
+        self.assertEqual(
+            calc_des3,
+            [
+                "Consider rerunning the calculation with the minimum basis as well. "
+                "Choosing a larger basis set is only recommended if you see a significant improvement of the charge spilling.",
+                "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
+                "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
+                "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",
             ],
         )
 
