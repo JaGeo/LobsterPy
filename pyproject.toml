@@ -38,6 +38,9 @@ repository = "https://github.com/JaGeo/LobsterPy"
 documentation = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
 changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
 
+[project.optional-dependencies]
+featurizer = ["mendeleev==0.12.1"]
+
 [project.scripts]
 lobsterpy = "lobsterpy.cli:main"
 
