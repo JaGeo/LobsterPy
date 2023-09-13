@@ -37,10 +37,11 @@ class LobsterGraph:
         """
         This class will return structure graph objects with bonding information from Lobster data.
         Mode of automatic bonding analysis can be “cation-anion” or “all” bonds. The strongest bond is
-        determined based on the ICOHPs.The coordination environments are determined based on
-        cutoff_icohp *ICOHPs values.If the path of ICOOPLIST (ICOBILIST) is provided, the ICOBI (ICOOP)
-        values corresponding to ICOHPLIST bond labels are also added as edge properties to the structure graph objects.
-        The Mulliken and Loewdin charges are added as node properties to the structure graph objects.
+        determined based on the ICOHPs. The coordination environments are determined based on
+        cutoff_icohp *ICOHPs values. If the path of ICOBILIST (ICOOPLIST) is provided, the ICOBI (ICOOP)
+        values corresponding to relevant bond labels obtained from the ICOHPLIST are also added as edge properties
+        to the structure graph objects. The Mulliken and Loewdin charges are added as node properties to
+        the structure graph objects.
 
 
         Args:
