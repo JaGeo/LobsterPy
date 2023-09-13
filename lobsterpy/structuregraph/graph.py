@@ -14,7 +14,7 @@ from lobsterpy.cohp.analyze import Analysis
 
 class LobsterGraph:
     """
-    LobsterGraph class for bonding data from Lobster
+    Class to generate structure graph objects with bonding data from Lobster
 
     Attributes:
         sg: return structure_graph object
@@ -35,7 +35,13 @@ class LobsterGraph:
         start: str = None,
     ):
         """
-        This is a class to get structure graph object with bonding information from lobsterpy
+        This class will return structure graph objects with bonding information from Lobster data.
+        Mode of automatic bonding analysis can be “cation-anion” or “all” bonds. The strongest bond is
+        determined based on the ICOHPs.The coordination environments are determined based on
+        cutoff_icohp *ICOHPs values.If the path of ICOOPLIST (ICOBILIST) is provided, the ICOBI (ICOOP)
+        values corresponding to ICOHPLIST bond labels are also added as edge properties to the structure graph objects.
+        The Mulliken and Loewdin charges are added as node properties to the structure graph objects.
+
 
         Args:
             path_to_poscar: path to POSCAR (e.g., "POSCAR")
