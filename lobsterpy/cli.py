@@ -244,14 +244,6 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument(
         "--fontsize", "--font-size", type=float, default=None, help="Base font size"
     )
-    plotting_group.add_argument(
-        "--labelresolved",
-        "--label-resolved",
-        action="store_true",
-        help="Will create automatic interactive plots with all relevant bond labels. "
-        "If not set, plots will consists of summed cohps. (This argument works only"
-        "for interactive plots) ",
-    )
     group = plotting_group.add_mutually_exclusive_group()
     group.add_argument(
         "--spddos",
