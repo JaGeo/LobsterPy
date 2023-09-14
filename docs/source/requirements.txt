@@ -5,5 +5,7 @@ sphinx-book-theme==0.3.3
 m2r2
 myst-parser
 docutils
-numpy==1.23.3
-lobsterpy
+mendeleev==0.12.1
+pymatgen>=2023.9.10
+sphinx-argparse==0.4.0
+typing

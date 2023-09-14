@@ -51,12 +51,15 @@ templates_path = ["_templates"]
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 
-exclude_patterns = ["../../lobsterpy/test",
-                    "../../lobsterpy/cohp/test",
-                    "../../lobsterpy/plotting/test",
-                    "../../lobsterpy/TestData",
-                    "Thumbs.db",
-                    ".DS_Store",
+exclude_patterns = [
+    "../../lobsterpy/test",
+    "../../lobsterpy/cohp/test",
+    "../../lobsterpy/plotting/test",
+    "../../lobsterpy/featurize/test",
+    "../../lobsterpy/structuregraph/test",
+    "../../lobsterpy/TestData",
+    "Thumbs.db",
+    ".DS_Store",
 ]
 
 
@@ -68,16 +71,24 @@ def run_apidoc(_):
     excludes = glob.glob(os.path.join(output_path, "../../lobsterpy/cohp/test"))
     excludes1 = glob.glob(os.path.join(output_path, "../../lobsterpy/test"))
     excludes2 = glob.glob(os.path.join(output_path, "../../lobsterpy/plotting/test"))
+    excludes3 = glob.glob(os.path.join(output_path, "../../lobsterpy/featurize/test"))
+    excludes4 = glob.glob(
+        os.path.join(output_path, "../../lobsterpy/structuregraph/test")
+    )
     module = os.path.join(output_path, "../../lobsterpy")
     cmd_path = "sphinx-apidoc"
-    command = [cmd_path, 
-               "-e", "-o", 
-               output_path, 
-               module, 
-               " ".join(excludes),
-               " ".join(excludes1),
-               " ".join(excludes2), 
-               "--force"
+    command = [
+        cmd_path,
+        "-e",
+        "-o",
+        output_path,
+        module,
+        " ".join(excludes),
+        " ".join(excludes1),
+        " ".join(excludes2),
+        " ".join(excludes3),
+        " ".join(excludes4),
+        "--force",
     ]
     subprocess.check_call(command)
 

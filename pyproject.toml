@@ -27,9 +27,6 @@ dependencies = [
      "pymatgen>=2023.9.10",
      "numpy",
      "typing",
-     "Sphinx>=4",
-     "sphinx-argparse==0.4.0",
-     "sphinx-pdj-theme==0.4.0",
 ]
 
 [project.urls]
@@ -40,6 +37,17 @@ changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
 
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.12.1"]
+docs = ["Sphinx==4.5.0",
+    "jupyter",
+    "sphinx-argparse",
+    "sphinx-book-theme==0.3.3",
+    "m2r2",
+    "myst-parser",
+    "docutils",
+    "mendeleev==0.12.1",
+    "pymatgen>=2023.9.10",
+    "sphinx-argparse==0.4.0",
+    "typing"]
 
 [project.scripts]
 lobsterpy = "lobsterpy.cli:main"
