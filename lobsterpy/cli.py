@@ -16,7 +16,12 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Icohplist
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-from lobsterpy.plotting import PlainCohpPlotter, get_style_list, IcohpDistancePlotter
+from lobsterpy.plotting import (
+    PlainCohpPlotter,
+    get_style_list,
+    IcohpDistancePlotter,
+    PlainDosPlotter,
+)
 
 
 def main() -> None:
@@ -46,7 +51,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--charge",
         default="CHARGE.lobster",
         type=Path,
-        help='path to Charge.lobster. Default is "CHARGE.lobster"',
+        help='path to CHARGE.lobster. Default is "CHARGE.lobster"',
     )
     input_file_group.add_argument(
         "--icohplist",
@@ -58,22 +63,62 @@ def get_parser() -> argparse.ArgumentParser:
         "--cohpcar",
         default="COHPCAR.lobster",
         type=Path,
-        help=(
-            'path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument '
-            "will also be read when COBICARs or COOPCARs are plotted."
-        ),
+        help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument'
+        "will also be read when COBICARs or COOPCARs are plotted.",
     )
     input_file_group.add_argument(
         "--incar",
         default="INCAR",
         type=Path,
-        help=('path to INCAR. Default is "INCAR".'),
+        help='path to INCAR. Default is "INCAR".',
     )
     input_file_group.add_argument(
         "--potcar",
         default="POTCAR",
         type=Path,
-        help=('path to POTCAR. Default is "POTCAR".'),
+        help='path to POTCAR. Default is "POTCAR".',
+    )
+    input_file_group.add_argument(
+        "--potcar-symbols",
+        dest="potcarsymbols",
+        type=_potcar_symbols,
+        # nargs="+",
+        help="List of potcar symbols",
+    )
+
+    input_file_group.add_argument(
+        "--lobsterin",
+        default="lobsterin",
+        type=Path,
+        help='path to lobsterin. Default is "lobsterin".',
+    )
+
+    input_file_group.add_argument(
+        "--lobsterout",
+        default="lobsterout",
+        type=Path,
+        help='path to lobsterout. Default is "lobsterout".',
+    )
+
+    input_file_group.add_argument(
+        "--doscar",
+        default="DOSCAR.lobster",
+        type=Path,
+        help='path to DOSCAR.lobster. Default is "DOSCAR.lobster".',
+    )
+
+    input_file_group.add_argument(
+        "--vasprun",
+        default="vasprun.xml",
+        type=Path,
+        help='path to vasprun.xml. Default is "vasprun.xml".',
+    )
+
+    input_file_group.add_argument(
+        "--bandoverlaps",
+        default="bandOverlaps.lobster",
+        type=Path,
+        help='path to bandOverlaps.lobster. Default is "bandOverlaps.lobster".',
     )
 
     output_parent = argparse.ArgumentParser(add_help=False)
@@ -199,6 +244,54 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument(
         "--fontsize", "--font-size", type=float, default=None, help="Base font size"
     )
+    plotting_group.add_argument(
+        "--labelresolved",
+        "--label-resolved",
+        action="store_true",
+        help="Will create automatic interactive plots with all relevant bond labels. "
+        "If not set, plots will consists of summed cohps. (This argument works only"
+        "for interactive plots) ",
+    )
+    group = plotting_group.add_mutually_exclusive_group()
+    group.add_argument(
+        "--spddos",
+        "--spd-dos",
+        action="store_true",
+        help="Will add spd projected dos to the DOS plot",
+    )
+    group.add_argument(
+        "--elementdos",
+        "--el-dos",
+        action="store_true",
+        help="Will add DOS projections for each element to the DOS plot",
+    )
+    plotting_group.add_argument(
+        "--summedspins",
+        "--summed-spins",
+        action="store_true",
+        help="Will plot summed DOS",
+    )
+    plotting_group.add_argument(
+        "--element",
+        "--el",
+        type=str,
+        nargs="+",
+        default=None,
+        help="Will add spd DOS projections for requested element to the DOS plot",
+    )
+    plotting_group.add_argument(
+        "--orbital",
+        "--orb",
+        type=str,
+        default=None,
+        help="Orbital name for the site for which DOS are to be added",
+    )
+    plotting_group.add_argument(
+        "--site",
+        type=int,
+        default=None,
+        help="Site index in the crystal structure for " "which DOS need to be added",
+    )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Automatic analysis")
@@ -267,6 +360,49 @@ def get_parser() -> argparse.ArgumentParser:
         "for interactive plots) ",
     )
 
+    auto_group.add_argument(
+        "--calcqualityjson",
+        nargs="?",
+        type=Path,
+        default=None,
+        metavar="FILENAME",
+        const=Path("calc_quality_json.json"),
+        help="Write a JSON file with the LOBSTER calc quality analysis",
+    )
+
+    auto_group.add_argument(
+        "--erange",
+        dest="erange",
+        nargs=2,
+        default=[-5, 0],
+        type=int,
+        help="Energy range for DOS comparisons",
+    )
+
+    auto_group.add_argument(
+        "--nbins",
+        dest="nbins",
+        default=None,
+        type=int,
+        help="Number of bins for DOS comparisons",
+    )
+
+    auto_group.add_argument(
+        "--doscomp",
+        "--dos-comp",
+        action="store_true",
+        default=False,
+        help="This option will force the DOS comparison in automatic LOBSTER calc quality  analysis ",
+    )
+
+    auto_group.add_argument(
+        "--bvacomp",
+        "--bva-comp",
+        action="store_true",
+        default=False,
+        help="This option will force the BVA charge comparison in automatic LOBSTER calc quality analysis ",
+    )
+
     subparsers = parser.add_subparsers(
         dest="action",
         required=True,
@@ -280,6 +416,17 @@ def get_parser() -> argparse.ArgumentParser:
             "and VASP"
         ),
     )
+    subparsers.add_parser(
+        "calc-description",
+        parents=[input_parent, auto_parent],
+        help=(
+            "Deliver a text description of the LOBSTER calc quality analysis. "
+            "Mandatory required files: POSCAR, POTCAR, lobsterout, lobsterin. "
+            "Optional files (BVA comparison): CHARGE.lobster, "
+            "(DOS comparison): DOSCAR.lobster, Vasprun.xml."
+        ),
+    )
+
     subparsers.add_parser(
         "automatic-plot",
         aliases=["automaticplot", "auto-plot", "autoplot"],
@@ -314,6 +461,12 @@ def get_parser() -> argparse.ArgumentParser:
         ),
     )
 
+    subparsers.add_parser(
+        "plot-dos",
+        aliases=["plotdos"],
+        parents=[input_parent, plotting_parent],
+        help=("Will plot DOS from lobster computation."),
+    )
     subparsers.add_parser(
         "plot-icohps-distances",
         aliases=["ploticohpsdistances"],
@@ -369,6 +522,20 @@ def _element_basis(string: str):
     return element, basis
 
 
+def _potcar_symbols(string: str):
+    """
+    Parse string of potcar symbols and return a list
+    Args:
+        string:
+
+    Returns:
+        list of potcar symbols
+    """
+    potcar_symbols_list = string.split(" ")
+
+    return potcar_symbols_list
+
+
 def _user_figsize(width, height, aspect=None):
     """Get figsize options from user input, if any
 
@@ -418,12 +585,12 @@ def run(args):
             "cohpcar": "COHPCAR.lobster",
         }
 
-        for arg, default_value in default_files.items():
-            file_path = getattr(args, arg)
+        for arg_name, _ in default_files.items():
+            file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    setattr(args, arg, gz_file_path)
+                    setattr(args, arg_name, gz_file_path)
                 else:
                     raise ValueError(
                         "Files necessary for automatic analysis of LOBSTER outputs "
@@ -522,6 +689,8 @@ def run(args):
         "automatic-plot-ia",
         "auto-plot-ia",
         "autoplotia",
+        "plot-dos",
+        "plotdos",
         "plot-icohps-distances",
         "ploticohpsdistances",
     ]:
@@ -686,15 +855,15 @@ def run(args):
             "incar": "INCAR",
         }
 
-        for arg, default_value in default_files.items():
-            file_path = getattr(args, arg)
+        for arg_name, _ in default_files.items():
+            file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
                 if gz_file_path.exists():
-                    setattr(args, arg, gz_file_path)
+                    setattr(args, arg_name, gz_file_path)
                 else:
                     raise ValueError(
-                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory"
+                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory."
                     )
 
         if args.userbasis is None:
@@ -763,6 +932,158 @@ def run(args):
                 raise ValueError(
                     'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                 )
+
+    if args.action in ["calc-description"]:
+        # Check for .gz files exist for default values and update accordingly
+        mandatory_files = {
+            "poscar": "POSCAR",
+            "lobsterin": "lobsterin",
+            "lobsterout": "lobsterout",
+        }
+
+        for arg_name, _ in mandatory_files.items():
+            file_path = getattr(args, arg_name)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg_name, gz_file_path)
+                else:
+                    raise ValueError(
+                        "Mandatory files necessary for LOBSTER calc quality not found in the current directory."
+                    )
+
+        optional_file = {
+            "bandoverlaps": "bandOverlaps.lobster",
+            "potcar": "POTCAR",
+        }
+
+        for arg_name, _ in optional_file.items():
+            file_path = getattr(args, arg_name)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg_name, gz_file_path)
+
+        bva_comp = args.bvacomp
+
+        if bva_comp:
+            bva_files = {
+                "charge": "CHARGE.lobster",
+            }
+            for arg_name, _ in bva_files.items():
+                file_path = getattr(args, arg_name)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg_name, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "BVA charge requested but CHARGE.lobster file not found."
+                        )
+
+        dos_comparison = args.doscomp
+
+        if dos_comparison:
+            dos_files = {
+                "doscar": "DOSCAR.lobster",
+                "vasprun": "vasprun.xml",
+            }
+
+            for arg_name, _ in dos_files.items():
+                file_path = getattr(args, arg_name)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg_name, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
+                        )
+        potcar_file_path = getattr(args, "potcar")
+
+        quality_dict = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=args.poscar,
+            path_to_charge=args.charge,
+            path_to_lobsterout=args.lobsterout,
+            path_to_lobsterin=args.lobsterin,
+            path_to_potcar=None if not potcar_file_path.exists() else potcar_file_path,
+            potcar_symbols=args.potcarsymbols,
+            path_to_bandoverlaps=args.bandoverlaps,
+            dos_comparison=dos_comparison,
+            bva_comp=bva_comp,
+            path_to_doscar=args.doscar,
+            e_range=args.erange,
+            n_bins=args.nbins,
+            path_to_vasprun=args.vasprun,
+        )
+
+        quality_text = Description.get_calc_quality_description(quality_dict)
+        Description.write_calc_quality_description(quality_text)
+
+        if args.calcqualityjson is not None:
+            with open(args.calcqualityjson, "w") as fd:
+                json.dump(quality_dict, fd)
+
+    if args.action in ["plot-dos", "plotdos"]:
+        mandatory_files = {
+            "doscar": "DOSCAR.lobster",
+            "poscar": "POSCAR",
+        }
+
+        for arg_name, _ in mandatory_files.items():
+            file_path = getattr(args, arg_name)
+            if not file_path.exists():
+                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                if gz_file_path.exists():
+                    setattr(args, arg_name, gz_file_path)
+                else:
+                    raise ValueError(
+                        f"{file_path.name} necessary for plotting DOS not found in "
+                        f"the current directory."
+                    )
+
+        from pymatgen.io.lobster import Doscar
+
+        lobs_dos = Doscar(doscar=args.doscar, structure_file=args.poscar).completedos
+
+        dos_plotter = PlainDosPlotter(summed=args.summedspins, sigma=args.sigma)
+
+        dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
+        if args.spddos:
+            dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_spd_dos())
+
+        if args.elementdos:
+            dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_element_dos())
+
+        if args.element:
+            for element in args.element:
+                element_spddos = lobs_dos.get_element_spd_dos(el=element)
+                for orbital, dos in element_spddos.items():
+                    label = f"{element}: {orbital.name}"
+                    dos_plotter.add_dos_dict(dos_dict={label: dos})
+
+        if args.site and args.orbital:
+            dos_plotter.add_site_orbital_dos(
+                site_index=args.site, orbital=args.orbital, dos=lobs_dos
+            )
+        elif args.site and not args.orbital:
+            raise ValueError(
+                "Please set both args i.e site and orbital to generate the plot"
+            )
+
+        plt = dos_plotter.get_plot(xlim=args.xlim, ylim=args.ylim, beta_dashed=True)
+
+        ax = plt.gca()
+        ax.set_title(args.title)
+
+        if not args.hideplot and not args.save_plot:
+            plt.show()
+        elif args.save_plot and not args.hideplot:
+            plt.show()
+            fig = plt.gcf()
+            fig.savefig(args.save_plot)
+        if args.save_plot and args.hideplot:
+            plt.savefig(args.save_plot)
 
     if args.action in ["plot-icohps-distances", "ploticohpsdistances"]:
         if args.cobis:

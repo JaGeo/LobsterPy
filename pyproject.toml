@@ -15,21 +15,21 @@ authors = [{ name = "Janine George", email = "janine.george@bam.de" }]
 version = "0.3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
-     "pymatgen>=2023.1.20",
+     "pymatgen>=2023.9.10",
      "numpy",
      "typing",
      "Sphinx>=4",
      "sphinx-argparse==0.4.0",
-     "sphinx-pdj-theme==0.2.1",
+     "sphinx-pdj-theme==0.4.0",
 ]
 
 [project.urls]
@@ -37,6 +37,9 @@ homepage = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
 repository = "https://github.com/JaGeo/LobsterPy"
 documentation = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
 changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
+
+[project.optional-dependencies]
+featurizer = ["mendeleev==0.12.1"]
 
 [project.scripts]
 lobsterpy = "lobsterpy.cli:main"

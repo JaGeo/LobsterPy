@@ -5,13 +5,16 @@
 This module defines classes to analyze the COHPs automatically
 """
 from __future__ import annotations
+from pathlib import Path
 
 import warnings
 from collections import Counter
-
 import numpy as np
 from pymatgen.core.structure import Structure
+from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.electronic_structure.core import Spin
+from pymatgen.io.vasp.outputs import Vasprun
+from pymatgen.io.lobster import Lobsterin, Doscar, Lobsterout, Charge, Bandoverlaps
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
@@ -920,3 +923,265 @@ class Analysis:
         self.final_dict_ions = {}
         for key, item in final_dict_ions.items():
             self.final_dict_ions[key] = dict(Counter(item))
+
+    @staticmethod
+    def get_lobster_calc_quality_summary(
+        path_to_poscar: str,
+        path_to_lobsterout: str,
+        path_to_lobsterin: str,
+        path_to_potcar: str | None = None,
+        potcar_symbols: list | None = None,
+        path_to_charge: str | None = None,
+        path_to_bandoverlaps: str | None = None,
+        path_to_doscar: str | None = None,
+        path_to_vasprun: str | None = None,
+        dos_comparison: bool = False,
+        e_range: list = [-5, 0],
+        n_bins: int | None = None,
+        bva_comp: bool = False,
+    ) -> dict:
+        """
+        This method will analyze LOBSTER calculation quality
+
+        Args:
+            path_to_poscar: path to structure file
+            path_to_lobsterout: path to lobsterout file
+            path_to_lobsterin: path to lobsterin file
+            path_to_potcar: path to VASP potcar file
+            potcar_symbols: list of potcar symbols from postcar file (can be used if no potcar available)
+            path_to_charge: path to CHARGE.lobster file
+            path_to_bandoverlaps: path to bandOverlaps.lobster file
+            path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster file
+            path_to_vasprun: path to vasprun.xml file
+            dos_comparison: will compare DOS from VASP and LOBSTER and return tanimoto index
+            e_range: energy range for DOS comparisons
+            n_bins: number of bins to discretize DOS for comparisons
+            bva_comp: Compares LOBSTER charge signs with Bond valence charge signs
+
+        Returns:
+            A dict of summary of LOBSTER calculation quality by analyzing basis set used,
+            charge spilling from lobsterout/ PDOS comparisons of VASP and LOBSTER /
+            BVA charge comparisons
+
+        """
+        quality_dict = {}
+
+        if path_to_potcar and not potcar_symbols:
+            potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=path_to_potcar)
+        elif not path_to_potcar and potcar_symbols:
+            potcar_names = potcar_symbols
+        else:
+            raise ValueError(
+                "Please provide either path_to_potcar or list of "
+                "potcar_symbols used for the calculations"
+            )
+
+        struct = Structure.from_file(path_to_poscar)
+
+        ref_bases = Lobsterin.get_all_possible_basis_functions(
+            structure=struct, potcar_symbols=potcar_names
+        )
+
+        lobs_in = Lobsterin.from_file(path_to_lobsterin)
+        calc_basis = []
+        for basis in lobs_in["basisfunctions"]:
+            basis_sep = basis.split()[1:]
+            basis_comb = " ".join(basis_sep)
+            calc_basis.append(basis_comb)
+
+        if calc_basis == list(ref_bases[0].values()):
+            quality_dict["minimal_basis"] = True  # type: ignore
+        else:
+            quality_dict["minimal_basis"] = False  # type: ignore
+            warnings.warn(
+                "Consider rerunning the calc with the minimum basis as well. Choosing is "
+                "larger basis set is recommended if you see a significant improvement of "
+                "the charge spilling and material has non-zero band gap."
+            )
+
+        lob_out = Lobsterout(path_to_lobsterout)
+
+        quality_dict["charge_spilling"] = {
+            "abs_charge_spilling": round((sum(lob_out.charge_spilling) / 2) * 100, 4),
+            "abs_total_spilling": round((sum(lob_out.total_spilling) / 2) * 100, 4),
+        }  # type: ignore
+
+        if path_to_bandoverlaps is not None:
+            if Path(path_to_bandoverlaps).exists():  # type: ignore
+                band_overlaps = Bandoverlaps(filename=path_to_bandoverlaps)
+                for line in lob_out.warning_lines:
+                    if "k-points could not be orthonormalized" in line:
+                        total_kpoints = int(line.split(" ")[2])
+
+                # store actual number of devations above pymatgen default limit of 0.1
+                dev_val = []
+                for dev in band_overlaps.max_deviation:
+                    if dev > 0.1:
+                        dev_val.append(dev)
+
+                quality_dict["band_overlaps"] = {
+                    "file_exists": True,
+                    "limit_maxDeviation": 0.1,
+                    "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
+                        limit_maxDeviation=0.1
+                    ),
+                    "max_deviation": round(max(band_overlaps.max_deviation), 4),
+                    "percent_kpoints_abv_limit": round(
+                        (len(dev_val) / total_kpoints) * 100, 4
+                    ),
+                }  # type: ignore
+
+            else:
+                quality_dict["band_overlaps"] = {
+                    "file_exists": False,
+                    "limit_maxDeviation": None,
+                    "has_good_quality_maxDeviation": True,
+                    "max_deviation": None,
+                    "percent_kpoints_abv_limit": None,
+                }  # type: ignore
+
+        if bva_comp:
+            try:
+                bond_valence = BVAnalyzer()
+
+                bva_oxi = []
+                lobs_charge = Charge(filename=path_to_charge)
+                for i in bond_valence.get_valences(structure=struct):
+                    if i >= 0:
+                        bva_oxi.append("POS")
+                    else:
+                        bva_oxi.append("NEG")
+
+                mull_oxi = []
+                for i in lobs_charge.Mulliken:
+                    if i >= 0:
+                        mull_oxi.append("POS")
+                    else:
+                        mull_oxi.append("NEG")
+
+                loew_oxi = []
+                for i in lobs_charge.Loewdin:
+                    if i >= 0:
+                        loew_oxi.append("POS")
+                    else:
+                        loew_oxi.append("NEG")
+
+                quality_dict["Charges"] = {}  # type: ignore
+                if mull_oxi == bva_oxi:
+                    quality_dict["Charges"]["BVA_Mulliken_agree"] = True  # type: ignore
+                else:
+                    quality_dict["Charges"]["BVA_Mulliken_agree"] = False  # type: ignore
+
+                if mull_oxi == bva_oxi:
+                    quality_dict["Charges"]["BVA_Loewdin_agree"] = True  # type: ignore
+                else:
+                    quality_dict["Charges"]["BVA_Loewdin_agree"] = False  # type: ignore
+            except ValueError:
+                quality_dict["Charges"] = {}  # type: ignore
+                warnings.warn(
+                    "Oxidation states from BVA analyzer cannot be determined. "
+                    "Thus BVA charge comparison will be skipped"
+                )
+        if dos_comparison:
+            if "LSO" not in str(path_to_doscar).split("."):
+                warnings.warn(
+                    "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have "
+                    "negative DOS values"
+                )
+            doscar_lobster = Doscar(
+                doscar=path_to_doscar,
+                structure_file=path_to_poscar,
+            )
+
+            dos_lobster = doscar_lobster.completedos
+
+            vasprun = Vasprun(path_to_vasprun)
+            dos_vasp = vasprun.complete_dos
+
+            quality_dict["DOS_comparisons"] = {}  # type: ignore
+
+            for orb in dos_lobster.get_spd_dos():
+                if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(
+                    dos_lobster.energies
+                ):
+                    min_e = e_range[0]
+                else:
+                    warnings.warn(
+                        "Mimimum energy range requested for DOS comparisons is not available "
+                        "in VASP or LOBSTER calculation. Thus, setting min_e to -5 eV"
+                    )
+                    min_e = -5
+
+                if e_range[-1] <= max(dos_vasp.energies) and e_range[-1] <= max(
+                    dos_lobster.energies
+                ):
+                    max_e = e_range[-1]
+                else:
+                    warnings.warn(
+                        "Maximum energy range requested for DOS comparisons is not available "
+                        "in VASP or LOBSTER calculation. Thus, setting max_e to 0 eV"
+                    )
+                    max_e = 0
+
+                if (
+                    np.diff(dos_vasp.energies)[0] >= 0.1
+                    or np.diff(dos_lobster.energies)[0] >= 0.1
+                ):
+                    warnings.warn(
+                        "Input DOS files have very few points in the energy interval and thus "
+                        "comparisons will not be reliable. Please rerun the calculations with "
+                        "higher number of DOS points. Set NEDOS and COHPSteps tags to >= 2000 in VASP and LOBSTER "
+                        "calculations, respectively."
+                    )
+
+                if not n_bins:
+                    n_bins = 56
+
+                fp_lobster_orb = dos_lobster.get_dos_fp(
+                    min_e=min_e,
+                    max_e=max_e,
+                    n_bins=n_bins,
+                    normalize=True,
+                    type=orb.name,
+                )
+                fp_vasp_orb = dos_vasp.get_dos_fp(
+                    min_e=min_e,
+                    max_e=max_e,
+                    n_bins=n_bins,
+                    normalize=True,
+                    type=orb.name,
+                )
+
+                tani_orb = round(
+                    dos_vasp.get_dos_fp_similarity(
+                        fp_lobster_orb, fp_vasp_orb, tanimoto=True
+                    ),
+                    4,
+                )
+                quality_dict["DOS_comparisons"][
+                    "tanimoto_orb_{}".format(orb.name)
+                ] = tani_orb  # type: ignore
+
+            fp_lobster = dos_lobster.get_dos_fp(
+                min_e=min_e,
+                max_e=max_e,
+                n_bins=n_bins,
+                normalize=True,
+                type="summed_pdos",
+            )
+            fp_vasp = dos_vasp.get_dos_fp(
+                min_e=min_e,
+                max_e=max_e,
+                n_bins=n_bins,
+                normalize=True,
+                type="summed_pdos",
+            )
+
+            tanimoto_summed = round(
+                dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
+            )
+            quality_dict["DOS_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
+            quality_dict["DOS_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
+            quality_dict["DOS_comparisons"]["n_bins"] = n_bins  # type: ignore
+
+        return quality_dict

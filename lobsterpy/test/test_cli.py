@@ -298,6 +298,245 @@ class TestCLI:
 
         os.chdir(TestDir / "TestData/NaCl")
 
+    def test_calc_quality_summary_NaCl(self, tmp_path):
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        calc_quality_json_path = tmp_path / "calc_quality_json.json"
+        args = [
+            "calc-description",
+            "--potcar-symbols",
+            "Na_pv Cl",
+            "--bvacomp",
+            "--doscomp",
+            "--erange",
+            "-20",
+            "0",
+            "--calcqualityjson",
+            str(calc_quality_json_path),
+        ]
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        calc_quality_text = captured_output.getvalue().strip()
+
+        sys.stdout = sys.__stdout__
+
+        ref_text = (
+            "The LOBSTER calculation used minimal basis. "
+            "The absolute and total charge spilling for the calculation is 0.3 and 5.58 %, respectively. "
+            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
+            "generated during the LOBSTER run. "
+            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
+            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
+            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
+            "are: 0.9966, 0.9977, 0.9822."
+        )
+
+        assert calc_quality_text == ref_text
+        self.assert_is_finite_file(calc_quality_json_path)
+
+    def test_calc_quality_summary_K3Sb(self, tmp_path):
+        os.chdir(TestDir / "TestData/K3Sb")
+        calc_quality_json_path = tmp_path / "calc_quality_json.json"
+        args = [
+            "calc-description",
+            "--bvacomp",
+            "--potcar-symbols",
+            "K_sv Sb",
+            "--doscomp",
+            "--doscar",
+            "DOSCAR.LSO.lobster",
+            "--erange",
+            "-20",
+            "0",
+            "--calcqualityjson",
+            str(calc_quality_json_path),
+        ]
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        calc_quality_text = captured_output.getvalue().strip()
+
+        sys.stdout = sys.__stdout__
+
+        ref_text = (
+            "The LOBSTER calculation used minimal basis. "
+            "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively. "
+            "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that "
+            "the projected wave function is not completely orthonormalized; however, the "
+            "maximal deviation values observed compared to the identity matrix is below the threshold of 0.1. "
+            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
+            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
+            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
+            "are: 0.8367, 0.9565, 0.9357."
+        )
+
+        assert calc_quality_text == ref_text
+        self.assert_is_finite_file(calc_quality_json_path)
+
+    def test_dos_plot(self, tmp_path):
+        os.chdir(TestDir / "TestData/K3Sb")
+        plot_path = tmp_path / "autoplot.png"
+
+        args = [
+            "plot-dos",
+            "--spddos",
+            "--doscar",
+            "DOSCAR.LSO.lobster",
+            "--sigma",
+            "0.2",
+            "--xlim",
+            "-5",
+            "0.5",
+            "--hideplot",
+            "--saveplot",
+            str(plot_path),
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        plot_path = tmp_path / "autoplot.png"
+        args = [
+            "plot-dos",
+            "--elementdos",
+            "--doscar",
+            "DOSCAR.LSO.lobster",
+            "--ylim",
+            "-5",
+            "0.5",
+            "--hideplot",
+            "--saveplot",
+            str(plot_path),
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        os.chdir(TestDir / "TestData/K3Sb")
+        args = [
+            "plot-dos",
+            "--doscar",
+            "DOSCAR.LSO.lobster",
+            "--element",
+            "K",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        args = [
+            "plot-dos",
+            "--site",
+            "1",
+            "--orbital",
+            "3s",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+    def test_cli_exceptions(self):
+        # Calc files missing exception test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir)
+            args = [
+                "calc-description",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Mandatory files necessary for LOBSTER calc quality not found in the current directory.",
+            )
+
+        # doscar comparison exceptions test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/NaCl")
+            args = [
+                "calc-description",
+                "--doscomp",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found.",
+            )
+
+        # BVA comparison exceptions test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/NaCl")
+            args = ["calc-description", "--bvacomp", "--charge", "../CHARGE.lobster"]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "BVA charge requested but CHARGE.lobster file not found.",
+            )
+
+        # Create-inputs exceptions test
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/CsH")
+            args = [
+                "create-inputs",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Files necessary for creating puts for LOBSTER calcs not found in the current directory.",
+            )
+
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/CsH")
+            args = [
+                "plot-dos",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "DOSCAR.lobster necessary for plotting DOS not found in the current directory.",
+            )
+
+        with pytest.raises(ValueError) as err:
+            os.chdir(TestDir / "TestData/K3Sb")
+            args = [
+                "plot-dos",
+                "--doscar",
+                "DOSCAR.LSO.lobster",
+                "--site",
+                "1",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            self.assertEqual(
+                err.exception.__str__(),
+                "Please set both args i.e site and orbital to generate the plot",
+            )
+
     def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files
         os.chdir(TestDir / "TestData/CsH")

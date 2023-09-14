@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11"]
         split: [1, 2, 3, 4, 5]  # Number of splits
 
     steps:
@@ -30,8 +30,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest pytest-mock pytest-split pytest-cov
         python -m pip install types-setuptools
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install -e .
+        pip install -e .[featurizer]
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -48,7 +47,7 @@ jobs:
       with:
         name: coverage-${{ matrix.split }}
         path: .coverage
-        
+
   coverage:
       needs: build
       runs-on: ubuntu-latest
