@@ -513,20 +513,18 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_NaCl_all.condensed_bonding_analysis["type_charges"], "Mulliken"
         )
 
-
     def test_all_attributes_NaCl_comp_range_orbital(self):
         self.assertAlmostEqual(
             self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis[
-                              "number_of_considered_ions"
+                "number_of_considered_ions"
             ],
             1,
         )
         self.assertEqual(
-                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
-                    "bonds"
-                ]["Cl"]["orbital_data"]["3s-3s"]["ICOHP_mean"]
-            ),
-            -0.32,
+            self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                "bonds"
+            ]["Cl"]["orbital_data"]["3s-3s"]["ICOHP_mean"]
+            - 0.32,
         )
         self.assertAlmostEqual(
             float(
@@ -582,7 +580,7 @@ class TestAnalyse(unittest.TestCase):
             ),
             0.0,
         )
-        
+
     def test_all_attributes_analyse_NaCl_comp_range_cobi(self):
         self.assertEqual(
             self.analyse_NaCl_comp_range_cobi.condensed_bonding_analysis["formula"],

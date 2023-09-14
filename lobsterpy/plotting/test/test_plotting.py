@@ -31,7 +31,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             cutoff_icohp=0.1,
             summed_spins=False,
         )
-        
+
         self.analyse_CdF_orb = Analysis(
             path_to_poscar=TestDir / "TestData/CdF_comp_range/POSCAR.gz",
             path_to_cohpcar=TestDir / "TestData/CdF_comp_range/COHPCAR.lobster.gz",
@@ -42,7 +42,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             summed_spins=False,
             orbital_resolved=True,
         )
-        
+
         self.analyse_NaCl_cobi = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
             path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",

@@ -943,7 +943,7 @@ class Analysis:
                         labels, cohps, nameion
                     )
                 )
-                
+
                 bond_dict = self._get_bond_dict(
                     mean_icohps, antbdg, nameion=nameion, type_pop=type_pop
                 )

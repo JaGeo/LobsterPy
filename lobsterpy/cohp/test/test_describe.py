@@ -545,7 +545,9 @@ class TestDescribe(unittest.TestCase):
                 "The orbitals 2s-3s, 2pz-3s contribute 77.48, 22.05 percent in F-Na bond, respectively., "
                 "and The orbitals 2pz-5s, 2s-5pz, 2pz-5pz contribute 19.49, 39.12, 21.41 percent in "
                 "F-Sb bond, respectively.",
-
+            ],
+        )
+        self.assertEqual(
             self.describe_CdF_comp_range_coop.text,
             [
                 "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
