@@ -288,10 +288,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
 
     advanced_plotting_args = argparse.ArgumentParser(add_help=False)
-    advanced_plotting_group = advanced_plotting_args.add_argument_group(
-        "Advanced plotting options"
-    )
-    advanced_plotting_group.add_argument(
+    advanced_plotting_args.add_argument(
         "--invertaxis",
         "--invert-axis",
         action="store_true",
@@ -469,7 +466,7 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "plot-dos",
         aliases=["plotdos"],
-        parents=[input_parent, plotting_parent, advanced_plotting_group],
+        parents=[input_parent, plotting_parent, advanced_plotting_args],
         help=("Will plot DOS from lobster computation."),
     )
     subparsers.add_parser(
