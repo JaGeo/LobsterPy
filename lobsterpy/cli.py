@@ -85,19 +85,6 @@ def get_parser() -> argparse.ArgumentParser:
         # nargs="+",
         help="List of potcar symbols",
     )
-    input_coops_cobis = input_file_group.add_mutually_exclusive_group()
-    input_coops_cobis.add_argument(
-        "--cobis",
-        "--cobi",
-        action="store_true",
-        help="Specifies input file contains COBIS",
-    )
-    input_coops_cobis.add_argument(
-        "--coops",
-        "--coop",
-        action="store_true",
-        help="Specifies input file contains COOPS",
-    )
 
     input_file_group.add_argument(
         "--lobsterin",
@@ -257,14 +244,6 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_group.add_argument(
         "--fontsize", "--font-size", type=float, default=None, help="Base font size"
     )
-    plotting_group.add_argument(
-        "--labelresolved",
-        "--label-resolved",
-        action="store_true",
-        help="Will create automatic interactive plots with all relevant bond labels. "
-        "If not set, plots will consists of summed cohps. (This argument works only"
-        "for interactive plots) ",
-    )
     group = plotting_group.add_mutually_exclusive_group()
     group.add_argument(
         "--spddos",
@@ -325,6 +304,53 @@ def get_parser() -> argparse.ArgumentParser:
         help="This option will force the automatc analysis to consider"
         " all bonds, not only cation-anion bonds (default) ",
     )
+    auto_group.add_argument(
+        "--noisecutoff",
+        type=float,
+        default=None,
+        help="Sets the lower limit of icohps or icoops or icobis considered in"
+        " automatic analysis",
+    )
+    auto_group.add_argument(
+        "--cutofficohp",
+        type=float,
+        default=0.1,
+        help="Only bonds that are stronger than cutoff_icoxx *strongest ICOHP "
+        " (ICOBI or ICOOP) will be considered for automatic analysis.",
+    )
+
+    analysis_switch = argparse.ArgumentParser(add_help=False)
+    analysis_group = analysis_switch.add_argument_group(
+        "Switch type of analysis or plots"
+    )
+    analysis_group.add_argument(
+        "--cobis",
+        "--cobis",
+        action="store_true",
+        help="This option will start automatic bonding analysis of COBIs or"
+        " plot COBIs",
+    )
+    analysis_group.add_argument(
+        "--coops",
+        "--coops",
+        action="store_true",
+        help="This option will start automatic bonding analysis of COOPs or"
+        " plot COOPs",
+    )
+
+    interactive_plotter_args = argparse.ArgumentParser(add_help=False)
+    interactive_plotter_group = interactive_plotter_args.add_argument_group(
+        "Options specific to interactive plotter"
+    )
+
+    interactive_plotter_group.add_argument(
+        "--labelresolved",
+        "--label-resolved",
+        action="store_true",
+        help="Will create automatic interactive plots with all relevant bond labels. "
+        "If not set, plots will consists of summed cohps. (This argument works only"
+        "for interactive plots) ",
+    )
 
     auto_group.add_argument(
         "--calcqualityjson",
@@ -376,13 +402,12 @@ def get_parser() -> argparse.ArgumentParser:
     )
     subparsers.add_parser(
         "description",
-        parents=[input_parent, auto_parent],
+        parents=[input_parent, auto_parent, analysis_switch],
         help=(
-            "Deliver a text description of the COHP results from Lobster "
-            "and VASP. Implementation of COBIs and COOPs will follow."
+            "Deliver a text description of the COHPs or COBIS or COOP results from Lobster "
+            "and VASP"
         ),
     )
-
     subparsers.add_parser(
         "calc-description",
         parents=[input_parent, auto_parent],
@@ -397,20 +422,25 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "automatic-plot",
         aliases=["automaticplot", "auto-plot", "autoplot"],
-        parents=[input_parent, auto_parent, plotting_parent],
+        parents=[input_parent, auto_parent, plotting_parent, analysis_switch],
         help=(
-            "Plot most important COHPs automatically. Implementation "
-            "of COBIs and COOPs will follow. This option also includes an automatic description."
+            "Plot most important COHPs or COBIs or COOPs automatically."
+            " This option also includes an automatic description."
         ),
     )
 
     subparsers.add_parser(
         "automatic-plot-ia",
         aliases=["automaticplotia", "autoplotia", "auto-plot-ia"],
-        parents=[input_parent, auto_parent, plotting_parent],
+        parents=[
+            input_parent,
+            auto_parent,
+            plotting_parent,
+            interactive_plotter_args,
+            analysis_switch,
+        ],
         help=(
-            "Creates an interactive plot of most important COHPs automatically. Implementation "
-            "of COBIs and COOPs will follow."
+            "Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."
         ),
     )
 
@@ -432,14 +462,14 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "plot-icohps-distances",
         aliases=["ploticohpsdistances"],
-        parents=[input_parent, plotting_parent],
+        parents=[input_parent, plotting_parent, analysis_switch],
         help=("Will plot icohps with respect to bond lengths"),
     )
 
     # Mode for normal plotting (without automatic detection of relevant COHPs)
     plot_parser = subparsers.add_parser(
         "plot",
-        parents=[input_parent, plotting_parent],
+        parents=[input_parent, plotting_parent, analysis_switch],
         help="Plot specific COHPs/COBIs/COOPs based on bond numbers.",
     )
 
@@ -559,6 +589,52 @@ def run(args):
                         "not found in the current directory"
                     )
 
+        if args.coops:
+            if args.action != "plot":
+                default_files_coops = {
+                    "icohplist": "ICOOPLIST.lobster",
+                    "cohpcar": "COOPCAR.lobster",
+                }
+            else:
+                default_files_coops = {
+                    "cohpcar": "COOPCAR.lobster",
+                }
+            for arg_name, file_name in default_files_coops.items():
+                setattr(args, arg_name, Path(file_name))
+                file_path = getattr(args, arg_name)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg_name, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and"
+                            " COOPCAR.lobster) not found in the directory"
+                        )
+
+        if args.cobis:
+            if args.action != "plot":
+                default_files_cobis = {
+                    "icohplist": "ICOBILIST.lobster",
+                    "cohpcar": "COBICAR.lobster",
+                }
+            else:
+                default_files_cobis = {
+                    "cohpcar": "COBICAR.lobster",
+                }
+            for arg_name, file_name in default_files_cobis.items():
+                setattr(args, arg_name, Path(file_name))
+                file_path = getattr(args, arg_name)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    if gz_file_path.exists():
+                        setattr(args, arg_name, gz_file_path)
+                    else:
+                        raise ValueError(
+                            "Files required for automatic analysis of COOPs (ICOBILIST.lobster and"
+                            " COBICAR.lobster) not found in the directory"
+                        )
+
     if args.action in ["automaticplot", "autoplot", "auto-plot"]:
         args.action = "automatic-plot"
 
@@ -584,6 +660,10 @@ def run(args):
             path_to_cohpcar=args.cohpcar,
             path_to_icohplist=args.icohplist,
             whichbonds=whichbonds,
+            are_coops=args.coops,
+            are_cobis=args.cobis,
+            noise_cutoff=args.noisecutoff,
+            cutoff_icohp=args.cutofficohp,
         )
 
         describe = Description(analysis_object=analyse)

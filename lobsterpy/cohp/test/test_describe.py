@@ -114,6 +114,36 @@ class TestDescribe(unittest.TestCase):
 
         self.describe_Nacl_madelung_all = Description(self.analyse_NaCl_madelung_all)
 
+        self.analyse_NaCl_comp_range_cobi = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            noise_cutoff=0.001,
+            are_cobis=True,
+        )
+
+        self.describe_Nacl_comp_range_cobi = Description(
+            self.analyse_NaCl_comp_range_cobi
+        )
+
+        self.analyse_CdF_comp_range_coop = Analysis(
+            path_to_poscar=TestDir / "TestData/CdF_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/CdF_comp_range/COOPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/CdF_comp_range/ICOOPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/CdF_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            noise_cutoff=0.001,
+            are_coops=True,
+        )
+
+        self.describe_CdF_comp_range_coop = Description(
+            self.analyse_CdF_comp_range_coop
+        )
+
         self.analyse_NaSi_madelung_all = Analysis(
             path_to_poscar=TestDir / "TestData/NaSi/POSCAR",
             path_to_cohpcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
@@ -440,6 +470,22 @@ class TestDescribe(unittest.TestCase):
                 "The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.",
                 "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 percent antibonding interaction below EFermi) bonds.",
                 "H2 has a 0 coordination environment. It has 0 bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_CdF_comp_range_coop.text,
+            [
+                "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOOP: 0.01, 40.984 percent "
+                "antibonding interaction below EFermi) bonds.",
+            ],
+        )
+        self.assertEqual(
+            self.describe_Nacl_comp_range_cobi.text,
+            [
+                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOBI: 0.08, 0.0 percent "
+                "antibonding interaction below EFermi) bonds.",
             ],
         )
 
