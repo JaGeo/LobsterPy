@@ -244,7 +244,7 @@ class TestGraph(unittest.TestCase):
 
         self.assertEqual(
             self.graph_NaCl_cation_anion.sg.graph.get_edge_data(0, 1)[4]["ICOHP"],
-            -0.56614
+            -0.56614,
         )
         self.assertEqual(
             self.graph_NaCl_cation_anion.sg.graph.get_edge_data(0, 1)[4][
