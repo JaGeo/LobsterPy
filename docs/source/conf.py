@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
+
 project = "LobsterPy"
 copyright = "2022-2023, LobsterPy Development Team"
 author = "Janine George"
@@ -49,13 +50,13 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = [
-    "../../lobsterpy/test",
-    "../../lobsterpy/cohp/test",
-    "../../lobsterpy/plotting/test",
-    "../../lobsterpy/TestData",
-    "Thumbs.db",
-    ".DS_Store",
+
+exclude_patterns = ["../../lobsterpy/test",
+                    "../../lobsterpy/cohp/test",
+                    "../../lobsterpy/plotting/test",
+                    "../../lobsterpy/TestData",
+                    "Thumbs.db",
+                    ".DS_Store",
 ]
 
 
@@ -69,16 +70,14 @@ def run_apidoc(_):
     excludes2 = glob.glob(os.path.join(output_path, "../../lobsterpy/plotting/test"))
     module = os.path.join(output_path, "../../lobsterpy")
     cmd_path = "sphinx-apidoc"
-    command = [
-        cmd_path,
-        "-e",
-        "-o",
-        output_path,
-        module,
-        " ".join(excludes),
-        " ".join(excludes1),
-        " ".join(excludes2),
-        "--force",
+    command = [cmd_path, 
+               "-e", "-o", 
+               output_path, 
+               module, 
+               " ".join(excludes),
+               " ".join(excludes1),
+               " ".join(excludes2), 
+               "--force"
     ]
     subprocess.check_call(command)
 
