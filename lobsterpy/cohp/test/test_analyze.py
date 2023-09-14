@@ -523,7 +523,7 @@ class TestAnalyse(unittest.TestCase):
         self.assertEqual(
             self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
                 "bonds"
-            ]["Cl"]["orbital_data"]["3s-3s"]["ICOHP_mean"]
+            ]["Cl"]["orbital_data"]["3s-3s"]["ICOHP_mean"],
             - 0.32,
         )
         self.assertAlmostEqual(
