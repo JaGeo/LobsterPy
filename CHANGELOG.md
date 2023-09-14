@@ -1,3 +1,17 @@
+## v0.3.1
+- ICOHP vs bond length plotter by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/137
+- Remove python 3.8 support by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/134
+- Add units to plotters by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/136
+- Bump sphinx-pdj-theme from 0.2.1 to 0.4.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/111
+- Doscar plotting by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/138
+- added lobster calc quality summary method to analyze module by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/115
+- Add featurizer by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/102
+- COBI COOP extension by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/128
+- Structure graphs by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/63
+- fix docs build, remove unwanted dependencies by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/146
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.3.0...v0.3.1
+
 ## v0.3.0
 - addition of an interactive plotter by @naik-aakash and @kaueltzen. Reviews by @ajjackson and @jageo
 ## v0.2.9

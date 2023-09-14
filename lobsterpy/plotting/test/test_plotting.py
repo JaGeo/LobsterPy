@@ -5,20 +5,22 @@ import gzip
 import json
 from pathlib import Path
 from plotly.io import read_json
-from pymatgen.io.lobster import Icohplist
+from pymatgen.electronic_structure.cohp import Cohp
+from pymatgen.io.lobster import Doscar, Icohplist
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import (
     PlainCohpPlotter,
     InteractiveCohpPlotter,
     IcohpDistancePlotter,
+    PlainDosPlotter,
 )
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
 
 
-class InteractiveCohpPlotterTest(unittest.TestCase):
+class PlainInteractiveCohpPlotterTest(unittest.TestCase):
     def setUp(self):
         self.analyse_NaCl = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
@@ -28,6 +30,18 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
             summed_spins=False,
+        )
+
+        self.analyse_NaCl_cobi = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            summed_spins=False,
+            noise_cutoff=0.001,
+            are_cobis=True,
         )
 
         self.analyse_NaSi = Analysis(
@@ -71,13 +85,41 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter.add_all_relevant_cohps(
             analyse=self.analyse_NaCl, label_resolved=False, suffix=""
         )
-        # self.assertIn("Please select COHP label here", self.iplotter._cohps)
         self.assertIn("All", self.iplotter._cohps)
         self.assertEqual(len(self.iplotter._cohps), 1)
 
         fig = self.iplotter.get_plot(invert_axes=False)
         ref_fig = read_json(
             TestDir / "TestData/interactive_plotter_ref/analyse_NaCl.json",
+            engine="json",
+        )
+        self.assertEqual(len(fig.data), len(ref_fig.data))
+        self.assertEqual(fig.layout, ref_fig.layout)
+        for og_trace in fig.data:
+            if og_trace in ref_fig.data:
+                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
+                for og_x, og_y, ref_x, ref_y in zip(
+                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
+                ):
+                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
+                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
+                self.assertEqual(og_trace.name, ref_trace.name)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.line, ref_trace.line)
+                self.assertEqual(og_trace.visible, ref_trace.visible)
+
+    def test_add_all_relevant_cohps_NaCl_cobi(self):
+        self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False, are_cobis=True)
+
+        self.iplotter.add_all_relevant_cohps(
+            analyse=self.analyse_NaCl_cobi, label_resolved=False, suffix=""
+        )
+        self.assertIn("All", self.iplotter._cohps)
+        self.assertEqual(len(self.iplotter._cohps), 1)
+
+        fig = self.iplotter.get_plot()
+        ref_fig = read_json(
+            TestDir / "TestData/interactive_plotter_ref/analyse_NaCl_cobi.json",
             engine="json",
         )
         self.assertEqual(len(fig.data), len(ref_fig.data))
@@ -246,7 +288,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.plotter = PlainCohpPlotter()
         fig = self.plotter.get_plot().gca()
 
-        self.assertEqual(fig.get_xlabel(), "$-$COHP")
+        self.assertEqual(fig.get_xlabel(), "$-$COHP (eV)")
 
         # interactive plotter
         self.iplotter = InteractiveCohpPlotter(are_cobis=True)
@@ -262,7 +304,21 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.iplotter = InteractiveCohpPlotter()
         fig = self.iplotter.get_plot()
 
-        self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP")
+        self.assertEqual(fig.layout.xaxis["title"]["text"], "−COHP (eV)")
+        self.assertEqual(fig.layout.yaxis["title"]["text"], "$E - E_f \\text{ (eV)}$")
+
+    def test_plaincohp_plotter_options(self):
+        self.plotter = PlainCohpPlotter(zero_at_efermi=False)
+
+        for label, cohp in self.lobsterpy_plot_data.items():
+            cohp_obj = Cohp.from_dict(cohp)
+            self.plotter.add_cohp(label=label, cohp=cohp_obj)
+
+        fig = self.plotter.get_plot(
+            integrated=True, xlim=(-5, 2), ylim=(-4, 4), invert_axes=False
+        ).gca()
+        self.assertEqual(fig.get_ylabel(), "$-$ICOHP (eV)")
+        self.assertEqual(fig.get_xlabel(), "$E$ (eV)")
 
 
 class IcohpDistancePlotterTest(unittest.TestCase):
@@ -429,27 +485,148 @@ class TestPlotterExceptions(unittest.TestCase):
 
             self.iplotter.add_cohps_from_plot_data(plot_data_dict=data, suffix="")
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "The data provided could not be converted to cohp object.Please recheck the input data",
-            )
+        self.assertEqual(
+            err.exception.__str__(),
+            "The data provided could not be converted to cohp object.Please recheck the input data",
+        )
 
         with self.assertRaises(Exception) as err:
             self.iplotter = InteractiveCohpPlotter(are_cobis=True, are_coops=True)
 
-            fig = self.iplotter.get_plot()
+            _ = self.iplotter.get_plot()
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "Plot data should not contain COBI and COOP data at same time",
-            )
+        self.assertEqual(
+            err.exception.__str__(),
+            "Plot data should not contain COBI and COOP data at same time",
+        )
 
         with self.assertRaises(Exception) as err:
             self.plotter = PlainCohpPlotter(are_cobis=True, are_coops=True)
 
-            fig = self.plotter.get_plot()
+            _ = self.plotter.get_plot()
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "Plot data should not contain COBI and COOP data at same time",
+        self.assertEqual(
+            err.exception.__str__(),
+            "Plot data should not contain COBI and COOP data at same time",
+        )
+
+
+class PlainDosPlotterTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.NaCl_dos = Doscar(
+            doscar=TestDir / "TestData/NaCl_comp_range/DOSCAR.LSO.lobster.gz",
+            structure_file=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+        )
+
+        self.K3Sb_dos = Doscar(
+            doscar=TestDir / "TestData/K3Sb/DOSCAR.LSO.lobster.gz",
+            structure_file=TestDir / "TestData/K3Sb/POSCAR.gz",
+        )
+
+    def test_NaCl_dos(self):
+        complete_dos_obj = self.NaCl_dos.completedos
+        # add and test total non normalized dos data and axis labels in the plot
+        dp = PlainDosPlotter(summed=False, stack=False, sigma=None)
+        dp.add_dos(dos=complete_dos_obj, label="Total")
+        plt = dp.get_plot(invert_axes=False, beta_dashed=True).gcf()
+
+        for energies in plt.axes[0].get_lines()[:-2]:
+            plot_en = energies.get_data()[0].tolist()
+            ref_en = complete_dos_obj.energies.tolist()
+            self.assertListEqual(plot_en, ref_en)
+
+        for plot_dos, ref_dos in zip(
+            plt.axes[0].get_lines()[:-2], complete_dos_obj.densities.values()
+        ):
+            dos_plot = [abs(dos) for dos in plot_dos.get_data()[1].tolist()]
+            dos_ref = [abs(dos) for dos in ref_dos.tolist()]
+            self.assertListEqual(dos_plot, dos_ref)
+
+        plt_axes = dp.get_plot(invert_axes=False, beta_dashed=True).gca()
+
+        self.assertEqual(plt_axes.get_xlabel(), "Energies (eV)")
+        self.assertEqual(plt_axes.get_ylabel(), "Density of states (states/eV)")
+
+        # add and test total normalized dos data and axis labels in the plot
+
+        complete_dos_obj_norm = self.NaCl_dos.completedos.get_normalized()
+        dp = PlainDosPlotter(summed=False, stack=False, sigma=None)
+        dp.add_dos(dos=complete_dos_obj_norm, label="Total")
+        plt = dp.get_plot(invert_axes=False, beta_dashed=True).gcf()
+
+        for energies in plt.axes[0].get_lines()[:-2]:
+            plot_en = energies.get_data()[0].tolist()
+            ref_en = complete_dos_obj_norm.energies.tolist()
+            self.assertListEqual(plot_en, ref_en)
+
+        for plot_dos, ref_dos in zip(
+            plt.axes[0].get_lines()[:-2], complete_dos_obj_norm.densities.values()
+        ):
+            dos_plot = [abs(dos) for dos in plot_dos.get_data()[1].tolist()]
+            dos_ref = [abs(dos) for dos in ref_dos.tolist()]
+            self.assertListEqual(dos_plot, dos_ref)
+
+        plt_axes = dp.get_plot(invert_axes=False, beta_dashed=True).gca()
+
+        self.assertEqual(plt_axes.get_xlabel(), "Energies (eV)")
+        self.assertEqual(plt_axes.get_ylabel(), "Density of states (states/eV/Å³)")
+
+    def test_K3Sb_dos(self):
+        complete_dos_obj = self.K3Sb_dos.completedos
+        # add and test total non normalized dos data and axis labels in the plot
+        dp = PlainDosPlotter(summed=True, stack=False, sigma=None)
+        dp.add_dos(dos=complete_dos_obj, label="Total")
+        plt = dp.get_plot(invert_axes=True, beta_dashed=True).gcf()
+
+        for energies in plt.axes[0].get_lines()[:1]:
+            plot_en = energies.get_data()[1].tolist()
+            ref_en = complete_dos_obj.energies.tolist()
+            self.assertListEqual(plot_en, ref_en)
+
+        for plot_dos in plt.axes[0].get_lines()[:1]:
+            dos_plot = [abs(dos) for dos in plot_dos.get_data()[0].tolist()]
+            dos_ref = [abs(dos) for dos in complete_dos_obj.get_densities().tolist()]
+            self.assertListEqual(dos_plot, dos_ref)
+
+        plt_axes = dp.get_plot(invert_axes=True, beta_dashed=True).gca()
+
+        self.assertEqual(plt_axes.get_ylabel(), "Energies (eV)")
+        self.assertEqual(plt_axes.get_xlabel(), "Density of states (states/eV)")
+
+        # add and test total non normalized smeared dos data and axis labels in the plot
+        dp = PlainDosPlotter(summed=True, stack=False, sigma=0.1)
+        dp.add_dos(dos=complete_dos_obj, label="Total")
+        plt = dp.get_plot(invert_axes=False, beta_dashed=True).gcf()
+
+        for energies in plt.axes[0].get_lines()[:1]:
+            plot_en = energies.get_data()[0].tolist()
+            ref_en = complete_dos_obj.energies.tolist()
+            self.assertListEqual(plot_en, ref_en)
+
+        for plot_dos in plt.axes[0].get_lines()[:1]:
+            dos_plot = [abs(dos) for dos in plot_dos.get_data()[1].tolist()]
+            dos_ref = [
+                abs(dos)
+                for dos in sum(
+                    complete_dos_obj.get_smeared_densities(sigma=0.1).values()
+                ).tolist()
+            ]
+            self.assertListEqual(dos_plot, dos_ref)
+
+        plt_axes = dp.get_plot(invert_axes=False, beta_dashed=True).gca()
+
+        self.assertEqual(plt_axes.get_xlabel(), "Energies (eV)")
+        self.assertEqual(plt_axes.get_ylabel(), "Density of states (states/eV)")
+
+    def test_dos_plotter_exceptions(self):
+        with self.assertRaises(ValueError) as err:
+            self.dp = PlainDosPlotter(summed=True, stack=False, sigma=None)
+
+            _ = self.dp.add_site_orbital_dos(
+                site_index=0, orbital="5_s", dos=self.NaCl_dos.completedos
             )
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "Requested orbital is not available for this site, available orbitals are 3s, 2p_y, 2p_z, 2p_x",
+        )

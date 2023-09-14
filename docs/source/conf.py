@@ -12,14 +12,16 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath("../"))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'Lobsterpy'
-copyright = '2022, Janine George'
-author = 'Janine George'
+
+project = "LobsterPy"
+copyright = "2022-2023, LobsterPy Development Team"
+author = "Janine George"
 
 
 # -- General configuration ---------------------------------------------------
@@ -43,12 +45,23 @@ autoclass_content = "both"
 source_suffix = [".rst", ".md"]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["../../lobsterpy/test","../../lobsterpy/cohp/test","../../lobsterpy/plotting/test","../../lobsterpy/TestData","Thumbs.db", ".DS_Store",]
+
+exclude_patterns = [
+    "../../lobsterpy/test",
+    "../../lobsterpy/cohp/test",
+    "../../lobsterpy/plotting/test",
+    "../../lobsterpy/featurize/test",
+    "../../lobsterpy/structuregraph/test",
+    "../../lobsterpy/TestData",
+    "Thumbs.db",
+    ".DS_Store",
+]
+
 
 def run_apidoc(_):
     import subprocess
@@ -58,9 +71,25 @@ def run_apidoc(_):
     excludes = glob.glob(os.path.join(output_path, "../../lobsterpy/cohp/test"))
     excludes1 = glob.glob(os.path.join(output_path, "../../lobsterpy/test"))
     excludes2 = glob.glob(os.path.join(output_path, "../../lobsterpy/plotting/test"))
+    excludes3 = glob.glob(os.path.join(output_path, "../../lobsterpy/featurize/test"))
+    excludes4 = glob.glob(
+        os.path.join(output_path, "../../lobsterpy/structuregraph/test")
+    )
     module = os.path.join(output_path, "../../lobsterpy")
     cmd_path = "sphinx-apidoc"
-    command = [cmd_path, "-e", "-o", output_path, module, " ".join(excludes)," ".join(excludes1)," ".join(excludes2), "--force"]
+    command = [
+        cmd_path,
+        "-e",
+        "-o",
+        output_path,
+        module,
+        " ".join(excludes),
+        " ".join(excludes1),
+        " ".join(excludes2),
+        " ".join(excludes3),
+        " ".join(excludes4),
+        "--force",
+    ]
     subprocess.check_call(command)
 
 
@@ -73,9 +102,9 @@ def setup(app):
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_book_theme'
+html_theme = "sphinx_book_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]

@@ -30,8 +30,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest pytest-mock pytest-split pytest-cov
         python -m pip install types-setuptools
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install -e .
+        pip install -e .[featurizer]
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -42,13 +41,13 @@ jobs:
       # run this locally to update tests durations
       # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./lobsterpy/TestData/.pytest-split-durations --store-durations
       run: |
-        pytest --cov=lobsterpy --cov-report term-missing --cov-append  --splits 5 --group ${{ matrix.split }} --durations-path ./lobsterpy/TestData/.pytest-split-durations
+        pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 5 --group ${{ matrix.split }} --durations-path ./lobsterpy/TestData/.pytest-split-durations
     - name: Upload coverage
       uses: actions/upload-artifact@v3
       with:
         name: coverage-${{ matrix.split }}
         path: .coverage
-        
+
   coverage:
       needs: build
       runs-on: ubuntu-latest
