@@ -12,7 +12,7 @@ readme = "README.md"
 keywords = ["high-throughput", "automated", "lobsteroutput", "bonding-analysis"]
 license = { text = "BSD 3-Clause" }
 authors = [{ name = "Janine George", email = "janine.george@bam.de" }]
-version = "0.3.0"
+version = "0.3.1"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
@@ -24,12 +24,9 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-     "pymatgen>=2023.1.20",
+     "pymatgen>=2023.9.10",
      "numpy",
      "typing",
-     "Sphinx>=4",
-     "sphinx-argparse==0.4.0",
-     "sphinx-pdj-theme==0.2.1",
 ]
 
 [project.urls]
@@ -37,6 +34,20 @@ homepage = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
 repository = "https://github.com/JaGeo/LobsterPy"
 documentation = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
 changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
+
+[project.optional-dependencies]
+featurizer = ["mendeleev==0.12.1"]
+docs = ["Sphinx==4.5.0",
+    "jupyter",
+    "sphinx-argparse",
+    "sphinx-book-theme==0.3.3",
+    "m2r2",
+    "myst-parser",
+    "docutils",
+    "mendeleev==0.12.1",
+    "pymatgen>=2023.9.10",
+    "sphinx-argparse==0.4.0",
+    "typing"]
 
 [project.scripts]
 lobsterpy = "lobsterpy.cli:main"
@@ -121,7 +132,7 @@ exclude_lines = [
 omit = [
     # omit anything in test directory anywhere
     "*/test/*",
-    "*/*/test/",
+    "*/*/test/*",
 ]
 
 [tool.mypy]

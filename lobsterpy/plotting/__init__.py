@@ -5,21 +5,32 @@
 Here classes and functions to plot Lobster outputs are provided
 """
 
-from typing import Any, Tuple, List, Dict
-
+import typing
+from typing import (
+    Any,
+    Tuple,
+    Dict,
+    TYPE_CHECKING,
+    List,
+    Literal,
+    Sequence,
+    cast,
+    no_type_check,
+)
 from itertools import cycle
 import matplotlib
 import numpy as np
+from numpy.typing import ArrayLike
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
 from pymatgen.io.lobster import Icohplist
 from pymatgen.electronic_structure.core import Spin
+from pymatgen.electronic_structure.dos import LobsterCompleteDos
 from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection
-from pymatgen.electronic_structure.plotter import CohpPlotter
+from pymatgen.electronic_structure.plotter import CohpPlotter, DosPlotter
 import plotly.graph_objs as go
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
-
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
@@ -100,13 +111,13 @@ class PlainCohpPlotter(CohpPlotter):
                 "Plot data should not contain COBI and COOP data at same time"
             )
         else:
-            cohp_label = "COHP"
+            cohp_label = "COHP" + " (eV)"
 
         if plot_negative is None:
             plot_negative = (not self.are_coops) and (not self.are_cobis)
 
         if integrated:
-            cohp_label = "I" + cohp_label + " (eV)"
+            cohp_label = "I" + cohp_label
 
         if plot_negative:
             cohp_label = "$-$" + cohp_label
@@ -236,6 +247,266 @@ class PlainCohpPlotter(CohpPlotter):
         kernel = norm.pdf(kernel_x, scale=sigma)
 
         return convolve(population, kernel, mode="same") / kernel.sum()
+
+
+class PlainDosPlotter(DosPlotter):
+    """
+    Modified Pymatgen DosPlotter with styling removed
+
+    This allows the styling to be manipulated more easily using matplotlib
+    style sheets. It also adds additional functionalities to plotter
+    """
+
+    def __init__(
+        self, zero_at_efermi: bool = True, stack: bool = False, sigma=None, summed=False
+    ) -> None:
+        """
+        Args:
+            zero_at_efermi (bool): Whether to shift all Dos to have zero energy at the
+                fermi energy. Defaults to True.
+            stack (bool): Whether to plot the DOS as a stacked area graph
+            sigma (float): Specify a standard deviation for Gaussian smearing
+                the DOS for nicer looking plots. Defaults to None for no
+                smearing.
+            summed (bool): Whether to plot the summed DOS
+        """
+        self.zero_at_efermi = zero_at_efermi
+        self.stack = stack
+        self.sigma = sigma
+        self._norm_val = True
+        self._doses = {}  # type: ignore
+        self.summed = summed
+
+    def add_dos(self, label: str, dos: LobsterCompleteDos) -> None:
+        """Adds a dos for plotting.
+
+        Args:
+            label: label for the DOS. Must be unique.
+            dos: LobsterCompleteDos object
+        """
+        if dos.norm_vol is None:
+            self._norm_val = False
+        energies = dos.energies
+        if self.summed:
+            if self.sigma:
+                smeared_densities = dos.get_smeared_densities(self.sigma)
+                if Spin.down in smeared_densities:
+                    added_densities = (
+                        smeared_densities[Spin.up] + smeared_densities[Spin.down]
+                    )
+                    densities = {Spin.up: added_densities}
+                else:
+                    print(smeared_densities)
+                    densities = smeared_densities
+            else:
+                densities = {Spin.up: dos.get_densities()}
+        else:
+            densities = (
+                dos.get_smeared_densities(self.sigma) if self.sigma else dos.densities
+            )
+
+        efermi = dos.efermi
+
+        self._doses[label] = {
+            "energies": energies,
+            "densities": densities,
+            "efermi": efermi,
+        }
+
+    def add_site_orbital_dos(self, dos: LobsterCompleteDos, orbital, site_index):
+        """Adds a dos for plotting.
+
+        Args:
+            dos: LobsterCompleteDos object
+            orbital: Orbitals name at the site. Must be unique.
+            site_index: site index in the structure
+        """
+        if dos.norm_vol is None:
+            self._norm_val = False
+        site = dos.structure.sites[site_index]
+
+        avail_orbs = list(dos.pdos[site])
+        if orbital not in avail_orbs:
+            str_orbs = ", ".join(avail_orbs)
+            raise ValueError(
+                f"Requested orbital is not available for this site, "
+                f"available orbitals are {str_orbs}"
+            )
+
+        dos_obj = dos.get_site_orbital_dos(site=site, orbital=orbital)
+        label = site.species_string + str(site_index + 1) + f": {orbital}"
+
+        energies = dos_obj.energies
+        if self.summed:
+            if self.sigma:
+                smeared_densities = dos_obj.get_smeared_densities(self.sigma)
+                if Spin.down in smeared_densities:
+                    added_densities = (
+                        smeared_densities[Spin.up] + smeared_densities[Spin.down]
+                    )
+                    densities = {Spin.up: added_densities}
+                else:
+                    densities = smeared_densities
+            else:
+                densities = {Spin.up: dos_obj.get_densities()}
+        else:
+            densities = (
+                dos_obj.get_smeared_densities(self.sigma)
+                if self.sigma
+                else dos_obj.densities
+            )
+
+        efermi = dos_obj.efermi
+
+        self._doses[label] = {
+            "energies": energies,
+            "densities": densities,
+            "efermi": efermi,
+        }
+
+    @typing.no_type_check
+    def get_plot(
+        self,
+        ax: "matplotlib.axes.Axes | None" = None,
+        xlim: "Tuple[float, float] | None" = None,
+        ylim: "Tuple[float, float] | None" = None,
+        invert_axes: bool = False,
+        beta_dashed: bool = False,
+        sigma: "float | None" = None,
+    ):
+        """
+        Get a matplotlib plot showing the COHP.
+
+        Args:
+            ax: Existing Matplotlib Axes object to plot to.
+            xlim: Specifies the x-axis limits. Defaults to None for
+                automatic determination.
+            ylim: Specifies the y-axis limits. Defaults to None for
+                automatic determination.
+            invert_axes: Put the energies onto the y-axis, which is
+                common in chemistry.
+            beta_dashed: Plots the beta spin channel with a dashed line. Defaults to False
+            sigma: Standard deviation of Gaussian broadening applied to
+                population data. If this is unset (None) no broadening will be
+                added.
+
+        Returns:
+            A matplotlib object.
+        """
+        ys = None
+        all_densities = []
+        all_energies = []
+
+        colors = matplotlib.rcParams["axes.prop_cycle"].by_key()["color"]
+        n_colors = len(colors)
+
+        if ax is None:
+            _, ax = plt.subplots()
+
+        # Note that this complicated processing of energies is to allow for
+        # stacked plots in matplotlib.
+        for dos in self._doses.values():
+            energies = dos["energies"]
+            densities = dos["densities"]
+            if not ys:
+                ys = {
+                    Spin.up: np.zeros(energies.shape),
+                    Spin.down: np.zeros(energies.shape),
+                }
+            new_dens = {}
+            for spin in [Spin.up, Spin.down]:
+                if spin in densities:
+                    if self.stack:
+                        ys[spin] += densities[spin]
+                        new_dens[spin] = ys[spin].copy()
+                    else:
+                        new_dens[spin] = densities[spin]
+            all_energies.append(energies)
+            all_densities.append(new_dens)
+
+        keys = list(reversed(self._doses))
+        all_densities.reverse()
+        all_energies.reverse()
+        all_pts = []
+
+        for idx, key in enumerate(keys):
+            for spin in [Spin.up, Spin.down]:
+                if spin in all_densities[idx]:
+                    energy = all_energies[idx]
+                    densities = list(int(spin) * all_densities[idx][spin])
+                    if invert_axes:
+                        x = densities
+                        y = energy
+                    else:
+                        x = energy
+                        y = densities
+                    all_pts.extend(list(zip(x, y)))
+                    if self.stack:
+                        ax.fill(x, y, color=colors[idx % n_colors], label=str(key))
+                    elif spin == Spin.down and beta_dashed:
+                        ax.plot(
+                            x,
+                            y,
+                            color=colors[idx % n_colors],
+                            label=str(key),
+                            linestyle="--",
+                            linewidth=3,
+                        )
+                    else:
+                        ax.plot(
+                            x,
+                            y,
+                            color=colors[idx % n_colors],
+                            label=str(key),
+                            linewidth=3,
+                        )
+
+        if xlim:
+            ax.set_xlim(xlim)
+        if ylim:
+            ax.set_ylim(ylim)
+        elif not invert_axes:
+            xlim = ax.get_xlim()
+            relevant_y = [p[1] for p in all_pts if xlim[0] < p[0] < xlim[1]]
+            ax.set_ylim((min(relevant_y), max(relevant_y)))
+        if not xlim and invert_axes:
+            ylim = ax.get_ylim()
+            relevant_y = [p[0] for p in all_pts if ylim[0] < p[1] < ylim[1]]
+            ax.set_xlim((min(relevant_y), max(relevant_y)))
+
+        if self.zero_at_efermi:
+            xlim = ax.get_xlim()
+            ylim = ax.get_ylim()
+            ax.plot(xlim, [0, 0], "k--", linewidth=2) if invert_axes else ax.plot(
+                [0, 0], ylim, "k--", linewidth=2
+            )
+
+        if invert_axes:
+            ax.set_ylabel("Energies (eV)")
+            ax.set_xlabel(
+                f"Density of states (states/eV{'/Å³' if self._norm_val else ''})"
+            )
+            ax.axvline(x=0, color="k", linestyle="--", linewidth=2)
+        else:
+            ax.set_xlabel("Energies (eV)")
+            if self._norm_val:
+                ax.set_ylabel("Density of states (states/eV/Å³)")
+            else:
+                ax.set_ylabel("Density of states (states/eV)")
+            ax.axhline(y=0, color="k", linestyle="--", linewidth=2)
+
+        # Remove duplicate labels with a dictionary
+        handles, labels = ax.get_legend_handles_labels()
+        label_dict = dict(zip(labels, handles))
+        ax.legend(label_dict.values(), label_dict.keys())
+        legend_text = (
+            ax.get_legend().get_texts()
+        )  # all the text.Text instance in the legend
+        plt.setp(legend_text, fontsize=30)
+        plt.tight_layout()
+        _ = ax.legend()
+
+        return plt
 
 
 class InteractiveCohpPlotter(CohpPlotter):
@@ -563,21 +834,21 @@ class InteractiveCohpPlotter(CohpPlotter):
                 "Plot data should not contain COBI and COOP data at same time"
             )
         else:
-            cohp_label = "COHP"
+            cohp_label = "COHP" + " (eV)"
 
         if plot_negative is None:
             plot_negative = (not self.are_coops) and (not self.are_cobis)
 
         if integrated:
-            cohp_label = "I" + cohp_label + " (eV)"
+            cohp_label = "I" + cohp_label
 
         if plot_negative:
             cohp_label = "\u2212" + cohp_label
 
         if self.zero_at_efermi:
-            energy_label = "$E - E_f$ (eV)"
+            energy_label = "$E - E_f \\text{ (eV)}$"
         else:
-            energy_label = "$E$ (eV)"
+            energy_label = "$E \\text{ (eV)}$"
 
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
         if colors is None:

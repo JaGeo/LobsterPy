@@ -41,6 +41,10 @@ class Description:
         self.condensed_bonding_analysis = (
             self.analysis_object.condensed_bonding_analysis
         )
+        # set type of population analyzed
+        type_pop = self.analysis_object._get_pop_type()
+        # set units for populations
+        units = " eV" if type_pop == "COHP" else ""
         if self.analysis_object.whichbonds == "cation-anion":
             relevant_cations = ", ".join(
                 [
@@ -72,10 +76,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, 0.0 percent antibonding interaction below EFermi)"
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
                         if self.analysis_object.orbital_resolved:
                             if properties["orbital_data"]:
@@ -122,10 +126,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, "
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, "
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
@@ -235,10 +239,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, 0.0 percent antibonding interaction below EFermi)"
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
                         if self.analysis_object.orbital_resolved:
                             if properties["orbital_data"]:
@@ -282,10 +286,10 @@ class Description:
                             + item["ion"]
                             + "-"
                             + str(type)
-                            + " (mean ICOHP: "
+                            + f" (mean I{type_pop}: "
                             ""
-                            + properties["ICOHP_mean"]
-                            + " eV, "
+                            + properties[f"I{type_pop}_mean"]
+                            + f"{units}, "
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
@@ -386,7 +390,7 @@ class Description:
         hide=False,
     ):
         """
-        Will automatically generate plots of the most relevant COHP
+        Will automatically generate plots of the most relevant COHP or COOP or COBI
 
         Args:
             save (bool): will save the plot to a file
@@ -416,7 +420,10 @@ class Description:
         ):
             namecation = str(structure[ication].specie)
 
-            cp = PlainCohpPlotter()
+            cp = PlainCohpPlotter(
+                are_coops=self.analysis_object.are_coops,
+                are_cobis=self.analysis_object.are_cobis,
+            )
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
@@ -490,7 +497,10 @@ class Description:
                 if label is not None:
                     cba_cohp_plot_data[label_str + label] = cohp
 
-        ip = InteractiveCohpPlotter()
+        ip = InteractiveCohpPlotter(
+            are_coops=self.analysis_object.are_coops,
+            are_cobis=self.analysis_object.are_cobis,
+        )
         if label_resolved or orbital_resolved:
             ip.add_all_relevant_cohps(
                 analyse=self.analysis_object,
@@ -724,3 +734,106 @@ class Description:
         """
         for textpart in self.text:
             print(textpart)
+
+    @staticmethod
+    def get_calc_quality_description(quality_dict):
+        """
+        This method will generate a text description of the LOBSTER calculation quality
+
+        Args:
+            quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
+        """
+        text_des = []
+
+        for key, val in quality_dict.items():
+            if key == "minimal_basis":
+                if val:
+                    text_des.append("The LOBSTER calculation used minimal basis.")
+                if not val:
+                    text_des.append(
+                        "Consider rerunning the calculation with the minimum basis as well. Choosing a "
+                        "larger basis set is only recommended if you see a significant improvement of "
+                        "the charge spilling."
+                    )
+
+            elif key == "charge_spilling":
+                text_des.append(
+                    "The absolute and total charge spilling for the calculation is {} and {} %, "
+                    "respectively.".format(
+                        quality_dict[key]["abs_charge_spilling"],
+                        quality_dict[key]["abs_total_spilling"],
+                    )
+                )
+            elif key == "band_overlaps":
+                if quality_dict[key]["file_exists"]:
+                    if quality_dict[key]["has_good_quality_maxDeviation"]:
+                        text_des.append(
+                            "The bandOverlaps.lobster file is generated during the LOBSTER run. This "
+                            "indicates that the projected wave function is not completely orthonormalized; "
+                            "however, the maximal deviation values observed compared to the identity matrix "
+                            "is below the threshold of 0.1."
+                        )
+                    else:
+                        text_des.append(
+                            "The bandOverlaps.lobster file is generated during the LOBSTER run. This "
+                            "indicates that the projected wave function is not completely orthonormalized. "
+                            "The maximal deviation value from the identity matrix is {}, and there are "
+                            "{} percent k-points above the deviation threshold of 0.1. Please check the "
+                            "results of other quality checks like dos comparisons, charges, "
+                            "charge spillings before using the results for further "
+                            "analysis.".format(
+                                quality_dict[key]["max_deviation"],
+                                quality_dict[key]["percent_kpoints_abv_limit"],
+                            )
+                        )
+                else:
+                    text_des.append(
+                        "The projected wave function is completely orthonormalized as no "
+                        "bandOverlaps.lobster file is generated during the LOBSTER run."
+                    )
+
+            elif key == "Charges":
+                if val:
+                    for charge in ["Mulliken", "Loewdin"]:
+                        if val["BVA_{}_agree".format(charge)]:
+                            text_des.append(
+                                "The atomic charge signs from {} population analysis agree "
+                                "with the bond valence analysis.".format(charge)
+                            )
+                        if not val["BVA_{}_agree".format(charge)]:
+                            text_des.append(
+                                "The atomic charge signs from {} population analysis do not agree with "
+                                "the bond valence analysis.".format(charge)
+                            )
+                else:
+                    text_des.append(
+                        "Oxidation states from BVA analyzer cannot be determined. "
+                        "Thus BVA charge comparison is not conducted."
+                    )
+
+            elif key == "DOS_comparisons":
+                comp_types = []
+                tani_index = []
+                for orb in val:
+                    if orb.split("_")[-1] in ["s", "p", "d", "f", "summed"]:
+                        comp_types.append(orb.split("_")[-1])
+                        tani_index.append(str(val[orb]))
+                text_des.append(
+                    "The Tanimoto index from DOS comparisons in the energy range between {}, {} eV "
+                    "for {} orbitals are: {}.".format(
+                        val["e_range"][0],
+                        val["e_range"][1],
+                        ", ".join(comp_types),
+                        ", ".join(tani_index),
+                    )
+                )
+
+        return text_des
+
+    @staticmethod
+    def write_calc_quality_description(calc_quality_text):
+        """
+        This method will print the calculation quality description to the screen
+
+        """
+        print(" ".join(calc_quality_text))
