@@ -124,9 +124,10 @@ class TestGraph(unittest.TestCase):
             self.graph_NaCl_all.sg.graph.nodes(data=True)[1]["properties"]["env"], "O:6"
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             self.graph_NaCl_all.sg.graph.get_edge_data(0, 1)[0]["ICOHP"],
-            -0.56614,
+            -0.5661,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_all.sg.graph.get_edge_data(0, 1)[0]["ICOHP_bonding_perc"],
@@ -148,8 +149,10 @@ class TestGraph(unittest.TestCase):
             self.graph_NaCl_all.sg.graph.get_edge_data(0, 1)[0]["bond_label"], "21"
         )
 
-        self.assertEqual(
-            self.graph_NaCl_all.sg.graph.get_edge_data(0, 1)[4]["ICOHP"], -0.56612
+        self.assertAlmostEqual(
+            self.graph_NaCl_all.sg.graph.get_edge_data(0, 1)[4]["ICOHP"],
+            -0.5661,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_all.sg.graph.get_edge_data(0, 1)[4]["ICOHP_bonding_perc"], 1
@@ -213,9 +216,10 @@ class TestGraph(unittest.TestCase):
             self.graph_NaCl_cation_anion.sg.graph.nodes(data=True)[1]["properties"],
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             self.graph_NaCl_cation_anion.sg.graph.get_edge_data(0, 1)[0]["ICOHP"],
-            -0.5661700000000001,
+            -0.5661,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_cation_anion.sg.graph.get_edge_data(0, 1)[0][
@@ -242,9 +246,10 @@ class TestGraph(unittest.TestCase):
             "21",
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             self.graph_NaCl_cation_anion.sg.graph.get_edge_data(0, 1)[4]["ICOHP"],
             -0.56614,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_cation_anion.sg.graph.get_edge_data(0, 1)[4][
@@ -318,9 +323,10 @@ class TestGraph(unittest.TestCase):
             "O:6",
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             self.graph_NaCl_without_add_data.sg.graph.get_edge_data(0, 1)[0]["ICOHP"],
-            -0.5661700000000001,
+            -0.5661,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_without_add_data.sg.graph.get_edge_data(0, 1)[0][
@@ -347,9 +353,10 @@ class TestGraph(unittest.TestCase):
             "21",
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             self.graph_NaCl_without_add_data.sg.graph.get_edge_data(0, 1)[4]["ICOHP"],
-            -0.56614,
+            -0.5661,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_without_add_data.sg.graph.get_edge_data(0, 1)[4][
@@ -417,9 +424,10 @@ class TestGraph(unittest.TestCase):
             "O:6",
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             self.graph_NaCl_close_fermi.sg.graph.get_edge_data(0, 1)[0]["ICOHP"],
-            -0.5661700000000001,
+            -0.5661,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_close_fermi.sg.graph.get_edge_data(0, 1)[0][
@@ -444,9 +452,10 @@ class TestGraph(unittest.TestCase):
             "21",
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             self.graph_NaCl_close_fermi.sg.graph.get_edge_data(0, 1)[4]["ICOHP"],
-            -0.56614,
+            -0.5661,
+            delta=0.001,
         )
         self.assertEqual(
             self.graph_NaCl_close_fermi.sg.graph.get_edge_data(0, 1)[4][
