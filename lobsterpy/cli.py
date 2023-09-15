@@ -275,14 +275,30 @@ def get_parser() -> argparse.ArgumentParser:
         "--orbital",
         "--orb",
         type=str,
+        nargs="+",
         default=None,
         help="Orbital name for the site for which DOS are to be added",
     )
     plotting_group.add_argument(
         "--site",
         type=int,
+        nargs="+",
         default=None,
         help="Site index in the crystal structure for " "which DOS need to be added",
+    )
+
+    advanced_plotting_args = argparse.ArgumentParser(add_help=False)
+    advanced_plotting_args.add_argument(
+        "--invertaxis",
+        "--invert-axis",
+        action="store_true",
+        help="Will invert plot axis of DOS or COOPs COHPs or COBIS",
+    )
+    advanced_plotting_args.add_argument(
+        "--addtotaldos",
+        "--add-total-dos",
+        action="store_true",
+        help="Will all total dos to the DOS plot",
     )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
@@ -456,7 +472,7 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "plot-dos",
         aliases=["plotdos"],
-        parents=[input_parent, plotting_parent],
+        parents=[input_parent, plotting_parent, advanced_plotting_args],
         help=("Will plot DOS from lobster computation."),
     )
     subparsers.add_parser(
@@ -1039,8 +1055,8 @@ def run(args):
         lobs_dos = Doscar(doscar=args.doscar, structure_file=args.poscar).completedos
 
         dos_plotter = PlainDosPlotter(summed=args.summedspins, sigma=args.sigma)
-
-        dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
+        if args.addtotaldos:
+            dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
         if args.spddos:
             dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_spd_dos())
 
@@ -1054,16 +1070,38 @@ def run(args):
                     label = f"{element}: {orbital.name}"
                     dos_plotter.add_dos_dict(dos_dict={label: dos})
 
-        if args.site and args.orbital:
-            dos_plotter.add_site_orbital_dos(
-                site_index=args.site, orbital=args.orbital, dos=lobs_dos
-            )
-        elif args.site and not args.orbital:
+        if args.site is not None and args.orbital:
+            if len(args.site) > len(args.orbital):
+                for site in args.site:
+                    for orbital in args.orbital:
+                        dos_plotter.add_site_orbital_dos(
+                            site_index=site, orbital=orbital, dos=lobs_dos
+                        )
+            elif len(args.orbital) > len(args.site):
+                for orbital in args.orbital:
+                    for site in args.site:
+                        dos_plotter.add_site_orbital_dos(
+                            site_index=site, orbital=orbital, dos=lobs_dos
+                        )
+            else:
+                for site, orbital in zip(args.site, args.orbital):
+                    dos_plotter.add_site_orbital_dos(
+                        site_index=site, orbital=orbital, dos=lobs_dos
+                    )
+
+        elif (args.site is None or not args.orbital) and (
+            not args.element and not args.spddos and not args.elementdos
+        ):
             raise ValueError(
                 "Please set both args i.e site and orbital to generate the plot"
             )
 
-        plt = dos_plotter.get_plot(xlim=args.xlim, ylim=args.ylim, beta_dashed=True)
+        plt = dos_plotter.get_plot(
+            xlim=args.xlim,
+            ylim=args.ylim,
+            beta_dashed=True,
+            invert_axes=args.invertaxis,
+        )
 
         ax = plt.gca()
         ax.set_title(args.title)
