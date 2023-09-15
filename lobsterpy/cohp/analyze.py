@@ -360,7 +360,9 @@ class Analysis:
 
         return label_data
 
-    def _get_orbital_resolved_data(self, nameion, iion, labels, bond_resolved_labels):
+    def _get_orbital_resolved_data(
+        self, nameion, iion, labels, bond_resolved_labels, type_pop
+    ):
         """
         Method to retrieve orbital wise analysis data
 
@@ -369,9 +371,10 @@ class Analysis:
             iion: index of symmetrically relevant cation or anion
             labels: list of bond label names
             bond_resolved_labels: dict of bond labels from ICOHPLIST resolved for each bond
+            type_pop: population type analyzed. eg. COHP or COOP or COBI
 
         Returns:
-            dict consisting of relevant orbitals (contribution > 10 % to overall ICOHP),
+            dict consisting of relevant orbitals (contribution > 10 % to overall ICOHP or ICOBI or ICOOP),
             bonding and antibonding percentages with bond label names as keys.
         """
         orb_resolved_bond_info = {}
@@ -430,8 +433,8 @@ class Analysis:
                             label_list.append(label)
 
                     orb_bonding_dict_data[orbital] = {
-                        "ICOHP_mean": round(np.mean(orb_icohp_list), 2),
-                        "ICOHP_sum": round(sum(orb_icohp_list), 2),
+                        f"I{type_pop}_mean": round(np.mean(orb_icohp_list), 2),
+                        f"I{type_pop}_sum": round(sum(orb_icohp_list), 2),
                         "orb_contribution_mean_perc": round(np.mean(orb_contri), 4),
                         "bonding": {"integral": bndg, "perc": per_bndg},
                         "antibonding": {"integral": antibndg, "perc": per_anti},
@@ -901,6 +904,7 @@ class Analysis:
                                         iion=ication,
                                         labels=labels,
                                         bond_resolved_labels=bond_resolved_labels,
+                                        type_pop=type_pop,
                                     )
                                 )
                                 for k3, v3 in orb_resolved_bond_info.items():
@@ -963,6 +967,7 @@ class Analysis:
                                         iion=iion,
                                         labels=labels,
                                         bond_resolved_labels=bond_resolved_labels,
+                                        type_pop=type_pop,
                                     )
                                 )
                                 for k3, v3 in orb_resolved_bond_info.items():

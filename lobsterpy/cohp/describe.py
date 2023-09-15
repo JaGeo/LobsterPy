@@ -113,7 +113,7 @@ class Description:
                                 )
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
-                                    " with summed ICOHP as reference for "
+                                    f" with summed I{type_pop} as reference for "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
@@ -165,7 +165,7 @@ class Description:
                                 )
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
-                                    " with summed ICOHP as reference for "
+                                    f" with summed I{type_pop} as reference for "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
@@ -271,9 +271,12 @@ class Description:
                                     + " bond, respectively."
                                 )
                             else:
+                                percentage_cutoff = round(
+                                    self.analysis_object.cutoff_icohp * 100, 2
+                                )
                                 orb_info.append(
-                                    "No individual orbital interactions detected above 10 percent"
-                                    " with summed ICOHP as reference for "
+                                    f"No individual orbital interactions detected above {percentage_cutoff} percent"
+                                    f" with summed I{type_pop} as reference for "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
@@ -321,9 +324,12 @@ class Description:
                                     + " bond, respectively."
                                 )
                             else:
+                                percentage_cutoff = round(
+                                    self.analysis_object.cutoff_icohp * 100, 2
+                                )
                                 orb_info.append(
-                                    "No individual orbital interactions detected above 10 percent"
-                                    " with summed ICOHP as reference for "
+                                    f"No individual orbital interactions detected above {percentage_cutoff} percent"
+                                    f" with summed I{type_pop} as reference for "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
