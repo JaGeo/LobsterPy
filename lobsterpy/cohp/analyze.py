@@ -407,15 +407,24 @@ class Analysis:
                         label_list=bond_labels,
                         orbital_list=[orbital] * len(bond_labels),
                     )
-
-                    (
-                        antibndg,
-                        per_anti,
-                        bndg,
-                        per_bndg,
-                    ) = self._integrate_antbdstates_below_efermi(
-                        cohp=cohps, start=self.start
-                    )
+                    if type_pop.lower == "cohp":
+                        (
+                            antibndg,
+                            per_anti,
+                            bndg,
+                            per_bndg,
+                        ) = self._integrate_antbdstates_below_efermi(
+                            cohp=cohps, start=self.start
+                        )
+                    else:
+                        (
+                            bndg,
+                            per_bndg,
+                            antibndg,
+                            per_anti,
+                        ) = self._integrate_antbdstates_below_efermi(
+                            cohp=cohps, start=self.start
+                        )
                     orb_icohp_list = []
                     orb_contri = []
                     label_list = []
