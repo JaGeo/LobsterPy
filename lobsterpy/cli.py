@@ -294,6 +294,12 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Will invert plot axis of DOS or COOPs COHPs or COBIS",
     )
+    advanced_plotting_args.add_argument(
+        "--addtotaldos",
+        "--add-total-dos",
+        action="store_true",
+        help="Will all total dos to the DOS plot",
+    )
 
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Automatic analysis")
@@ -1049,8 +1055,8 @@ def run(args):
         lobs_dos = Doscar(doscar=args.doscar, structure_file=args.poscar).completedos
 
         dos_plotter = PlainDosPlotter(summed=args.summedspins, sigma=args.sigma)
-
-        dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
+        if args.addtotaldos:
+            dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
         if args.spddos:
             dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_spd_dos())
 
