@@ -1003,7 +1003,6 @@ class IcohpDistancePlotter:
     def get_plot(
         self,
         ax: "matplotlib.axes.Axes | None" = None,
-        style: "matplotlib.plot.style| None" = None,
         marker_size: float = 50,
         marker_style: str = "o",
         xlim: "Tuple[float, float] | None" = None,
@@ -1015,8 +1014,6 @@ class IcohpDistancePlotter:
 
         Args:
             ax: Existing Matplotlib Axes object to plot to.
-            style: matplotlib style string, if None, will
-                use lobsterpy style by default.
             marker_size: sets the size of markers in scatter plots
             marker_style: sets type of marker used in plot
             xlim: Specifies the x-axis limits. Defaults to None for
