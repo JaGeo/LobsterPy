@@ -621,7 +621,7 @@ class TestCLI:
             ax = fig.gca()
 
             return {
-                "xydata": [line.get_xydata().tolist() for line in ax.lines],
+                "xydata": [line.get_xydata().tolist() for line in ax.lines],  # type: ignore
                 "facecolor": ax.get_facecolor(),
                 "size": fig.get_size_inches().tolist(),
             }
