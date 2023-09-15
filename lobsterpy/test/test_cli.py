@@ -445,6 +445,59 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        args = [
+            "plot-dos",
+            "--site",
+            "1",
+            "--orbital",
+            "all",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        args = [
+            "plot-dos",
+            "--site",
+            "0",
+            "1",
+            "--orbital",
+            "all",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        args = [
+            "plot-dos",
+            "--site",
+            "0",
+            "1",
+            "--orbital",
+            "all",
+            "3s",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        args = [
+            "plot-dos",
+            "--site",
+            "0",
+            "--orbital",
+            "all",
+            "3s",
+            "--invertaxis",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
     def test_cli_exceptions(self):
         # Calc files missing exception test
         with pytest.raises(ValueError) as err:
@@ -621,7 +674,7 @@ class TestCLI:
             ax = fig.gca()
 
             return {
-                "xydata": [line.get_xydata().tolist() for line in ax.lines],
+                "xydata": [line.get_xydata().tolist() for line in ax.lines],  # type: ignore
                 "facecolor": ax.get_facecolor(),
                 "size": fig.get_size_inches().tolist(),
             }

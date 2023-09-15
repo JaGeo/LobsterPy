@@ -296,7 +296,6 @@ class PlainDosPlotter(DosPlotter):
                     )
                     densities = {Spin.up: added_densities}
                 else:
-                    print(smeared_densities)
                     densities = smeared_densities
             else:
                 densities = {Spin.up: dos.get_densities()}
@@ -324,45 +323,77 @@ class PlainDosPlotter(DosPlotter):
         if dos.norm_vol is None:
             self._norm_val = False
         site = dos.structure.sites[site_index]
-
         avail_orbs = list(dos.pdos[site])
-        if orbital not in avail_orbs:
+        if orbital not in avail_orbs and orbital != "all":
             str_orbs = ", ".join(avail_orbs)
             raise ValueError(
                 f"Requested orbital is not available for this site, "
                 f"available orbitals are {str_orbs}"
             )
 
-        dos_obj = dos.get_site_orbital_dos(site=site, orbital=orbital)
-        label = site.species_string + str(site_index + 1) + f": {orbital}"
-
-        energies = dos_obj.energies
-        if self.summed:
-            if self.sigma:
-                smeared_densities = dos_obj.get_smeared_densities(self.sigma)
-                if Spin.down in smeared_densities:
-                    added_densities = (
-                        smeared_densities[Spin.up] + smeared_densities[Spin.down]
-                    )
-                    densities = {Spin.up: added_densities}
+        if orbital == "all":
+            for orb in avail_orbs:
+                dos_obj = dos.get_site_orbital_dos(site=site, orbital=orb)
+                label = site.species_string + str(site_index + 1) + f": {orb}"
+                energies = dos_obj.energies
+                if self.summed:
+                    if self.sigma:
+                        smeared_densities = dos_obj.get_smeared_densities(self.sigma)
+                        if Spin.down in smeared_densities:
+                            added_densities = (
+                                smeared_densities[Spin.up]
+                                + smeared_densities[Spin.down]
+                            )
+                            densities = {Spin.up: added_densities}
+                        else:
+                            densities = smeared_densities
+                    else:
+                        densities = {Spin.up: dos_obj.get_densities()}
                 else:
-                    densities = smeared_densities
-            else:
-                densities = {Spin.up: dos_obj.get_densities()}
+                    densities = (
+                        dos_obj.get_smeared_densities(self.sigma)
+                        if self.sigma
+                        else dos_obj.densities
+                    )
+
+                efermi = dos_obj.efermi
+
+                self._doses[label] = {
+                    "energies": energies,
+                    "densities": densities,
+                    "efermi": efermi,
+                }
         else:
-            densities = (
-                dos_obj.get_smeared_densities(self.sigma)
-                if self.sigma
-                else dos_obj.densities
-            )
+            dos_obj = dos.get_site_orbital_dos(site=site, orbital=orbital)
+            label = site.species_string + str(site_index + 1) + f": {orbital}"
 
-        efermi = dos_obj.efermi
+            energies = dos_obj.energies
+            if self.summed:
+                if self.sigma:
+                    smeared_densities = dos_obj.get_smeared_densities(self.sigma)
+                    if Spin.down in smeared_densities:
+                        added_densities = (
+                            smeared_densities[Spin.up] + smeared_densities[Spin.down]
+                        )
+                        densities = {Spin.up: added_densities}
+                    else:
+                        densities = smeared_densities
+                else:
+                    densities = {Spin.up: dos_obj.get_densities()}
+            else:
+                densities = (
+                    dos_obj.get_smeared_densities(self.sigma)
+                    if self.sigma
+                    else dos_obj.densities
+                )
 
-        self._doses[label] = {
-            "energies": energies,
-            "densities": densities,
-            "efermi": efermi,
-        }
+            efermi = dos_obj.efermi
+
+            self._doses[label] = {
+                "energies": energies,
+                "densities": densities,
+                "efermi": efermi,
+            }
 
     @typing.no_type_check
     def get_plot(
@@ -972,7 +1003,6 @@ class IcohpDistancePlotter:
     def get_plot(
         self,
         ax: "matplotlib.axes.Axes | None" = None,
-        style: "matplotlib.plot.style| None" = None,
         marker_size: float = 50,
         marker_style: str = "o",
         xlim: "Tuple[float, float] | None" = None,
@@ -984,8 +1014,6 @@ class IcohpDistancePlotter:
 
         Args:
             ax: Existing Matplotlib Axes object to plot to.
-            style: matplotlib style string, if None, will
-                use lobsterpy style by default.
             marker_size: sets the size of markers in scatter plots
             marker_style: sets type of marker used in plot
             xlim: Specifies the x-axis limits. Defaults to None for
