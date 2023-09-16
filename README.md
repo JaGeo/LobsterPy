@@ -23,9 +23,9 @@ You can also pip install the package in development mode by writing ``pip instal
     <img src="https://github.com/JaGeo/LobsterPy/assets/22094846/6587e752-6ea4-4358-a763-3633d5a21869" alt="Output Automatic Analysis" width="300"/>
 
     
-    You can use ``lobsterpy description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy automatic-plot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot --allbonds`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen. Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster.
+    You can use ``lobsterpy description`` for an automated analysis of COHPs for relevant cation-anion bonds or ``lobsterpy automatic-plot`` to plot the results automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot --allbonds`` . Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen. Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster. We have also added functionality to base the automatic analysis on the COBIs and COOPs.
   
-    An interactive plot is available via ``lobsterpy automatic-plot-ia``. And you can also plot densities of states from LOBSTER with ``lobsterpy plot-dos``.
+    An interactive plotter is available via ``lobsterpy automatic-plot-ia``. And you can also plot densities of states from LOBSTER with ``lobsterpy plot-dos``.
 
     It is also possible to start this automatic analysis from a Python script. See "examples" for scripts.
 
@@ -55,7 +55,6 @@ Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](
 We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in [atomate2](https://github.com/materialsproject/atomate2). More documentation and information will follow soon.
 
 ## Future plans:
-* Include automatic plotting for COBIs/COOPs
 * Include orbitals into automatic plotting
 
 ## Contributions
