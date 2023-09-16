@@ -1058,7 +1058,6 @@ class InteractiveCohpPlotter(CohpPlotter):
         Returns:
              plot label string
         """
-
         if label_resolved and not orbital_resolved:
             atom_pairs = []
             for site in complete_cohp.bonds[label_list[0]]["sites"]:
