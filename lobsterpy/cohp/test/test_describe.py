@@ -54,6 +54,7 @@ class TestDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
+            orbital_int_cutoff=0.10,
             orbital_resolved=True,
         )
 
@@ -244,6 +245,7 @@ class TestDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
             whichbonds="all",
             cutoff_icohp=0.1,
+            orbital_int_cutoff=0.10,
             orbital_resolved=True,
         )
 

@@ -36,6 +36,7 @@ class TestAnalyse(unittest.TestCase):
             path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
+            orbital_int_cutoff=0.10,
             orbital_resolved=True,
         )
         self.analyse_NaCl_comp_range_cobi = Analysis(

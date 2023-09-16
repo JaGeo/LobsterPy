@@ -67,6 +67,7 @@ class Analysis:
         whichbonds: str = "cation-anion",
         cutoff_icohp: float = 0.1,
         noise_cutoff: float = 0.1,
+        orbital_int_cutoff: float = 0.05,
         summed_spins=True,
         are_cobis=False,
         are_coops=False,
@@ -86,7 +87,11 @@ class Analysis:
             are_cobis : bool indicating if file contains COBI/ICOBI data
             are_coops : bool indicating if file contains COOP/ICOOP data
             noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
-            whichbonds: selects which kind of bonds are analyzed. "cation-anion" is the default
+            orbital_int_cutoff : float that sets the minimum percentage for the orbital resolved analysis.
+                                (Affects only when orbital_resolved argument is set to True)
+                                Set it to 0 to get results of all orbitals in the detected relevant bonds.
+                                Default is to 0.05 i.e. only analyses if orbital contribution is 5 % or more.
+            whichbonds: selects which kind of bonds are analysed. "cation-anion" is the default
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             summed_spins: if true, spins will be summed
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
@@ -100,6 +105,7 @@ class Analysis:
         self.path_to_cohpcar = path_to_cohpcar
         self.whichbonds = whichbonds
         self.cutoff_icohp = cutoff_icohp
+        self.orbital_int_cutoff = orbital_int_cutoff
         self.path_to_charge = path_to_charge
         self.path_to_madelung = path_to_madelung
         self.are_cobis = are_cobis
@@ -397,7 +403,7 @@ class Analysis:
                             label=bond_label, orbitals=orb
                         )
                         contri_perc = round((orb_icohp / icohp_summed), 4)
-                        if contri_perc * 100 >= self.cutoff_icohp * 100:
+                        if contri_perc * 100 >= self.orbital_int_cutoff * 100:
                             if orb not in orb_list:
                                 orb_list.append(orb)
 
@@ -407,7 +413,7 @@ class Analysis:
                         label_list=bond_labels,
                         orbital_list=[orbital] * len(bond_labels),
                     )
-                    if type_pop.lower == "cohp":
+                    if type_pop.lower() == "cohp":
                         (
                             antibndg,
                             per_anti,
@@ -436,7 +442,7 @@ class Analysis:
                             label=label, orbitals=orbital
                         )
                         contri_perc = round((orb_icohp / icohp_summed), 4)
-                        if contri_perc * 100 >= self.cutoff_icohp * 100:
+                        if contri_perc * 100 >= self.orbital_int_cutoff * 100:
                             orb_icohp_list.append(orb_icohp)
                             orb_contri.append(contri_perc)
                             label_list.append(label)
