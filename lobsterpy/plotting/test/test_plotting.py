@@ -39,6 +39,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             path_to_charge=TestDir / "TestData/CdF_comp_range/CHARGE.lobster.gz",
             whichbonds="all",
             cutoff_icohp=0.1,
+            orbital_int_cutoff=0.10,
             summed_spins=False,
             orbital_resolved=True,
         )
@@ -72,6 +73,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
             whichbonds="all",
             summed_spins=False,
+            orbital_int_cutoff=0.10,
             orbital_resolved=True,
         )
 

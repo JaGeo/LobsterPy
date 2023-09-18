@@ -608,7 +608,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                     }
                 )
             # will add cohp data for each relevant bond label iteratively
-            if (label_resolved) and not orbital_resolved:
+            if label_resolved and not orbital_resolved:
                 if label_with_count + suffix not in self._cohps:
                     self._cohps[label_with_count + suffix] = {}
                 for label in labels:
@@ -621,7 +621,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                     outer_key = label_with_count + suffix
                     plot_legend = self._get_plot_lable_for_label_resolved(
                         structure=analyse.structure,
-                        label_list=label,
+                        label_list=[label],
                         complete_cohp=complete_cohp,
                         orb_list=[],
                         label_resolved=True,
@@ -718,7 +718,6 @@ class InteractiveCohpPlotter(CohpPlotter):
                         if self.zero_at_efermi
                         else cohp_orb.energies
                     )
-
                     plot_legend = self._get_plot_lable_for_label_resolved(
                         structure=analyse.structure,
                         label_list=val,
