@@ -20,7 +20,7 @@ CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../../"
 
 
-class PlainInteractiveCohpPlotterTest(unittest.TestCase):
+class InteractiveCohpPlotterTest(unittest.TestCase):
     def setUp(self):
         self.analyse_NaCl = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
