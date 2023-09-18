@@ -37,7 +37,7 @@ changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
 
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.14.0"]
-docs = ["Sphinx==4.5.0",
+docs = ["Sphinx==7.2.6",
     "jupyter",
     "sphinx-argparse",
     "sphinx-book-theme==0.3.3",
