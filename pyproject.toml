@@ -39,7 +39,7 @@ documentation = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
 changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
 
 [project.optional-dependencies]
-featurizer = ["mendeleev==0.12.1"]
+featurizer = ["mendeleev==0.14.0"]
 docs = ["Sphinx==4.5.0",
     "jupyter",
     "sphinx-argparse",
@@ -47,7 +47,7 @@ docs = ["Sphinx==4.5.0",
     "m2r2",
     "myst-parser",
     "docutils",
-    "mendeleev==0.12.1",
+    "mendeleev==0.14.0",
     "pymatgen>=2023.9.10",
     "sphinx-argparse==0.4.0",
     "typing"]
