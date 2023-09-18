@@ -101,7 +101,7 @@ class Description:
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in "
+                                    + " percent in the "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
@@ -153,7 +153,7 @@ class Description:
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in "
+                                    + " percent in the "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
@@ -264,7 +264,7 @@ class Description:
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in "
+                                    + " percent in the "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
@@ -317,7 +317,7 @@ class Description:
                                     + ", ".join(orb_names)
                                     + " contribute "
                                     + ", ".join(orb_contri)
-                                    + " percent in "
+                                    + " percent in the "
                                     + item["ion"]
                                     + "-"
                                     + str(type)
