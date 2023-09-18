@@ -49,6 +49,17 @@ class TestAnalyse(unittest.TestCase):
             noise_cutoff=0.001,
             are_cobis=True,
         )
+        self.analyse_NaCl_comp_range_cobi_orb = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            whichbonds="cation-anion",
+            cutoff_icohp=0.1,
+            noise_cutoff=0.001,
+            are_cobis=True,
+            orbital_resolved=True,
+        )
 
         self.analyse_NaCl_nan = Analysis(
             path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
@@ -237,6 +248,18 @@ class TestAnalyse(unittest.TestCase):
             cutoff_icohp=0.1,
             noise_cutoff=0.001,
             are_cobis=True,
+        )
+
+        self.analyse_K3Sb_all_coop_orb = Analysis(
+            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/K3Sb/COOPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/K3Sb/ICOOPLIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+            noise_cutoff=0.001,
+            orbital_resolved=True,
+            are_coops=True,
         )
 
         # different environment than O:6
@@ -512,6 +535,76 @@ class TestAnalyse(unittest.TestCase):
         )
         self.assertEqual(
             self.analyse_NaCl_all.condensed_bonding_analysis["type_charges"], "Mulliken"
+        )
+
+    def test_all_attributes_NaCl_comp_range_cobi_orbital(self):
+        self.assertAlmostEqual(
+            self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
+                "number_of_considered_ions"
+            ],
+            1,
+        )
+        self.assertEqual(
+            self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][
+                0
+            ]["bonds"]["Cl"]["orbital_data"]["3s-3s"]["ICOBI_mean"],
+            0.03,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
+                    "sites"
+                ][0]["bonds"]["Cl"]["orbital_data"]["3s-3s"]["bonding"]["integral"]
+            ),
+            0.21,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
+                    "sites"
+                ][0]["bonds"]["Cl"]["orbital_data"]["3s-3s"]["antibonding"]["integral"]
+            ),
+            0.02,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
+                    "sites"
+                ][0]["bonds"]["Cl"]["orbital_data"]["3px-3s"]["ICOBI_sum"]
+            ),
+            0.11,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
+                    "sites"
+                ][0]["bonds"]["Cl"]["orbital_data"]["3py-3s"][
+                    "orb_contribution_mean_perc"
+                ]
+            ),
+            0.63,
+        )
+        self.assertListEqual(
+            self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][
+                0
+            ]["bonds"]["Cl"]["orbital_data"]["3pz-3s"]["relevant_bonds"],
+            ["24", "27"],
+        )
+        self.assertEqual(
+            float(
+                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
+                    "sites"
+                ][0]["bonds"]["Cl"]["orbital_data"]["3pz-3s"]["bonding"]["perc"]
+            ),
+            1.0,
+        )
+        self.assertEqual(
+            float(
+                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
+                    "sites"
+                ][0]["bonds"]["Cl"]["orbital_data"]["3pz-3s"]["antibonding"]["perc"]
+            ),
+            0.0,
         )
 
     def test_all_attributes_NaCl_comp_range_orbital(self):
@@ -1607,6 +1700,209 @@ class TestAnalyse(unittest.TestCase):
                 "12",
                 "13",
                 "14",
+                "21",
+                "22",
+                "23",
+                "24",
+                "25",
+                "26",
+                "27",
+                "28",
+            ],
+        )
+
+    def test_all_attributes_K3Sb_all_coop_orb(self):
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["formula"], "K3Sb"
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis[
+                "max_considered_bond_length"
+            ],
+            4.28164,
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis[
+                "number_of_considered_ions"
+            ],
+            2,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                "env"
+            ],
+            "T:4",
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                    "bonds"
+                ]["Sb"]["ICOOP_sum"]
+            ),
+            0.29,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                "bonds"
+            ]["Sb"]["has_antibdg_states_below_Efermi"],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                "ion"
+            ],
+            "K",
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                "charge"
+            ],
+            0.52,
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                "relevant_bonds"
+            ],
+            [
+                "21",
+                "22",
+                "23",
+                "24",
+            ],
+        )
+
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["type_charges"],
+            "Mulliken",
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                "bonds"
+            ]["Sb"]["orbital_data"]["5s-4s"]["ICOOP_mean"],
+            0.03,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                    "bonds"
+                ]["Sb"]["orbital_data"]["5s-4s"]["bonding"]["integral"]
+            ),
+            0.12,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                    "bonds"
+                ]["Sb"]["orbital_data"]["5s-4s"]["antibonding"]["integral"]
+            ),
+            0.02,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                    "bonds"
+                ]["Sb"]["orbital_data"]["5px-4s"]["ICOOP_sum"]
+            ),
+            0.08,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                    "bonds"
+                ]["Sb"]["orbital_data"]["5pz-4s"]["orb_contribution_mean_perc"]
+            ),
+            0.273,
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                "bonds"
+            ]["Sb"]["orbital_data"]["5pz-4s"]["relevant_bonds"],
+            ["21", "22", "23", "24"],
+        )
+        self.assertEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                    "bonds"
+                ]["Sb"]["orbital_data"]["5py-4s"]["bonding"]["perc"]
+            ),
+            1.0,
+        )
+        self.assertEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
+                    "bonds"
+                ]["Sb"]["orbital_data"]["5s-4s"]["antibonding"]["perc"]
+            ),
+            0.14286,
+        )
+
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                "env"
+            ],
+            "C:8",
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                    "bonds"
+                ]["K"]["ICOOP_sum"]
+            ),
+            0.59,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                "bonds"
+            ]["K"]["has_antibdg_states_below_Efermi"],
+            True,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                "bonds"
+            ]["K"]["number_of_bonds"],
+            8,
+        )
+        self.assertEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                "ion"
+            ],
+            "Sb",
+        )
+        self.assertAlmostEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                "charge"
+            ],
+            -1.73,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                    "bonds"
+                ]["K"]["orbital_data"]["5pz-4s"]["orb_contribution_mean_perc"]
+            ),
+            0.2708,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                    "bonds"
+                ]["K"]["orbital_data"]["5px-4s"]["bonding"]["integral"]
+            ),
+            0.16,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                    "bonds"
+                ]["K"]["orbital_data"]["5s-4s"]["bonding"]["perc"]
+            ),
+            0.88889,
+        )
+        self.assertListEqual(
+            self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
+                "relevant_bonds"
+            ],
+            [
                 "21",
                 "22",
                 "23",

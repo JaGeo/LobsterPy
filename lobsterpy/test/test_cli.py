@@ -171,9 +171,11 @@ class TestCLI:
         # tests skip showing plots generated using automatic interactive plotter
         args = [
             "auto-plot-ia",
+            "--orbitalresolved",
             "--hideplot",
             "--coops",
             "--allbonds",
+            "--orbitalresplot",
         ]
         test = get_parser().parse_args(args)
         run(test)

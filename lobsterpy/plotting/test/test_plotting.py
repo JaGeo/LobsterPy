@@ -56,6 +56,19 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             are_cobis=True,
         )
 
+        self.analyse_NaCl_cobi_orb = Analysis(
+            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
+            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
+            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            whichbonds="all",
+            cutoff_icohp=0.1,
+            summed_spins=False,
+            noise_cutoff=0.001,
+            orbital_resolved=True,
+            are_cobis=True,
+        )
+
         self.analyse_NaSi = Analysis(
             path_to_poscar=TestDir / "TestData/NaSi/POSCAR",
             path_to_cohpcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
@@ -118,18 +131,64 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
         )
         self.assertEqual(len(fig.data), len(ref_fig.data))
         self.assertEqual(fig.layout, ref_fig.layout)
-        for og_trace in fig.data:
-            if og_trace in ref_fig.data:
-                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
-                for og_x, og_y, ref_x, ref_y in zip(
-                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-                ):
-                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
-                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
-                self.assertEqual(og_trace.name, ref_trace.name)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.visible, ref_trace.visible)
+
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(list(og_trace.y))
+            ref_y.append(list(ref_trace.y))
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
+
+    def test_add_all_relevant_cohps_NaCl_cobi_orb(self):
+        self.iplotter = InteractiveCohpPlotter(are_cobis=True)
+
+        self.iplotter.add_all_relevant_cohps(
+            analyse=self.analyse_NaCl_cobi_orb,
+            label_resolved=False,
+            suffix="",
+            orbital_resolved=True,
+        )
+        self.assertIn("All", self.iplotter._cohps)
+        self.assertEqual(len(self.iplotter._cohps), 3)
+
+        fig = self.iplotter.get_plot()
+        ref_fig = read_json(
+            TestDir / "TestData/interactive_plotter_ref/analyse_NaCl_cobi_orb_res.json",
+            engine="json",
+        )
+        self.assertEqual(len(fig.data), len(ref_fig.data))
+        self.assertEqual(fig.layout, ref_fig.layout)
+
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(list(og_trace.y))
+            ref_y.append(list(ref_trace.y))
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_add_all_relevant_cohps_BaTiO3(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -150,18 +209,26 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             engine="json",
         )
         self.assertEqual(len(fig.data), len(ref_fig.data))
-        for og_trace in fig.data:
-            if og_trace in ref_fig.data:
-                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
-                for og_x, og_y, ref_x, ref_y in zip(
-                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-                ):
-                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
-                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
-                self.assertEqual(og_trace.name, ref_trace.name)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.visible, ref_trace.visible)
+
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(og_trace.y.tolist())
+            ref_y.append(list(ref_trace.y))
+
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_add_all_relevant_cohps_CdF(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -181,6 +248,25 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             engine="json",
         )
         self.assertEqual(len(fig.data), len(ref_fig.data))
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(og_trace.x)
+            ref_x.append(ref_trace.x)
+            og_y.append(og_trace.y.tolist())
+            ref_y.append(list(ref_trace.y))
+
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_add_all_relevant_cohps_NaCl_cobi(self):
         self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False, are_cobis=True)
@@ -199,18 +285,25 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(len(fig.data), len(ref_fig.data))
         self.assertEqual(fig.layout, ref_fig.layout)
 
-        for og_trace in fig.data:
-            if og_trace in ref_fig.data:
-                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
-                for og_x, og_y, ref_x, ref_y in zip(
-                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-                ):
-                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
-                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
-                self.assertEqual(og_trace.name, ref_trace.name)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.visible, ref_trace.visible)
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(og_trace.y.tolist())
+            ref_y.append(list(ref_trace.y))
+
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_add_all_relevant_cohps_K3Sb(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -235,18 +328,25 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(len(fig.data), len(ref_fig.data))
         self.assertEqual(fig.layout.xaxis, ref_fig.layout.xaxis)
         self.assertEqual(fig.layout.yaxis, ref_fig.layout.yaxis)
-        for og_trace in fig.data:
-            if og_trace in ref_fig.data:
-                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
-                for og_x, og_y, ref_x, ref_y in zip(
-                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-                ):
-                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
-                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
-                self.assertEqual(og_trace.name, ref_trace.name)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.visible, ref_trace.visible)
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(og_trace.y.tolist())
+            ref_y.append(list(ref_trace.y))
+
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_add_cohps_by_lobster_label_NaCl(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -264,18 +364,25 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
         )
         self.assertEqual(len(fig.data), len(ref_fig.data))
         self.assertEqual(fig.layout, ref_fig.layout)
-        for og_trace in fig.data:
-            if og_trace in ref_fig.data:
-                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
-                for og_x, og_y, ref_x, ref_y in zip(
-                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-                ):
-                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
-                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
-                self.assertEqual(og_trace.name, ref_trace.name)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.visible, ref_trace.visible)
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(og_trace.y.tolist())
+            ref_y.append(list(ref_trace.y))
+
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_add_cohps_from_plot_data(self):
         self.des = Description(analysis_object=self.analyse_NaSi)
@@ -288,18 +395,25 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(len(fig.data), len(ref_fig.data))
         self.assertEqual(fig.layout, ref_fig.layout)
 
-        for og_trace in fig.data:
-            if og_trace in ref_fig.data:
-                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
-                for og_x, og_y, ref_x, ref_y in zip(
-                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-                ):
-                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
-                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
-                self.assertEqual(og_trace.name, ref_trace.name)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.visible, ref_trace.visible)
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(og_trace.y.tolist())
+            ref_y.append(list(ref_trace.y))
+
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_add_cohps_from_plot_data_json(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -319,18 +433,25 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(len(fig.data), len(ref_fig.data))
         self.assertEqual(fig.layout, ref_fig.layout)
 
-        for og_trace in fig.data:
-            if og_trace in ref_fig.data:
-                ref_trace = ref_fig.data[ref_fig.data.index(og_trace)]
-                for og_x, og_y, ref_x, ref_y in zip(
-                    og_trace.x, og_trace.y, ref_trace.x, ref_trace.y
-                ):
-                    self.assertAlmostEqual(ref_x, og_x, delta=0.0001)
-                    self.assertAlmostEqual(ref_y, og_y, delta=0.0001)
-                self.assertEqual(og_trace.name, ref_trace.name)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.line, ref_trace.line)
-                self.assertEqual(og_trace.visible, ref_trace.visible)
+        og_name, og_line, og_visible, og_x, og_y = [], [], [], [], []
+        ref_name, ref_line, ref_visible, ref_x, ref_y = [], [], [], [], []
+        for og_trace, ref_trace in zip(fig.data, ref_fig.data):
+            og_name.append(og_trace.name)
+            ref_name.append(ref_trace.name)
+            og_line.append(og_trace.line)
+            ref_line.append(ref_trace.line)
+            og_visible.append(og_trace.visible)
+            ref_visible.append(ref_trace.visible)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
+            og_y.append(og_trace.y.tolist())
+            ref_y.append(list(ref_trace.y))
+
+        self.assertEqual(sorted(og_name), sorted(ref_name))
+        self.assertEqual(og_line, ref_line)
+        self.assertEqual(og_visible, ref_visible)
+        self.assertEqual(sorted(og_x), sorted(ref_x))
+        self.assertEqual(sorted(og_y), sorted(ref_y))
 
     def test_plot_colors(self):
         self.iplotter = InteractiveCohpPlotter()
