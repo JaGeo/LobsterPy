@@ -913,7 +913,6 @@ class Analysis:
                             namecation == atom_pair.split("-")[0]
                             and cation_name == atom_pair.split("-")[1]
                         ):
-                            print(atom_pair)
                             icohp_data["bonding"] = bonding_data["bonding"]
                             icohp_data["antibonding"] = bonding_data["antibonding"]
                             if self.orbital_resolved:
@@ -928,7 +927,10 @@ class Analysis:
                                     )
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
-                                for ion_atom_pair_orb, _ in orb_resolved_bond_info.items():
+                                for (
+                                    ion_atom_pair_orb,
+                                    _,
+                                ) in orb_resolved_bond_info.items():
                                     orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
                                         -1
                                     ]
@@ -999,7 +1001,10 @@ class Analysis:
                                     )
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
-                                for ion_atom_pair_orb, _ in orb_resolved_bond_info.items():
+                                for (
+                                    ion_atom_pair_orb,
+                                    _,
+                                ) in orb_resolved_bond_info.items():
                                     orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
                                         -1
                                     ]
