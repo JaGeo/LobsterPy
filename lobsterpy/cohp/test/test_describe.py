@@ -54,7 +54,7 @@ class TestDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
             whichbonds="cation-anion",
             cutoff_icohp=0.1,
-            orbital_int_cutoff=0.10,
+            orbital_cutoff=0.10,
             orbital_resolved=True,
         )
 
@@ -245,7 +245,7 @@ class TestDescribe(unittest.TestCase):
             path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
             whichbonds="all",
             cutoff_icohp=0.1,
-            orbital_int_cutoff=0.10,
+            orbital_cutoff=0.10,
             orbital_resolved=True,
         )
 
@@ -525,7 +525,7 @@ class TestDescribe(unittest.TestCase):
                 "1.092 percent antibonding interaction below EFermi) bonds.",
                 "The orbitals 2s-4s, 2s-3dxy, 2py-3dxy, 2px-3dx2, 2px-3dxy, 2py-3dyz, 2s-3dz2, 2pz-3dz2, "
                 "2px-3dxz, 2pz-4s contribute 21.79, 11.4, 13.1, 10.76, 13.6, 14.56, 15.26, 25.5, 13.75, "
-                "11.5 percent in the Ti-O bond, respectively.",
+                "11.5 percent in the O-Ti bond, respectively.",
             ],
         )
         self.assertEqual(
@@ -535,11 +535,11 @@ class TestDescribe(unittest.TestCase):
                 "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
                 "4.071 percent antibonding interaction below EFermi) bonds.",
                 "The orbitals 2s-3s, 2pz-3s, 2py-3s, 2px-3s contribute 77.48, 22.05, 22.05, "
-                "22.05 percent in the Na-F bond, respectively.",
+                "22.05 percent in the F-Na bond, respectively.",
                 "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
                 "0.0 percent antibonding interaction below EFermi) bonds.",
                 "The orbitals 2pz-5s, 2s-5pz, 2pz-5pz, 2py-5s, 2s-5py, 2py-5py, 2px-5s, 2s-5px, 2px-5px "
-                "contribute 19.49, 39.12, 21.41, 19.49, 39.12, 21.41, 19.49, 39.12, 21.41 percent in the Sb-F bond, "
+                "contribute 19.49, 39.12, 21.41, 19.49, 39.12, 21.41, 19.49, 39.12, 21.41 percent in the F-Sb bond, "
                 "respectively.",
                 "F3 has a linear (CN=2) coordination environment. It has 1 F-Na (mean ICOHP: -0.61 eV, "
                 "4.545 percent antibonding interaction below EFermi), and 1 F-Sb (mean ICOHP: -5.45 eV, "

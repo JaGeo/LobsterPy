@@ -175,7 +175,7 @@ class TestCLI:
             "--hideplot",
             "--coops",
             "--allbonds",
-            "--orbitalresplot",
+            "--orbitalplot",
         ]
         test = get_parser().parse_args(args)
         run(test)

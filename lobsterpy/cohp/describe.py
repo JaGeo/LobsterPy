@@ -102,9 +102,7 @@ class Description:
                                     + " contribute "
                                     + ", ".join(orb_contri)
                                     + " percent in the "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + " bond, respectively."
                                 )
                             else:
@@ -114,9 +112,7 @@ class Description:
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
                                     f" with summed I{type_pop} as reference for "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + "bond."
                                 )
                     else:
@@ -154,9 +150,7 @@ class Description:
                                     + " contribute "
                                     + ", ".join(orb_contri)
                                     + " percent in the "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + " bond, respectively."
                                 )
                             else:
@@ -166,9 +160,7 @@ class Description:
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
                                     f" with summed I{type_pop} as reference for "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + " bond."
                                 )
 
@@ -265,9 +257,7 @@ class Description:
                                     + " contribute "
                                     + ", ".join(orb_contri)
                                     + " percent in the "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + " bond, respectively."
                                 )
                             else:
@@ -277,9 +267,7 @@ class Description:
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
                                     f" with summed I{type_pop} as reference for "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + " bond."
                                 )
                     else:
@@ -318,9 +306,7 @@ class Description:
                                     + " contribute "
                                     + ", ".join(orb_contri)
                                     + " percent in the "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + " bond, respectively."
                                 )
                             else:
@@ -330,9 +316,7 @@ class Description:
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
                                     f" with summed I{type_pop} as reference for "
-                                    + item["ion"]
-                                    + "-"
-                                    + str(type)
+                                    + "-".join(sorted([item["ion"], str(type)]))
                                     + "bond."
                                 )
 

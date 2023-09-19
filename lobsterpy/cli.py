@@ -342,7 +342,8 @@ def get_parser() -> argparse.ArgumentParser:
         help="Will switch on orbital resolved analysis of (I)COHPs or (I)COBIs or (I)COOPs with all relevant orbitals.",
     )
     auto_group.add_argument(
-        "--orbitalintcutoff",
+        "--orbitalcutoff",
+        "--orbital-cutoff",
         type=float,
         default=0.05,
         help="Will only work when orbital wise analysis is switched on (--orbitalresolved) "
@@ -382,8 +383,8 @@ def get_parser() -> argparse.ArgumentParser:
         "for interactive plots) ",
     )
     interactive_plotter_group.add_argument(
-        "--orbitalresplot",
-        "--orbital-res-plot",
+        "--orbitalplot",
+        "--orbital-plot",
         action="store_true",
         help="Will generate automatic interactive (I)COHP or (I)COBI or (I)COOP plots with all relevant orbitals "
         "If used along with  --labelresolved arg, plots will be further label resolved else,"
@@ -702,7 +703,7 @@ def run(args):
             are_cobis=args.cobis,
             noise_cutoff=args.noisecutoff,
             cutoff_icohp=args.cutofficohp,
-            orbital_int_cutoff=args.orbitalintcutoff,
+            orbital_cutoff=args.orbitalcutoff,
             orbital_resolved=args.orbitalresolved,
         )
 
@@ -771,7 +772,7 @@ def run(args):
             sigma=sigma,
             hide=args.hideplot,
             label_resolved=args.labelresolved,
-            orbital_resolved=args.orbitalresplot,
+            orbital_resolved=args.orbitalplot,
         )
 
     if args.action == "plot":

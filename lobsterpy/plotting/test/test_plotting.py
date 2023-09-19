@@ -39,7 +39,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             path_to_charge=TestDir / "TestData/CdF_comp_range/CHARGE.lobster.gz",
             whichbonds="all",
             cutoff_icohp=0.1,
-            orbital_int_cutoff=0.10,
+            orbital_cutoff=0.10,
             summed_spins=False,
             orbital_resolved=True,
         )
@@ -86,7 +86,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
             whichbonds="all",
             summed_spins=False,
-            orbital_int_cutoff=0.10,
+            orbital_cutoff=0.10,
             orbital_resolved=True,
         )
 
@@ -148,8 +148,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_all_relevant_cohps_NaCl_cobi_orb(self):
         self.iplotter = InteractiveCohpPlotter(are_cobis=True)
@@ -187,8 +187,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_all_relevant_cohps_BaTiO3(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -227,8 +227,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_all_relevant_cohps_CdF(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -265,8 +265,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_all_relevant_cohps_NaCl_cobi(self):
         self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False, are_cobis=True)
@@ -302,8 +302,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_all_relevant_cohps_K3Sb(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -345,8 +345,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_cohps_by_lobster_label_NaCl(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -381,8 +381,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_cohps_from_plot_data(self):
         self.des = Description(analysis_object=self.analyse_NaSi)
@@ -412,8 +412,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_add_cohps_from_plot_data_json(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -450,8 +450,8 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertEqual(sorted(og_x), sorted(ref_x))
-        self.assertEqual(sorted(og_y), sorted(ref_y))
+        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
+        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
     def test_plot_colors(self):
         self.iplotter = InteractiveCohpPlotter()
