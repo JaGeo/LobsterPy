@@ -928,7 +928,7 @@ class Analysis:
                                     )
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
-                                for ion_atom_pair_orb in orb_resolved_bond_info:
+                                for ion_atom_pair_orb, _ in orb_resolved_bond_info.items():
                                     orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
                                         -1
                                     ]
@@ -999,7 +999,7 @@ class Analysis:
                                     )
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
-                                for ion_atom_pair_orb in orb_resolved_bond_info:
+                                for ion_atom_pair_orb, _ in orb_resolved_bond_info.items():
                                     orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
                                         -1
                                     ]

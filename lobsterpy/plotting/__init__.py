@@ -23,10 +23,10 @@ import numpy as np
 from numpy.typing import ArrayLike
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
-from pymatgen.io.lobster import Icohplist
+from pymatgen.core import Structure
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.dos import LobsterCompleteDos
-from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection
+from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection, CompleteCohp
 from pymatgen.electronic_structure.plotter import CohpPlotter, DosPlotter
 import plotly.graph_objs as go
 from lobsterpy.cohp.analyze import Analysis
@@ -1032,9 +1032,9 @@ class InteractiveCohpPlotter(CohpPlotter):
 
     @staticmethod
     def _get_plot_lable_for_label_resolved(
-        structure,
+        structure: Structure,
         label_list: list,
-        complete_cohp,
+        complete_cohp: CompleteCohp,
         orb_list: list,
         label_resolved: bool = False,
         orbital_resolved: bool = False,
