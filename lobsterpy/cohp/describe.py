@@ -85,34 +85,144 @@ class Description:
                             if properties["orbital_data"]:
                                 orb_names = []
                                 orb_contri = []
-                                for orb, data in properties["orbital_data"].items():
-                                    orb_names.append(orb)
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_orbital_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names.append("-".join(atom_pair_with_orb_name))
                                     orb_contri.append(
                                         str(
                                             round(
-                                                data["orb_contribution_mean_perc"]
-                                                * 100,
+                                                data * 100,
                                                 3,
                                             )
                                         )
                                     )
-                                orb_info.append(
-                                    "The orbitals "
-                                    + ", ".join(orb_names)
-                                    + " contribute "
-                                    + ", ".join(orb_contri)
-                                    + " percent in the "
-                                    + "-".join(sorted([item["ion"], str(type)]))
-                                    + " bond, respectively."
-                                )
+                                orb_names_anti = []
+                                orb_antibonding = []
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_antibonding_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names_anti.append(
+                                        "-".join(atom_pair_with_orb_name)
+                                    )
+                                    orb_antibonding.append(
+                                        str(
+                                            round(
+                                                data * 100,
+                                                3,
+                                            )
+                                        )
+                                    )
+                                if len(orb_contri) > 1:
+                                    orb_name_contri = ""
+                                    for inx, name in enumerate(orb_names):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{name} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{name}, "
+                                        else:
+                                            orb_name_contri += f"and {name}"
+
+                                    orb_name_contri += " orbitals, contributing "
+                                    connecting_article = (
+                                        "is" if len(orb_contri) == 2 else "are"
+                                    )
+                                    for inx, contribution in enumerate(orb_contri):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{contribution} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{contribution}, "
+                                        else:
+                                            orb_name_contri += f"and {contribution} percent, respectively"
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + f"the maximum contribution {connecting_article} from "
+                                        + orb_name_contri
+                                    )
+
+                                else:
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + "the maximum contribution is from the "
+                                        + f"{orb_names[0]}"
+                                        + f" orbital, contributing {orb_contri[0]} percent"
+                                    )
+
+                                if len(orb_antibonding) > 1:
+                                    orb_anti = ""
+                                    connecting_article = (
+                                        "is" if len(orb_antibonding) == 2 else "are"
+                                    )
+                                    for inx, name in enumerate(orb_names_anti):
+                                        if len(orb_antibonding) == 2 and inx + 1 != len(
+                                            orb_antibonding
+                                        ):
+                                            orb_anti += f"{name}, "
+                                        elif 2 < len(orb_antibonding) != inx + 1:
+                                            orb_anti += f"{name}, "
+                                        else:
+                                            orb_anti += f"and {name}"
+
+                                    orb_anti += " orbitals, contributing "
+                                    for inx, contribution in enumerate(orb_antibonding):
+                                        if inx + 1 != len(orb_antibonding):
+                                            orb_anti += f"{contribution}, "
+                                        elif len(orb_antibonding) == 2:
+                                            orb_anti += f"{contribution} "
+                                        else:
+                                            orb_anti += f"and {contribution} percent, respectively."
+                                    orb_info.append(
+                                        "whereas "
+                                        + f"the maximum antibonding contribution {connecting_article} from "
+                                        + orb_anti
+                                    )
+                                else:
+                                    orb_info.append(
+                                        "whereas "
+                                        + "the maximum antibonding contribution is from the "
+                                        + f"{orb_names_anti[0]}"
+                                        + f" orbital, contributing {orb_antibonding[0]} percent."
+                                    )
                             else:
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
                                 percentage_cutoff = round(
-                                    self.analysis_object.cutoff_icohp * 100, 2
+                                    self.analysis_object.orbital_cutoff * 100, 2
                                 )
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
-                                    f" with summed I{type_pop} as reference for "
-                                    + "-".join(sorted([item["ion"], str(type)]))
+                                    f" with summed I{type_pop} as reference for the "
+                                    + "-".join(atom_pair)
                                     + "bond."
                                 )
                     else:
@@ -133,34 +243,144 @@ class Description:
                             if properties["orbital_data"]:
                                 orb_names = []
                                 orb_contri = []
-                                for orb, data in properties["orbital_data"].items():
-                                    orb_names.append(orb)
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_orbital_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names.append("-".join(atom_pair_with_orb_name))
                                     orb_contri.append(
                                         str(
                                             round(
-                                                data["orb_contribution_mean_perc"]
-                                                * 100,
+                                                data * 100,
                                                 3,
                                             )
                                         )
                                     )
-                                orb_info.append(
-                                    "The orbitals "
-                                    + ", ".join(orb_names)
-                                    + " contribute "
-                                    + ", ".join(orb_contri)
-                                    + " percent in the "
-                                    + "-".join(sorted([item["ion"], str(type)]))
-                                    + " bond, respectively."
-                                )
+                                orb_names_anti = []
+                                orb_antibonding = []
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_antibonding_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names_anti.append(
+                                        "-".join(atom_pair_with_orb_name)
+                                    )
+                                    orb_antibonding.append(
+                                        str(
+                                            round(
+                                                data * 100,
+                                                3,
+                                            )
+                                        )
+                                    )
+                                if len(orb_contri) > 1:
+                                    orb_name_contri = ""
+                                    for inx, name in enumerate(orb_names):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{name} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{name}, "
+                                        else:
+                                            orb_name_contri += f"and {name}"
+
+                                    orb_name_contri += " orbitals, contributing "
+                                    connecting_article = (
+                                        "is" if len(orb_contri) == 2 else "are"
+                                    )
+                                    for inx, contribution in enumerate(orb_contri):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{contribution} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{contribution}, "
+                                        else:
+                                            orb_name_contri += f"and {contribution} percent, respectively"
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + f"the maximum contribution {connecting_article} from "
+                                        + orb_name_contri
+                                    )
+
+                                else:
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + "the maximum contribution is from the "
+                                        + f"{orb_names[0]}"
+                                        + f" orbital, contributing {orb_contri[0]} percent"
+                                    )
+
+                                if len(orb_antibonding) > 1:
+                                    orb_anti = ""
+                                    connecting_article = (
+                                        "is" if len(orb_antibonding) == 2 else "are"
+                                    )
+                                    for inx, name in enumerate(orb_names_anti):
+                                        if len(orb_antibonding) == 2 and inx + 1 != len(
+                                            orb_antibonding
+                                        ):
+                                            orb_anti += f"{name}, "
+                                        elif 2 < len(orb_antibonding) != inx + 1:
+                                            orb_anti += f"{name}, "
+                                        else:
+                                            orb_anti += f"and {name}"
+
+                                    orb_anti += " orbitals, contributing "
+                                    for inx, contribution in enumerate(orb_antibonding):
+                                        if inx + 1 != len(orb_antibonding):
+                                            orb_anti += f"{contribution}, "
+                                        elif len(orb_antibonding) == 2:
+                                            orb_anti += f"{contribution} "
+                                        else:
+                                            orb_anti += f"and {contribution} percent, respectively."
+                                    orb_info.append(
+                                        "whereas "
+                                        + f"the maximum antibonding contribution {connecting_article} from "
+                                        + orb_anti
+                                    )
+                                else:
+                                    orb_info.append(
+                                        "whereas "
+                                        + "the maximum antibonding contribution is from the "
+                                        + f"{orb_names_anti[0]}"
+                                        + f" orbital, contributing {orb_antibonding[0]} percent."
+                                    )
                             else:
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
                                 percentage_cutoff = round(
-                                    self.analysis_object.cutoff_icohp * 100, 2
+                                    self.analysis_object.orbital_cutoff * 100, 2
                                 )
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
-                                    f" with summed I{type_pop} as reference for "
-                                    + "-".join(sorted([item["ion"], str(type)]))
+                                    f" with summed I{type_pop} as reference for the "
+                                    + "-".join(atom_pair)
                                     + " bond."
                                 )
 
@@ -170,7 +390,7 @@ class Description:
                     bonds = bond_info[0]
 
                 if len(orb_info) > 1:
-                    orb_bonds = ",".join(orb_info[0:-1]) + ", and " + orb_info[-1]
+                    orb_bonds = ", ".join(orb_info)  # [0:-1]) + ", and " + orb_info[-1]
                 else:
                     if orb_info:
                         orb_bonds = orb_info[0]
@@ -240,34 +460,144 @@ class Description:
                             if properties["orbital_data"]:
                                 orb_names = []
                                 orb_contri = []
-                                for orb, data in properties["orbital_data"].items():
-                                    orb_names.append(orb)
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_orbital_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names.append("-".join(atom_pair_with_orb_name))
                                     orb_contri.append(
                                         str(
                                             round(
-                                                data["orb_contribution_mean_perc"]
-                                                * 100,
+                                                data * 100,
                                                 3,
                                             )
                                         )
                                     )
-                                orb_info.append(
-                                    "The orbitals "
-                                    + ", ".join(orb_names)
-                                    + " contribute "
-                                    + ", ".join(orb_contri)
-                                    + " percent in the "
-                                    + "-".join(sorted([item["ion"], str(type)]))
-                                    + " bond, respectively."
-                                )
+                                orb_names_anti = []
+                                orb_antibonding = []
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_antibonding_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names_anti.append(
+                                        "-".join(atom_pair_with_orb_name)
+                                    )
+                                    orb_antibonding.append(
+                                        str(
+                                            round(
+                                                data * 100,
+                                                3,
+                                            )
+                                        )
+                                    )
+                                if len(orb_contri) > 1:
+                                    orb_name_contri = ""
+                                    for inx, name in enumerate(orb_names):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{name} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{name}, "
+                                        else:
+                                            orb_name_contri += f"and {name}"
+
+                                    orb_name_contri += " orbitals, contributing "
+                                    connecting_article = (
+                                        "is" if len(orb_contri) == 2 else "are"
+                                    )
+                                    for inx, contribution in enumerate(orb_contri):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{contribution} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{contribution}, "
+                                        else:
+                                            orb_name_contri += f"and {contribution} percent, respectively"
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + f"the maximum contribution {connecting_article} from "
+                                        + orb_name_contri
+                                    )
+
+                                else:
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + "the maximum contribution is from the "
+                                        + f"{orb_names[0]}"
+                                        + f" orbital, contributing {orb_contri[0]} percent"
+                                    )
+
+                                if len(orb_antibonding) > 1:
+                                    orb_anti = ""
+                                    connecting_article = (
+                                        "is" if len(orb_antibonding) == 2 else "are"
+                                    )
+                                    for inx, name in enumerate(orb_names_anti):
+                                        if len(orb_antibonding) == 2 and inx + 1 != len(
+                                            orb_antibonding
+                                        ):
+                                            orb_anti += f"{name}, "
+                                        elif 2 < len(orb_antibonding) != inx + 1:
+                                            orb_anti += f"{name}, "
+                                        else:
+                                            orb_anti += f"and {name}"
+
+                                    orb_anti += " orbitals, contributing "
+                                    for inx, contribution in enumerate(orb_antibonding):
+                                        if inx + 1 != len(orb_antibonding):
+                                            orb_anti += f"{contribution}, "
+                                        elif len(orb_antibonding) == 2:
+                                            orb_anti += f"{contribution} "
+                                        else:
+                                            orb_anti += f"and {contribution} percent, respectively."
+                                    orb_info.append(
+                                        "whereas "
+                                        + f"the maximum antibonding contribution {connecting_article} from "
+                                        + orb_anti
+                                    )
+                                else:
+                                    orb_info.append(
+                                        "whereas "
+                                        + "the maximum antibonding contribution is from the "
+                                        + f"{orb_names_anti[0]}"
+                                        + f" orbital, contributing {orb_antibonding[0]} percent."
+                                    )
                             else:
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
                                 percentage_cutoff = round(
-                                    self.analysis_object.cutoff_icohp * 100, 2
+                                    self.analysis_object.orbital_cutoff * 100, 2
                                 )
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
-                                    f" with summed I{type_pop} as reference for "
-                                    + "-".join(sorted([item["ion"], str(type)]))
+                                    f" with summed I{type_pop} as reference for the "
+                                    + "-".join(atom_pair)
                                     + " bond."
                                 )
                     else:
@@ -289,34 +619,145 @@ class Description:
                             if properties["orbital_data"]:
                                 orb_names = []
                                 orb_contri = []
-                                for orb, data in properties["orbital_data"].items():
-                                    orb_names.append(orb)
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_orbital_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names.append("-".join(atom_pair_with_orb_name))
                                     orb_contri.append(
                                         str(
                                             round(
-                                                data["orb_contribution_mean_perc"]
-                                                * 100,
+                                                data * 100,
                                                 3,
                                             )
                                         )
                                     )
-                                orb_info.append(
-                                    "The orbitals "
-                                    + ", ".join(orb_names)
-                                    + " contribute "
-                                    + ", ".join(orb_contri)
-                                    + " percent in the "
-                                    + "-".join(sorted([item["ion"], str(type)]))
-                                    + " bond, respectively."
-                                )
+                                orb_names_anti = []
+                                orb_antibonding = []
+                                for orb, data in properties["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_antibonding_contribution"].items():
+                                    atom_pair_with_orb_name = self.analysis_object._sort_orbital_atom_pair(
+                                        atom_pair=atom_pair,
+                                        complete_cohp=self.analysis_object.chemenv.completecohp,
+                                        label=properties["orbital_data"][orb][
+                                            "relevant_bonds"
+                                        ][0],
+                                        orb_pair=orb,
+                                    )
+                                    orb_names_anti.append(
+                                        "-".join(atom_pair_with_orb_name)
+                                    )
+                                    orb_antibonding.append(
+                                        str(
+                                            round(
+                                                data * 100,
+                                                3,
+                                            )
+                                        )
+                                    )
+                                if len(orb_contri) > 1:
+                                    orb_name_contri = ""
+                                    for inx, name in enumerate(orb_names):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{name} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{name}, "
+                                        else:
+                                            orb_name_contri += f"and {name}"
+
+                                    orb_name_contri += " orbitals, contributing "
+                                    connecting_article = (
+                                        "is" if len(orb_contri) == 2 else "are"
+                                    )
+                                    for inx, contribution in enumerate(orb_contri):
+                                        if len(orb_contri) == 2 and inx + 1 != len(
+                                            orb_contri
+                                        ):
+                                            orb_name_contri += f"{contribution} "
+                                        elif 2 < len(orb_contri) != inx + 1:
+                                            orb_name_contri += f"{contribution}, "
+                                        else:
+                                            orb_name_contri += f"and {contribution} percent, respectively"
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + f"the maximum contribution {connecting_article} from "
+                                        + orb_name_contri
+                                    )
+                                else:
+                                    orb_info.append(
+                                        "In the "
+                                        + "-".join(atom_pair)
+                                        + " bond, "
+                                        + "the maximum contribution is from the "
+                                        + f"{orb_names[0]}"
+                                        + f" orbital, contributing {orb_contri[0]} percent"
+                                    )
+
+                                if len(orb_antibonding) > 1:
+                                    orb_anti = ""
+                                    for inx, name in enumerate(orb_names_anti):
+                                        if len(orb_names_anti) == 2 and inx + 1 != len(
+                                            orb_names_anti
+                                        ):
+                                            orb_anti += f"{name} "
+                                        elif 2 < len(orb_antibonding) != inx + 1:
+                                            orb_anti += f"{name}, "
+                                        else:
+                                            orb_anti += f"and {name}"
+
+                                    orb_anti += " orbitals, contributing "
+                                    connecting_article = (
+                                        "is" if len(orb_contri) == 2 else "are"
+                                    )
+                                    for inx, contribution in enumerate(orb_antibonding):
+                                        if len(orb_names_anti) == 2 and inx + 1 != len(
+                                            orb_names_anti
+                                        ):
+                                            orb_anti += f"{contribution} "
+                                        elif 2 < len(orb_antibonding) != inx + 1:
+                                            orb_anti += f"{contribution}, "
+                                        else:
+                                            orb_anti += f"and {contribution} percent, respectively."
+                                    orb_info.append(
+                                        "whereas "
+                                        + f"the maximum antibonding contribution {connecting_article} from "
+                                        + orb_anti
+                                    )
+                                else:
+                                    orb_info.append(
+                                        "whereas "
+                                        + "the maximum antibonding contribution is from the "
+                                        + f"{orb_names_anti[0]}"
+                                        + f" orbital, contributing {orb_antibonding[0]} percent."
+                                    )
                             else:
+                                # get atom-pair list with ion placed first
+                                atom_pair = self.analysis_object._sort_name(
+                                    [item["ion"], str(type)], nameion=item["ion"]
+                                )
                                 percentage_cutoff = round(
-                                    self.analysis_object.cutoff_icohp * 100, 2
+                                    self.analysis_object.orbital_cutoff * 100, 2
                                 )
                                 orb_info.append(
                                     f"No individual orbital interactions detected above {percentage_cutoff} percent"
-                                    f" with summed I{type_pop} as reference for "
-                                    + "-".join(sorted([item["ion"], str(type)]))
+                                    f" with summed I{type_pop} as reference for the "
+                                    + "-".join(atom_pair)
                                     + "bond."
                                 )
 
@@ -328,7 +769,9 @@ class Description:
                     else:
                         bonds = 0
                 if len(orb_info) > 1:
-                    orb_bonds = ",".join(orb_info[0:-1]) + ", and " + orb_info[-1]
+                    orb_bonds = ", ".join(
+                        orb_info
+                    )  # [0:-1]) # + ", and " + orb_info[-1]
                 else:
                     if orb_info:
                         orb_bonds = orb_info[0]
