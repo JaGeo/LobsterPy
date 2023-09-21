@@ -117,7 +117,7 @@ class Analysis:
                     "Only Mulliken charges can be used here at the moment. Implementation will follow."
                 )
             else:
-                self.type_charge = "Valences"
+                self.type_charge = "Valences" #initial test
                 print(
                     "type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences"
                 )
