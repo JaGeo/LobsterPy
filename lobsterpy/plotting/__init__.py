@@ -618,7 +618,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                         if self.zero_at_efermi
                         else cohp.energies
                     )
-                    outer_key = label_with_count + suffix
+                    drop_down_key = label_with_count + suffix
                     plot_legend = self._get_plot_lable_for_label_resolved(
                         structure=analyse.structure,
                         label_list=[label],
@@ -627,7 +627,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                         label_resolved=True,
                         orbital_resolved=False,
                     )
-                    self._cohps[outer_key].update(
+                    self._cohps[drop_down_key].update(
                         {
                             plot_legend: {
                                 "energies": energies,
@@ -654,7 +654,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 if label_with_count + suffix not in self._cohps:
                     self._cohps[label_with_count + suffix] = {}
                 plot_data_orb = analyse.get_site_orbital_resolved_labels()
-                outer_key = label_with_count + suffix
+                drop_down_key = label_with_count + suffix
                 key_val = plot_data_orb[bond_key]
                 for orb, val in key_val.items():
                     for lab in val:
@@ -678,7 +678,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                             label_resolved=True,
                         )
 
-                        self._cohps[outer_key].update(
+                        self._cohps[drop_down_key].update(
                             {
                                 plot_legend: {
                                     "energies": energies,
@@ -706,7 +706,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 if label_with_count + suffix not in self._cohps:
                     self._cohps[label_with_count + suffix] = {}
                 plot_data_orb = analyse.get_site_orbital_resolved_labels()
-                outer_key = label_with_count + suffix
+                drop_down_key = label_with_count + suffix
                 key_val = plot_data_orb[bond_key]
                 for orb, val in key_val.items():
                     cohp_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
@@ -727,7 +727,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                         label_resolved=False,
                     )
 
-                    self._cohps[outer_key].update(
+                    self._cohps[drop_down_key].update(
                         {
                             plot_legend: {
                                 "energies": energies,
