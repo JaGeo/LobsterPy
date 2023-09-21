@@ -655,7 +655,7 @@ class Analysis:
             will return list of str, e.g. ["Na(2px)", "Cl(3s)"]
 
         """
-        orb_atom = {}
+        orb_atom = {}  # type: ignore
         orb_pair_list = orb_pair.split("-")
         # get orbital associated to the atom and store in a dict
         for inx, (site, site_orb) in enumerate(
@@ -672,10 +672,10 @@ class Analysis:
         # add orbital name next to atom_pair
         for inx, atom in enumerate(atom_pair):
             # check to ensure getting 2nd orbital if bond is between same atomic species
-            if inx == 1 and len(orb_atom.get(atom)) > 1:
-                atom_with_orb_name = f"{atom}({orb_atom.get(atom)[1]})"
+            if inx == 1 and len(orb_atom.get(atom)) > 1:  # type: ignore
+                atom_with_orb_name = f"{atom}({orb_atom.get(atom)[1]})"  # type: ignore
             else:
-                atom_with_orb_name = f"{atom}({orb_atom.get(atom)[0]})"
+                atom_with_orb_name = f"{atom}({orb_atom.get(atom)[0]})"  # type: ignore
             orb_atom_list.append(atom_with_orb_name)
 
         return orb_atom_list
