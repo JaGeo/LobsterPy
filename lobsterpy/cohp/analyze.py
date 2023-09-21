@@ -482,52 +482,52 @@ class Analysis:
         orb_mean_icohp = []
         orb_anti_contri_per = []
         orb_pairs = []
-        for orb_pair, data in orb_resolved_bond_data.items():
-            orb_contri.append(data["orb_contribution_mean_perc"])
-            orb_mean_icohp.append(data[f"I{type_pop.upper()}_mean"])
-            orb_anti_contri_per.append(data["antibonding"]["perc"])
-            orb_pairs.append(orb_pair)
-
-        max_orb_contri = max(orb_contri)
-        max_anti_contri = max(orb_anti_contri_per)
-        max_mean_icohp = max(orb_mean_icohp)
-
-        max_orb_contri_inxs = [
-            inx
-            for inx, orb_contri in enumerate(orb_contri)
-            if orb_contri == max_orb_contri
-        ]
-        max_anti_contri_inxs = [
-            inx
-            for inx, orb_anti_per in enumerate(orb_anti_contri_per)
-            if orb_anti_per == max_anti_contri
-        ]
-        max_mean_icohp_inxs = [
-            inx
-            for inx, orb_anti_per in enumerate(orb_mean_icohp)
-            if orb_anti_per == max_mean_icohp
-        ]
-        max_orb_contri_dict = {}
-        for inx in max_orb_contri_inxs:
-            max_orb_contri_dict[orb_pairs[inx]] = orb_contri[inx]
-        max_anti_contri_dict = {}
-        for inx in max_anti_contri_inxs:
-            max_anti_contri_dict[orb_pairs[inx]] = orb_anti_contri_per[inx]
-        max_mean_icohp_dict = {}
-        for inx in max_mean_icohp_inxs:
-            max_mean_icohp_dict[orb_pairs[inx]] = orb_mean_icohp[inx]
-
         orbital_summary_stats = {"orbital_summary_stats": {}}  # type: ignore
+        if orb_resolved_bond_data:
+            for orb_pair, data in orb_resolved_bond_data.items():
+                orb_contri.append(data["orb_contribution_mean_perc"])
+                orb_mean_icohp.append(data[f"I{type_pop.upper()}_mean"])
+                orb_anti_contri_per.append(data["antibonding"]["perc"])
+                orb_pairs.append(orb_pair)
 
-        orbital_summary_stats["orbital_summary_stats"][
-            "max_orbital_contribution"
-        ] = max_orb_contri_dict
-        orbital_summary_stats["orbital_summary_stats"][
-            "max_antibonding_contribution"
-        ] = max_anti_contri_dict
-        orbital_summary_stats["orbital_summary_stats"][
-            f"max_mean_i{type_pop.lower()}"
-        ] = max_mean_icohp_dict
+            max_orb_contri = max(orb_contri)
+            max_anti_contri = max(orb_anti_contri_per)
+            max_mean_icohp = min(orb_mean_icohp)
+
+            max_orb_contri_inxs = [
+                inx
+                for inx, orb_contri in enumerate(orb_contri)
+                if orb_contri == max_orb_contri
+            ]
+            max_anti_contri_inxs = [
+                inx
+                for inx, orb_anti_per in enumerate(orb_anti_contri_per)
+                if orb_anti_per == max_anti_contri
+            ]
+            max_mean_icohp_inxs = [
+                inx
+                for inx, orb_anti_per in enumerate(orb_mean_icohp)
+                if orb_anti_per == max_mean_icohp
+            ]
+            max_orb_contri_dict = {}
+            for inx in max_orb_contri_inxs:
+                max_orb_contri_dict[orb_pairs[inx]] = orb_contri[inx]
+            max_anti_contri_dict = {}
+            for inx in max_anti_contri_inxs:
+                max_anti_contri_dict[orb_pairs[inx]] = orb_anti_contri_per[inx]
+            max_mean_icohp_dict = {}
+            for inx in max_mean_icohp_inxs:
+                max_mean_icohp_dict[orb_pairs[inx]] = orb_mean_icohp[inx]
+
+            orbital_summary_stats["orbital_summary_stats"][
+                "max_orbital_contribution"
+            ] = max_orb_contri_dict
+            orbital_summary_stats["orbital_summary_stats"][
+                "max_antibonding_contribution"
+            ] = max_anti_contri_dict
+            orbital_summary_stats["orbital_summary_stats"][
+                f"max_mean_i{type_pop.lower()}"
+            ] = max_mean_icohp_dict
 
         return orbital_summary_stats
 
@@ -539,26 +539,38 @@ class Analysis:
             {'Na1: Na-Cl': {'3s-3s': ['21', '23', '24', '27', '28', '30']}
 
         """
-        dict_keys = list(self.get_site_bond_resolved_labels().keys())
-        plot_data = {i: {} for i in dict_keys}
-        for k, v in self.condensed_bonding_analysis["sites"].items():
-            for k2, v2 in v["bonds"].items():
-                for k3, v3 in v["bonds"][k2]["orbital_data"].items():
-                    if k3 != "orbital_summary_stats" not in k3 and "max_anti" not in k3:
-                        label_list = v["bonds"][k2]["orbital_data"][k3][
-                            "relevant_bonds"
-                        ]
-                        atom_pair = [v["ion"], k2]
-                        atom_pair.sort()
-                        key = (
-                            self.structure.sites[k].species_string
-                            + str(k + 1)
-                            + ": "
-                            + "-".join(atom_pair)
-                        )
-                        plot_data[key].update({k3: label_list})
+        plot_label_resolved_keys = list(self.get_site_bond_resolved_labels().keys())
+        orb_plot_data = {i: {} for i in plot_label_resolved_keys}
+        if self.orbital_resolved:
+            for site_index, cba_data in self.condensed_bonding_analysis[
+                "sites"
+            ].items():
+                for atom, _ in cba_data["bonds"].items():
+                    for orb_pair, bond_data in cba_data["bonds"][atom][
+                        "orbital_data"
+                    ].items():
+                        if (
+                            orb_pair != "orbital_summary_stats"
+                        ):  # not in k3 and "max_anti" not in k3:
+                            label_list = cba_data["bonds"][atom]["orbital_data"][
+                                orb_pair
+                            ]["relevant_bonds"]
+                            atom_pair = [cba_data["ion"], atom]
+                            atom_pair.sort()
+                            key = (
+                                self.structure.sites[site_index].species_string
+                                + str(site_index + 1)
+                                + ": "
+                                + "-".join(atom_pair)
+                            )
+                            orb_plot_data[key].update({orb_pair: label_list})
+        else:
+            print(
+                "Please set orbital_resolved to True when instantiating Analysis object, "
+                "to get this data"
+            )
 
-        return plot_data
+        return orb_plot_data
 
     @staticmethod
     def _get_strenghts_for_each_bond(pairs, strengths, nameion=None):
@@ -646,13 +658,24 @@ class Analysis:
         orb_atom = {}
         orb_pair_list = orb_pair.split("-")
         # get orbital associated to the atom and store in a dict
-        for site, site_orb in zip(complete_cohp.bonds[label]["sites"], orb_pair_list):
-            orb_atom[site.species_string] = site_orb
+        for inx, (site, site_orb) in enumerate(
+            zip(complete_cohp.bonds[label]["sites"], orb_pair_list)
+        ):
+            if (
+                site.species_string in orb_atom
+            ):  # check necessary for bonds between same atoms
+                orb_atom[site.species_string].append(site_orb)
+            else:
+                orb_atom[site.species_string] = [site_orb]
 
         orb_atom_list = []
         # add orbital name next to atom_pair
-        for atom in atom_pair:
-            atom_with_orb_name = f"{atom}({orb_atom.get(atom)})"
+        for inx, atom in enumerate(atom_pair):
+            # check to ensure getting 2nd orbital if bond is between same atomic species
+            if inx == 1 and len(orb_atom.get(atom)) > 1:
+                atom_with_orb_name = f"{atom}({orb_atom.get(atom)[1]})"
+            else:
+                atom_with_orb_name = f"{atom}({orb_atom.get(atom)[0]})"
             orb_atom_list.append(atom_with_orb_name)
 
         return orb_atom_list
