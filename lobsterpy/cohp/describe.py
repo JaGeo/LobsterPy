@@ -614,7 +614,7 @@ class Description:
                         "bandOverlaps.lobster file is generated during the LOBSTER run."
                     )
 
-            elif key == "Charges":
+            elif key == "charges":
                 if val:
                     for charge in ["Mulliken", "Loewdin"]:
                         if val["BVA_{}_agree".format(charge)]:
@@ -633,7 +633,7 @@ class Description:
                         "Thus BVA charge comparison is not conducted."
                     )
 
-            elif key == "DOS_comparisons":
+            elif key == "dos_comparisons":
                 comp_types = []
                 tani_index = []
                 for orb in val:

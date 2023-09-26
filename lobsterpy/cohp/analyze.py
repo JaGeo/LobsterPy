@@ -1066,18 +1066,18 @@ class Analysis:
                     else:
                         loew_oxi.append("NEG")
 
-                quality_dict["Charges"] = {}  # type: ignore
+                quality_dict["charges"] = {}  # type: ignore
                 if mull_oxi == bva_oxi:
-                    quality_dict["Charges"]["BVA_Mulliken_agree"] = True  # type: ignore
+                    quality_dict["charges"]["BVA_Mulliken_agree"] = True  # type: ignore
                 else:
-                    quality_dict["Charges"]["BVA_Mulliken_agree"] = False  # type: ignore
+                    quality_dict["charges"]["BVA_Mulliken_agree"] = False  # type: ignore
 
                 if mull_oxi == bva_oxi:
-                    quality_dict["Charges"]["BVA_Loewdin_agree"] = True  # type: ignore
+                    quality_dict["charges"]["BVA_Loewdin_agree"] = True  # type: ignore
                 else:
-                    quality_dict["Charges"]["BVA_Loewdin_agree"] = False  # type: ignore
+                    quality_dict["charges"]["BVA_Loewdin_agree"] = False  # type: ignore
             except ValueError:
-                quality_dict["Charges"] = {}  # type: ignore
+                quality_dict["charges"] = {}  # type: ignore
                 warnings.warn(
                     "Oxidation states from BVA analyzer cannot be determined. "
                     "Thus BVA charge comparison will be skipped"
@@ -1098,7 +1098,7 @@ class Analysis:
             vasprun = Vasprun(path_to_vasprun)
             dos_vasp = vasprun.complete_dos
 
-            quality_dict["DOS_comparisons"] = {}  # type: ignore
+            quality_dict["dos_comparisons"] = {}  # type: ignore
 
             for orb in dos_lobster.get_spd_dos():
                 if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(
@@ -1158,7 +1158,7 @@ class Analysis:
                     ),
                     4,
                 )
-                quality_dict["DOS_comparisons"][
+                quality_dict["dos_comparisons"][
                     "tanimoto_orb_{}".format(orb.name)
                 ] = tani_orb  # type: ignore
 
@@ -1180,8 +1180,8 @@ class Analysis:
             tanimoto_summed = round(
                 dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
             )
-            quality_dict["DOS_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
-            quality_dict["DOS_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
-            quality_dict["DOS_comparisons"]["n_bins"] = n_bins  # type: ignore
+            quality_dict["dos_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
+            quality_dict["dos_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
+            quality_dict["dos_comparisons"]["n_bins"] = n_bins  # type: ignore
 
         return quality_dict
