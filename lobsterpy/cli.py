@@ -668,7 +668,7 @@ def run(args):
         if args.allbonds:
             which_bonds = "all"
         else:
-            which_bonds = "cation_anion"
+            which_bonds = "cation-anion"
 
         analyse = Analysis(
             path_to_poscar=args.poscar,

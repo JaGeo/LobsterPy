@@ -33,7 +33,7 @@ class TestGraph(unittest.TestCase):
             path_to_icobilist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
             path_to_madelung=TestDir
             / "TestData/NaCl_comp_range/MadelungEnergies.lobster.gz",
-            which_bonds="cation_anion",
+            which_bonds="cation-anion",
             start=None,
         )
 

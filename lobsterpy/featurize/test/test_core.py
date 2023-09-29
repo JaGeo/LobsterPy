@@ -16,7 +16,7 @@ class TestFeaturizeLobsterpy(unittest.TestCase):
 
         self.featurize_mp1249_json_ca = FeaturizeLobsterpy(
             path_to_json=TestDir / "TestData/JSONS/mp-1249.json.gz",
-            bonds="cation_anion",
+            bonds="cation-anion",
         )
         self.featurize_mp1958_json = FeaturizeLobsterpy(
             path_to_json=TestDir / "TestData/JSONS/mp-1958.json.gz", bonds="all"
@@ -486,27 +486,27 @@ class TestExceptions(unittest.TestCase):
 
         with self.assertRaises(Exception) as err:
             self.featurize_CsH_cation_anion = FeaturizeLobsterpy(
-                path_to_lobster_calc=TestDir / "TestData/CsH/", bonds="cation_anion"
+                path_to_lobster_calc=TestDir / "TestData/CsH/", bonds="cation-anion"
             )
 
             _ = self.featurize_CsH_cation_anion.get_df()
 
         self.assertEqual(
             err.exception.__str__(),
-            "No cation_anion bonds detected for CsH structure. "
+            "No cation-anion bonds detected for CsH structure. "
             "Please switch to ´all´ bonds mode",
         )
 
         with self.assertRaises(Exception) as err:
             self.featurize_C_cation_anion = FeaturizeLobsterpy(
-                path_to_lobster_calc=TestDir / "TestData/C/", bonds="cation_anion"
+                path_to_lobster_calc=TestDir / "TestData/C/", bonds="cation-anion"
             )
 
             _ = self.featurize_C_cation_anion.get_df()
 
         self.assertEqual(
             err.exception.__str__(),
-            "No cation_anion bonds detected for C structure. "
+            "No cation-anion bonds detected for C structure. "
             "Please switch to ´all´ bonds mode",
         )
 

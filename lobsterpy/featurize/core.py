@@ -34,7 +34,7 @@ class FeaturizeLobsterpy:
     Args:
         path_to_lobster_calc: path containing lobster calc outputs
         path_to_json: path to lobster lightweight json
-        bonds: "all" or "cation_anion" bonds
+        bonds: "all" or "cation-anion" bonds
     Attributes:
         get_df: returns a pandas dataframe with relevant icohp statistical data as columns from
         lobsterpy automatic bonding analysis
@@ -89,13 +89,13 @@ class FeaturizeLobsterpy:
         bond = []
         antibond = []
         # extract lobsterpy icohp related data for bond type specified
-        # Results will differ for "all" and "cation_anion" mode.
+        # Results will differ for "all" and "cation-anion" mode.
         # In "all" bonds mode, the bonds will come up twice, also
         # cation-cation, anion-anion bonds will also be considered
 
         if self.bonds == "all":
             bond_type = "all_bonds"
-        elif self.bonds == "cation_anion":
+        elif self.bonds == "cation-anion":
             bond_type = "cation_anion_bonds"
 
         if (
@@ -172,7 +172,7 @@ class FeaturizeLobsterpy:
 
         Args:
             path_to_lobster_calc: path to lobsterpy lightweight json file
-            bonds: "all" or "cation_anion" bonds
+            bonds: "all" or "cation-anion" bonds
 
         Returns:
             Returns a dictionary with lobster summmarized bonding analysis data
@@ -207,7 +207,7 @@ class FeaturizeLobsterpy:
         structure_path = req_files_lobsterpy.get("structure_path")
         icohplist_path = req_files_lobsterpy.get("icohplist_path")
 
-        which_bonds = bonds
+        which_bonds = bonds.replace("-", "_")
         bond_type = f"{which_bonds}_bonds"
 
         try:

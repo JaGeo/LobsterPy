@@ -62,7 +62,7 @@ class Analysis:
         path_to_cohpcar: str,
         path_to_charge: str | None = None,
         path_to_madelung: str | None = None,
-        which_bonds: str = "cation_anion",
+        which_bonds: str = "cation-anion",
         cutoff_icohp: float = 0.1,
         noise_cutoff: float = 0.1,
         summed_spins=True,
@@ -142,7 +142,7 @@ class Analysis:
         self.set_equivalent_sites = list(set(equivalent_sites))
         self.spg = symmetry_dataset["international"]
 
-        if self.which_bonds == "cation_anion":
+        if self.which_bonds == "cation-anion":
             try:
                 self.chemenv = LobsterNeighbors(
                     filename_ICOHP=self.path_to_icohplist,
@@ -187,7 +187,7 @@ class Analysis:
 
         # determine cations and anions
         try:
-            if self.which_bonds == "cation_anion":
+            if self.which_bonds == "cation-anion":
                 self.lse = self.chemenv.get_light_structure_environment(
                     only_cation_environments=True
                 )
@@ -228,7 +228,7 @@ class Analysis:
 
             if self.which_bonds == "all":
                 self.lse = Lse(self.chemenv.list_coords)
-            elif self.which_bonds == "cation_anion":
+            elif self.which_bonds == "cation-anion":
                 # make a new list
                 self.lse = Lse(self.chemenv.list_coords, self.chemenv.valences)
 
@@ -240,7 +240,7 @@ class Analysis:
             None
 
         """
-        if self.which_bonds == "cation_anion":
+        if self.which_bonds == "cation-anion":
             # this will only analyze cation anion bonds which simplifies the analysis
             self.seq_ineq_ions = []
             self.seq_coord_ions = []
@@ -681,7 +681,7 @@ class Analysis:
         """
         self.condensed_bonding_analysis = {}
         # which icohps are considered
-        if self.which_bonds == "cation_anion":
+        if self.which_bonds == "cation-anion":
             limit_icohps = self.chemenv._get_limit_from_extremum(
                 self.chemenv.Icohpcollection,
                 self.cutoff_icohp,
@@ -700,7 +700,7 @@ class Analysis:
         # set population type
         type_pop = self._get_pop_type()
         # how many inequivalent cations are in the structure
-        if self.which_bonds == "cation_anion":
+        if self.which_bonds == "cation-anion":
             number_considered_ions = len(self.seq_ineq_ions)
         elif self.which_bonds == "all":
             number_considered_ions = len(self.seq_ineq_ions)
@@ -713,7 +713,7 @@ class Analysis:
 
         # dictionary including bonding information for each site
         site_dict = {}
-        if self.which_bonds == "cation_anion":
+        if self.which_bonds == "cation-anion":
             for ication, ce, cation_anion_infos, labels, cohps in zip(
                 self.seq_ineq_ions,
                 self.seq_coord_ions,
@@ -798,7 +798,7 @@ class Analysis:
                 }
 
         if self.path_to_madelung is None:
-            if self.which_bonds == "cation_anion":
+            if self.which_bonds == "cation-anion":
                 # This sets the dictionary including the most important information on the compound
                 self.condensed_bonding_analysis = {
                     "formula": formula,
@@ -826,7 +826,7 @@ class Analysis:
             elif self.type_charge == "Löwdin":
                 madelung_energy = madelung.madelungenergies_Loewdin
             # This sets the dictionary including the most important information on the compound
-            if self.which_bonds == "cation_anion":
+            if self.which_bonds == "cation-anion":
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,

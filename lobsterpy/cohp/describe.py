@@ -45,7 +45,7 @@ class Description:
         type_pop = self.analysis_object._get_pop_type()
         # set units for populations
         units = " eV" if type_pop == "COHP" else ""
-        if self.analysis_object.which_bonds == "cation_anion":
+        if self.analysis_object.which_bonds == "cation-anion":
             relevant_cations = ", ".join(
                 [
                     str(site.specie) + str(isite + 1)
@@ -236,7 +236,7 @@ class Description:
 
         """
         seq_cohps = self.analysis_object.seq_cohps
-        if self.analysis_object.which_bonds == "cation_anion":
+        if self.analysis_object.which_bonds == "cation-anion":
             seq_ineq_cations = self.analysis_object.seq_ineq_ions
         elif self.analysis_object.which_bonds == "all":
             seq_ineq_cations = self.analysis_object.seq_ineq_ions
