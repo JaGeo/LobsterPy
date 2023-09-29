@@ -59,7 +59,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
         self.summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
             path_to_lobster_calcs=TestDir
             / "TestData/Featurizer_test_data/Lobster_calcs",
-            bonds="cation-anion",
+            bonds="cation_anion",
             path_to_jsons=TestDir / "TestData/Featurizer_test_data/JSONS",
             feature_type="antibonding",
             include_cobi_data=False,

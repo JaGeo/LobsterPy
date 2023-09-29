@@ -34,7 +34,7 @@ class FeaturizeLobsterpy:
     Args:
         path_to_lobster_calc: path containing lobster calc outputs
         path_to_json: path to lobster lightweight json
-        bonds: "all" or "cation-anion" bonds
+        bonds: "all" or "cation_anion" bonds
     Attributes:
         get_df: returns a pandas dataframe with relevant icohp statistical data as columns from
         lobsterpy automatic bonding analysis
@@ -89,13 +89,13 @@ class FeaturizeLobsterpy:
         bond = []
         antibond = []
         # extract lobsterpy icohp related data for bond type specified
-        # Results will differ for "all" and "cation-anion" mode.
+        # Results will differ for "all" and "cation_anion" mode.
         # In "all" bonds mode, the bonds will come up twice, also
         # cation-cation, anion-anion bonds will also be considered
 
         if self.bonds == "all":
             bond_type = "all_bonds"
-        elif self.bonds == "cation-anion":
+        elif self.bonds == "cation_anion":
             bond_type = "cation_anion_bonds"
 
         if (
@@ -172,7 +172,7 @@ class FeaturizeLobsterpy:
 
         Args:
             path_to_lobster_calc: path to lobsterpy lightweight json file
-            bonds: "all" or "cation-anion" bonds
+            bonds: "all" or "cation_anion" bonds
 
         Returns:
             Returns a dictionary with lobster summmarized bonding analysis data
@@ -208,11 +208,7 @@ class FeaturizeLobsterpy:
         icohplist_path = req_files_lobsterpy.get("icohplist_path")
 
         which_bonds = bonds
-
-        if which_bonds == "all":
-            bond_type = "all_bonds"
-        elif which_bonds == "cation-anion":
-            bond_type = "cation_anion_bonds"
+        bond_type = f"{which_bonds}_bonds"
 
         try:
             analyse = Analysis(
@@ -222,7 +218,7 @@ class FeaturizeLobsterpy:
                 path_to_charge=str(charge_path),
                 summed_spins=False,  # we will always use spin polarization here
                 cutoff_icohp=0.10,
-                whichbonds=which_bonds,
+                which_bonds=which_bonds,
             )
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}

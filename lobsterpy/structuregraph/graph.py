@@ -81,7 +81,7 @@ class LobsterGraph:
 
         if self.which_bonds == "all":
             self.additional_condition = 0
-        elif self.which_bonds == "cation-anion":
+        elif self.which_bonds == "cation_anion":
             self.additional_condition = 1
         else:
             raise ValueError(
@@ -145,7 +145,7 @@ class LobsterGraph:
             path_to_poscar=self.path_to_poscar,
             path_to_icohplist=self.path_to_icohplist,
             path_to_madelung=self.path_to_madelung,
-            whichbonds=self.which_bonds,
+            which_bonds=self.which_bonds,
             cutoff_icohp=self.cutoff_icohp,
         )
 

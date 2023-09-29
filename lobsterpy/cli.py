@@ -666,16 +666,16 @@ def run(args):
         "autoplotia",
     ]:
         if args.allbonds:
-            whichbonds = "all"
+            which_bonds = "all"
         else:
-            whichbonds = "cation-anion"
+            which_bonds = "cation_anion"
 
         analyse = Analysis(
             path_to_poscar=args.poscar,
             path_to_charge=args.charge,
             path_to_cohpcar=args.cohpcar,
             path_to_icohplist=args.icohplist,
-            whichbonds=whichbonds,
+            which_bonds=which_bonds,
             are_coops=args.coops,
             are_cobis=args.cobis,
             noise_cutoff=args.noisecutoff,

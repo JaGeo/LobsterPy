@@ -27,7 +27,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation_anion",
             cutoff_icohp=0.1,
             summed_spins=False,
         )
@@ -37,7 +37,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
             path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
-            whichbonds="cation-anion",
+            which_bonds="cation_anion",
             cutoff_icohp=0.1,
             summed_spins=False,
             noise_cutoff=0.001,
@@ -49,7 +49,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaSi/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaSi/CHARGE.lobster",
-            whichbonds="all",
+            which_bonds="all",
             cutoff_icohp=0.1,
             summed_spins=True,
         )
@@ -59,7 +59,7 @@ class PlainInteractiveCohpPlotterTest(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
-            whichbonds="all",
+            which_bonds="all",
             cutoff_icohp=0.1,
             summed_spins=False,
         )
