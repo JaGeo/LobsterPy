@@ -480,18 +480,20 @@ class Analysis:
         # get max orbital contribution, anti-bonding percentage and icohp mean for the site
         orb_contri = []
         orb_mean_icohp = []
-        orb_anti_contri_per = []
+        orb_anti_contri_integral = []
+        orb_anti_contri_perc = []
         orb_pairs = []
         orbital_summary_stats = {"orbital_summary_stats": {}}  # type: ignore
         if orb_resolved_bond_data:
             for orb_pair, data in orb_resolved_bond_data.items():
                 orb_contri.append(data["orb_contribution_mean_perc"])
                 orb_mean_icohp.append(data[f"I{type_pop.upper()}_mean"])
-                orb_anti_contri_per.append(data["antibonding"]["perc"])
+                orb_anti_contri_integral.append(data["antibonding"]["integral"])
+                orb_anti_contri_perc.append(data["antibonding"]["perc"])
                 orb_pairs.append(orb_pair)
 
             max_orb_contri = max(orb_contri)
-            max_anti_contri = max(orb_anti_contri_per)
+            max_anti_contri = max(orb_anti_contri_integral)
             max_mean_icohp = min(orb_mean_icohp)
 
             max_orb_contri_inxs = [
@@ -501,7 +503,7 @@ class Analysis:
             ]
             max_anti_contri_inxs = [
                 inx
-                for inx, orb_anti_per in enumerate(orb_anti_contri_per)
+                for inx, orb_anti_per in enumerate(orb_anti_contri_integral)
                 if orb_anti_per == max_anti_contri
             ]
             max_mean_icohp_inxs = [
@@ -514,7 +516,10 @@ class Analysis:
                 max_orb_contri_dict[orb_pairs[inx]] = orb_contri[inx]
             max_anti_contri_dict = {}
             for inx in max_anti_contri_inxs:
-                max_anti_contri_dict[orb_pairs[inx]] = orb_anti_contri_per[inx]
+                max_anti_contri_dict[orb_pairs[inx]] = {
+                    "integral": orb_anti_contri_integral[inx],
+                    "perc": orb_anti_contri_perc[inx],
+                }
             max_mean_icohp_dict = {}
             for inx in max_mean_icohp_inxs:
                 max_mean_icohp_dict[orb_pairs[inx]] = orb_mean_icohp[inx]

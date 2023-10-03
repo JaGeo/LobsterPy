@@ -336,7 +336,7 @@ class Description:
                 orb_antibonding.append(
                     str(
                         round(
-                            data * 100,
+                            data["perc"] * 100,
                             3,
                         )
                     )
