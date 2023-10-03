@@ -559,8 +559,8 @@ class TestDescribe(unittest.TestCase):
                 "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
                 "4.071 percent antibonding interaction below EFermi) bonds.",
                 "In the Na-F bond, the maximum contribution is from the Na(3s)-F(2s) orbital, contributing "
-                "77.48 percent, whereas the maximum antibonding contribution are from Na(3s)-F(2pz), "
-                "Na(3s)-F(2py), and Na(3s)-F(2px) orbitals, contributing 9.091, 9.091, and 9.091 percent, respectively.",
+                "77.48 percent, whereas the maximum antibonding contribution is from the Na(3s)-F(2s) orbital, "
+                "contributing 2.357 percent.",
                 "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
                 "0.0 percent antibonding interaction below EFermi) bonds.",
                 "In the Sb-F bond, the maximum contribution are from Sb(5pz)-F(2s), Sb(5py)-F(2s), "
@@ -574,8 +574,8 @@ class TestDescribe(unittest.TestCase):
                 "contributing 77.48 percent, whereas the maximum antibonding contribution is from t"
                 "he F(2pz)-Na(3s) orbital, contributing 11.765 percent.In the F-Sb bond, the maximum "
                 "contribution is from the F(2s)-Sb(5pz) orbital, contributing 39.12 percent, "
-                "whereas the maximum antibonding contribution is from the F(2s)-Sb(5s) orbital, "
-                "contributing 35.714 percent.",
+                "whereas the maximum antibonding contribution is from the F(2s)-Sb(5pz) orbital, "
+                "contributing 18.584 percent.",
             ],
         )
         self.assertEqual(
