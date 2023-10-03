@@ -589,15 +589,25 @@ class InteractiveCohpPlotter(CohpPlotter):
                 label=bond_key, character=":", number_of_bonds=count
             )
             # add summed cohps for each relevant bond sites
-            if not label_resolved and not orbital_resolved:
-                cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
-                energies = (
-                    cohp.energies - cohp.efermi
-                    if self.zero_at_efermi
-                    else cohp.energies
-                )
-                plot_legend = label_with_count + suffix
-                self._cohps["All"].update(
+            cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
+            energies = (
+                cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+            )
+            drop_down_key = plot_legend = label_with_count + suffix
+            self._cohps["All"].update(
+                {
+                    plot_legend: {
+                        "energies": energies,
+                        "COHP": cohp.get_cohp(),
+                        "ICOHP": cohp.get_icohp(),
+                        "efermi": cohp.efermi,
+                    }
+                }
+            )
+            if len(plot_data) > 1:
+                if drop_down_key not in self._cohps:
+                    self._cohps[drop_down_key] = {}
+                self._cohps[drop_down_key].update(
                     {
                         plot_legend: {
                             "energies": energies,
@@ -607,6 +617,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                         }
                     }
                 )
+
             # will add cohp data for each relevant bond label iteratively
             if label_resolved and not orbital_resolved:
                 if label_with_count + suffix not in self._cohps:
@@ -627,16 +638,17 @@ class InteractiveCohpPlotter(CohpPlotter):
                         label_resolved=True,
                         orbital_resolved=False,
                     )
-                    self._cohps[drop_down_key].update(
-                        {
-                            plot_legend: {
-                                "energies": energies,
-                                "COHP": cohp.get_cohp(),
-                                "ICOHP": cohp.get_icohp(),
-                                "efermi": cohp.efermi,
+                    if len(plot_data) > 1:
+                        self._cohps[drop_down_key].update(
+                            {
+                                plot_legend: {
+                                    "energies": energies,
+                                    "COHP": cohp.get_cohp(),
+                                    "ICOHP": cohp.get_icohp(),
+                                    "efermi": cohp.efermi,
+                                }
                             }
-                        }
-                    )
+                        )
 
                     plot_legend_here = plot_legend + suffix
                     self._cohps["All"].update(
@@ -677,17 +689,17 @@ class InteractiveCohpPlotter(CohpPlotter):
                             orbital_resolved=True,
                             label_resolved=True,
                         )
-
-                        self._cohps[drop_down_key].update(
-                            {
-                                plot_legend: {
-                                    "energies": energies,
-                                    "COHP": cohp_orb.get_cohp(),
-                                    "ICOHP": cohp_orb.get_icohp(),
-                                    "efermi": cohp_orb.efermi,
+                        if len(plot_data) > 1:
+                            self._cohps[drop_down_key].update(
+                                {
+                                    plot_legend: {
+                                        "energies": energies,
+                                        "COHP": cohp_orb.get_cohp(),
+                                        "ICOHP": cohp_orb.get_icohp(),
+                                        "efermi": cohp_orb.efermi,
+                                    }
                                 }
-                            }
-                        )
+                            )
 
                         plot_legend_here = plot_legend + suffix
 
@@ -727,16 +739,17 @@ class InteractiveCohpPlotter(CohpPlotter):
                         label_resolved=False,
                     )
 
-                    self._cohps[drop_down_key].update(
-                        {
-                            plot_legend: {
-                                "energies": energies,
-                                "COHP": cohp_orb.get_cohp(),
-                                "ICOHP": cohp_orb.get_icohp(),
-                                "efermi": cohp_orb.efermi,
+                    if len(plot_data) > 1:
+                        self._cohps[drop_down_key].update(
+                            {
+                                plot_legend: {
+                                    "energies": energies,
+                                    "COHP": cohp_orb.get_cohp(),
+                                    "ICOHP": cohp_orb.get_icohp(),
+                                    "efermi": cohp_orb.efermi,
+                                }
                             }
-                        }
-                    )
+                        )
 
                     plot_legend_here = plot_legend + suffix
 
