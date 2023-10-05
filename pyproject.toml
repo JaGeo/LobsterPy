@@ -29,6 +29,9 @@ dependencies = [
      "typing",
 ]
 
+[tool.setuptools.package-data]
+"lobsterpy.plotting" = ["lobsterpy_base.mplstyle"]
+
 [project.urls]
 homepage = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
 repository = "https://github.com/JaGeo/LobsterPy"
