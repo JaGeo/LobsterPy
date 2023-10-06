@@ -398,8 +398,10 @@ class Analysis:
                 )
                 orb_list = []
                 for orb in available_orbitals:
-                    icohp_summed = self.chemenv.Icohpcollection.get_summed_icohp_by_label_list(
-                        label_list=bond_labels
+                    icohp_summed = (
+                        self.chemenv.Icohpcollection.get_summed_icohp_by_label_list(
+                            label_list=bond_labels
+                        )
                     )
                     orb_icohps = []
                     for bond_label in bond_labels:
@@ -441,8 +443,10 @@ class Analysis:
                     orb_icohp_list = []
                     orb_contri = []
 
-                    icohp_summed = self.chemenv.Icohpcollection.get_summed_icohp_by_label_list(
-                        label_list=bond_labels
+                    icohp_summed = (
+                        self.chemenv.Icohpcollection.get_summed_icohp_by_label_list(
+                            label_list=bond_labels
+                        )
                     )
                     orb_icohps = []
                     for bond_label in bond_labels:
