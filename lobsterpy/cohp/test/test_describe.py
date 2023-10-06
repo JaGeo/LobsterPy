@@ -21,7 +21,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_NaCl = Description(self.analyse_NaCl)
@@ -31,7 +31,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
             path_to_charge=None,
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_NaCl_valences = Description(self.analyse_NaCl_valences)
@@ -41,7 +41,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/BaTiO3/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/BaTiO3/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
@@ -77,7 +77,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/BaTaO2N1/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/BaTaO2N1/CHARGE.lobster.gz",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_BaTaO2N1 = Description(self.analyse_BaTaO2N1)
@@ -89,7 +89,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/CdF/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/CdF/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_CdF = Description(self.analyse_CdF)
@@ -99,7 +99,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl_distorted/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaCl_distorted/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaCl_distorted/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
@@ -110,7 +110,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl_spin/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaCl_spin/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaCl_spin/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
             summed_spins=False,
         )
@@ -121,7 +121,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
-            whichbonds="all",
+            which_bonds="all",
             cutoff_icohp=0.1,
         )
 
@@ -133,7 +133,7 @@ class TestDescribe(unittest.TestCase):
             path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
             path_to_madelung=TestDir / "TestData/NaCl/MadelungEnergies.lobster",
-            whichbonds="all",
+            which_bonds="all",
             cutoff_icohp=0.1,
         )
 
@@ -144,7 +144,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
             path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
             noise_cutoff=0.001,
             are_cobis=True,
@@ -159,7 +159,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/CdF_comp_range/COOPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/CdF_comp_range/ICOOPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/CdF_comp_range/CHARGE.lobster.gz",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
             noise_cutoff=0.001,
             are_coops=True,
@@ -175,7 +175,7 @@ class TestDescribe(unittest.TestCase):
             path_to_icohplist=TestDir / "TestData/NaSi/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaSi/CHARGE.lobster",
             path_to_madelung=TestDir / "TestData/NaSi/MadelungEnergies.lobster",
-            whichbonds="all",
+            which_bonds="all",
             cutoff_icohp=0.1,
         )
 
@@ -186,7 +186,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_NaSbF6 = Description(self.analyse_NaSbF6)
@@ -196,7 +196,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
             start=-5.5,
         )
@@ -208,7 +208,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
             start=-4.0,
         )
@@ -220,7 +220,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/CdF/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/CdF/ICOHPLIST.lobster",
             path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
             start=-4.0,
         )
@@ -233,7 +233,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
-            whichbonds="cation-anion",
+            which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
 
@@ -244,7 +244,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
-            whichbonds="all",
+            which_bonds="all",
             cutoff_icohp=0.1,
         )
 
@@ -269,7 +269,7 @@ class TestDescribe(unittest.TestCase):
             path_to_cohpcar=TestDir / "TestData/CsH/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "TestData/CsH/ICOHPLIST.lobster.gz",
             path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
-            whichbonds="all",
+            which_bonds="all",
             cutoff_icohp=0.1,
         )
 
