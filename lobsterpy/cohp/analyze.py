@@ -381,10 +381,10 @@ class Analysis:
             iion: index of symmetrically relevant cation or anion
             labels: list of bond label names
             bond_resolved_labels: dict of bond labels from ICOHPLIST resolved for each bond
-            type_pop: population type analyzed. eg. COHP or COOP or COBI
+            type_pop: population type analyzed. e.g. COHP or COOP or COBI
 
         Returns:
-            dict consisting of relevant orbitals (contribution > 10 % to overall ICOHP or ICOBI or ICOOP),
+            dict consisting of relevant orbitals (contribution > 5 % to overall ICOHP or ICOBI or ICOOP),
             bonding and antibonding percentages with bond label names as keys.
         """
         orb_resolved_bond_info = {}
@@ -397,154 +397,251 @@ class Analysis:
                 available_orbitals = list(
                     self.chemenv.completecohp.orb_res_cohp[bond_labels[0]].keys()
                 )
-                orb_list = []
-                for orb in available_orbitals:
-                    icohp_summed = (
-                        self.chemenv.Icohpcollection.get_summed_icohp_by_label_list(
-                            label_list=bond_labels
-                        )
-                    )
-                    orb_icohps = []
-                    for bond_label in bond_labels:
-                        orb_icohp = self.chemenv.Icohpcollection.get_icohp_by_label(
-                            label=bond_label, orbitals=orb
-                        )
-                        orb_icohps.append(orb_icohp)
-                    icohp_orb_summmed = sum(orb_icohps)
+                # initialize empty list to store orb paris for bonding,
+                # antibonding integrals and  percentages
+                bndg_orb_pair_list = []
+                bndg_orb_integral_list = []
+                bndg_orb_perc_list = []
+                bndg_orb_icohp_list = []
+                antibndg_orb_integral_list = []
+                antibndg_orb_perc_list = []
+                antibndg_orb_pair_list = []
+                antibndg_orb_icohp_list = []
 
-                    contri_perc = round((icohp_orb_summmed / icohp_summed), 4)
-                    if contri_perc * 100 >= self.orbital_cutoff * 100:
-                        if orb not in orb_list:
-                            orb_list.append(orb)
+                # get total summed cohps using label list
+                cohp_summed = self.chemenv.completecohp.get_summed_cohp_by_label_list(
+                    label_list=bond_labels
+                )
+                if type_pop.lower() == "cohp":
+                    (
+                        antibndg_tot,
+                        per_anti_tot,
+                        bndg_tot,
+                        per_bndg_tot,
+                    ) = self._integrate_antbdstates_below_efermi(
+                        cohp=cohp_summed, start=self.start
+                    )
+                else:
+                    (
+                        bndg_tot,
+                        per_bndg_tot,
+                        antibndg_tot,
+                        per_anti_tot,
+                    ) = self._integrate_antbdstates_below_efermi(
+                        cohp=cohp_summed, start=self.start
+                    )
 
                 orb_bonding_dict_data = {}
-                for indx, orbital in enumerate(orb_list):
-                    cohps = self.chemenv.completecohp.get_summed_cohp_by_label_and_orbital_list(
-                        label_list=bond_labels,
-                        orbital_list=[orbital] * len(bond_labels),
+                # For each orbital collect the contributions of summed bonding
+                # and antibonding interactions seperately
+                for orb in available_orbitals:
+                    cohp_summed_orb = self.chemenv.completecohp.get_summed_cohp_by_label_and_orbital_list(
+                        label_list=bond_labels, orbital_list=[orb] * len(bond_labels)
                     )
+
                     if type_pop.lower() == "cohp":
                         (
-                            antibndg,
-                            per_anti,
-                            bndg,
-                            per_bndg,
+                            antibndg_orb,
+                            per_anti_orb,
+                            bndg_orb,
+                            per_bndg_orb,
                         ) = self._integrate_antbdstates_below_efermi(
-                            cohp=cohps, start=self.start
+                            cohp=cohp_summed_orb, start=self.start
                         )
                     else:
                         (
-                            bndg,
-                            per_bndg,
-                            antibndg,
-                            per_anti,
+                            bndg_orb,
+                            per_bndg_orb,
+                            antibndg_orb,
+                            per_anti_orb,
                         ) = self._integrate_antbdstates_below_efermi(
-                            cohp=cohps, start=self.start
+                            cohp=cohp_summed_orb, start=self.start
                         )
-                    orb_icohp_list = []
-                    orb_contri = []
 
-                    icohp_summed = (
-                        self.chemenv.Icohpcollection.get_summed_icohp_by_label_list(
-                            label_list=bond_labels
-                        )
+                    # replace nan values with zero (tackle numerical integration issues)
+                    bndg_orb = bndg_orb if not np.isnan(bndg_orb) else 0
+                    per_bndg_orb = per_bndg_orb if not np.isnan(per_bndg_orb) else 0
+                    bndg_tot = bndg_tot if not np.isnan(bndg_tot) else 0
+                    per_bndg_tot = per_bndg_tot if not np.isnan(per_bndg_tot) else 0
+                    # skip collecting orb contributions if no summed bonding contribution exists
+                    if bndg_tot > 0:
+                        orb_icohps_bndg = []
+                        for bond_label in bond_labels:
+                            orb_icohp_bn = (
+                                self.chemenv.Icohpcollection.get_icohp_by_label(
+                                    label=bond_label, orbitals=orb
+                                )
+                            )
+                            orb_icohps_bndg.append(orb_icohp_bn)
+                        bndg_orb_pair_list.append(orb)
+                        bndg_orb_icohp_list.append(orb_icohps_bndg)
+                        bndg_orb_integral_list.append(bndg_orb)
+                        bndg_orb_perc_list.append(per_bndg_orb)
+
+                    # replace nan values with zero (tackle numerical integration issues)
+                    antibndg_orb = antibndg_orb if not np.isnan(antibndg_orb) else 0
+                    per_anti_orb = per_anti_orb if not np.isnan(per_anti_orb) else 0
+                    antibndg_tot = antibndg_tot if not np.isnan(antibndg_tot) else 0
+                    per_anti_tot = per_anti_tot if not np.isnan(per_anti_tot) else 0
+                    # skip collecting orb contributions if no summed antibonding contribution exists
+                    if antibndg_tot > 0:
+                        orb_icohps_anti = []
+                        for bond_label in bond_labels:
+                            orb_icohp_an = (
+                                self.chemenv.Icohpcollection.get_icohp_by_label(
+                                    label=bond_label, orbitals=orb
+                                )
+                            )
+                            orb_icohps_anti.append(orb_icohp_an)
+
+                        antibndg_orb_pair_list.append(orb)
+                        antibndg_orb_icohp_list.append(orb_icohps_anti)
+                        antibndg_orb_integral_list.append(antibndg_orb)
+                        antibndg_orb_perc_list.append(per_anti_orb)
+
+                # Populate the dictionary with relevant orbitals for bonding interactions
+                for inx, bndg_orb_pair in enumerate(bndg_orb_pair_list):
+                    bndg_contri_perc = round(
+                        bndg_orb_integral_list[inx] / sum(bndg_orb_integral_list), 2
                     )
-                    orb_icohps = []
-                    for bond_label in bond_labels:
-                        orb_icohp = self.chemenv.Icohpcollection.get_icohp_by_label(
-                            label=bond_label, orbitals=orbital
-                        )
-                        orb_icohps.append(orb_icohp)
-                    icohp_orb_summmed = sum(orb_icohps)
+                    # filter out very small bonding interactions (<self.orbital_cutoff)
+                    if bndg_contri_perc > self.orbital_cutoff:
+                        if bndg_orb_pair in orb_bonding_dict_data:
+                            orb_bonding_dict_data[bndg_orb_pair].update(
+                                {
+                                    "orb_contribution_perc_bonding": bndg_contri_perc,
+                                    "bonding": {
+                                        "integral": bndg_orb_integral_list[inx],
+                                        "perc": bndg_orb_perc_list[inx],
+                                    },
+                                }
+                            )
+                        else:
+                            orb_bonding_dict_data[bndg_orb_pair] = {
+                                f"I{type_pop}_mean": round(
+                                    np.mean(bndg_orb_icohp_list[inx]), 4
+                                ),
+                                f"I{type_pop}_sum": round(
+                                    np.sum(bndg_orb_icohp_list[inx]), 4
+                                ),
+                                "orb_contribution_perc_bonding": round(
+                                    bndg_orb_integral_list[inx]
+                                    / sum(bndg_orb_integral_list),
+                                    2,
+                                ),
+                                "bonding": {
+                                    "integral": bndg_orb_integral_list[inx],
+                                    "perc": bndg_orb_perc_list[inx],
+                                },
+                            }
 
-                    contri_perc = round((icohp_orb_summmed / icohp_summed), 4)
-                    if contri_perc * 100 >= self.orbital_cutoff * 100:
-                        orb_icohp_list.append(orb_icohp)
-                        orb_contri.append(contri_perc)
+                # Populate the dictionary with relevant orbitals for antibonding interactions
+                for inx, antibndg_orb_pair in enumerate(antibndg_orb_pair_list):
+                    antibndg_contri_perc = round(
+                        antibndg_orb_integral_list[inx]
+                        / sum(antibndg_orb_integral_list),
+                        2,
+                    )
+                    # filter out very small antibonding interactions (<self.orbital_cutoff)
+                    if antibndg_contri_perc > self.orbital_cutoff:
+                        if antibndg_orb_pair in orb_bonding_dict_data:
+                            orb_bonding_dict_data[antibndg_orb_pair].update(
+                                {
+                                    "orb_contribution_perc_antibonding": round(
+                                        antibndg_orb_integral_list[inx]
+                                        / sum(antibndg_orb_integral_list),
+                                        2,
+                                    ),
+                                    "antibonding": {
+                                        "integral": antibndg_orb_integral_list[inx],
+                                        "perc": antibndg_orb_perc_list[inx],
+                                    },
+                                }
+                            )
+                        else:
+                            orb_bonding_dict_data[antibndg_orb_pair] = {
+                                f"I{type_pop}_mean": round(
+                                    np.mean(antibndg_orb_icohp_list[inx]), 4
+                                ),
+                                f"I{type_pop}_sum": round(
+                                    np.sum(antibndg_orb_icohp_list[inx]), 4
+                                ),
+                                "orb_contribution_perc_antibonding": round(
+                                    antibndg_orb_integral_list[inx]
+                                    / sum(antibndg_orb_integral_list),
+                                    2,
+                                ),
+                                "antibonding": {
+                                    "integral": antibndg_orb_integral_list[inx],
+                                    "perc": antibndg_orb_perc_list[inx],
+                                },
+                            }
 
-                    orb_bonding_dict_data[orbital] = {
-                        f"I{type_pop}_mean": round(np.mean(orb_icohps), 2),
-                        f"I{type_pop}_sum": round(icohp_orb_summmed, 2),
-                        "orb_contribution_mean_perc": round(np.mean(orb_contri), 4),
-                        "bonding": {"integral": bndg, "perc": per_bndg},
-                        "antibonding": {"integral": antibndg, "perc": per_anti},
-                        "relevant_bonds": bond_labels,
-                    }
+                orb_bonding_dict_data["relevant_bonds"] = bond_labels
+
                 orb_resolved_bond_info[bond_resolved_label_key] = orb_bonding_dict_data
 
         return orb_resolved_bond_info
 
-    def _get_bond_resolved_data_stats(
-        self, orb_resolved_bond_data: dict, type_pop: str
-    ):
+    def _get_bond_resolved_data_stats(self, orb_resolved_bond_data: dict):
         """
+        Method to get maximum bonding and antibonding orbital contribution
 
         Args:
             orb_resolved_bond_data: A dictionary with orbital names as keys and corresponding bonding data
 
         Returns:
             dict with orbital data stats the site for relevant orbitals, e.g.
-            {'orbital_summary_stats': {'max_orbital_contribution': {'2s-3s': -0.47},
-                                     {'max_antibonding_contribution': {'2pz-3s':0.07}}
-                                     {'max_mean_icohp': {'2pz-3s':-1.3}}
+            {'orbital_summary_stats': {'max_bonding_contribution': {'2s-3s': 0.68},
+            'max_antibonding_contribution': {'2s-2pz': 0.36}}}
 
         """
-        # get max orbital contribution, anti-bonding percentage and icohp mean for the site
-        orb_contri = []
-        orb_mean_icohp = []
-        orb_anti_contri_integral = []
-        orb_anti_contri_perc = []
-        orb_pairs = []
+        # get max orbital bonding and contribution for the site
+        orb_pairs_bndg = []
+        orb_pairs_antibndg = []
+        orb_contri_bndg = []
+        orb_contri_antibndg = []
         orbital_summary_stats = {"orbital_summary_stats": {}}  # type: ignore
         if orb_resolved_bond_data:
             for orb_pair, data in orb_resolved_bond_data.items():
-                orb_contri.append(data["orb_contribution_mean_perc"])
-                orb_mean_icohp.append(data[f"I{type_pop.upper()}_mean"])
-                orb_anti_contri_integral.append(data["antibonding"]["integral"])
-                orb_anti_contri_perc.append(data["antibonding"]["perc"])
-                orb_pairs.append(orb_pair)
+                if "orb_contribution_perc_bonding" in data:
+                    orb_pairs_bndg.append(orb_pair)
+                    orb_contri_bndg.append(data["orb_contribution_perc_bonding"])
 
-            max_orb_contri = max(orb_contri)
-            max_anti_contri = max(orb_anti_contri_integral)
-            max_mean_icohp = min(orb_mean_icohp)
+                if "orb_contribution_perc_antibonding" in data:
+                    orb_pairs_antibndg.append(orb_pair)
+                    orb_contri_antibndg.append(
+                        data["orb_contribution_perc_antibonding"]
+                    )
 
-            max_orb_contri_inxs = [
-                inx
-                for inx, orb_contri in enumerate(orb_contri)
-                if orb_contri == max_orb_contri
-            ]
-            max_anti_contri_inxs = [
-                inx
-                for inx, orb_anti_per in enumerate(orb_anti_contri_integral)
-                if orb_anti_per == max_anti_contri
-            ]
-            max_mean_icohp_inxs = [
-                inx
-                for inx, orb_anti_per in enumerate(orb_mean_icohp)
-                if orb_anti_per == max_mean_icohp
-            ]
-            max_orb_contri_dict = {}
-            for inx in max_orb_contri_inxs:
-                max_orb_contri_dict[orb_pairs[inx]] = orb_contri[inx]
-            max_anti_contri_dict = {}
-            for inx in max_anti_contri_inxs:
-                max_anti_contri_dict[orb_pairs[inx]] = {
-                    "integral": orb_anti_contri_integral[inx],
-                    "perc": orb_anti_contri_perc[inx],
-                }
-            max_mean_icohp_dict = {}
-            for inx in max_mean_icohp_inxs:
-                max_mean_icohp_dict[orb_pairs[inx]] = orb_mean_icohp[inx]
-
-            orbital_summary_stats["orbital_summary_stats"][
-                "max_orbital_contribution"
-            ] = max_orb_contri_dict
-            orbital_summary_stats["orbital_summary_stats"][
-                "max_antibonding_contribution"
-            ] = max_anti_contri_dict
-            orbital_summary_stats["orbital_summary_stats"][
-                f"max_mean_i{type_pop.lower()}"
-            ] = max_mean_icohp_dict
+            if orb_contri_bndg:
+                max_orb_contri_bndg = max(orb_contri_bndg)
+                max_orb_contri_bndg_inxs = [
+                    inx
+                    for inx, orb_contri in enumerate(orb_contri_bndg)
+                    if orb_contri == max_orb_contri_bndg
+                ]
+                max_orb_contri_bndg_dict = {}
+                for inx in max_orb_contri_bndg_inxs:
+                    max_orb_contri_bndg_dict[orb_pairs_bndg[inx]] = orb_contri_bndg[inx]
+                orbital_summary_stats["orbital_summary_stats"][
+                    "max_bonding_contribution"
+                ] = max_orb_contri_bndg_dict
+            if orb_contri_antibndg:
+                max_orb_contri_antibndg = max(orb_contri_antibndg)
+                max_antibndg_contri_inxs = [
+                    inx
+                    for inx, orb_anti_per in enumerate(orb_contri_antibndg)
+                    if orb_anti_per == max_orb_contri_antibndg
+                ]
+                max_antibndg_contri_dict = {}
+                for inx in max_antibndg_contri_inxs:
+                    max_antibndg_contri_dict[
+                        orb_pairs_antibndg[inx]
+                    ] = orb_contri_antibndg[inx]
+                orbital_summary_stats["orbital_summary_stats"][
+                    "max_antibonding_contribution"
+                ] = max_antibndg_contri_dict
 
         return orbital_summary_stats
 
@@ -556,8 +653,8 @@ class Analysis:
             {'Na1: Na-Cl': {'3s-3s': ['21', '23', '24', '27', '28', '30']}
 
         """
-        plot_label_resolved_keys = list(self.get_site_bond_resolved_labels().keys())
-        orb_plot_data = {i: {} for i in plot_label_resolved_keys}
+        site_bond_labels = self.get_site_bond_resolved_labels()
+        orb_plot_data = {i: {} for i in site_bond_labels.keys()}
         if self.orbital_resolved:
             for site_index, cba_data in self.condensed_bonding_analysis[
                 "sites"
@@ -566,12 +663,7 @@ class Analysis:
                     for orb_pair, bond_data in cba_data["bonds"][atom][
                         "orbital_data"
                     ].items():
-                        if (
-                            orb_pair != "orbital_summary_stats"
-                        ):  # not in k3 and "max_anti" not in k3:
-                            label_list = cba_data["bonds"][atom]["orbital_data"][
-                                orb_pair
-                            ]["relevant_bonds"]
+                        if orb_pair not in ("orbital_summary_stats", "relevant_bonds"):
                             atom_pair = [cba_data["ion"], atom]
                             atom_pair.sort()
                             key = (
@@ -580,6 +672,7 @@ class Analysis:
                                 + ": "
                                 + "-".join(atom_pair)
                             )
+                            label_list = site_bond_labels[key]
                             orb_plot_data[key].update({orb_pair: label_list})
         else:
             print(
@@ -1096,7 +1189,6 @@ class Analysis:
                                             orb_resolved_bond_data=orb_resolved_bond_info[
                                                 ion_atom_pair_orb
                                             ],
-                                            type_pop=type_pop,
                                         )
 
                                         icohp_data["orbital_data"].update(
@@ -1181,7 +1273,6 @@ class Analysis:
                                             orb_resolved_bond_data=orb_resolved_bond_info[
                                                 ion_atom_pair_orb
                                             ],
-                                            type_pop=type_pop,
                                         )
 
                                         icohp_data["orbital_data"].update(
