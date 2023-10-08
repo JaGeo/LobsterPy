@@ -548,7 +548,7 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][
                 0
             ]["bonds"]["Cl"]["orbital_data"]["3s-3s"]["ICOBI_mean"],
-            0.03,
+            0.0314,
         )
         self.assertAlmostEqual(
             float(
@@ -562,33 +562,25 @@ class TestAnalyse(unittest.TestCase):
             float(
                 self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
                     "sites"
-                ][0]["bonds"]["Cl"]["orbital_data"]["3s-3s"]["antibonding"]["integral"]
-            ),
-            0.02,
-        )
-        self.assertAlmostEqual(
-            float(
-                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
-                    "sites"
                 ][0]["bonds"]["Cl"]["orbital_data"]["3px-3s"]["ICOBI_sum"]
             ),
-            0.11,
+            0.1069,
         )
         self.assertAlmostEqual(
             float(
                 self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
                     "sites"
                 ][0]["bonds"]["Cl"]["orbital_data"]["3py-3s"][
-                    "orb_contribution_mean_perc"
+                    "orb_contribution_perc_bonding"
                 ]
             ),
-            0.63,
+            0.2,
         )
         self.assertListEqual(
             self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][
                 0
-            ]["bonds"]["Cl"]["orbital_data"]["3pz-3s"]["relevant_bonds"],
-            ["24", "27"],
+            ]["bonds"]["Cl"]["orbital_data"]["relevant_bonds"],
+            ["21", "23", "24", "27", "28", "30"],
         )
         self.assertEqual(
             float(
@@ -597,14 +589,6 @@ class TestAnalyse(unittest.TestCase):
                 ][0]["bonds"]["Cl"]["orbital_data"]["3pz-3s"]["bonding"]["perc"]
             ),
             1.0,
-        )
-        self.assertEqual(
-            float(
-                self.analyse_NaCl_comp_range_cobi_orb.condensed_bonding_analysis[
-                    "sites"
-                ][0]["bonds"]["Cl"]["orbital_data"]["3pz-3s"]["antibonding"]["perc"]
-            ),
-            0.0,
         )
 
     def test_all_attributes_NaCl_comp_range_orbital(self):
@@ -618,7 +602,7 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
                 "bonds"
             ]["Cl"]["orbital_data"]["3s-3s"]["ICOHP_mean"],
-            -0.32,
+            -0.3249,
         )
         self.assertAlmostEqual(
             float(
@@ -642,21 +626,29 @@ class TestAnalyse(unittest.TestCase):
                     "bonds"
                 ]["Cl"]["orbital_data"]["3px-3s"]["ICOHP_sum"]
             ),
-            -0.48,
+            -0.4828,
         )
         self.assertAlmostEqual(
             float(
                 self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
                     "bonds"
-                ]["Cl"]["orbital_data"]["3py-3s"]["orb_contribution_mean_perc"]
+                ]["Cl"]["orbital_data"]["3py-3s"]["orb_contribution_perc_bonding"]
             ),
-            0.4264,
+            0.13,
+        )
+        self.assertAlmostEqual(
+            float(
+                self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
+                    "bonds"
+                ]["Cl"]["orbital_data"]["3px-2px"]["orb_contribution_perc_antibonding"]
+            ),
+            0.11,
         )
         self.assertListEqual(
             self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
                 "bonds"
-            ]["Cl"]["orbital_data"]["3pz-3s"]["relevant_bonds"],
-            ["24", "27"],
+            ]["Cl"]["orbital_data"]["relevant_bonds"],
+            ["21", "23", "24", "27", "28", "30"],
         )
         self.assertEqual(
             float(
@@ -670,9 +662,9 @@ class TestAnalyse(unittest.TestCase):
             float(
                 self.analyse_NaCl_comp_range_orb.condensed_bonding_analysis["sites"][0][
                     "bonds"
-                ]["Cl"]["orbital_data"]["3pz-3s"]["antibonding"]["perc"]
+                ]["Cl"]["orbital_data"]["3pz-2pz"]["antibonding"]["perc"]
             ),
-            0.0,
+            0.5,
         )
 
     def test_all_attributes_analyse_NaCl_comp_range_cobi(self):
@@ -1779,7 +1771,7 @@ class TestAnalyse(unittest.TestCase):
             self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
                 "bonds"
             ]["Sb"]["orbital_data"]["5s-4s"]["ICOOP_mean"],
-            0.03,
+            0.0251,
         )
         self.assertAlmostEqual(
             float(
@@ -1803,20 +1795,20 @@ class TestAnalyse(unittest.TestCase):
                     "bonds"
                 ]["Sb"]["orbital_data"]["5px-4s"]["ICOOP_sum"]
             ),
-            0.08,
+            0.0796,
         )
         self.assertAlmostEqual(
             float(
                 self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
                     "bonds"
-                ]["Sb"]["orbital_data"]["5pz-4s"]["orb_contribution_mean_perc"]
+                ]["Sb"]["orbital_data"]["5pz-4s"]["orb_contribution_perc_bonding"]
             ),
-            0.273,
+            0.22,
         )
         self.assertListEqual(
             self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][1][
                 "bonds"
-            ]["Sb"]["orbital_data"]["5pz-4s"]["relevant_bonds"],
+            ]["Sb"]["orbital_data"]["relevant_bonds"],
             ["21", "22", "23", "24"],
         )
         self.assertEqual(
@@ -1878,9 +1870,9 @@ class TestAnalyse(unittest.TestCase):
             float(
                 self.analyse_K3Sb_all_coop_orb.condensed_bonding_analysis["sites"][3][
                     "bonds"
-                ]["K"]["orbital_data"]["5pz-4s"]["orb_contribution_mean_perc"]
+                ]["K"]["orbital_data"]["5pz-4s"]["orb_contribution_perc_bonding"]
             ),
-            0.2708,
+            0.22,
         )
         self.assertAlmostEqual(
             float(

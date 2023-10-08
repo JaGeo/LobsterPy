@@ -79,7 +79,7 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             summed_spins=True,
         )
 
-        self.analyse_BaTiO3 = Analysis(
+        self.analyse_BaTiO3_orb = Analysis(
             path_to_poscar=TestDir / "TestData/BaTiO3/POSCAR",
             path_to_cohpcar=TestDir / "TestData/BaTiO3/COHPCAR.lobster",
             path_to_icohplist=TestDir / "TestData/BaTiO3/ICOHPLIST.lobster",
@@ -190,11 +190,11 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
         self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
 
-    def test_add_all_relevant_cohps_BaTiO3(self):
+    def test_add_all_relevant_cohps_BaTiO3_orb(self):
         self.iplotter = InteractiveCohpPlotter()
 
         self.iplotter.add_all_relevant_cohps(
-            analyse=self.analyse_BaTiO3,
+            analyse=self.analyse_BaTiO3_orb,
             label_resolved=True,
             orbital_resolved=True,
             suffix="",

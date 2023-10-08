@@ -57,6 +57,9 @@ class TestDescribe(unittest.TestCase):
             orbital_cutoff=0.10,
             orbital_resolved=True,
         )
+
+        self.describe_BaTiO3_orb = Description(self.analyse_BaTiO3_orb)
+
         self.analyse_C_orb = Analysis(
             path_to_poscar=TestDir / "TestData/C/POSCAR",
             path_to_cohpcar=TestDir / "TestData/C/COHPCAR.lobster",
@@ -69,8 +72,6 @@ class TestDescribe(unittest.TestCase):
         )
 
         self.describe_C_orb = Description(self.analyse_C_orb)
-
-        self.describe_BaTiO3_orb = Description(self.analyse_BaTiO3_orb)
 
         self.analyse_BaTaO2N1 = Analysis(
             path_to_poscar=TestDir / "TestData/BaTaO2N1/POSCAR.gz",
@@ -535,9 +536,9 @@ class TestDescribe(unittest.TestCase):
                 "The compound BaTiO3 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Ti2.",
                 "Ti2 has an octahedral (CN=6) coordination environment. It has 6 Ti-O (mean ICOHP: -3.54 eV, "
                 "1.092 percent antibonding interaction below EFermi) bonds.",
-                "In the Ti-O bond, the maximum contribution is from the Ti(3dz2)-O(2pz) orbital, "
-                "contributing 25.5 percent, whereas the maximum antibonding contribution is from "
-                "the Ti(4s)-O(2s) orbital, contributing 100.0 percent.",
+                "In the 6 Ti-O bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+                "from the Ti(3dz2)-O(2pz) orbital, contributing 14.0 percent, whereas the maximum "
+                "antibonding contribution is from the Ti(4s)-O(2s) orbital, contributing 20.0 percent.",
             ],
         )
         self.assertEqual(
@@ -546,10 +547,9 @@ class TestDescribe(unittest.TestCase):
                 "The compound C has 1 symmetry-independent atoms(s) with relevant bonds: C1.",
                 "C1 has a tetrahedral (CN=4) coordination environment. "
                 "It has 4 C-C (mean ICOHP: -9.59 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
-                "In the C-C bond, the maximum contribution are from C(2py)-C(2s), C(2pz)-C(2s), C(2px)-C(2s), "
-                "C(2s)-C(2py), C(2s)-C(2pz), and C(2s)-C(2px) orbitals, contributing 7.94, 7.94, 7.94, 7.94, "
-                "7.94, and 7.94 percent, respectively, whereas the maximum antibonding contribution is from "
-                "the C(2s)-C(2s) orbital, contributing 20.477 percent.",
+                "In the 4 C-C bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+                "from the C(2s)-C(2s) orbital, contributing 10.0 percent, whereas no significant "
+                "antibonding contribution is found in this bond.",
             ],
         )
         self.assertEqual(
@@ -558,24 +558,26 @@ class TestDescribe(unittest.TestCase):
                 "The compound NaSbF6 has 3 symmetry-independent atoms(s) with relevant bonds: Na1, Sb2, F3.",
                 "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
                 "4.071 percent antibonding interaction below EFermi) bonds.",
-                "In the Na-F bond, the maximum contribution is from the Na(3s)-F(2s) orbital, contributing "
-                "77.48 percent, whereas the maximum antibonding contribution is from the Na(3s)-F(2s) orbital, "
-                "contributing 2.357 percent.",
+                "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+                "from the Na(3s)-F(2s) orbital, contributing 67.0 percent, whereas the maximum antibonding "
+                "contribution are from Na(2py)-F(2s), Na(2pz)-F(2s), and Na(2px)-F(2s) orbitals, "
+                "contributing 13.0, 13.0, and 13.0 percent, respectively.",
                 "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
                 "0.0 percent antibonding interaction below EFermi) bonds.",
-                "In the Sb-F bond, the maximum contribution are from Sb(5pz)-F(2s), Sb(5py)-F(2s), "
-                "and Sb(5px)-F(2s) orbitals, contributing 39.12, 39.12, and 39.12 percent, respectively, "
-                "whereas the maximum antibonding contribution is from the Sb(5s)-F(2s) orbital, "
-                "contributing 35.799 percent.",
+                "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution "
+                "is from Sb(5py)-F(2s), Sb(5pz)-F(2s), and Sb(5px)-F(2s) orbitals, contributing 14.0, "
+                "14.0, and 14.0 percent, respectively, whereas no significant antibonding contribution is "
+                "found in this bond.",
                 "F3 has a linear (CN=2) coordination environment. It has 1 F-Na (mean ICOHP: -0.61 eV, "
                 "4.545 percent antibonding interaction below EFermi), and 1 F-Sb (mean ICOHP: -5.45 eV, "
                 "0.0 percent antibonding interaction below EFermi) bonds.",
-                "In the F-Na bond, the maximum contribution is from the F(2s)-Na(3s) orbital, "
-                "contributing 77.48 percent, whereas the maximum antibonding contribution is from t"
-                "he F(2pz)-Na(3s) orbital, contributing 11.765 percent.In the F-Sb bond, the maximum "
-                "contribution is from the F(2s)-Sb(5pz) orbital, contributing 39.12 percent, "
-                "whereas the maximum antibonding contribution is from the F(2s)-Sb(5pz) orbital, "
-                "contributing 18.584 percent.",
+                "In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding contribution "
+                "is from the F(2s)-Na(3s) orbital, contributing 68.0 percent, whereas the maximum "
+                "antibonding contribution are from F(2s)-Na(2pz) and F(2pz)-Na(2pz) orbitals, "
+                "contributing 36.0 and 36.0 percent, respectively.In the 1 F-Sb bond, relative "
+                "to the summed ICOHPs, the maximum bonding contribution is from the "
+                "F(2s)-Sb(5pz) orbital, contributing 41.0 percent, whereas no significant "
+                "antibonding contribution is found in this bond.",
             ],
         )
         self.assertEqual(
