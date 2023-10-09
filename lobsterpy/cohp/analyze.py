@@ -51,7 +51,7 @@ class Analysis:
         spg: space group information
         structure: Structure object
         type_charge: which charges are considered here
-        whichbonds: which bonds will be considered in analysis
+        which_bonds: which bonds will be considered in analysis
 
     """
 
@@ -62,7 +62,7 @@ class Analysis:
         path_to_cohpcar: str,
         path_to_charge: str | None = None,
         path_to_madelung: str | None = None,
-        whichbonds: str = "cation-anion",
+        which_bonds: str = "cation-anion",
         cutoff_icohp: float = 0.1,
         noise_cutoff: float = 0.1,
         summed_spins=True,
@@ -83,7 +83,7 @@ class Analysis:
             are_cobis : bool indicating if file contains COBI/ICOBI data
             are_coops : bool indicating if file contains COOP/ICOOP data
             noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
-            whichbonds: selects which kind of bonds are analyzed. "cation-anion" is the default
+            which_bonds: selects which kind of bonds are analyzed. "cation-anion" is the default
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             summed_spins: if true, spins will be summed
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
@@ -94,7 +94,7 @@ class Analysis:
         self.path_to_poscar = path_to_poscar
         self.path_to_icohplist = path_to_icohplist
         self.path_to_cohpcar = path_to_cohpcar
-        self.whichbonds = whichbonds
+        self.which_bonds = which_bonds
         self.cutoff_icohp = cutoff_icohp
         self.path_to_charge = path_to_charge
         self.path_to_madelung = path_to_madelung
@@ -142,7 +142,7 @@ class Analysis:
         self.set_equivalent_sites = list(set(equivalent_sites))
         self.spg = symmetry_dataset["international"]
 
-        if self.whichbonds == "cation-anion":
+        if self.which_bonds == "cation-anion":
             try:
                 self.chemenv = LobsterNeighbors(
                     filename_ICOHP=self.path_to_icohplist,
@@ -167,7 +167,7 @@ class Analysis:
                         " It looks like no cations are detected."
                     )
                 raise err
-        elif self.whichbonds == "all":
+        elif self.which_bonds == "all":
             # raise ValueError("only cation anion bonds implemented so far")
             self.chemenv = LobsterNeighbors(
                 filename_ICOHP=self.path_to_icohplist,
@@ -187,11 +187,11 @@ class Analysis:
 
         # determine cations and anions
         try:
-            if self.whichbonds == "cation-anion":
+            if self.which_bonds == "cation-anion":
                 self.lse = self.chemenv.get_light_structure_environment(
                     only_cation_environments=True
                 )
-            elif self.whichbonds == "all":
+            elif self.which_bonds == "all":
                 self.lse = self.chemenv.get_light_structure_environment(
                     only_cation_environments=False
                 )
@@ -226,9 +226,9 @@ class Analysis:
                                     [{"ce_symbol": None}]
                                 )
 
-            if self.whichbonds == "all":
+            if self.which_bonds == "all":
                 self.lse = Lse(self.chemenv.list_coords)
-            elif self.whichbonds == "cation-anion":
+            elif self.which_bonds == "cation-anion":
                 # make a new list
                 self.lse = Lse(self.chemenv.list_coords, self.chemenv.valences)
 
@@ -240,7 +240,7 @@ class Analysis:
             None
 
         """
-        if self.whichbonds == "cation-anion":
+        if self.which_bonds == "cation-anion":
             # this will only analyze cation anion bonds which simplifies the analysis
             self.seq_ineq_ions = []
             self.seq_coord_ions = []
@@ -281,7 +281,7 @@ class Analysis:
                     self.seq_labels_cohps.append(aniontype_labels)
                     self.seq_cohps.append(aniontype_cohps)
 
-        elif self.whichbonds == "all":
+        elif self.which_bonds == "all":
             # this will only analyze all bonds
 
             self.seq_ineq_ions = []
@@ -681,14 +681,14 @@ class Analysis:
         """
         self.condensed_bonding_analysis = {}
         # which icohps are considered
-        if self.whichbonds == "cation-anion":
+        if self.which_bonds == "cation-anion":
             limit_icohps = self.chemenv._get_limit_from_extremum(
                 self.chemenv.Icohpcollection,
                 self.cutoff_icohp,
                 adapt_extremum_to_add_cond=True,
                 additional_condition=1,
             )
-        elif self.whichbonds == "all":
+        elif self.which_bonds == "all":
             limit_icohps = self.chemenv._get_limit_from_extremum(
                 self.chemenv.Icohpcollection,
                 self.cutoff_icohp,
@@ -700,9 +700,9 @@ class Analysis:
         # set population type
         type_pop = self._get_pop_type()
         # how many inequivalent cations are in the structure
-        if self.whichbonds == "cation-anion":
+        if self.which_bonds == "cation-anion":
             number_considered_ions = len(self.seq_ineq_ions)
-        elif self.whichbonds == "all":
+        elif self.which_bonds == "all":
             number_considered_ions = len(self.seq_ineq_ions)
 
         # what was the maximum bond lengths that was considered
@@ -713,7 +713,7 @@ class Analysis:
 
         # dictionary including bonding information for each site
         site_dict = {}
-        if self.whichbonds == "cation-anion":
+        if self.which_bonds == "cation-anion":
             for ication, ce, cation_anion_infos, labels, cohps in zip(
                 self.seq_ineq_ions,
                 self.seq_coord_ions,
@@ -755,7 +755,7 @@ class Analysis:
                     "charge": charge_list[ication],
                     "relevant_bonds": cation_anion_infos[3],
                 }
-        elif self.whichbonds == "all":
+        elif self.which_bonds == "all":
             for iion, ce, bond_infos, labels, cohps in zip(
                 self.seq_ineq_ions,
                 self.seq_coord_ions,
@@ -798,7 +798,7 @@ class Analysis:
                 }
 
         if self.path_to_madelung is None:
-            if self.whichbonds == "cation-anion":
+            if self.which_bonds == "cation-anion":
                 # This sets the dictionary including the most important information on the compound
                 self.condensed_bonding_analysis = {
                     "formula": formula,
@@ -808,7 +808,7 @@ class Analysis:
                     "sites": site_dict,
                     "type_charges": self.type_charge,
                 }
-            elif self.whichbonds == "all":
+            elif self.which_bonds == "all":
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
@@ -826,7 +826,7 @@ class Analysis:
             elif self.type_charge == "Löwdin":
                 madelung_energy = madelung.madelungenergies_Loewdin
             # This sets the dictionary including the most important information on the compound
-            if self.whichbonds == "cation-anion":
+            if self.which_bonds == "cation-anion":
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
@@ -836,7 +836,7 @@ class Analysis:
                     "type_charges": self.type_charge,
                     "madelung_energy": madelung_energy,
                 }
-            elif self.whichbonds == "all":
+            elif self.which_bonds == "all":
                 self.condensed_bonding_analysis = {
                     "formula": formula,
                     "max_considered_bond_length": max_bond_lengths,
@@ -1066,18 +1066,18 @@ class Analysis:
                     else:
                         loew_oxi.append("NEG")
 
-                quality_dict["Charges"] = {}  # type: ignore
+                quality_dict["charges"] = {}  # type: ignore
                 if mull_oxi == bva_oxi:
-                    quality_dict["Charges"]["BVA_Mulliken_agree"] = True  # type: ignore
+                    quality_dict["charges"]["BVA_Mulliken_agree"] = True  # type: ignore
                 else:
-                    quality_dict["Charges"]["BVA_Mulliken_agree"] = False  # type: ignore
+                    quality_dict["charges"]["BVA_Mulliken_agree"] = False  # type: ignore
 
                 if mull_oxi == bva_oxi:
-                    quality_dict["Charges"]["BVA_Loewdin_agree"] = True  # type: ignore
+                    quality_dict["charges"]["BVA_Loewdin_agree"] = True  # type: ignore
                 else:
-                    quality_dict["Charges"]["BVA_Loewdin_agree"] = False  # type: ignore
+                    quality_dict["charges"]["BVA_Loewdin_agree"] = False  # type: ignore
             except ValueError:
-                quality_dict["Charges"] = {}  # type: ignore
+                quality_dict["charges"] = {}  # type: ignore
                 warnings.warn(
                     "Oxidation states from BVA analyzer cannot be determined. "
                     "Thus BVA charge comparison will be skipped"
@@ -1098,7 +1098,7 @@ class Analysis:
             vasprun = Vasprun(path_to_vasprun)
             dos_vasp = vasprun.complete_dos
 
-            quality_dict["DOS_comparisons"] = {}  # type: ignore
+            quality_dict["dos_comparisons"] = {}  # type: ignore
 
             for orb in dos_lobster.get_spd_dos():
                 if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(
@@ -1158,7 +1158,7 @@ class Analysis:
                     ),
                     4,
                 )
-                quality_dict["DOS_comparisons"][
+                quality_dict["dos_comparisons"][
                     "tanimoto_orb_{}".format(orb.name)
                 ] = tani_orb  # type: ignore
 
@@ -1180,8 +1180,8 @@ class Analysis:
             tanimoto_summed = round(
                 dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
             )
-            quality_dict["DOS_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
-            quality_dict["DOS_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
-            quality_dict["DOS_comparisons"]["n_bins"] = n_bins  # type: ignore
+            quality_dict["dos_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
+            quality_dict["dos_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
+            quality_dict["dos_comparisons"]["n_bins"] = n_bins  # type: ignore
 
         return quality_dict
