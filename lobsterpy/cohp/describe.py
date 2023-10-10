@@ -378,7 +378,7 @@ class Description:
                     f"In the {num_bonds} "
                     + "-".join(atom_pair)
                     + f" {bonds}, relative to the summed I{type_pop}s, "
-                    + f"the maximum bonding contribution is from "
+                    + "the maximum bonding contribution is from "
                     + orb_name_contri
                 )
             elif not orb_contri:
@@ -423,7 +423,7 @@ class Description:
                         orb_anti += f"and {contribution} percent, respectively."
                 orb_info.append(
                     ", whereas "
-                    + f"the maximum antibonding contribution is from "
+                    + "the maximum antibonding contribution is from "
                     + orb_anti
                 )
             elif not orb_antibonding:
