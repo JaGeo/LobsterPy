@@ -6,6 +6,8 @@
 - Fix missing matplotlib style file in package installation  by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/159
 - snakecase whichbonds arg and update tests by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/161
 
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.3.1...v0.3.2
+
 ## v0.3.1
 - ICOHP vs bond length plotter by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/137
 - Remove python 3.8 support by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/134
