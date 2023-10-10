@@ -560,7 +560,7 @@ class TestDescribe(unittest.TestCase):
                 "4.071 percent antibonding interaction below EFermi) bonds.",
                 "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
                 "from the Na(3s)-F(2s) orbital, contributing 67.0 percent, whereas the maximum antibonding "
-                "contribution are from Na(2py)-F(2s), Na(2pz)-F(2s), and Na(2px)-F(2s) orbitals, "
+                "contribution is from Na(2py)-F(2s), Na(2pz)-F(2s), and Na(2px)-F(2s) orbitals, "
                 "contributing 13.0, 13.0, and 13.0 percent, respectively.",
                 "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
                 "0.0 percent antibonding interaction below EFermi) bonds.",
@@ -573,8 +573,8 @@ class TestDescribe(unittest.TestCase):
                 "0.0 percent antibonding interaction below EFermi) bonds.",
                 "In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding contribution "
                 "is from the F(2s)-Na(3s) orbital, contributing 68.0 percent, whereas the maximum "
-                "antibonding contribution are from F(2s)-Na(2pz) and F(2pz)-Na(2pz) orbitals, "
-                "contributing 36.0 and 36.0 percent, respectively.In the 1 F-Sb bond, relative "
+                "antibonding contribution is from F(2s)-Na(2pz) and F(2pz)-Na(2pz) orbitals, "
+                "contributing 36.0 and 36.0 percent, respectively. In the 1 F-Sb bond, relative "
                 "to the summed ICOHPs, the maximum bonding contribution is from the "
                 "F(2s)-Sb(5pz) orbital, contributing 41.0 percent, whereas no significant "
                 "antibonding contribution is found in this bond.",

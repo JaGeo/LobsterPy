@@ -122,7 +122,7 @@ class Description:
                     bonds = bond_info[0]
 
                 if len(orb_info) > 1:
-                    orb_bonds = "".join(orb_info)
+                    orb_bonds = "".join(orb_info).replace(".In", ". In")
                 else:
                     if orb_info:
                         orb_bonds = orb_info[0]
@@ -233,7 +233,7 @@ class Description:
                     else:
                         bonds = 0
                 if len(orb_info) > 1:
-                    orb_bonds = "".join(orb_info)
+                    orb_bonds = "".join(orb_info).replace(".In", ". In")
                 else:
                     if orb_info:
                         orb_bonds = orb_info[0]
@@ -365,7 +365,6 @@ class Description:
                         orb_name_contri += f"and {name}"
 
                 orb_name_contri += " orbitals, contributing "
-                connecting_article = "is"  # if len(orb_contri) == 2 else "are"
                 for inx, contribution in enumerate(orb_contri):
                     if len(orb_contri) == 2 and inx + 1 != len(orb_contri):
                         orb_name_contri += f"{contribution} "
@@ -379,7 +378,7 @@ class Description:
                     f"In the {num_bonds} "
                     + "-".join(atom_pair)
                     + f" {bonds}, relative to the summed I{type_pop}s, "
-                    + f"the maximum bonding contribution {connecting_article} from "
+                    + f"the maximum bonding contribution is from "
                     + orb_name_contri
                 )
             elif not orb_contri:
@@ -415,7 +414,6 @@ class Description:
                         orb_anti += f"and {name}"
 
                 orb_anti += " orbitals, contributing "
-                connecting_article = "is" if len(orb_contri) == 2 else "are"
                 for inx, contribution in enumerate(orb_antibonding):
                     if len(orb_names_anti) == 2 and inx + 1 != len(orb_names_anti):
                         orb_anti += f"{contribution} "
@@ -425,7 +423,7 @@ class Description:
                         orb_anti += f"and {contribution} percent, respectively."
                 orb_info.append(
                     ", whereas "
-                    + f"the maximum antibonding contribution {connecting_article} from "
+                    + f"the maximum antibonding contribution is from "
                     + orb_anti
                 )
             elif not orb_antibonding:
