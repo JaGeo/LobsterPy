@@ -207,12 +207,8 @@ class FeaturizeLobsterpy:
         structure_path = req_files_lobsterpy.get("structure_path")
         icohplist_path = req_files_lobsterpy.get("icohplist_path")
 
-        which_bonds = bonds
-
-        if which_bonds == "all":
-            bond_type = "all_bonds"
-        elif which_bonds == "cation-anion":
-            bond_type = "cation_anion_bonds"
+        which_bonds = bonds.replace("-", "_")
+        bond_type = f"{which_bonds}_bonds"
 
         try:
             analyse = Analysis(
@@ -222,7 +218,7 @@ class FeaturizeLobsterpy:
                 path_to_charge=str(charge_path),
                 summed_spins=False,  # we will always use spin polarization here
                 cutoff_icohp=0.10,
-                whichbonds=which_bonds,
+                which_bonds=which_bonds,
             )
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
