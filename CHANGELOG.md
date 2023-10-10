@@ -1,3 +1,12 @@
+## v0.3.2
+## What's Changed
+- cli invert axis, add get site all orbitals dos plot by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/149
+- Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/150
+- Bump mendeleev from 0.12.1 to 0.14.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/151
+- snakecase key names of calc quality summary dict by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/157
+- Fix missing matplotlib style file in package installation  by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/159
+- snakecase whichbonds arg and update tests by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/161
+
 ## v0.3.1
 - ICOHP vs bond length plotter by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/137
 - Remove python 3.8 support by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/134
