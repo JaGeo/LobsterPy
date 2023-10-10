@@ -1,5 +1,4 @@
 ## v0.3.2
-## What's Changed
 - cli invert axis, add get site all orbitals dos plot by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/149
 - Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/150
 - Bump mendeleev from 0.12.1 to 0.14.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/151
