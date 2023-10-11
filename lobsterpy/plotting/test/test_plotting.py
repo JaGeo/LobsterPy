@@ -3,6 +3,7 @@ from __future__ import annotations
 import unittest
 import gzip
 import json
+import numpy as np
 from pathlib import Path
 from plotly.io import read_json
 from pymatgen.electronic_structure.cohp import Cohp
@@ -145,11 +146,14 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             ref_x.append(list(ref_trace.x))
             og_y.append(list(og_trace.y))
             ref_y.append(list(ref_trace.y))
+
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_all_relevant_cohps_NaCl_cobi_orb(self):
         self.iplotter = InteractiveCohpPlotter(are_cobis=True)
@@ -182,13 +186,16 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             ref_visible.append(ref_trace.visible)
             og_x.append(list(og_trace.x))
             ref_x.append(list(ref_trace.x))
-            og_y.append(list(og_trace.y))
+            og_y.append(og_trace.y.tolist())
             ref_y.append(list(ref_trace.y))
+
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_all_relevant_cohps_BaTiO3_orb(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -227,8 +234,10 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_all_relevant_cohps_CdF(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -257,16 +266,18 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             ref_line.append(ref_trace.line)
             og_visible.append(og_trace.visible)
             ref_visible.append(ref_trace.visible)
-            og_x.append(og_trace.x)
-            ref_x.append(ref_trace.x)
+            og_x.append(list(og_trace.x))
+            ref_x.append(list(ref_trace.x))
             og_y.append(og_trace.y.tolist())
             ref_y.append(list(ref_trace.y))
 
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_all_relevant_cohps_NaCl_cobi(self):
         self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False, are_cobis=True)
@@ -302,8 +313,10 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_all_relevant_cohps_K3Sb(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -345,8 +358,10 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_cohps_by_lobster_label_NaCl(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -381,8 +396,10 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_cohps_from_plot_data(self):
         self.des = Description(analysis_object=self.analyse_NaSi)
@@ -412,8 +429,10 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_add_cohps_from_plot_data_json(self):
         self.iplotter = InteractiveCohpPlotter()
@@ -450,8 +469,10 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
         self.assertEqual(sorted(og_name), sorted(ref_name))
         self.assertEqual(og_line, ref_line)
         self.assertEqual(og_visible, ref_visible)
-        self.assertAlmostEqual(sorted(og_x), sorted(ref_x), delta=0.001)
-        self.assertAlmostEqual(sorted(og_y), sorted(ref_y), delta=0.001)
+
+        # use numpy testing for array equality
+        np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
+        np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
     def test_plot_colors(self):
         self.iplotter = InteractiveCohpPlotter()
