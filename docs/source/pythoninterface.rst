@@ -25,7 +25,7 @@ Import the necessary modules
 
 .. code:: ipython3
 
-    # Setup Desciption dict
+    # Setup Description dict
     describe = Description(analysis_object=analyse)
     describe.write_description()
 
