@@ -20,7 +20,7 @@ Import the necessary modules
         path_to_icohplist=os.path.join(directory, "ICOHPLIST.lobster"),
         path_to_cohpcar=os.path.join(directory, "COHPCAR.lobster"),
         path_to_charge=os.path.join(directory, "CHARGE.lobster"),
-        whichbonds="cation-anion",
+        which_bonds="cation-anion",
     )
 
 .. code:: ipython3
