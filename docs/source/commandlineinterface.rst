@@ -67,7 +67,7 @@ Running VASP and Lobster program
 --------------------------------
 
 Before we start computations, it is important to organize the files in
-seperate directories to avoid overwriting our results. So Lets create
+separate directories to avoid overwriting our results. So Let's create
 two new directories named **Basis_0** and **Basis_1.**
 
 1. Copy ‘INCAR.lobsterpy-0, KPOINTS, POSCAR, POTCAR,
@@ -217,7 +217,7 @@ Following is the json file produced.
    
 .. image:: Lobsterpy_tutorial_files/COHP.png
 
-You can also plot integrated ICOHP computed by lobster by turining on
+You can also plot integrated ICOHP computed by lobster by turning on
 ``--integrated`` flag when executing ``lobsterpy automatic-plot``
 command. Below is an example and sample output using this command.
 
@@ -235,7 +235,7 @@ command. Below is an example and sample output using this command.
    back to the BondValence analysis from pymatgen. Please be aware that
    LobsterPy can only analyze bonds that have been included in the
    initial Lobster computation. Below is an example and sample output
-   using this command. You can also obtain label resolved plot using
+   using this command. You can also obtain a label resolved plot using
    ``lobsterpy automatic-plot-ia --allbonds --label-resolved`` option
 
 .. raw:: html
@@ -289,7 +289,7 @@ plot COHP and COOP for bond 3 and 30.
 ~~~~~~~~~~~~~~~~~~~~~
 
 You can also customize the style and parameters of the plots generated
-by using optinal tags. One can easily get an overview of these using
+by using optional tags. One can easily get an overview of these using
 either of these commands:
 
 .. code:: bash
