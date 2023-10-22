@@ -1,10 +1,10 @@
 Installation
 ============
 
-1. Create a conda enviornment with any suitable name eg:- conda create
+1. Create a conda environment with any suitable name eg:- conda create
    -n Test python==3.9 (This step is optional but it is better to have
-   seperate environments to avoid conflicts with other packages)
-2. Activate the newly created enviornment ``conda activate Test``
+   separate environments to avoid conflicts with other packages)
+2. Activate the newly created environment ``conda activate Test``
 3. Use ``pip install lobsterpy`` to install the package and all its
    dependencies.
 
