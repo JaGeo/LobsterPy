@@ -206,8 +206,13 @@ class TestCLI:
         ]:
             self.assert_is_finite_file(filepath)
 
+        # test create-inputs alias and overwrite
+
+        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
+        lobsterinpath = tmp_path / "lobsterin.lobsterpy"
+        INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
-            "create-inputs",
+            "createinputs",
             "--lobsterin-out",
             str(lobsterinpath),
             "--incar-out",

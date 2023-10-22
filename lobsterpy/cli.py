@@ -852,7 +852,7 @@ def run(args):
         if args.save_plot and args.hideplot:
             plt.savefig(args.save_plot)
 
-    if args.action == "create-inputs":
+    if args.action in ["create-inputs", "createinputs"]:
         from pymatgen.core.structure import Structure
         from pymatgen.io.lobster import Lobsterin
 
