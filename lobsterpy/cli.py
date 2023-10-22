@@ -453,12 +453,12 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "calc-description",
         parents=[
-            calc_quality_description_file_group,
+            calc_quality_description_file_parent,
             charge_file,
             doscar_file,
             structure_file,
             potcar_file,
-            calc_quality_args_group,
+            calc_quality_args,
         ],
         help=(
             "Deliver a text description of the LOBSTER calc quality analysis. "
