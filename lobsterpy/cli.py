@@ -967,7 +967,7 @@ def run(args):
                     setattr(args, arg_name, gz_file_path)
                 else:
                     raise ValueError(
-                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory."
+                        "Files necessary for creating inputs for LOBSTER calcs not found in the current directory."
                     )
 
         if args.userbasis is None:
