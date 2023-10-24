@@ -370,8 +370,9 @@ def get_parser() -> argparse.ArgumentParser:
         "--orbital-cutoff",
         type=float,
         default=0.05,
-        help="Consider only orbital interactions that are stronger than orbitalintcutoff * 100 of relevant bonds (ICOHP or ICOBI or ICOOP)."
-        "Can only be used in combination with orbital-resolved automatic analysis (--orbitalresolved).",
+        help="Consider only orbital interactions that are stronger than orbitalintcutoff * 100 of "
+        "relevant bonds (ICOHP or ICOBI or ICOOP). Can only be used in combination "
+        "with orbital-resolved automatic analysis (--orbitalresolved).",
     )
 
     # Argument that will help to switch automatic analysis
@@ -543,9 +544,7 @@ def get_parser() -> argparse.ArgumentParser:
             user_basis_arg,
             output_parent,
         ],
-        help=(
-            "Create inputs for lobster computation. It works only with PBE POTCARs."
-        ),
+        help="Create inputs for lobster computation. It works only with PBE POTCARs.",
     )
     subparsers.add_parser(
         "plot-dos",
