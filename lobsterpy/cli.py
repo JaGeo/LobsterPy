@@ -370,7 +370,7 @@ def get_parser() -> argparse.ArgumentParser:
         "and only orbital interactions that are stronger than orbitalintcutoff * 100 of relevant "
         "bonds (ICOHP or ICOBI or ICOOP) will be considered in automatic analysis.",
     )
-    
+
     # Argument that will help to switch automatic analysis
     analysis_switch = argparse.ArgumentParser(add_help=False)
     analysis_group = analysis_switch.add_argument_group(
@@ -411,7 +411,7 @@ def get_parser() -> argparse.ArgumentParser:
         "If used along with  --labelresolved arg, plots will be further label resolved else,"
         "plots will consists of summed orbital cohps. ",
     )
-    
+
     # Args specific to calc quality description dict and texts
     calc_quality_args = argparse.ArgumentParser(add_help=False)
     calc_quality_args_group = calc_quality_args.add_argument_group(
