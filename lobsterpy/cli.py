@@ -86,7 +86,8 @@ def get_parser() -> argparse.ArgumentParser:
         default="COHPCAR.lobster",
         type=Path,
         help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument'
-        "will also be read when COBICARs or COOPCARs are plotted.",
+        "can also read COBICARs or COOPCARs. One needs to use appropriate --cobis or "
+        "--coops options along with this argument when plotting",
     )
 
     doscar_file = argparse.ArgumentParser(add_help=False)
@@ -95,6 +96,18 @@ def get_parser() -> argparse.ArgumentParser:
         default="DOSCAR.lobster",
         type=Path,
         help='path to DOSCAR.lobster. Default is "DOSCAR.lobster".',
+    )
+
+    user_basis_arg = argparse.ArgumentParser(add_help=False)
+    user_basis_arg.add_argument(
+        "--userbasis",
+        "--user-basis",
+        default=None,
+        type=_element_basis,
+        nargs="+",
+        help="Setting this arg will use the specific basis provided by the user to "
+        "generate the inputs(e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). "
+        "Default is None.",
     )
 
     # groups of arguments for specific actions
@@ -166,16 +179,6 @@ def get_parser() -> argparse.ArgumentParser:
         help="overwrites already created INCARs an lobsterins with the give name.",
     )
     # TODO: Add some output arguments: options to supply your own basis
-    output_file_group.add_argument(
-        "--userbasis",
-        "--user-basis",
-        default=None,
-        type=_element_basis,
-        nargs="+",
-        help="This setting will rely on a specific basis provided by the user "
-        "(e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). Default is None.",
-    )
-
     # General matplotlib plotting arguments common to all kinds of plots
 
     plotting_parent = argparse.ArgumentParser(add_help=False)
@@ -192,7 +195,7 @@ def get_parser() -> argparse.ArgumentParser:
         nargs=2,
         default=None,
         type=float,
-        help="Energy range for plots",
+        help="Set y-axis limits for the plots",
     )
     plotting_group.add_argument(
         "--xlim",
@@ -200,7 +203,7 @@ def get_parser() -> argparse.ArgumentParser:
         nargs=2,
         default=None,
         type=float,
-        help="COHP/COBI/COOP range for plots",
+        help="Set x-axis limits for the plots",
     )
     plotting_group.add_argument(
         "--style",
@@ -261,7 +264,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--summedspins",
         "--summed-spins",
         action="store_true",
-        help="Will plot summed DOS",
+        help="Will plot summed spins DOS",
     )
     dos_plotting_group.add_argument(
         "--element",
@@ -320,7 +323,8 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Show integrated cohp/cobi/coop plots.",
     )
-    # Arguments for analysis cohp.analyze.Analysis class
+    # Arguments specific to lobsterpy.cohp.analyze.Analysis and
+    # lobsterpy.cohp.describe.Description class
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Automatic analysis")
     auto_group.add_argument(
@@ -374,21 +378,22 @@ def get_parser() -> argparse.ArgumentParser:
     # Argument that will help to switch automatic analysis
     analysis_switch = argparse.ArgumentParser(add_help=False)
     analysis_group = analysis_switch.add_argument_group(
-        "Switch type of analysis or plots"
+        "Switches type files analyzed for automatic analysis"
+        " (Also indicates file type for 'plot/plot-icohps-distances' action in cli)"
     )
     analysis_group.add_argument(
         "--cobis",
         "--cobis",
         action="store_true",
-        help="This option will start automatic bonding analysis of COBIs or"
-        " plot COBIs",
+        help="Setting this option starts automatic bonding analysis using COBIs"
+        " (Also indicates plotter that input file contains COBI data)",
     )
     analysis_group.add_argument(
         "--coops",
         "--coops",
         action="store_true",
-        help="This option will start automatic bonding analysis of COOPs or"
-        " plot COOPs",
+        help="Setting this option starts automatic bonding analysis using COOPs"
+        " (Also indicates plotter that input file contains COOP data)",
     )
     # Specific to interactive plotter args
     interactive_plotter_args = argparse.ArgumentParser(add_help=False)
@@ -400,16 +405,16 @@ def get_parser() -> argparse.ArgumentParser:
         "--label-resolved",
         action="store_true",
         help="Will create automatic interactive plots with all relevant bond labels. "
-        "If not set, plots will consists of summed cohps. (This argument works only"
-        "for interactive plots) ",
+        "If not set, plots will consists of summed cohps.",
     )
     interactive_plotter_group.add_argument(
         "--orbitalplot",
         "--orbital-plot",
         action="store_true",
-        help="Will generate automatic interactive (I)COHP or (I)COBI or (I)COOP plots with all relevant orbitals "
-        "If used along with  --labelresolved arg, plots will be further label resolved else,"
-        "plots will consists of summed orbital cohps. ",
+        help="Will generate automatic interactive (I)COHP or (I)COBI or (I)COOP plots with all relevant orbitals"
+        "(Will work only when '--orbitalresolved' arg is set : i.e Orbital resolved analysis is switched on). "
+        "If used along with  '--labelresolved' arg, plots will be further label resolved else,"
+        "plots will consists of summed orbital cohps.",
     )
 
     # Args specific to calc quality description dict and texts
@@ -446,14 +451,14 @@ def get_parser() -> argparse.ArgumentParser:
         "--dos-comp",
         action="store_true",
         default=False,
-        help="This option will force the DOS comparison in automatic LOBSTER calc quality  analysis ",
+        help="This option will enable the DOS comparison in automatic LOBSTER calc quality analysis ",
     )
     calc_quality_args_group.add_argument(
         "--bvacomp",
         "--bva-comp",
         action="store_true",
         default=False,
-        help="This option will force the BVA charge comparison in automatic LOBSTER calc quality analysis ",
+        help="This option will enable the BVA charge comparison in automatic LOBSTER calc quality analysis ",
     )
     # Build the actions using arguments defined earlier
     subparsers = parser.add_subparsers(
@@ -490,7 +495,7 @@ def get_parser() -> argparse.ArgumentParser:
             "Deliver a text description of the LOBSTER calc quality analysis. "
             "Mandatory required files: POSCAR, POTCAR, lobsterout, lobsterin. "
             "Optional files (BVA comparison): CHARGE.lobster, "
-            "(DOS comparison): DOSCAR.lobster, Vasprun.xml."
+            "(DOS comparison): DOSCAR.lobster/ DOSCAR.LSO.lobster, Vasprun.xml."
         ),
     )
     subparsers.add_parser(
@@ -532,7 +537,13 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "create-inputs",
         aliases=["createinputs"],
-        parents=[incar_file, structure_file, potcar_file, output_parent],
+        parents=[
+            incar_file,
+            structure_file,
+            potcar_file,
+            user_basis_arg,
+            output_parent,
+        ],
         help=(
             "Will create inputs for lobster computation. It only works with PBE POTCARs."
         ),
@@ -547,13 +558,13 @@ def get_parser() -> argparse.ArgumentParser:
             dos_plotting_parent,
             advanced_plotting_args,
         ],
-        help=("Will plot DOS from lobster computation."),
+        help="Plots DOS from lobster computation.",
     )
     subparsers.add_parser(
         "plot-icohps-distances",
         aliases=["ploticohpsdistances"],
         parents=[icohplist_file, plotting_parent, analysis_switch],
-        help=("Will plot icohps with respect to bond lengths"),
+        help="Will plot ICOHPs or ICOOPs or ICOBIs with respect to bond lengths",
     )
     # Mode for normal plotting (without automatic detection of relevant COHPs)
     plot_parser = subparsers.add_parser(
@@ -1173,6 +1184,16 @@ def run(args):
                     dos_plotter.add_site_orbital_dos(
                         site_index=site, orbital=orbital, dos=lobs_dos
                     )
+        elif (
+            args.site is None
+            and not args.orbital
+            and not args.element
+            and not args.spddos
+            and not args.elementdos
+            and not args.addtotaldos
+        ):
+            dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
+            dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_element_dos())
 
         elif (args.site is None or not args.orbital) and (
             not args.element and not args.spddos and not args.elementdos

@@ -505,6 +505,14 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
+        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        args = [
+            "plot-dos",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
     def test_cli_exceptions(self):
         # Calc files missing exception test
         with pytest.raises(ValueError) as err:
