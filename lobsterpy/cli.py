@@ -354,6 +354,23 @@ def get_parser() -> argparse.ArgumentParser:
         help="Only bonds that are stronger than cutoff_icoxx *strongest ICOHP "
         " (ICOBI or ICOOP) will be considered for automatic analysis.",
     )
+    auto_group.add_argument(
+        "--orbitalresolved",
+        "--orbital-resolved",
+        action="store_true",
+        default=False,
+        help="Will switch on orbital resolved analysis of (I)COHPs or (I)COBIs or (I)COOPs with all relevant orbitals.",
+    )
+    auto_group.add_argument(
+        "--orbitalcutoff",
+        "--orbital-cutoff",
+        type=float,
+        default=0.05,
+        help="Will only work when orbital wise analysis is switched on (--orbitalresolved) "
+        "and only orbital interactions that are stronger than orbitalintcutoff * 100 of relevant "
+        "bonds (ICOHP or ICOBI or ICOOP) will be considered in automatic analysis.",
+    )
+    
     # Argument that will help to switch automatic analysis
     analysis_switch = argparse.ArgumentParser(add_help=False)
     analysis_group = analysis_switch.add_argument_group(
@@ -386,6 +403,15 @@ def get_parser() -> argparse.ArgumentParser:
         "If not set, plots will consists of summed cohps. (This argument works only"
         "for interactive plots) ",
     )
+    interactive_plotter_group.add_argument(
+        "--orbitalplot",
+        "--orbital-plot",
+        action="store_true",
+        help="Will generate automatic interactive (I)COHP or (I)COBI or (I)COOP plots with all relevant orbitals "
+        "If used along with  --labelresolved arg, plots will be further label resolved else,"
+        "plots will consists of summed orbital cohps. ",
+    )
+    
     # Args specific to calc quality description dict and texts
     calc_quality_args = argparse.ArgumentParser(add_help=False)
     calc_quality_args_group = calc_quality_args.add_argument_group(
@@ -736,6 +762,8 @@ def run(args):
             are_cobis=args.cobis,
             noise_cutoff=args.noisecutoff,
             cutoff_icohp=args.cutofficohp,
+            orbital_cutoff=args.orbitalcutoff,
+            orbital_resolved=args.orbitalresolved,
         )
 
         describe = Description(analysis_object=analyse)
@@ -803,6 +831,7 @@ def run(args):
             sigma=sigma,
             hide=args.hideplot,
             label_resolved=args.labelresolved,
+            orbital_resolved=args.orbitalplot,
         )
 
     if args.action == "plot":
@@ -908,7 +937,7 @@ def run(args):
         if args.save_plot and args.hideplot:
             plt.savefig(args.save_plot)
 
-    if args.action == "create-inputs":
+    if args.action in ["create-inputs", "createinputs"]:
         from pymatgen.core.structure import Structure
         from pymatgen.io.lobster import Lobsterin
 
