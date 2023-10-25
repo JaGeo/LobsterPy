@@ -67,6 +67,7 @@ class Description:
             for key, item in self.condensed_bonding_analysis["sites"].items():
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
+                orb_info = []
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
@@ -80,6 +81,16 @@ class Description:
                             + properties[f"I{type_pop}_mean"]
                             + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
                     else:
                         bond_info.append(
                             str(properties["number_of_bonds"])
@@ -94,11 +105,29 @@ class Description:
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
 
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
                     bonds = bond_info[0]
+
+                if len(orb_info) > 1:
+                    orb_bonds = "".join(orb_info).replace(".In", ". In")
+                else:
+                    if orb_info:
+                        orb_bonds = orb_info[0]
+                    else:
+                        orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -109,6 +138,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
                 else:
                     self.text.append(
                         str(item["ion"])
@@ -119,6 +150,9 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
+
         elif self.analysis_object.which_bonds == "all":
             relevant_ions = ", ".join(
                 [
@@ -141,6 +175,7 @@ class Description:
             for key, item in self.condensed_bonding_analysis["sites"].items():
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
+                orb_info = []
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
@@ -154,6 +189,16 @@ class Description:
                             + properties[f"I{type_pop}_mean"]
                             + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
                     else:
                         bond_info.append(
                             str(properties["number_of_bonds"])
@@ -169,6 +214,17 @@ class Description:
                             + " percent antibonding interaction below EFermi)"
                         )
 
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
+
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
@@ -176,6 +232,13 @@ class Description:
                         bonds = bond_info[0]
                     else:
                         bonds = 0
+                if len(orb_info) > 1:
+                    orb_bonds = "".join(orb_info).replace(".In", ". In")
+                else:
+                    if orb_info:
+                        orb_bonds = orb_info[0]
+                    else:
+                        orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -186,6 +249,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
                 else:
                     self.text.append(
                         str(item["ion"])
@@ -196,6 +261,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
 
         if "madelung_energy" in self.analysis_object.condensed_bonding_analysis:
             self.text.append(
@@ -205,6 +272,184 @@ class Description:
                 )
                 + " eV."
             )
+
+    def _generate_orbital_resolved_analysis_text(
+        self,
+        orbital_resolved_data: dict,
+        ion: str,
+        atom_name: str,
+        type_pop: str,
+    ):
+        """
+        Convenience method to generate text from orbital resolved analysis data of the
+        most relevant COHP or COOP or COBI
+
+        Args:
+            orbital_resolved_data : dict of orbital data from condensed bonding analysis object
+            ion: name of ion at the site
+            atom_name: name of atomic speice to which ion is bonded
+            type_pop: population type analysed could be "COHP" or "COOP" or "COBI"
+
+        Returns:
+            A python list with text describing the orbital which contributes
+            the most to the bonding and antibonding in the bond at site
+        """
+        orb_info = []
+        if orbital_resolved_data["orbital_data"]["orbital_summary_stats"]:
+            orb_names = []
+            orb_contri = []
+            # get atom-pair list with ion placed first
+            atom_pair = self.analysis_object._sort_name([ion, atom_name], nameion=ion)
+            if (
+                "max_bonding_contribution"
+                in orbital_resolved_data["orbital_data"]["orbital_summary_stats"]
+            ):
+                for orb, data in orbital_resolved_data["orbital_data"][
+                    "orbital_summary_stats"
+                ]["max_bonding_contribution"].items():
+                    atom_pair_with_orb_name = (
+                        self.analysis_object._sort_orbital_atom_pair(
+                            atom_pair=atom_pair,
+                            complete_cohp=self.analysis_object.chemenv.completecohp,
+                            label=orbital_resolved_data["orbital_data"][
+                                "relevant_bonds"
+                            ][0],
+                            orb_pair=orb,
+                        )
+                    )
+                    orb_names.append("-".join(atom_pair_with_orb_name))
+                    orb_contri.append(
+                        str(
+                            round(
+                                data * 100,
+                                3,
+                            )
+                        )
+                    )
+            orb_names_anti = []
+            orb_antibonding = []
+            if (
+                "max_antibonding_contribution"
+                in orbital_resolved_data["orbital_data"]["orbital_summary_stats"]
+            ):
+                for orb, data in orbital_resolved_data["orbital_data"][
+                    "orbital_summary_stats"
+                ]["max_antibonding_contribution"].items():
+                    atom_pair_with_orb_name = (
+                        self.analysis_object._sort_orbital_atom_pair(
+                            atom_pair=atom_pair,
+                            complete_cohp=self.analysis_object.chemenv.completecohp,
+                            label=orbital_resolved_data["orbital_data"][
+                                "relevant_bonds"
+                            ][0],
+                            orb_pair=orb,
+                        )
+                    )
+                    orb_names_anti.append("-".join(atom_pair_with_orb_name))
+                    orb_antibonding.append(
+                        str(
+                            round(
+                                data * 100,
+                                3,
+                            )
+                        )
+                    )
+            if len(orb_contri) > 1:
+                orb_name_contri = ""
+                for inx, name in enumerate(orb_names):
+                    if len(orb_contri) == 2 and inx + 1 != len(orb_contri):
+                        orb_name_contri += f"{name} "
+                    elif 2 < len(orb_contri) != inx + 1:
+                        orb_name_contri += f"{name}, "
+                    else:
+                        orb_name_contri += f"and {name}"
+
+                orb_name_contri += " orbitals, contributing "
+                for inx, contribution in enumerate(orb_contri):
+                    if len(orb_contri) == 2 and inx + 1 != len(orb_contri):
+                        orb_name_contri += f"{contribution} "
+                    elif 2 < len(orb_contri) != inx + 1:
+                        orb_name_contri += f"{contribution}, "
+                    else:
+                        orb_name_contri += f"and {contribution} percent, respectively"
+                num_bonds = len(orbital_resolved_data["orbital_data"]["relevant_bonds"])
+                bonds = "bonds" if num_bonds > 1 else "bond"
+                orb_info.append(
+                    f"In the {num_bonds} "
+                    + "-".join(atom_pair)
+                    + f" {bonds}, relative to the summed I{type_pop}s, "
+                    + "the maximum bonding contribution is from "
+                    + orb_name_contri
+                )
+            elif not orb_contri:
+                num_bonds = len(orbital_resolved_data["orbital_data"]["relevant_bonds"])
+                bonds = "bonds" if num_bonds > 1 else "bond"
+                orb_info.append(
+                    f"In the {num_bonds} "
+                    + "-".join(atom_pair)
+                    + f" {bonds}, relative to the summed I{type_pop}s, "
+                    + f"no orbital has a bonding contribution greater than "
+                    f"{self.analysis_object.orbital_cutoff*100} percent"
+                )
+            else:
+                num_bonds = len(orbital_resolved_data["orbital_data"]["relevant_bonds"])
+                bonds = "bonds" if num_bonds > 1 else "bond"
+                orb_info.append(
+                    f"In the {num_bonds} "
+                    + "-".join(atom_pair)
+                    + f" {bonds}, relative to the summed I{type_pop}s, "
+                    + "the maximum bonding contribution is from the "
+                    + f"{orb_names[0]}"
+                    + f" orbital, contributing {orb_contri[0]} percent"
+                )
+
+            if len(orb_antibonding) > 1:
+                orb_anti = ""
+                for inx, name in enumerate(orb_names_anti):
+                    if len(orb_names_anti) == 2 and inx + 1 != len(orb_names_anti):
+                        orb_anti += f"{name} "
+                    elif 2 < len(orb_antibonding) != inx + 1:
+                        orb_anti += f"{name}, "
+                    else:
+                        orb_anti += f"and {name}"
+
+                orb_anti += " orbitals, contributing "
+                for inx, contribution in enumerate(orb_antibonding):
+                    if len(orb_names_anti) == 2 and inx + 1 != len(orb_names_anti):
+                        orb_anti += f"{contribution} "
+                    elif 2 < len(orb_antibonding) != inx + 1:
+                        orb_anti += f"{contribution}, "
+                    else:
+                        orb_anti += f"and {contribution} percent, respectively."
+                orb_info.append(
+                    ", whereas "
+                    + "the maximum antibonding contribution is from "
+                    + orb_anti
+                )
+            elif not orb_antibonding:
+                orb_info.append(
+                    ", whereas "
+                    + "no significant antibonding contribution is found in this bond."
+                )
+            else:
+                orb_info.append(
+                    ", whereas "
+                    + "the maximum antibonding contribution is from the "
+                    + f"{orb_names_anti[0]}"
+                    + f" orbital, contributing {orb_antibonding[0]} percent."
+                )
+        else:
+            # get atom-pair list with ion placed first
+            atom_pair = self.analysis_object._sort_name([ion, atom_name], nameion=ion)
+            percentage_cutoff = round(self.analysis_object.orbital_cutoff * 100, 2)
+            orb_info.append(
+                f"No individual orbital interactions detected above {percentage_cutoff} percent"
+                f" with summed I{type_pop} as reference for the "
+                + "-".join(atom_pair)
+                + " bond."
+            )
+
+        return orb_info
 
     def plot_cohps(
         self,
@@ -255,6 +500,7 @@ class Description:
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
+
             plot = cp.get_plot(integrated=integrated, sigma=sigma)
             plot.ylim(ylim)
             if xlim is not None:
@@ -287,6 +533,7 @@ class Description:
         title="",
         sigma=None,
         label_resolved=False,
+        orbital_resolved=False,
         hide=False,
     ):
         """
@@ -300,6 +547,8 @@ class Description:
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
                 population data. If None, no broadening will be added.
+            label_resolved: if true, relevant cohp curves will be further resolved based on band labels
+            orbital_resolved: if true, relevant orbital interactions in cohp curves will be added to figure
             title : Title of the interactive plot
             hide (bool): if True, the plot will not be shown.
 
@@ -325,9 +574,11 @@ class Description:
             are_coops=self.analysis_object.are_coops,
             are_cobis=self.analysis_object.are_cobis,
         )
-        if label_resolved:
+        if label_resolved or orbital_resolved:
             ip.add_all_relevant_cohps(
-                analyse=self.analysis_object, label_resolved=label_resolved
+                analyse=self.analysis_object,
+                label_resolved=label_resolved,
+                orbital_resolved=orbital_resolved,
             )
         else:
             ip.add_cohps_from_plot_data(plot_data_dict=cba_cohp_plot_data)

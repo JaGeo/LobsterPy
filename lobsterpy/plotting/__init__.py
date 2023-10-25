@@ -23,10 +23,10 @@ import numpy as np
 from numpy.typing import ArrayLike
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
-from pymatgen.io.lobster import Icohplist
+from pymatgen.core import Structure
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.dos import LobsterCompleteDos
-from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection
+from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection, CompleteCohp
 from pymatgen.electronic_structure.plotter import CohpPlotter, DosPlotter
 import plotly.graph_objs as go
 from lobsterpy.cohp.analyze import Analysis
@@ -558,7 +558,11 @@ class InteractiveCohpPlotter(CohpPlotter):
     ]
 
     def add_all_relevant_cohps(
-        self, analyse: Analysis, suffix: str = "", label_resolved: bool = True
+        self,
+        analyse: Analysis,
+        suffix: str = "",
+        label_resolved: bool = True,
+        orbital_resolved: bool = False,
     ) -> None:
         """
         Adds all relevant COHPs from lobsterpy analyse object.
@@ -569,33 +573,11 @@ class InteractiveCohpPlotter(CohpPlotter):
             calcs or just for additional legend information.
             label_resolved: bool indicating to obtain label resolved interactive plots for relevant bonds.
             If false, will return summed cohp curves of unique relevant bonds.
+            orbital_resolved: bool indicating to include orbital resolved interactive cohps for relevant bonds.
         """
         complete_cohp = analyse.chemenv.completecohp
 
-        # extract bond atom pairs and corresponding cohp bond label
-        bonds = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        labels = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        for inx, bond_info in enumerate(analyse.seq_infos_bonds):
-            for ixx, val in enumerate(bond_info.atoms):
-                label_srt = sorted(val.copy())
-                bonds[inx].append(
-                    analyse.structure.sites[bond_info.central_isites[0]].species_string
-                    + str(bond_info.central_isites[0] + 1)
-                    + ": "
-                    + label_srt[0].strip("0123456789")
-                    + "-"
-                    + label_srt[1].strip("0123456789")
-                )
-                labels[inx].append(bond_info.labels[ixx])
-
-        # create a dict seperating the unique atom pairs for each site and corresponding cohp bond label
-        plot_data = {}
-        for indx, atom_pairs in enumerate(bonds):
-            search_items = set(atom_pairs)
-            for item in search_items:
-                indices = [i for i, x in enumerate(atom_pairs) if x == item]
-                filtered_bond_label_list = [labels[indx][i] for i in indices]
-                plot_data.update({item: filtered_bond_label_list})
+        plot_data = analyse.get_site_bond_resolved_labels()
 
         if "All" not in self._cohps:
             self._cohps["All"] = {}
@@ -606,63 +588,30 @@ class InteractiveCohpPlotter(CohpPlotter):
             label_with_count = self._insert_number_of_bonds_in_label(
                 label=bond_key, character=":", number_of_bonds=count
             )
-            if (
-                label_resolved
-            ):  # will add cohp data for each relevant bond label iteratively
-                self._cohps[label_with_count + suffix] = {}
-                for label in labels:
-                    cohp = complete_cohp.get_cohp_by_label(label)
-                    energies = (
-                        cohp.energies - cohp.efermi
-                        if self.zero_at_efermi
-                        else cohp.energies
-                    )
-                    outer_key = label_with_count + suffix
-                    struct = analyse.structure
-                    atom_pairs = []
-                    for site in complete_cohp.bonds[label]["sites"]:
-                        atom = site.species_string + str(struct.sites.index(site) + 1)
-                        atom_pairs.append(atom)
-                    key = "{}: {} ({} \u00c5)".format(
-                        label,
-                        "-".join(atom_pairs),
-                        str(round(complete_cohp.bonds[label]["length"], 2)),
-                    )
-                    self._cohps[outer_key].update(
-                        {
-                            key: {
-                                "energies": energies,
-                                "COHP": cohp.get_cohp(),
-                                "ICOHP": cohp.get_icohp(),
-                                "efermi": cohp.efermi,
-                            }
-                        }
-                    )
-
-                    key = key + suffix
-                    self._cohps["All"].update(
-                        {
-                            key: {
-                                "energies": energies,
-                                "COHP": cohp.get_cohp(),
-                                "ICOHP": cohp.get_icohp(),
-                                "efermi": cohp.efermi,
-                            }
-                        }
-                    )
-
-            else:
-                # add summed cohps for each relevant bond sites
-                cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
-                energies = (
-                    cohp.energies - cohp.efermi
-                    if self.zero_at_efermi
-                    else cohp.energies
-                )
-                key = label_with_count + suffix
-                self._cohps["All"].update(
+            # get summed cohps from the relevant bond label at the site
+            cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
+            energies = (
+                cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+            )
+            drop_down_key = plot_legend = (
+                label_with_count + suffix
+            )  # label for the dropdown menu
+            self._cohps["All"].update(
+                {
+                    plot_legend: {
+                        "energies": energies,
+                        "COHP": cohp.get_cohp(),
+                        "ICOHP": cohp.get_icohp(),
+                        "efermi": cohp.efermi,
+                    }
+                }
+            )
+            if len(plot_data) > 1:
+                if drop_down_key not in self._cohps:
+                    self._cohps[drop_down_key] = {}
+                self._cohps[drop_down_key].update(
                     {
-                        key: {
+                        plot_legend: {
                             "energies": energies,
                             "COHP": cohp.get_cohp(),
                             "ICOHP": cohp.get_icohp(),
@@ -670,6 +619,161 @@ class InteractiveCohpPlotter(CohpPlotter):
                         }
                     }
                 )
+
+            # Add cohp data for each relevant bond label iteratively
+            if label_resolved and not orbital_resolved:
+                if label_with_count + suffix not in self._cohps:
+                    self._cohps[label_with_count + suffix] = {}
+                # Get cohp data for each relevant bond label at the site
+                for label in labels:
+                    cohp = complete_cohp.get_cohp_by_label(label)
+                    energies = (
+                        cohp.energies - cohp.efermi
+                        if self.zero_at_efermi
+                        else cohp.energies
+                    )
+                    drop_down_key = (
+                        label_with_count + suffix
+                    )  # label for the dropdown menu
+                    plot_legend = self._get_plot_label_for_label_resolved(
+                        structure=analyse.structure,
+                        label_list=[label],
+                        complete_cohp=complete_cohp,
+                        orb_list=[],
+                        label_resolved=True,
+                        orbital_resolved=False,
+                    )
+                    if len(plot_data) > 1:
+                        self._cohps[drop_down_key].update(
+                            {
+                                plot_legend: {
+                                    "energies": energies,
+                                    "COHP": cohp.get_cohp(),
+                                    "ICOHP": cohp.get_icohp(),
+                                    "efermi": cohp.efermi,
+                                }
+                            }
+                        )
+
+                    plot_legend_here = plot_legend + suffix
+                    self._cohps["All"].update(
+                        {
+                            plot_legend_here: {
+                                "energies": energies,
+                                "COHP": cohp.get_cohp(),
+                                "ICOHP": cohp.get_icohp(),
+                                "efermi": cohp.efermi,
+                            }
+                        }
+                    )
+            # Adds cohp data for each relevant orbitals and bond label iteratively
+            if orbital_resolved and label_resolved:
+                if label_with_count + suffix not in self._cohps:
+                    self._cohps[label_with_count + suffix] = {}
+                # get relevant orbitals associated with each bond label
+                plot_data_orb = analyse.get_site_orbital_resolved_labels()
+                drop_down_key = label_with_count + suffix  # label for the dropdown menu
+                key_val = plot_data_orb[bond_key]
+                # get cohp data for each orbital and associated bond labels iteratively
+                for orb, val in key_val.items():
+                    for lab in val:
+                        cohp_orb = (
+                            complete_cohp.get_summed_cohp_by_label_and_orbital_list(
+                                label_list=[lab], orbital_list=[orb]
+                            )
+                        )
+
+                        energies = (
+                            cohp_orb.energies - cohp_orb.efermi
+                            if self.zero_at_efermi
+                            else cohp_orb.energies
+                        )
+                        # plot legends will contain species and orbital along with relevant bond label
+                        plot_legend = self._get_plot_label_for_label_resolved(
+                            structure=analyse.structure,
+                            label_list=[lab],
+                            complete_cohp=complete_cohp,
+                            orb_list=[orb],
+                            orbital_resolved=True,
+                            label_resolved=True,
+                        )
+                        if len(plot_data) > 1:
+                            self._cohps[drop_down_key].update(
+                                {
+                                    plot_legend: {
+                                        "energies": energies,
+                                        "COHP": cohp_orb.get_cohp(),
+                                        "ICOHP": cohp_orb.get_icohp(),
+                                        "efermi": cohp_orb.efermi,
+                                    }
+                                }
+                            )
+
+                        plot_legend_here = plot_legend + suffix
+
+                        self._cohps["All"].update(
+                            {
+                                plot_legend_here: {
+                                    "energies": energies,
+                                    "COHP": cohp_orb.get_cohp(),
+                                    "ICOHP": cohp_orb.get_icohp(),
+                                    "efermi": cohp_orb.efermi,
+                                }
+                            }
+                        )
+            # Adds summed cohp data for each relevant orbitals
+            if orbital_resolved and not label_resolved:
+                if label_with_count + suffix not in self._cohps:
+                    self._cohps[label_with_count + suffix] = {}
+                # get relevant orbitals associated with each bond label
+                plot_data_orb = analyse.get_site_orbital_resolved_labels()
+                drop_down_key = label_with_count + suffix  # label for the dropdown menu
+                key_val = plot_data_orb[bond_key]
+                # get summed cohp data for each relevant orbital
+                for orb, val in key_val.items():
+                    cohp_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
+                        label_list=val, orbital_list=[orb] * len(val)
+                    )
+
+                    energies = (
+                        cohp_orb.energies - cohp_orb.efermi
+                        if self.zero_at_efermi
+                        else cohp_orb.energies
+                    )
+                    # plot legends will contain species and orbital along with number of bonds at the site
+                    plot_legend = self._get_plot_label_for_label_resolved(
+                        structure=analyse.structure,
+                        label_list=val,
+                        complete_cohp=complete_cohp,
+                        orb_list=[orb],
+                        orbital_resolved=True,
+                        label_resolved=False,
+                    )
+
+                    if len(plot_data) > 1:
+                        self._cohps[drop_down_key].update(
+                            {
+                                plot_legend: {
+                                    "energies": energies,
+                                    "COHP": cohp_orb.get_cohp(),
+                                    "ICOHP": cohp_orb.get_icohp(),
+                                    "efermi": cohp_orb.efermi,
+                                }
+                            }
+                        )
+
+                    plot_legend_here = plot_legend + suffix
+
+                    self._cohps["All"].update(
+                        {
+                            plot_legend_here: {
+                                "energies": energies,
+                                "COHP": cohp_orb.get_cohp(),
+                                "ICOHP": cohp_orb.get_icohp(),
+                                "efermi": cohp_orb.efermi,
+                            }
+                        }
+                    )
 
     def add_cohps_by_lobster_label(
         self, analyse: Analysis, label_list: list, suffix: str = ""
@@ -685,9 +789,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         complete_cohp = analyse.chemenv.completecohp
 
-        if "All" in self._cohps:
-            pass
-        else:
+        if "All" not in self._cohps:
             self._cohps["All"] = {}
 
         for label in label_list:
@@ -951,6 +1053,71 @@ class InteractiveCohpPlotter(CohpPlotter):
              bond label with number of bonds inserted
         """
         return label.replace(character, f"{character} {number_of_bonds} x", 1)
+
+    @staticmethod
+    def _get_plot_label_for_label_resolved(
+        structure: Structure,
+        label_list: list,
+        complete_cohp: CompleteCohp,
+        orb_list: list,
+        label_resolved: bool = False,
+        orbital_resolved: bool = False,
+    ) -> str:
+        """
+        Convenience method to get plot label for orbital and label resolved plots.
+        For example for NaCl structure, label:21, orb: 3s-3s
+        Will return '21: Cl2-Na1 (2.85 Å)' if label_resolved is True and orbital_resolved is False
+        Will return '21: Cl2(3s)-Na1(3s) (2.85 Å)' If label and orbital resolved True
+        Will return 'Cl(3s)-Na(3s) (2.85 Å)' if orbital_resolved is True and label_resolved is False
+
+        Args:
+            structure: pymatgen structure object
+            label_list: bond label to which number of bonds needs to be inserted
+            complete_cohp:  complete cohp object
+            orb_list: relevant orbital
+            label_resolved: specifies type of label to be returned is for label_resolved case
+            orbital_resolved: specifies type of label to be returned is for orbital_resolved case
+
+        Returns:
+             plot label string
+        """
+        if label_resolved and not orbital_resolved:
+            atom_pairs = []
+            for site in complete_cohp.bonds[label_list[0]]["sites"]:
+                atom = f"{site.species_string}{str(structure.sites.index(site) + 1)}"
+                atom_pairs.append(atom)
+            atom_pair_str = "-".join(atom_pairs)
+            bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
+            plot_label = f"{label_list[0]}: {atom_pair_str} ({bond_length} \u00c5)"
+
+        elif not label_resolved and orbital_resolved:
+            orb_atom_pairs = []
+            orb_pair = orb_list[0].split("-")
+            for site, site_orb in zip(
+                complete_cohp.bonds[label_list[0]]["sites"], orb_pair
+            ):
+                atom_orb = f"{site.species_string} ({site_orb})"
+                orb_atom_pairs.append(atom_orb)
+            orb_atom_pairs_str = "-".join(orb_atom_pairs)
+            bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
+            plot_label = (
+                f"{len(label_list)}x {orb_atom_pairs_str} ({bond_length} \u00c5)"
+            )
+        else:
+            orb_atom_pairs = []
+            orb_pair = orb_list[0].split("-")
+            for site, site_orb in zip(
+                complete_cohp.bonds[label_list[0]]["sites"], orb_pair
+            ):
+                atom_orb = f"{site.species_string}{str(structure.sites.index(site) + 1)} ({site_orb})"
+                orb_atom_pairs.append(atom_orb)
+            orb_atom_pairs_str = "-".join(orb_atom_pairs)
+            bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
+            plot_label = (
+                f"{label_list[0]}:  {orb_atom_pairs_str} ({bond_length} \u00c5)"
+            )
+
+        return plot_label
 
 
 class IcohpDistancePlotter:
