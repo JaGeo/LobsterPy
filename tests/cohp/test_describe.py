@@ -8,28 +8,28 @@ from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 
 CurrentDir = Path(__file__).absolute().parent
-TestDir = CurrentDir / "../../"
+TestDir = CurrentDir / "../"
 
 
 # TODO: Add example without antibonding states
 
 
-class TestDescribe(unittest.TestCase):
-    def setUp(self):
+class TestDescribe:
+    def setup_method(self):
         self.analyse_NaCl = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_NaCl = Description(self.analyse_NaCl)
 
         self.analyse_NaCl_valences = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
+            path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
             path_to_charge=None,
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
@@ -37,10 +37,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaCl_valences = Description(self.analyse_NaCl_valences)
 
         self.analyse_BaTiO3 = Analysis(
-            path_to_poscar=TestDir / "TestData/BaTiO3/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/BaTiO3/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/BaTiO3/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
@@ -48,10 +48,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_BaTiO3 = Description(self.analyse_BaTiO3)
 
         self.analyse_BaTiO3_orb = Analysis(
-            path_to_poscar=TestDir / "TestData/BaTiO3/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/BaTiO3/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/BaTiO3/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/BaTiO3/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
             orbital_cutoff=0.10,
@@ -61,10 +61,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_BaTiO3_orb = Description(self.analyse_BaTiO3_orb)
 
         self.analyse_C_orb = Analysis(
-            path_to_poscar=TestDir / "TestData/C/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/C/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/C/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/C/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/C/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/C/CHARGE.lobster",
             which_bonds="all",
             cutoff_icohp=0.1,
             orbital_resolved=True,
@@ -74,10 +74,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_C_orb = Description(self.analyse_C_orb)
 
         self.analyse_BaTaO2N1 = Analysis(
-            path_to_poscar=TestDir / "TestData/BaTaO2N1/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/BaTaO2N1/COHPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/BaTaO2N1/ICOHPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/BaTaO2N1/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/BaTaO2N1/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/BaTaO2N1/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/BaTaO2N1/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/BaTaO2N1/CHARGE.lobster.gz",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
@@ -86,20 +86,20 @@ class TestDescribe(unittest.TestCase):
         self.describe_BaTiO3 = Description(self.analyse_BaTiO3)
 
         self.analyse_CdF = Analysis(
-            path_to_poscar=TestDir / "TestData/CdF/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/CdF/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/CdF/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/CdF/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_CdF = Description(self.analyse_CdF)
 
         self.analyse_NaCl_distorted = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl_distorted/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaCl_distorted/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaCl_distorted/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/NaCl_distorted/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/NaCl_distorted/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaCl_distorted/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaCl_distorted/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/NaCl_distorted/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
@@ -107,10 +107,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaCl_distorted = Description(self.analyse_NaCl_distorted)
 
         self.analyse_NaCl_spin = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl_spin/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaCl_spin/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaCl_spin/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/NaCl_spin/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaCl_spin/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaCl_spin/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/NaCl_spin/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
             summed_spins=False,
@@ -118,10 +118,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaCl_spin = Description(self.analyse_NaCl_spin)
 
         self.analyse_NaCl_all = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
             which_bonds="all",
             cutoff_icohp=0.1,
         )
@@ -129,11 +129,11 @@ class TestDescribe(unittest.TestCase):
         self.describe_Nacl_all = Description(self.analyse_NaCl_all)
 
         self.analyse_NaCl_madelung_all = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
-            path_to_madelung=TestDir / "TestData/NaCl/MadelungEnergies.lobster",
+            path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
+            path_to_madelung=TestDir / "test_data/NaCl/MadelungEnergies.lobster",
             which_bonds="all",
             cutoff_icohp=0.1,
         )
@@ -141,41 +141,37 @@ class TestDescribe(unittest.TestCase):
         self.describe_Nacl_madelung_all = Description(self.analyse_NaCl_madelung_all)
 
         self.analyse_NaCl_comp_range_cobi = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl_comp_range/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/NaCl_comp_range/COBICAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/NaCl_comp_range/ICOBILIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/NaCl_comp_range/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COBICAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
             noise_cutoff=0.001,
             are_cobis=True,
         )
 
-        self.describe_Nacl_comp_range_cobi = Description(
-            self.analyse_NaCl_comp_range_cobi
-        )
+        self.describe_Nacl_comp_range_cobi = Description(self.analyse_NaCl_comp_range_cobi)
 
         self.analyse_CdF_comp_range_coop = Analysis(
-            path_to_poscar=TestDir / "TestData/CdF_comp_range/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/CdF_comp_range/COOPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/CdF_comp_range/ICOOPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/CdF_comp_range/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/CdF_comp_range/COOPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/CdF_comp_range/ICOOPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/CdF_comp_range/CHARGE.lobster.gz",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
             noise_cutoff=0.001,
             are_coops=True,
         )
 
-        self.describe_CdF_comp_range_coop = Description(
-            self.analyse_CdF_comp_range_coop
-        )
+        self.describe_CdF_comp_range_coop = Description(self.analyse_CdF_comp_range_coop)
 
         self.analyse_NaSi_madelung_all = Analysis(
-            path_to_poscar=TestDir / "TestData/NaSi/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaSi/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/NaSi/CHARGE.lobster",
-            path_to_madelung=TestDir / "TestData/NaSi/MadelungEnergies.lobster",
+            path_to_poscar=TestDir / "test_data/NaSi/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster",
+            path_to_madelung=TestDir / "test_data/NaSi/MadelungEnergies.lobster",
             which_bonds="all",
             cutoff_icohp=0.1,
         )
@@ -183,20 +179,20 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaSi_madelung_all = Description(self.analyse_NaSi_madelung_all)
 
         self.analyse_NaSbF6 = Analysis(
-            path_to_poscar=TestDir / "TestData/NaSbF6/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/NaSbF6/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/NaSbF6/CHARGE.lobster.gz",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
         self.describe_NaSbF6 = Description(self.analyse_NaSbF6)
 
         self.analyse_NaSbF6_anbd = Analysis(
-            path_to_poscar=TestDir / "TestData/NaSbF6/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/NaSbF6/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/NaSbF6/CHARGE.lobster.gz",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
             start=-5.5,
@@ -205,10 +201,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaSbF6_anbd = Description(self.analyse_NaSbF6_anbd)
 
         self.analyse_NaCl_nan = Analysis(
-            path_to_poscar=TestDir / "TestData/NaCl/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/NaCl/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/NaCl/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/NaCl/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
             start=-4.0,
@@ -217,10 +213,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaCl_nan = Description(self.analyse_NaCl_nan)
 
         self.analyse_CdF_anbd = Analysis(
-            path_to_poscar=TestDir / "TestData/CdF/POSCAR",
-            path_to_cohpcar=TestDir / "TestData/CdF/COHPCAR.lobster",
-            path_to_icohplist=TestDir / "TestData/CdF/ICOHPLIST.lobster",
-            path_to_charge=TestDir / "TestData/CdF/CHARGE.lobster",
+            path_to_poscar=TestDir / "test_data/CdF/POSCAR",
+            path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster",
+            path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster",
+            path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
             start=-4.0,
@@ -230,10 +226,10 @@ class TestDescribe(unittest.TestCase):
 
         # tests for key error issues
         self.analyse_K3Sb = Analysis(
-            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
         )
@@ -241,10 +237,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_K3Sb = Description(self.analyse_K3Sb)
 
         self.analyse_K3Sb_all = Analysis(
-            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/K3Sb/COHPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/K3Sb/ICOHPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
             which_bonds="all",
             cutoff_icohp=0.1,
         )
@@ -252,10 +248,10 @@ class TestDescribe(unittest.TestCase):
         self.describe_K3Sb_all = Description(self.analyse_K3Sb_all)
 
         self.analyse_NaSbF6_orb = Analysis(
-            path_to_poscar=TestDir / "TestData/NaSbF6/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/NaSbF6/COHPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/NaSbF6/ICOHPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/NaSbF6/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/NaSbF6/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/NaSbF6/CHARGE.lobster.gz",
             which_bonds="all",
             cutoff_icohp=0.1,
             summed_spins=False,
@@ -266,10 +262,10 @@ class TestDescribe(unittest.TestCase):
 
         # test for empty bond dict text generation
         self.analyse_CsH_all = Analysis(
-            path_to_poscar=TestDir / "TestData/CsH/POSCAR.gz",
-            path_to_cohpcar=TestDir / "TestData/CsH/COHPCAR.lobster.gz",
-            path_to_icohplist=TestDir / "TestData/CsH/ICOHPLIST.lobster.gz",
-            path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
+            path_to_poscar=TestDir / "test_data/CsH/POSCAR.gz",
+            path_to_cohpcar=TestDir / "test_data/CsH/COHPCAR.lobster.gz",
+            path_to_icohplist=TestDir / "test_data/CsH/ICOHPLIST.lobster.gz",
+            path_to_charge=TestDir / "test_data/CsH/CHARGE.lobster.gz",
             which_bonds="all",
             cutoff_icohp=0.1,
         )
@@ -376,55 +372,45 @@ class TestDescribe(unittest.TestCase):
             "30": "30-fold",
         }
         for key, items in results_dict.items():
-            self.assertEqual(Description._coordination_environment_to_text(key), items)
+            assert Description._coordination_environment_to_text(key) == items
 
     def test_plot(self):
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmp0:
             filename_test = Path(tmp0) / "test.pdf"
-            self.describe_NaCl.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
-            self.assertTrue(Path(filename_test).exists())
+            self.describe_NaCl.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            assert Path(filename_test).exists()
 
         with tempfile.TemporaryDirectory() as tmp1:
             filename_test = Path(tmp1) / "test.pdf"
-            self.describe_NaCl_spin.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
-            self.assertTrue(Path(filename_test).exists())
+            self.describe_NaCl_spin.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            assert Path(filename_test).exists()
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = Path(tmp2) / "test.pdf"
-            self.describe_Nacl_all.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            self.describe_Nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
-            self.assertFalse(Path(filename_test).exists())
-            self.assertTrue(Path(filename_test_1).exists())
-            self.assertTrue(Path(filename_test_2).exists())
+            assert not Path(filename_test).exists()
+            assert Path(filename_test_1).exists()
+            assert Path(filename_test_2).exists()
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = str(Path(tmp2) / "test.pdf")
-            self.describe_Nacl_all.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            self.describe_Nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
-            self.assertFalse(Path(filename_test).exists())
-            self.assertTrue(Path(filename_test_1).exists())
-            self.assertTrue(Path(filename_test_2).exists())
+            assert not Path(filename_test).exists()
+            assert Path(filename_test_1).exists()
+            assert Path(filename_test_2).exists()
 
         with tempfile.TemporaryDirectory() as tmp4:
             filename_test = str(Path(tmp4) / "test.pdf")
-            self.describe_CsH_all.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            self.describe_CsH_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             filename_test_1 = Path(tmp4) / "test-0.pdf"
-            self.assertFalse(Path(filename_test).exists())
-            self.assertTrue(Path(filename_test_1).exists())
+            assert not Path(filename_test).exists()
+            assert Path(filename_test_1).exists()
 
     def test_write_description(self):
         self.describe_NaCl.write_description()
@@ -435,322 +421,248 @@ class TestDescribe(unittest.TestCase):
         self.describe_NaCl_nan.write_description()
 
     def test_text(self):
-        self.assertEqual(
-            self.describe_CdF.text,
-            [
-                "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
-                "44.26 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_NaCl.text,
-            [
-                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, "
-                "3.448 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_NaCl.text,
-            [
-                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,"
-                " 3.448 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_NaSbF6.text,
-            [
-                "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: Na1, Sb2.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
-                "4.071 percent antibonding interaction below EFermi) bonds.",
-                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
-                "0.0 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_NaSbF6_anbd.text,
-            [
-                "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion "
-                "interactions: Na1, Sb2.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
-                "0.0 percent antibonding interaction below EFermi) bonds.",
-                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
-                "0.0 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_NaCl_nan.text,
-            [
-                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, "
-                "0.0 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_CdF_anbd.text,
-            [
-                "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
-                "100.0 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_K3Sb.text,
-            [
-                "The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion "
-                "interactions: K1, K2.",
-                "K1 has a 6-fold coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, "
-                "2.299 percent antibonding interaction below EFermi) bonds.",
-                "K2 has a 4-fold coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, "
-                "4.969 percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_K3Sb_all.text,
-            [
-                "The compound K3Sb has 3 symmetry-independent atoms(s) with relevant bonds: K1, K2, Sb4.",
-                "K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.544 percent "
-                "antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent "
-                "antibonding interaction below EFermi) bonds.",
-                "K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 "
-                "percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 "
-                "percent antibonding interaction below EFermi) bonds.",
-                "Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 3.731 "
-                "percent antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_CsH_all.text,
-            [
-                "The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.",
-                "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 "
-                "percent antibonding interaction below EFermi) bonds.",
-                "H2 has a 0 coordination environment. It has 0 bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_BaTiO3_orb.text,
-            [
-                "The compound BaTiO3 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Ti2.",
-                "Ti2 has an octahedral (CN=6) coordination environment. It has 6 Ti-O (mean ICOHP: -3.54 eV, "
-                "1.092 percent antibonding interaction below EFermi) bonds.",
-                "In the 6 Ti-O bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-                "from the Ti(3dz2)-O(2pz) orbital, contributing 14.0 percent, whereas the maximum "
-                "antibonding contribution is from the Ti(4s)-O(2s) orbital, contributing 20.0 percent.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_C_orb.text,
-            [
-                "The compound C has 1 symmetry-independent atoms(s) with relevant bonds: C1.",
-                "C1 has a tetrahedral (CN=4) coordination environment. "
-                "It has 4 C-C (mean ICOHP: -9.59 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
-                "In the 4 C-C bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-                "from the C(2s)-C(2s) orbital, contributing 10.0 percent, whereas no significant "
-                "antibonding contribution is found in this bond.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_NaSbF6_orb.text,
-            [
-                "The compound NaSbF6 has 3 symmetry-independent atoms(s) with relevant bonds: Na1, Sb2, F3.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
-                "4.071 percent antibonding interaction below EFermi) bonds.",
-                "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-                "from the Na(3s)-F(2s) orbital, contributing 67.0 percent, whereas the maximum antibonding "
-                "contribution is from Na(2py)-F(2s), Na(2pz)-F(2s), and Na(2px)-F(2s) orbitals, "
-                "contributing 13.0, 13.0, and 13.0 percent, respectively.",
-                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
-                "0.0 percent antibonding interaction below EFermi) bonds.",
-                "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution "
-                "is from Sb(5py)-F(2s), Sb(5pz)-F(2s), and Sb(5px)-F(2s) orbitals, contributing 14.0, "
-                "14.0, and 14.0 percent, respectively, whereas no significant antibonding contribution is "
-                "found in this bond.",
-                "F3 has a linear (CN=2) coordination environment. It has 1 F-Na (mean ICOHP: -0.61 eV, "
-                "4.545 percent antibonding interaction below EFermi), and 1 F-Sb (mean ICOHP: -5.45 eV, "
-                "0.0 percent antibonding interaction below EFermi) bonds.",
-                "In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding contribution "
-                "is from the F(2s)-Na(3s) orbital, contributing 68.0 percent, whereas the maximum "
-                "antibonding contribution is from F(2s)-Na(2pz) and F(2pz)-Na(2pz) orbitals, "
-                "contributing 36.0 and 36.0 percent, respectively. In the 1 F-Sb bond, relative "
-                "to the summed ICOHPs, the maximum bonding contribution is from the "
-                "F(2s)-Sb(5pz) orbital, contributing 41.0 percent, whereas no significant "
-                "antibonding contribution is found in this bond.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_CdF_comp_range_coop.text,
-            [
-                "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOOP: 0.01, 40.984 percent "
-                "antibonding interaction below EFermi) bonds.",
-            ],
-        )
-        self.assertEqual(
-            self.describe_Nacl_comp_range_cobi.text,
-            [
-                "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOBI: 0.08, 0.0 percent "
-                "antibonding interaction below EFermi) bonds.",
-            ],
-        )
+        assert self.describe_CdF.text == [
+            "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
+            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
+            "44.26 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_NaCl.text == [
+            "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, "
+            "3.448 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_NaCl.text == [
+            "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,"
+            " 3.448 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_NaSbF6.text == [
+            "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: Na1, Sb2.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
+            "4.071 percent antibonding interaction below EFermi) bonds.",
+            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
+            "0.0 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_NaSbF6_anbd.text == [
+            "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion "
+            "interactions: Na1, Sb2.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
+            "0.0 percent antibonding interaction below EFermi) bonds.",
+            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
+            "0.0 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_NaCl_nan.text == [
+            "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, "
+            "0.0 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_CdF_anbd.text == [
+            "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
+            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
+            "100.0 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_K3Sb.text == [
+            "The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion "
+            "interactions: K1, K2.",
+            "K1 has a 6-fold coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, "
+            "2.299 percent antibonding interaction below EFermi) bonds.",
+            "K2 has a 4-fold coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, "
+            "4.969 percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_K3Sb_all.text == [
+            "The compound K3Sb has 3 symmetry-independent atoms(s) with relevant bonds: K1, K2, Sb4.",
+            "K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.544 percent "
+            "antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent "
+            "antibonding interaction below EFermi) bonds.",
+            "K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 "
+            "percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 "
+            "percent antibonding interaction below EFermi) bonds.",
+            "Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 3.731 "
+            "percent antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_CsH_all.text == [
+            "The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.",
+            "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 "
+            "percent antibonding interaction below EFermi) bonds.",
+            "H2 has a 0 coordination environment. It has 0 bonds.",
+        ]
+        assert self.describe_BaTiO3_orb.text == [
+            "The compound BaTiO3 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Ti2.",
+            "Ti2 has an octahedral (CN=6) coordination environment. It has 6 Ti-O (mean ICOHP: -3.54 eV, "
+            "1.092 percent antibonding interaction below EFermi) bonds.",
+            "In the 6 Ti-O bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+            "from the Ti(3dz2)-O(2pz) orbital, contributing 14.0 percent, whereas the maximum "
+            "antibonding contribution is from the Ti(4s)-O(2s) orbital, contributing 20.0 percent.",
+        ]
+        assert self.describe_C_orb.text == [
+            "The compound C has 1 symmetry-independent atoms(s) with relevant bonds: C1.",
+            "C1 has a tetrahedral (CN=4) coordination environment. "
+            "It has 4 C-C (mean ICOHP: -9.59 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
+            "In the 4 C-C bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+            "from the C(2s)-C(2s) orbital, contributing 10.0 percent, whereas no significant "
+            "antibonding contribution is found in this bond.",
+        ]
+        assert self.describe_NaSbF6_orb.text == [
+            "The compound NaSbF6 has 3 symmetry-independent atoms(s) with relevant bonds: Na1, Sb2, F3.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
+            "4.071 percent antibonding interaction below EFermi) bonds.",
+            "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+            "from the Na(3s)-F(2s) orbital, contributing 67.0 percent, whereas the maximum antibonding "
+            "contribution is from Na(2py)-F(2s), Na(2pz)-F(2s), and Na(2px)-F(2s) orbitals, "
+            "contributing 13.0, 13.0, and 13.0 percent, respectively.",
+            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
+            "0.0 percent antibonding interaction below EFermi) bonds.",
+            "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution "
+            "is from Sb(5py)-F(2s), Sb(5pz)-F(2s), and Sb(5px)-F(2s) orbitals, contributing 14.0, "
+            "14.0, and 14.0 percent, respectively, whereas no significant antibonding contribution is "
+            "found in this bond.",
+            "F3 has a linear (CN=2) coordination environment. It has 1 F-Na (mean ICOHP: -0.61 eV, "
+            "4.545 percent antibonding interaction below EFermi), and 1 F-Sb (mean ICOHP: -5.45 eV, "
+            "0.0 percent antibonding interaction below EFermi) bonds.",
+            "In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding contribution "
+            "is from the F(2s)-Na(3s) orbital, contributing 68.0 percent, whereas the maximum "
+            "antibonding contribution is from F(2s)-Na(2pz) and F(2pz)-Na(2pz) orbitals, "
+            "contributing 36.0 and 36.0 percent, respectively. In the 1 F-Sb bond, relative "
+            "to the summed ICOHPs, the maximum bonding contribution is from the "
+            "F(2s)-Sb(5pz) orbital, contributing 41.0 percent, whereas no significant "
+            "antibonding contribution is found in this bond.",
+        ]
+        assert self.describe_CdF_comp_range_coop.text == [
+            "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
+            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOOP: 0.01, 40.984 percent "
+            "antibonding interaction below EFermi) bonds.",
+        ]
+        assert self.describe_Nacl_comp_range_cobi.text == [
+            "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOBI: 0.08, 0.0 percent "
+            "antibonding interaction below EFermi) bonds.",
+        ]
 
 
-class TestCalcQualityDescribe(unittest.TestCase):
-    def setUp(self):
+class TestCalcQualityDescribe:
+    def setup_method(self):
         self.calc_quality_K3Sb = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "TestData/K3Sb/POSCAR.gz",
-            path_to_charge=TestDir / "TestData/K3Sb/CHARGE.lobster.gz",
-            path_to_lobsterout=TestDir / "TestData/K3Sb/lobsterout.gz",
-            path_to_lobsterin=TestDir / "TestData/K3Sb/lobsterin.gz",
+            path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
+            path_to_lobsterout=TestDir / "test_data/K3Sb/lobsterout.gz",
+            path_to_lobsterin=TestDir / "test_data/K3Sb/lobsterin.gz",
             potcar_symbols=["K_sv", "Sb"],
-            path_to_bandoverlaps=TestDir / "TestData/K3Sb/bandOverlaps.lobster.gz",
+            path_to_bandoverlaps=TestDir / "test_data/K3Sb/bandOverlaps.lobster.gz",
             dos_comparison=True,
             bva_comp=True,
-            path_to_doscar=TestDir / "TestData/K3Sb/DOSCAR.LSO.lobster.gz",
+            path_to_doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",
             e_range=[-20, 0],
-            path_to_vasprun=TestDir / "TestData/K3Sb/vasprun.xml.gz",
+            path_to_vasprun=TestDir / "test_data/K3Sb/vasprun.xml.gz",
             n_bins=256,
         )
 
         self.calc_quality_CsH = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "TestData/CsH/POSCAR.gz",
-            path_to_charge=TestDir / "TestData/CsH/CHARGE.lobster.gz",
-            path_to_lobsterout=TestDir / "TestData/CsH/lobsterout.gz",
-            path_to_lobsterin=TestDir / "TestData/CsH/lobsterin.gz",
+            path_to_poscar=TestDir / "test_data/CsH/POSCAR.gz",
+            path_to_charge=TestDir / "test_data/CsH/CHARGE.lobster.gz",
+            path_to_lobsterout=TestDir / "test_data/CsH/lobsterout.gz",
+            path_to_lobsterin=TestDir / "test_data/CsH/lobsterin.gz",
             potcar_symbols=["Cs_sv", "H"],
-            path_to_bandoverlaps=TestDir / "TestData/CsH/bandOverlaps.lobster.gz",
+            path_to_bandoverlaps=TestDir / "test_data/CsH/bandOverlaps.lobster.gz",
             dos_comparison=False,
             bva_comp=True,
         )
 
     def test_calc_quality_description_text(self):
-        calc_quality_k3sb_des = Description.get_calc_quality_description(
-            self.calc_quality_K3Sb
-        )
-        self.assertEqual(
-            calc_quality_k3sb_des,
-            [
-                "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
-                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
-                "projected wave function is not completely orthonormalized; however, the maximal deviation values "
-                "observed compared to the identity matrix is below the threshold of 0.1.",
-                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
-                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
-                "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p,"
-                " summed orbitals are: 0.8532, 0.9481, 0.9275.",
-            ],
-        )
+        calc_quality_k3sb_des = Description.get_calc_quality_description(self.calc_quality_K3Sb)
+        assert calc_quality_k3sb_des == [
+            "The LOBSTER calculation used minimal basis.",
+            "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
+            "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
+            "projected wave function is not completely orthonormalized; however, the maximal deviation values "
+            "observed compared to the identity matrix is below the threshold of 0.1.",
+            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p,"
+            " summed orbitals are: 0.8532, 0.9481, 0.9275.",
+        ]
 
-        calc_quality_csh_des = Description.get_calc_quality_description(
-            self.calc_quality_CsH
-        )
-        self.assertEqual(
-            calc_quality_csh_des,
-            [
-                "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
-                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
-                "wave function is not completely orthonormalized. "
-                "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
-                "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
-                "like dos comparisons, charges, charge spillings before using the results for further analysis.",
-                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
-                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
-            ],
-        )
+        calc_quality_csh_des = Description.get_calc_quality_description(self.calc_quality_CsH)
+        assert calc_quality_csh_des == [
+            "The LOBSTER calculation used minimal basis.",
+            "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
+            "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
+            "wave function is not completely orthonormalized. "
+            "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
+            "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
+            "like dos comparisons, charges, charge spillings before using the results for further analysis.",
+            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+        ]
 
 
-class TestCalcQualityDescribeWarnings(unittest.TestCase):
+class TestCalcQualityDescribeWarnings:
     def test_warnings(self):
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("once")
             self.calc_quality_warnings = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "TestData/BaTe_low_quality/POSCAR.gz",
-                path_to_charge=TestDir / "TestData/BaTe_low_quality/CHARGE.lobster.gz",
-                path_to_lobsterout=TestDir / "TestData/BaTe_low_quality/lobsterout.gz",
-                path_to_lobsterin=TestDir / "TestData/BaTe_low_quality/lobsterin.gz",
+                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.gz",
+                path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
+                path_to_lobsterout=TestDir / "test_data/BaTe_low_quality/lobsterout.gz",
+                path_to_lobsterin=TestDir / "test_data/BaTe_low_quality/lobsterin.gz",
                 potcar_symbols=["Ba_sv", "Te"],
-                path_to_doscar=TestDir / "TestData/BaTe_low_quality/DOSCAR.lobster.gz",
-                path_to_vasprun=TestDir / "TestData/BaTe_low_quality/vasprun.xml.gz",
+                path_to_doscar=TestDir / "test_data/BaTe_low_quality/DOSCAR.lobster.gz",
+                path_to_vasprun=TestDir / "test_data/BaTe_low_quality/vasprun.xml.gz",
                 e_range=[-50, 60],
                 dos_comparison=True,
                 bva_comp=False,
             )
-        self.assertIn("Consider using DOSCAR.LSO.lobster", str(w[0].message))
-        self.assertIn("Mimimum energy range requested", str(w[2].message))
-        self.assertIn("Maximum energy range requested", str(w[3].message))
-        self.assertIn("Input DOS files have very few points", str(w[4].message))
+        assert "Consider using DOSCAR.LSO.lobster" in str(w[0].message)
+        assert "Mimimum energy range requested" in str(w[2].message)
+        assert "Maximum energy range requested" in str(w[3].message)
+        assert "Input DOS files have very few points" in str(w[4].message)
 
         calc_des = Description.get_calc_quality_description(self.calc_quality_warnings)
 
-        self.assertEqual(
-            calc_des,
-            [
-                "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation is 2.255 and 12.72 %, respectively.",
-                "The Tanimoto index from DOS comparisons in the energy range between -5, 0 eV for s, p, summed orbitals "
-                "are: 0.4057, 0.2831, 0.2762.",
-            ],
-        )
+        assert calc_des == [
+            "The LOBSTER calculation used minimal basis.",
+            "The absolute and total charge spilling for the calculation is 2.255 and 12.72 %, respectively.",
+            "The Tanimoto index from DOS comparisons in the energy range between -5, 0 eV for s, p, summed orbitals "
+            "are: 0.4057, 0.2831, 0.2762.",
+        ]
 
         with warnings.catch_warnings(record=True) as w2:
             warnings.simplefilter("once")
             self.calc_quality_warnings2 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "TestData/C/POSCAR",
-                path_to_charge=TestDir / "TestData/C/CHARGE.lobster",
-                path_to_lobsterout=TestDir / "TestData/C/lobsterout",
-                path_to_lobsterin=TestDir / "TestData/C/lobsterin",
+                path_to_poscar=TestDir / "test_data/C/POSCAR",
+                path_to_charge=TestDir / "test_data/C/CHARGE.lobster",
+                path_to_lobsterout=TestDir / "test_data/C/lobsterout",
+                path_to_lobsterin=TestDir / "test_data/C/lobsterin",
                 potcar_symbols=["C"],
                 bva_comp=True,
             )
-        self.assertIn("Oxidation states from BVA analyzer cannot", str(w2[0].message))
+        assert "Oxidation states from BVA analyzer cannot" in str(w2[0].message)
 
-        calc_des2 = Description.get_calc_quality_description(
-            self.calc_quality_warnings2
-        )
+        calc_des2 = Description.get_calc_quality_description(self.calc_quality_warnings2)
 
-        self.assertEqual(
-            calc_des2,
-            [
-                "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation is 0.98 and 8.93 %, respectively.",
-                "Oxidation states from BVA analyzer cannot be determined. Thus BVA charge comparison is not conducted.",
-            ],
-        )
+        assert calc_des2 == [
+            "The LOBSTER calculation used minimal basis.",
+            "The absolute and total charge spilling for the calculation is 0.98 and 8.93 %, respectively.",
+            "Oxidation states from BVA analyzer cannot be determined. Thus BVA charge comparison is not conducted.",
+        ]
 
         with warnings.catch_warnings(record=True) as w3:
             warnings.simplefilter("once")
             self.calc_quality_warnings3 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "TestData/BeTe/POSCAR.gz",
-                path_to_charge=TestDir / "TestData/BeTe/CHARGE.lobster.gz",
-                path_to_lobsterout=TestDir / "TestData/BeTe/lobsterout.gz",
-                path_to_lobsterin=TestDir / "TestData/BeTe/lobsterin.gz",
+                path_to_poscar=TestDir / "test_data/BeTe/POSCAR.gz",
+                path_to_charge=TestDir / "test_data/BeTe/CHARGE.lobster.gz",
+                path_to_lobsterout=TestDir / "test_data/BeTe/lobsterout.gz",
+                path_to_lobsterin=TestDir / "test_data/BeTe/lobsterin.gz",
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        self.assertIn(
-            "Consider rerunning the calc with the minimum basis", str(w3[0].message)
-        )
+        assert "Consider rerunning the calc with the minimum basis" in str(w3[0].message)
 
-        calc_des3 = Description.get_calc_quality_description(
-            self.calc_quality_warnings3
-        )
+        calc_des3 = Description.get_calc_quality_description(self.calc_quality_warnings3)
 
-        self.assertEqual(
-            calc_des3,
-            [
-                "Consider rerunning the calculation with the minimum basis as well. "
-                "Choosing a larger basis set is only recommended if you see a significant improvement of the charge spilling.",
-                "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
-                "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
-                "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",
-            ],
-        )
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert calc_des3 == [
+            "Consider rerunning the calculation with the minimum basis as well. "
+            "Choosing a larger basis set is only recommended if you see a significant improvement of the charge spilling.",
+            "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
+            "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
+            "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",
+        ]

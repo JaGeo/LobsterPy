@@ -16,7 +16,7 @@ from matplotlib.figure import Figure
 from lobsterpy.cli import get_parser, run
 
 CurrentDir = Path(__file__).absolute().parent
-TestDir = CurrentDir
+TestDir = CurrentDir / "../"
 ref_data_file = TestDir / "test_data/cli-reference.json"
 test_cases = [
     ["automatic-plot"],
@@ -85,9 +85,7 @@ class TestCLI:
             for key, ref_value in ref_plot_attributes.items():
                 if key == "xydata":
                     for line, ref_line in zip(plot_attributes[key], ref_value):
-                        assert np.array(np.array(line)) == pytest.approx(
-                            np.array(ref_line)
-                        )
+                        assert np.array(np.array(line)) == pytest.approx(np.array(ref_line))
                 else:
                     assert plot_attributes[key] == pytest.approx(ref_value)
 
@@ -305,7 +303,7 @@ class TestCLI:
 
         os.chdir(TestDir / "test_data/NaCl")
 
-    def test_calc_quality_summary_NaCl(self, tmp_path):
+    def test_calc_quality_summary_na_cl(self, tmp_path):
         os.chdir(TestDir / "test_data/NaCl_comp_range")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
@@ -344,7 +342,7 @@ class TestCLI:
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
 
-    def test_calc_quality_summary_K3Sb(self, tmp_path):
+    def test_calc_quality_summary_k3_sb(self, tmp_path):
         os.chdir(TestDir / "test_data/K3Sb")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
@@ -516,9 +514,9 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "Mandatory files necessary for LOBSTER calc quality not found in the current directory.",
+            assert (
+                err.exception.__str__()
+                == "Mandatory files necessary for LOBSTER calc quality not found in the current directory."
             )
 
         # doscar comparison exceptions test
@@ -532,9 +530,8 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found.",
+            assert (
+                err.exception.__str__() == "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
             )
 
         # BVA comparison exceptions test
@@ -545,10 +542,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "BVA charge requested but CHARGE.lobster file not found.",
-            )
+            assert err.exception.__str__() == "BVA charge requested but CHARGE.lobster file not found."
 
         # Create-inputs exceptions test
         with pytest.raises(ValueError) as err:
@@ -560,9 +554,9 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "Files necessary for creating puts for LOBSTER calcs not found in the current directory.",
+            assert (
+                err.exception.__str__()
+                == "Files necessary for creating puts for LOBSTER calcs not found in the current directory."
             )
 
         with pytest.raises(ValueError) as err:
@@ -574,9 +568,9 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "DOSCAR.lobster necessary for plotting DOS not found in the current directory.",
+            assert (
+                err.exception.__str__()
+                == "DOSCAR.lobster necessary for plotting DOS not found in the current directory."
             )
 
         with pytest.raises(ValueError) as err:
@@ -592,10 +586,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            self.assertEqual(
-                err.exception.__str__(),
-                "Please set both args i.e site and orbital to generate the plot",
-            )
+            assert err.exception.__str__() == "Please set both args i.e site and orbital to generate the plot"
 
     def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files
@@ -668,9 +659,7 @@ class TestCLI:
                 json_data[" ".join(args)] = {"stdout": stdout.getvalue()}
 
                 fig = plt.gcf()
-                json_data[" ".join(args)].update(
-                    {"plot": self.get_plot_attributes(fig)}
-                )
+                json_data[" ".join(args)].update({"plot": self.get_plot_attributes(fig)})
 
         with open(ref_data_file, "w") as fd:
             json.dump(json_data, fd, indent=4, sort_keys=True)
