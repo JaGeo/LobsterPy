@@ -132,10 +132,10 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
+include = ["lobsterpy/*"]
 omit = [
     # omit anything in test directory anywhere
-    "*/test/*",
-    "*/*/test/*",
+    "test/*",
 ]
 
 [tool.mypy]
