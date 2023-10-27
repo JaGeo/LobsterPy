@@ -4,7 +4,9 @@
 """
 This package provides the modules for generating graph objects using lobsterpy data
 """
+from __future__ import annotations
 
+from pathlib import Path
 from typing import Optional
 from pymatgen.core.structure import Structure
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
@@ -22,17 +24,17 @@ class LobsterGraph:
 
     def __init__(
         self,
-        path_to_poscar: str,
-        path_to_charge: str,
-        path_to_cohpcar: str,
-        path_to_icohplist: str,
-        path_to_madelung: str,
+        path_to_poscar: str | Path,
+        path_to_charge: str | Path,
+        path_to_cohpcar: str | Path,
+        path_to_icohplist: str | Path,
+        path_to_madelung: str | Path,
         add_additional_data_sg=True,
-        path_to_icooplist: Optional[str] = None,
-        path_to_icobilist: Optional[str] = None,
+        path_to_icooplist: Optional[str | Path] = None,
+        path_to_icobilist: Optional[str | Path] = None,
         which_bonds: str = "all",
         cutoff_icohp: float = 0.10,
-        start: str = None,
+        start: float = None,
     ):
         """
         This class will return structure graph objects with bonding information from Lobster data.

@@ -61,11 +61,11 @@ class Analysis:
 
     def __init__(
         self,
-        path_to_poscar: str,
-        path_to_icohplist: str,
-        path_to_cohpcar: str,
-        path_to_charge: str | None = None,
-        path_to_madelung: str | None = None,
+        path_to_poscar: str | Path,
+        path_to_icohplist: str | Path,
+        path_to_cohpcar: str | Path,
+        path_to_charge: str | Path | None = None,
+        path_to_madelung: str | Path | None = None,
         which_bonds: str = "cation-anion",
         cutoff_icohp: float = 0.1,
         noise_cutoff: float = 0.1,

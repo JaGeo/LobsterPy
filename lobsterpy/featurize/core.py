@@ -43,8 +43,8 @@ class FeaturizeLobsterpy:
 
     def __init__(
         self,
-        path_to_lobster_calc: str | None = None,
-        path_to_json: str | None = None,
+        path_to_lobster_calc: str | Path | None = None,
+        path_to_json: str | Path | None = None,
         bonds: str = "all",
     ):
         self.path_to_json = path_to_json
@@ -143,7 +143,7 @@ class FeaturizeLobsterpy:
         return df
 
     @staticmethod
-    def read_lobster_lightweight_json(path_to_json: str) -> dict:
+    def read_lobster_lightweight_json(path_to_json: str | Path) -> dict:
         """
         This method reads loads the lightweight json.gz files and returns a python dictionary object
         with lobster summmarized bonding analysis data.
@@ -165,7 +165,7 @@ class FeaturizeLobsterpy:
         return lobster_data
 
     @staticmethod
-    def get_lobsterpy_cba_dict(path_to_lobster_calc: str, bonds: str) -> dict:
+    def get_lobsterpy_cba_dict(path_to_lobster_calc: str | Path, bonds: str) -> dict:
         """
         This function uses lobsterpy.cohp.analyze.Analysis class to generate a python dictionary object
         with lobster summmarized bonding analysis data.
@@ -287,9 +287,9 @@ class FeaturizeCOXX:
 
     def __init__(
         self,
-        path_to_coxxcar: str,
-        path_to_icoxxlist: str,
-        path_to_structure: str,
+        path_to_coxxcar: str | Path,
+        path_to_icoxxlist: str | Path,
+        path_to_structure: str | Path,
         feature_type: str,
         e_range: List[float] = [-10.0, 0.0],
         are_cobis: bool = False,
@@ -796,8 +796,8 @@ class FeaturizeCharges:
 
     def __init__(
         self,
-        path_to_structure: str,
-        path_to_charge: str,
+        path_to_structure: str | Path,
+        path_to_charge: str | Path,
         charge_type: str,
     ):
         self.path_to_structure = path_to_structure

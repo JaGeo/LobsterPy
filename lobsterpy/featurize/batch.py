@@ -45,8 +45,8 @@ class BatchSummaryFeaturizer:
 
     def __init__(
         self,
-        path_to_lobster_calcs: str,
-        path_to_jsons: str | None = None,
+        path_to_lobster_calcs: str | Path,
+        path_to_jsons: str | Path | None = None,
         feature_type: str = "antibonding",
         charge_type: str = "both",
         bonds: str = "all",
@@ -395,7 +395,7 @@ class BatchCoxxFingerprint:
 
     def __init__(
         self,
-        path_to_lobster_calcs: str,
+        path_to_lobster_calcs: str | Path,
         feature_type: str = "overall",
         label_list: List[str] | None = None,
         tanimoto: bool = True,
