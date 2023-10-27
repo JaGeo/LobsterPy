@@ -39,7 +39,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and coverage
       # run this locally to update tests durations
-      # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./lobsterpy/TestData/.pytest-split-durations --store-durations
+      # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./tests/test_data/.pytest-split-durations --store-durations
       run: |
         pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 6 --group ${{ matrix.split }} --durations-path ./lobsterpy/TestData/.pytest-split-durations
     - name: Upload coverage

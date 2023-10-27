@@ -16,8 +16,8 @@ from matplotlib.figure import Figure
 from lobsterpy.cli import get_parser, run
 
 CurrentDir = Path(__file__).absolute().parent
-TestDir = CurrentDir / "../"
-ref_data_file = TestDir / "TestData/cli-reference.json"
+TestDir = CurrentDir
+ref_data_file = TestDir / "test_data/cli-reference.json"
 test_cases = [
     ["automatic-plot"],
     ["automaticplot", "--allbonds"],
@@ -65,7 +65,7 @@ class TestCLI:
 
     @classmethod
     def setup_class(cls):
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
 
     @pytest.mark.parametrize("args", test_cases)
     def test_cli_results(self, args, capsys, inject_mocks, clean_plot):
@@ -112,7 +112,7 @@ class TestCLI:
         self.assert_is_finite_file(json_path)
 
     def test_hideplot_cli(self, tmp_path, inject_mocks, clean_plot):
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
         # tests skip showing plots generated using automaticplot
         args = [
             "automaticplot",
@@ -143,7 +143,7 @@ class TestCLI:
         self.assert_is_finite_file(plot_path)
 
     def test_cli_interactive_plotter(self):
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
         # tests skip showing plots generated using automatic interactive plotter
         args = [
             "automaticplotia",
@@ -160,14 +160,14 @@ class TestCLI:
         self.assert_is_finite_file(plot_path)
 
     def test_cli_interactive_plotter_cobi(self):
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         # tests skip showing plots generated using automatic interactive plotter
         args = ["automatic-plot-ia", "--hideplot", "--cobis"]
         test = get_parser().parse_args(args)
         run(test)
 
     def test_cli_interactive_plotter_coops(self):
-        os.chdir(TestDir / "TestData/CdF_comp_range")
+        os.chdir(TestDir / "test_data/CdF_comp_range")
         # tests skip showing plots generated using automatic interactive plotter
         args = [
             "auto-plot-ia",
@@ -188,7 +188,7 @@ class TestCLI:
         self.assert_is_finite_file(plot_path)
 
     def test_lobsterin_generation(self, tmp_path):
-        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
+        os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
@@ -210,7 +210,7 @@ class TestCLI:
 
         # test create-inputs alias and overwrite
 
-        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
+        os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
@@ -224,10 +224,10 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
 
     def test_lobsterin_generation_error(self, tmp_path):
-        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
+        os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
@@ -257,10 +257,10 @@ class TestCLI:
         test = get_parser().parse_args(args)
         with pytest.raises(ValueError):
             run(test)
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
 
     def test_cli_automatic_analysis_error(self):
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
         args1 = [
             "description",
             "--cobis",
@@ -279,7 +279,7 @@ class TestCLI:
 
     def test_lobsterin_generation_error_userbasis(self, tmp_path):
         # This is a test for the user-defined basis set.
-        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty")
+        os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
@@ -303,10 +303,10 @@ class TestCLI:
         ]:
             self.assert_is_finite_file(filepath)
 
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
 
     def test_calc_quality_summary_NaCl(self, tmp_path):
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
             "calc-description",
@@ -345,7 +345,7 @@ class TestCLI:
         self.assert_is_finite_file(calc_quality_json_path)
 
     def test_calc_quality_summary_K3Sb(self, tmp_path):
-        os.chdir(TestDir / "TestData/K3Sb")
+        os.chdir(TestDir / "test_data/K3Sb")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
             "calc-description",
@@ -387,7 +387,7 @@ class TestCLI:
         self.assert_is_finite_file(calc_quality_json_path)
 
     def test_dos_plot(self, tmp_path):
-        os.chdir(TestDir / "TestData/K3Sb")
+        os.chdir(TestDir / "test_data/K3Sb")
         plot_path = tmp_path / "autoplot.png"
 
         args = [
@@ -409,7 +409,7 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(plot_path)
 
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         plot_path = tmp_path / "autoplot.png"
         args = [
             "plot-dos",
@@ -428,7 +428,7 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(plot_path)
 
-        os.chdir(TestDir / "TestData/K3Sb")
+        os.chdir(TestDir / "test_data/K3Sb")
         args = [
             "plot-dos",
             "--doscar",
@@ -440,7 +440,7 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         args = [
             "plot-dos",
             "--site",
@@ -452,7 +452,7 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         args = [
             "plot-dos",
             "--site",
@@ -464,7 +464,7 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         args = [
             "plot-dos",
             "--site",
@@ -477,7 +477,7 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         args = [
             "plot-dos",
             "--site",
@@ -491,7 +491,7 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-        os.chdir(TestDir / "TestData/NaCl_comp_range")
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
         args = [
             "plot-dos",
             "--site",
@@ -523,7 +523,7 @@ class TestCLI:
 
         # doscar comparison exceptions test
         with pytest.raises(ValueError) as err:
-            os.chdir(TestDir / "TestData/NaCl")
+            os.chdir(TestDir / "test_data/NaCl")
             args = [
                 "calc-description",
                 "--doscomp",
@@ -539,7 +539,7 @@ class TestCLI:
 
         # BVA comparison exceptions test
         with pytest.raises(ValueError) as err:
-            os.chdir(TestDir / "TestData/NaCl")
+            os.chdir(TestDir / "test_data/NaCl")
             args = ["calc-description", "--bvacomp", "--charge", "../CHARGE.lobster"]
 
             test = get_parser().parse_args(args)
@@ -552,7 +552,7 @@ class TestCLI:
 
         # Create-inputs exceptions test
         with pytest.raises(ValueError) as err:
-            os.chdir(TestDir / "TestData/CsH")
+            os.chdir(TestDir / "test_data/CsH")
             args = [
                 "create-inputs",
             ]
@@ -566,7 +566,7 @@ class TestCLI:
             )
 
         with pytest.raises(ValueError) as err:
-            os.chdir(TestDir / "TestData/CsH")
+            os.chdir(TestDir / "test_data/CsH")
             args = [
                 "plot-dos",
             ]
@@ -580,7 +580,7 @@ class TestCLI:
             )
 
         with pytest.raises(ValueError) as err:
-            os.chdir(TestDir / "TestData/K3Sb")
+            os.chdir(TestDir / "test_data/K3Sb")
             args = [
                 "plot-dos",
                 "--doscar",
@@ -599,7 +599,7 @@ class TestCLI:
 
     def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files
-        os.chdir(TestDir / "TestData/CsH")
+        os.chdir(TestDir / "test_data/CsH")
         args = ["description", "--allbonds"]
 
         test = get_parser().parse_args(args)
@@ -613,7 +613,7 @@ class TestCLI:
         self.assert_is_finite_file(json_path)
 
     def test_gz_file_cli_lobsterinput_generation(self, tmp_path):
-        os.chdir(TestDir / "TestData/Test_Input_Generation_Empty/gz/")
+        os.chdir(TestDir / "test_data/Test_Input_Generation_Empty/gz/")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
@@ -638,7 +638,7 @@ class TestCLI:
         ]:
             self.assert_is_finite_file(filepath)
 
-        os.chdir(TestDir / "TestData/NaCl")
+        os.chdir(TestDir / "test_data/NaCl")
 
     def test_gz_cli_plot(self, tmp_path):
         plot_path = tmp_path / "plot.png"
