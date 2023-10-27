@@ -116,6 +116,27 @@ class InteractiveCohpPlotterTest(unittest.TestCase):
             "cohp_plot_data"
         ]
 
+    def test_add_cohp_NaCl(self):
+        self.iplotter = InteractiveCohpPlotter()
+
+        for _, (ication, labels, cohps) in enumerate(
+            zip(
+                self.analyse_NaCl.seq_ineq_ions,
+                self.analyse_NaCl.seq_labels_cohps,
+                self.analyse_NaCl.seq_cohps,
+            )
+        ):
+            namecation = str(self.analyse_NaCl.structure[ication].specie)
+            for label, cohp in zip(labels, cohps):
+                if label is not None:
+                    self.iplotter.add_cohp(
+                        namecation + str(ication + 1) + ": " + label, cohp
+                    )
+
+        fig = self.iplotter.get_plot()
+
+        self.assertEqual(len(fig.data), 1)
+
     def test_add_all_relevant_cohps_NaCl(self):
         self.iplotter = InteractiveCohpPlotter(zero_at_efermi=False)
 
@@ -725,6 +746,32 @@ class TestPlotterExceptions(unittest.TestCase):
         self.assertEqual(
             err.exception.__str__(),
             "Plot data should not contain COBI and COOP data at same time",
+        )
+
+        with self.assertRaises(Exception) as err:
+            self.analyse_NaSi = Analysis(
+                path_to_poscar=TestDir / "TestData/NaSi/POSCAR",
+                path_to_cohpcar=TestDir / "TestData/NaSi/COHPCAR.lobster",
+                path_to_icohplist=TestDir / "TestData/NaSi/ICOHPLIST.lobster",
+                path_to_charge=TestDir / "TestData/NaSi/CHARGE.lobster",
+                which_bonds="all",
+                cutoff_icohp=0.1,
+                summed_spins=True,
+            )
+            self.plotter = InteractiveCohpPlotter()
+            self.plotter.add_cohp(
+                label="10",
+                cohp=self.analyse_NaSi.chemenv.completecohp.get_cohp_by_label("10"),
+            )
+            self.plotter.add_cohp(
+                label="10",
+                cohp=self.analyse_NaSi.chemenv.completecohp.get_cohp_by_label("20"),
+            )
+
+        self.assertEqual(
+            err.exception.__str__(),
+            "Please use another label to add the COHP, provided label already exists "
+            "in the plot data, which will result in overwriting the existing COHP data.",
         )
 
 
