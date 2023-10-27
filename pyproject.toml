@@ -135,7 +135,7 @@ exclude_lines = [
 include = ["lobsterpy/*"]
 omit = [
     # omit anything in test directory anywhere
-    "test/*",
+    "tests/*",
 ]
 
 [tool.mypy]
