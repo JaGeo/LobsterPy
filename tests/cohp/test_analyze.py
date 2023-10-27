@@ -301,7 +301,6 @@ class TestAnalyse:
         ) == pytest.approx(-3.39)
         assert (
             self.analyse_NaCl.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["has_antibdg_states_below_Efermi"]
-            == True
         )
         assert self.analyse_NaCl.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["number_of_bonds"] == 6
         assert self.analyse_NaCl.condensed_bonding_analysis["sites"][0]["ion"] == "Na"
@@ -332,9 +331,7 @@ class TestAnalyse:
         ) == pytest.approx(-3.39)
         assert (
             self.analyse_NaCl_valences.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"][
-                "has_antibdg_states_below_Efermi"
-            ]
-            == True
+                "has_antibdg_states_below_Efermi"]
         )
         assert self.analyse_NaCl_valences.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["number_of_bonds"] == 6
         assert self.analyse_NaCl_valences.condensed_bonding_analysis["sites"][0]["ion"] == "Na"
@@ -359,7 +356,6 @@ class TestAnalyse:
         ) == pytest.approx(-21.24)
         assert (
             self.analyse_BaTiO3.condensed_bonding_analysis["sites"][1]["bonds"]["O"]["has_antibdg_states_below_Efermi"]
-            == True
         )
         assert self.analyse_BaTiO3.condensed_bonding_analysis["sites"][1]["bonds"]["O"]["number_of_bonds"] == 6
         assert self.analyse_BaTiO3.condensed_bonding_analysis["sites"][1]["ion"] == "Ti"
@@ -391,7 +387,6 @@ class TestAnalyse:
             self.analyse_NaCl_all.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"][
                 "has_antibdg_states_below_Efermi"
             ]
-            == True
         )
         assert self.analyse_NaCl_all.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["number_of_bonds"] == 6
         assert self.analyse_NaCl_all.condensed_bonding_analysis["sites"][0]["ion"] == "Na"
