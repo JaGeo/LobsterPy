@@ -1,26 +1,25 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""
-This module defines classes to describe the COHPs automatically
-"""
+"""This module defines classes to describe the COHPs automatically."""
 from __future__ import annotations
 
 from pathlib import Path
 
-from lobsterpy.plotting import PlainCohpPlotter
-from lobsterpy.plotting import InteractiveCohpPlotter
+from lobsterpy.plotting import InteractiveCohpPlotter, PlainCohpPlotter
 
 
 class Description:
     """
     Base class that will write generate a text description for all relevant bonds.
+
     It analyses all relevant coordination environments in the system based on electronic structure theory.
 
     """
 
     def __init__(self, analysis_object):
         """
+        Generate a text description for all relevant bonds.
 
         Args:
             analysis_object: Analysis object from lobsterpy.analysis
@@ -30,9 +29,9 @@ class Description:
 
     def set_description(self):
         """
-        This class will set the description of the structures correctly.
-        Important is that here the naming of the cations from the lobster files will be used
-        This means that the numbers will start at 1
+        Set the descriptions of the structures using the cation names, starting with numbers at 1.
+
+        Uses the cation names from the lobster files.
 
         Returns:
             None
@@ -116,18 +115,24 @@ class Description:
                             )
                             orb_info.extend(text_orbital)
 
-                if len(bond_info) > 1:
-                    bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
-                else:
-                    bonds = bond_info[0]
+                bonds = (
+                    ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
+                    if len(bond_info) > 1
+                    else bond_info[0]
+                )
+                # if len(bond_info) > 1:
+                #     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
+                # else:
+                #     bonds = bond_info[0]
 
                 if len(orb_info) > 1:
                     orb_bonds = "".join(orb_info).replace(".In", ". In")
                 else:
-                    if orb_info:
-                        orb_bonds = orb_info[0]
-                    else:
-                        orb_bonds = ""
+                    orb_bonds = orb_info[0] if orb_info else ""
+                    # if orb_info:
+                    #     orb_bonds = orb_info[0]
+                    # else:
+                    #     orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -228,17 +233,19 @@ class Description:
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
-                    if bond_info:
-                        bonds = bond_info[0]
-                    else:
-                        bonds = 0
+                    bonds = bond_info[0] if bond_info else 0
+                    # if bond_info:
+                    #     bonds = bond_info[0]
+                    # else:
+                    #     bonds = 0
                 if len(orb_info) > 1:
                     orb_bonds = "".join(orb_info).replace(".In", ". In")
                 else:
-                    if orb_info:
-                        orb_bonds = orb_info[0]
-                    else:
-                        orb_bonds = ""
+                    orb_bonds = orb_info[0] if orb_info else ""
+                    # if orb_info:
+                    #     orb_bonds = orb_info[0]
+                    # else:
+                    #     orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -281,8 +288,7 @@ class Description:
         type_pop: str,
     ):
         """
-        Convenience method to generate text from orbital resolved analysis data of the
-        most relevant COHP or COOP or COBI
+        Generate text from orbital-resolved analysis data of the most relevant COHP, COOP, or COBI.
 
         Args:
             orbital_resolved_data : dict of orbital data from condensed bonding analysis object
@@ -422,21 +428,16 @@ class Description:
                     else:
                         orb_anti += f"and {contribution} percent, respectively."
                 orb_info.append(
-                    ", whereas "
-                    + "the maximum antibonding contribution is from "
-                    + orb_anti
+                    f", whereas the maximum antibonding contribution is from {orb_anti}"
                 )
             elif not orb_antibonding:
                 orb_info.append(
-                    ", whereas "
-                    + "no significant antibonding contribution is found in this bond."
+                    ", whereas no significant antibonding contribution is found in this bond."
                 )
             else:
                 orb_info.append(
-                    ", whereas "
-                    + "the maximum antibonding contribution is from the "
-                    + f"{orb_names_anti[0]}"
-                    + f" orbital, contributing {orb_antibonding[0]} percent."
+                    f", whereas the maximum antibonding contribution is from the "
+                    f"{orb_names_anti[0]} orbital, contributing {orb_antibonding[0]} percent."
                 )
         else:
             # get atom-pair list with ion placed first
@@ -463,16 +464,16 @@ class Description:
         hide=False,
     ):
         """
-        Will automatically generate plots of the most relevant COHP or COOP or COBI
+        Automatically generate plots of the most relevant COHPs, COOPs, or COBIs.
 
         Args:
             save (bool): will save the plot to a file
-            filename (str/Path):
+            filename (str/Path): name of the file to save the plot.
             ylim (list of float): energy scale that is shown in plot (eV)
             xlim(list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
-                population data. If None, no broadening will be added.
+            population data. If None, no broadening will be added.
             title: sets the title of figure generated
             hide (bool): if True, the plot will not be shown.
 
@@ -537,16 +538,16 @@ class Description:
         hide=False,
     ):
         """
-        Will automatically generate interactive plots of the most relevant COHP
+        Automatically generate interactive plots of the most relevant COHPs, COBIs or COOPs.
 
         Args:
             save_as_html (bool): will save the plot to a html file
-            filename (str/Path):
+            filename (str/Path): name of the file to save the plot.
             ylim (list of float): energy scale that is shown in plot (eV)
             xlim (list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
-                population data. If None, no broadening will be added.
+            population data. If None, no broadening will be added.
             label_resolved: if true, relevant cohp curves will be further resolved based on band labels
             orbital_resolved: if true, relevant orbital interactions in cohp curves will be added to figure
             title : Title of the interactive plot
@@ -554,7 +555,6 @@ class Description:
 
         Returns:
             A plotly.graph_objects.Figure object.
-
         """
         cba_cohp_plot_data = {}  # Initialize dict to store plot data
         set_cohps = self.analysis_object.seq_cohps
@@ -565,7 +565,7 @@ class Description:
         for _iplot, (ication, labels, cohps) in enumerate(
             zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
-            label_str = f"{str(structure[ication].specie)}{str(ication + 1)}: "
+            label_str = f"{structure[ication].specie!s}{ication + 1!s}: "
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cba_cohp_plot_data[label_str + label] = cohp
@@ -596,7 +596,7 @@ class Description:
     @staticmethod
     def _coordination_environment_to_text(ce):
         """
-        This method transfers a coordination environment str into a text description of the environment
+        Convert a coordination environment string into a text description of the environment.
 
         Args:
             ce (str): output from ChemEnv package (e.g., "O:6")
@@ -801,17 +801,14 @@ class Description:
         return ce
 
     def write_description(self):
-        """
-        This method will print the description of the COHPs to the screen
-
-        """
+        """Print the description of the COHPs or COBIs or COOPs to the screen."""
         for textpart in self.text:
             print(textpart)
 
     @staticmethod
     def get_calc_quality_description(quality_dict):
         """
-        This method will generate a text description of the LOBSTER calculation quality
+        Generate a text description of the LOBSTER calculation quality.
 
         Args:
             quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
@@ -868,15 +865,15 @@ class Description:
             elif key == "charges":
                 if val:
                     for charge in ["Mulliken", "Loewdin"]:
-                        if val["BVA_{}_agree".format(charge)]:
+                        if val[f"BVA_{charge}_agree"]:
                             text_des.append(
-                                "The atomic charge signs from {} population analysis agree "
-                                "with the bond valence analysis.".format(charge)
+                                f"The atomic charge signs from {charge} population analysis agree "
+                                "with the bond valence analysis."
                             )
-                        if not val["BVA_{}_agree".format(charge)]:
+                        if not val[f"BVA_{charge}_agree"]:
                             text_des.append(
-                                "The atomic charge signs from {} population analysis do not agree with "
-                                "the bond valence analysis.".format(charge)
+                                f"The atomic charge signs from {charge} population analysis do not agree with "
+                                "the bond valence analysis."
                             )
                 else:
                     text_des.append(
@@ -905,8 +902,5 @@ class Description:
 
     @staticmethod
     def write_calc_quality_description(calc_quality_text):
-        """
-        This method will print the calculation quality description to the screen
-
-        """
+        """Print the calculation quality description to the screen."""
         print(" ".join(calc_quality_text))

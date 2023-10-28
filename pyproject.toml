@@ -173,5 +173,5 @@ no_implicit_optional = false
 
 
 [tool.codespell]
-ignore-words-list = "titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,FO"
+ignore-words-list = "titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo"
 check-filenames = true
