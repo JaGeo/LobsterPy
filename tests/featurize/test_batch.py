@@ -17,7 +17,7 @@ class TestBatchSummaryFeaturizer:
             include_cobi_data=False,
             include_coop_data=False,
             e_range=[-15, 0],
-            n_jobs=1,
+            n_jobs=3,
         )
 
         self.summary_featurize_without_json = BatchSummaryFeaturizer(
@@ -26,7 +26,7 @@ class TestBatchSummaryFeaturizer:
             include_cobi_data=False,
             include_coop_data=False,
             e_range=[-15, 0],
-            n_jobs=1,
+            n_jobs=3,
         )
 
         self.summary_featurize_with_json_overall = BatchSummaryFeaturizer(
@@ -37,7 +37,7 @@ class TestBatchSummaryFeaturizer:
             include_cobi_data=True,
             include_coop_data=True,
             e_range=[-15, 0],
-            n_jobs=1,
+            n_jobs=3,
         )
 
         self.summary_featurize_with_json_bonding = BatchSummaryFeaturizer(
@@ -49,7 +49,7 @@ class TestBatchSummaryFeaturizer:
             include_coop_data=False,
             e_range=[-15, 0],
             charge_type="mulliken",
-            n_jobs=1,
+            n_jobs=3,
         )
 
         self.summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
@@ -61,7 +61,7 @@ class TestBatchSummaryFeaturizer:
             include_coop_data=False,
             e_range=[-15, 0],
             charge_type="loewdin",
-            n_jobs=1,
+            n_jobs=3,
         )
 
     def test_summary_featurize_with_json(self):
@@ -289,7 +289,7 @@ class TestBatchCoxxFingerprint:
             feature_type="overall",
             normalize=True,
             tanimoto=True,
-            n_jobs=1,
+            n_jobs=3,
         )
 
         self.fp_cohp_bonding = BatchCoxxFingerprint(
@@ -298,7 +298,7 @@ class TestBatchCoxxFingerprint:
             feature_type="bonding",
             normalize=False,
             tanimoto=True,
-            n_jobs=1,
+            n_jobs=3,
         )
 
         self.fp_cobi = BatchCoxxFingerprint(
@@ -308,7 +308,7 @@ class TestBatchCoxxFingerprint:
             normalize=True,
             tanimoto=True,
             fingerprint_for="cobi",
-            n_jobs=1,
+            n_jobs=3,
         )
 
         self.fp_coop = BatchCoxxFingerprint(
@@ -318,7 +318,7 @@ class TestBatchCoxxFingerprint:
             normalize=True,
             tanimoto=False,
             fingerprint_for="coop",
-            n_jobs=1,
+            n_jobs=3,
         )
 
     def test_fp_cohp_overall(self):
@@ -415,7 +415,7 @@ class TestExceptions:
                 feature_type="bonding",
                 normalize=True,
                 tanimoto=True,
-                n_jobs=1,
+                n_jobs=3,
             )
 
             fp_df = fp_cohp_bonding.fingerprint_df

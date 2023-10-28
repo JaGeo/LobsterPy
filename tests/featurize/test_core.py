@@ -25,7 +25,7 @@ class TestFeaturizeLobsterpy:
             path_to_json=TestDir / "test_data/JSONS/mp-14652.json.gz", bonds="all"
         )
 
-        self.featurize_CsH_madelung = FeaturizeLobsterpy(path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="all")
+        self.featurize_csh_madelung = FeaturizeLobsterpy(path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="all")
 
     def test_featurize_mp1249_json(self):
         df = self.featurize_mp1249_json.get_df(ids="mp-1249")
@@ -180,8 +180,8 @@ class TestFeaturizeLobsterpy:
         assert df.loc["mp-14652", "antibonding_perc_max"] == pytest.approx(0.126580, abs=1e-05)
         assert df.loc["mp-14652", "antibonding_perc_std"] == pytest.approx(0.006339, abs=1e-05)
 
-    def test_featurize_cs_h_madelung(self):
-        df = self.featurize_CsH_madelung.get_df()
+    def test_featurize_csh_madelung(self):
+        df = self.featurize_csh_madelung.get_df()
 
         assert np.isnan(df.loc["CsH", "Madelung_Mull"])
         assert np.isnan(df.loc["CsH", "Madelung_Loew"])
@@ -189,21 +189,21 @@ class TestFeaturizeLobsterpy:
 
 class TestFeaturizeCOXX:
     def setup_method(self):
-        self.featurize_NaCl_COXX = FeaturizeCOXX(
+        self.featurize_nacl_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
             path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
             path_to_structure=TestDir / "test_data/NaCl/POSCAR",
             feature_type="overall",
             e_range=[-5, 0],
         )
-        self.featurize_CdF_COXX = FeaturizeCOXX(
+        self.featurize_cdf_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/CdF/COHPCAR.lobster",
             path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster",
             path_to_structure=TestDir / "test_data/CdF/POSCAR",
             feature_type="bonding",
             e_range=[-5, 0],
         )
-        self.featurize_K3Sb_COXX = FeaturizeCOXX(
+        self.featurize_k3sb_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
             path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
@@ -211,8 +211,8 @@ class TestFeaturizeCOXX:
             e_range=[-5, 0],
         )
 
-    def test_featurize_na_cl_coxx(self):
-        df = self.featurize_NaCl_COXX.get_summarized_coxx_df(ids="NaCl")
+    def test_featurize_nacl_coxx(self):
+        df = self.featurize_nacl_coxx.get_summarized_coxx_df(ids="NaCl")
 
         # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
@@ -245,49 +245,49 @@ class TestFeaturizeCOXX:
         assert df.loc["NaCl", "kurtosis_COHP"] == pytest.approx(1, abs=1e-05)
 
         # test summary features using label list
-        df1 = self.featurize_NaCl_COXX.get_summarized_coxx_df(label_list=["2", "3"])
+        df1 = self.featurize_nacl_coxx.get_summarized_coxx_df(label_list=["2", "3"])
         assert df.loc["NaCl", "center_COHP"] != df1.loc["NaCl", "center_COHP"]
 
-    def test_featurize_na_cl_coxx_fingerprint(self):
-        df = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(n_bins=20000)
+    def test_featurize_nacl_coxx_fingerprint(self):
+        df = self.featurize_nacl_coxx.get_coxx_fingerprint_df(n_bins=20000)
 
         fingerprint = df.loc["NaCl", "COXX_FP"]
 
         assert fingerprint.n_bins != 20000
 
-        df1 = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(binning=False)
+        df1 = self.featurize_nacl_coxx.get_coxx_fingerprint_df(binning=False)
 
         fingerprint = df1.loc["NaCl", "COXX_FP"]
 
         assert fingerprint.n_bins == 401
 
-        df2 = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(label_list=["3", "5"])
+        df2 = self.featurize_nacl_coxx.get_coxx_fingerprint_df(label_list=["3", "5"])
 
         fingerprint_label = df2.loc["NaCl", "COXX_FP"]
 
         assert fingerprint.__str__() != fingerprint_label.__str__()
 
-    def test_featurize_cd_f_coxx_fingerprint(self):
-        df = self.featurize_CdF_COXX.get_coxx_fingerprint_df(n_bins=20000)
+    def test_featurize_cdf_coxx_fingerprint(self):
+        df = self.featurize_cdf_coxx.get_coxx_fingerprint_df(n_bins=20000)
 
         fingerprint = df.loc["CdF", "COXX_FP"]
 
         assert fingerprint.n_bins != 20000
 
-        df1 = self.featurize_CdF_COXX.get_coxx_fingerprint_df(binning=False)
+        df1 = self.featurize_cdf_coxx.get_coxx_fingerprint_df(binning=False)
 
         fingerprint = df1.loc["CdF", "COXX_FP"]
 
         assert fingerprint.n_bins == 401
 
-        df2 = self.featurize_CdF_COXX.get_coxx_fingerprint_df(label_list=["3", "5"])
+        df2 = self.featurize_cdf_coxx.get_coxx_fingerprint_df(label_list=["3", "5"])
 
         fingerprint_label = df2.loc["CdF", "COXX_FP"]
 
         assert fingerprint.__str__() != fingerprint_label.__str__()
 
-    def test_featurize_cd_f_coxx(self):
-        df = self.featurize_CdF_COXX.get_summarized_coxx_df()
+    def test_featurize_cdf_coxx(self):
+        df = self.featurize_cdf_coxx.get_summarized_coxx_df()
 
         # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
@@ -320,11 +320,11 @@ class TestFeaturizeCOXX:
         assert df.loc["CdF", "kurtosis_COHP"] == pytest.approx(2.866611, abs=1e-05)
 
         # test using label list
-        df1 = self.featurize_CdF_COXX.get_summarized_coxx_df(label_list=["2", "3", "30"])
+        df1 = self.featurize_cdf_coxx.get_summarized_coxx_df(label_list=["2", "3", "30"])
         assert df.loc["CdF", "center_COHP"] != df1.loc["CdF", "center_COHP"]
 
-    def test_featurize_k3_sb_coxx(self):
-        df = self.featurize_K3Sb_COXX.get_summarized_coxx_df(ids="K3Sb")
+    def test_featurize_k3sb_coxx(self):
+        df = self.featurize_k3sb_coxx.get_summarized_coxx_df(ids="K3Sb")
 
         # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
@@ -359,24 +359,24 @@ class TestFeaturizeCOXX:
 
 class TestFeaturizeCharges:
     def setup_method(self):
-        self.featurize_C_Charge = FeaturizeCharges(
+        self.featurize_c_charge = FeaturizeCharges(
             path_to_structure=TestDir / "test_data/C/POSCAR",
             path_to_charge=TestDir / "test_data/C/CHARGE.lobster",
             charge_type="mulliken",
         )
-        self.featurize_CdF_Charge = FeaturizeCharges(
+        self.featurize_cdf_charge = FeaturizeCharges(
             path_to_structure=TestDir / "test_data/CdF/POSCAR",
             path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
             charge_type="mulliken",
         )
-        self.featurize_K3Sb_Charge = FeaturizeCharges(
+        self.featurize_k3sb_charge = FeaturizeCharges(
             path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
             path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
             charge_type="loewdin",
         )
 
     def test_featurize_c_charge(self):
-        df = self.featurize_C_Charge.get_df(ids="C")
+        df = self.featurize_c_charge.get_df(ids="C")
 
         # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
@@ -393,8 +393,8 @@ class TestFeaturizeCharges:
         # Test that all the values in the DataFrame
         assert df.loc["C", "Ionicity_Mull"] == pytest.approx(0.0, abs=1e-05)
 
-    def test_featurize_cd_f_charge(self):
-        df = self.featurize_CdF_Charge.get_df(ids="CdF")
+    def test_featurize_cdf_charge(self):
+        df = self.featurize_cdf_charge.get_df(ids="CdF")
 
         # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
@@ -411,8 +411,8 @@ class TestFeaturizeCharges:
         # Test that all the values in the DataFrame
         assert df.loc["CdF", "Ionicity_Mull"] == pytest.approx(0.788333, abs=1e-05)
 
-    def test_featurize_k3_sb_charge(self):
-        df = self.featurize_K3Sb_Charge.get_df(ids="K3Sb")
+    def test_featurize_k3sb_charge(self):
+        df = self.featurize_k3sb_charge.get_df(ids="K3Sb")
 
         # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
@@ -453,34 +453,34 @@ class TestExceptions:
         )
 
         with pytest.raises(Exception) as err:
-            self.featurize_CsH_cation_anion = FeaturizeLobsterpy(
+            self.featurize_csh_cation_anion = FeaturizeLobsterpy(
                 path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="cation-anion"
             )
 
-            _ = self.featurize_CsH_cation_anion.get_df()
+            _ = self.featurize_csh_cation_anion.get_df()
 
         assert (
             str(err.value) == "No cation-anion bonds detected for CsH structure. " "Please switch to ´all´ bonds mode"
         )
 
         with pytest.raises(Exception) as err:
-            self.featurize_C_cation_anion = FeaturizeLobsterpy(
+            self.featurize_c_cation_anion = FeaturizeLobsterpy(
                 path_to_lobster_calc=TestDir / "test_data/C/", bonds="cation-anion"
             )
 
-            _ = self.featurize_C_cation_anion.get_df()
+            _ = self.featurize_c_cation_anion.get_df()
 
         assert str(err.value) == "No cation-anion bonds detected for C structure. " "Please switch to ´all´ bonds mode"
 
     def test_featurize_charges(self):
         with pytest.raises(Exception) as err:
-            self.featurize_CdF_Charge = FeaturizeCharges(
+            self.featurize_cdf_charge = FeaturizeCharges(
                 path_to_structure=TestDir / "test_data/CdF/POSCAR",
                 path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
                 charge_type="Mull",
             )
 
-            _ = self.featurize_CdF_Charge.get_df()
+            _ = self.featurize_cdf_charge.get_df()
 
         assert (
             str(err.value) == "Please check the requested charge_type. " "Possible options are `Mulliken` or `Loewdin`"
@@ -488,7 +488,7 @@ class TestExceptions:
 
     def test_featurize_coxx(self):
         with pytest.raises(Exception) as err:
-            self.featurize_COXX = FeaturizeCOXX(
+            self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
                 path_to_structure=TestDir / "test_data/NaCl/POSCAR",
@@ -496,7 +496,7 @@ class TestExceptions:
                 e_range=[-5, 0],
             )
 
-            _ = self.featurize_COXX.get_summarized_coxx_df()
+            _ = self.featurize_coxx.get_summarized_coxx_df()
 
         assert (
             str(err.value)
@@ -504,7 +504,7 @@ class TestExceptions:
         )
 
         with pytest.raises(Exception) as err2:
-            self.featurize_COXX = FeaturizeCOXX(
+            self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
                 path_to_structure=TestDir / "test_data/NaCl/POSCAR",
@@ -512,12 +512,12 @@ class TestExceptions:
                 e_range=[-5, 0],
             )
 
-            _ = self.featurize_COXX.get_coxx_fingerprint_df(spin_type="-1")
+            _ = self.featurize_coxx.get_coxx_fingerprint_df(spin_type="-1")
 
         assert str(err2.value) == "Check the spin_type argument." "Possible options are summed/up/down"
 
         with pytest.raises(Exception) as err3:
-            self.featurize_COXX = FeaturizeCOXX(
+            self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaSi/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaSi/ICOHPLIST.lobster",
                 path_to_structure=TestDir / "test_data/NaSi/POSCAR",
@@ -527,12 +527,12 @@ class TestExceptions:
                 are_coops=True,
             )
 
-            _ = self.featurize_COXX.get_coxx_fingerprint_df()
+            _ = self.featurize_coxx.get_coxx_fingerprint_df()
 
         assert str(err3.value) == "You cannot have info about COOPs and COBIs in the same file."
 
         with pytest.raises(Exception) as err:
-            self.featurize_NaCl_COXX = FeaturizeCOXX(
+            self.featurize_nacl_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
                 path_to_structure=TestDir / "test_data/NaCl/POSCAR",
@@ -540,7 +540,7 @@ class TestExceptions:
                 e_range=[-5, 0],
             )
 
-            _ = self.featurize_NaCl_COXX.get_summarized_coxx_df()
+            _ = self.featurize_nacl_coxx.get_summarized_coxx_df()
 
         assert (
             str(err.value) == "Please recheck fp_type requested argument."
@@ -548,7 +548,7 @@ class TestExceptions:
         )
 
         with pytest.raises(Exception) as err:
-            self.featurize_NaCl_COXX = FeaturizeCOXX(
+            self.featurize_nacl_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
                 path_to_structure=TestDir / "test_data/NaCl/POSCAR",
@@ -556,6 +556,6 @@ class TestExceptions:
                 e_range=[-5, 0],
             )
 
-            _ = self.featurize_NaCl_COXX.get_coxx_fingerprint_df(spin_type="down")
+            _ = self.featurize_nacl_coxx.get_coxx_fingerprint_df(spin_type="down")
 
         assert str(err.value) == "LOBSTER calculation is non-spin polarized. " "Please switch spin_type to `up`"

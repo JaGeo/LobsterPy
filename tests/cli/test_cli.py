@@ -303,7 +303,7 @@ class TestCLI:
 
         os.chdir(TestDir / "test_data/NaCl")
 
-    def test_calc_quality_summary_na_cl(self, tmp_path):
+    def test_calc_quality_summary_nacl(self, tmp_path):
         os.chdir(TestDir / "test_data/NaCl_comp_range")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
@@ -342,7 +342,7 @@ class TestCLI:
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
 
-    def test_calc_quality_summary_k3_sb(self, tmp_path):
+    def test_calc_quality_summary_k3sb(self, tmp_path):
         os.chdir(TestDir / "test_data/K3Sb")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
