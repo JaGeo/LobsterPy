@@ -66,5 +66,5 @@ repos:
   hooks:
   - id: codespell
     stages: [commit, commit-msg]
-    args: [--ignore-words-list, 'titel,statics,ba,nd,te,atomate']
+    args: [--ignore-words-list, 'titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,FO']
     types_or: [python, rst, markdown]

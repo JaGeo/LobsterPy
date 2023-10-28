@@ -62,7 +62,7 @@ default-tag = "0.0.1"
 [tool.flake8]
 exclude = ".git,test"
 max-line-length = 120
-extend-ignore = "E203,W503,E501,F401,RST21,E741,W291,W293,E231"
+extend-ignore = "B006,E203,W503,E501,F401,RST21,E741,W291,W293,E231,TYP001"
 
 [tool.cibuildwheel.linux]
 archs = ["auto64"]
@@ -73,7 +73,7 @@ before-all = "ln -s /usr/lib64/libgfortran.so.5 /usr/lib64/libgfortran.so.3"
 repair-wheel-command = "delocate-wheel --require-archs {delocate_archs} -w {dest_dir} -v {wheel} --ignore-missing-dependencies"
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 line-length = 120
 select = [
   "B",      # flake8-bugbear
@@ -126,6 +126,7 @@ ignore = [
   "RUF012",  # Disable checks for mutable class args. This is a non-problem.
   "SIM105",  # Use contextlib.suppress(OSError) instead of try-except-pass
   "SIM114",  # Combine `if` branches using logical `or` operator
+  "TCH002",  # Move third-party import into a type-checking block
 ]
 pydocstyle.convention = "google"
 
@@ -154,6 +155,7 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "@deprecated",
   "show_plot",
+  "if typing.TYPE_CHECKING:",
 ]
 
 [tool.coverage.run]
@@ -171,5 +173,5 @@ no_implicit_optional = false
 
 
 [tool.codespell]
-ignore-words-list = "titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo"
+ignore-words-list = "titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,FO"
 check-filenames = true
