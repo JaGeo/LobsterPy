@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
@@ -11,7 +12,7 @@ TestDir = CurrentDir / "../"
 
 
 # Fixtures for testing analyze module
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
@@ -23,7 +24,7 @@ def analyse_nacl():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_comp_range():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
@@ -35,7 +36,7 @@ def analyse_nacl_comp_range():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_comp_range_orb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
@@ -49,7 +50,7 @@ def analyse_nacl_comp_range_orb():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_comp_range_cobi():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
@@ -63,7 +64,7 @@ def analyse_nacl_comp_range_cobi():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_comp_range_cobi_orb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
@@ -78,7 +79,7 @@ def analyse_nacl_comp_range_cobi_orb():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_nan():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
@@ -91,7 +92,7 @@ def analyse_nacl_nan():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_valences():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
@@ -103,7 +104,7 @@ def analyse_nacl_valences():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_madelung():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
@@ -116,7 +117,7 @@ def analyse_nacl_madelung():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_bati03():
     return Analysis(
         path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
@@ -128,7 +129,7 @@ def analyse_bati03():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_batao2n1():
     return Analysis(
         path_to_poscar=TestDir / "test_data/BaTaO2N1/POSCAR.gz",
@@ -140,7 +141,7 @@ def analyse_batao2n1():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_bati03_differentcutoff():
     return Analysis(
         path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
@@ -152,7 +153,7 @@ def analyse_bati03_differentcutoff():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_distorted():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_distorted/POSCAR",
@@ -164,7 +165,7 @@ def analyse_nacl_distorted():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_spin():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR",
@@ -176,7 +177,7 @@ def analyse_nacl_spin():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_all():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
@@ -188,7 +189,7 @@ def analyse_nacl_all():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nacl_madelung_all():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
@@ -201,7 +202,7 @@ def analyse_nacl_madelung_all():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nasi_madelung_all():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaSi/POSCAR",
@@ -214,7 +215,7 @@ def analyse_nasi_madelung_all():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_batao2n1_cutoff():
     return Analysis(
         path_to_poscar=TestDir / "test_data/BaTaO2N1/POSCAR.gz",
@@ -226,7 +227,7 @@ def analyse_batao2n1_cutoff():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nasbf6():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
@@ -238,7 +239,7 @@ def analyse_nasbf6():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_nasbf6_anbd():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
@@ -251,7 +252,7 @@ def analyse_nasbf6_anbd():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_cdf():
     return Analysis(
         path_to_poscar=TestDir / "test_data/CdF/POSCAR",
@@ -264,7 +265,7 @@ def analyse_cdf():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_cdf_comp_range():
     return Analysis(
         path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
@@ -276,7 +277,7 @@ def analyse_cdf_comp_range():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_cdf_comp_range_coop():
     return Analysis(
         path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
@@ -290,7 +291,7 @@ def analyse_cdf_comp_range_coop():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_k3sb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
@@ -302,7 +303,7 @@ def analyse_k3sb():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_k3sb_all():
     return Analysis(
         path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
@@ -314,7 +315,7 @@ def analyse_k3sb_all():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_k3sb_all_cobi():
     return Analysis(
         path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
@@ -328,7 +329,7 @@ def analyse_k3sb_all_cobi():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def analyse_k3sb_all_coop_orb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
@@ -344,78 +345,78 @@ def analyse_k3sb_all_coop_orb():
 
 
 # fixtures for describe module tests
-@pytest.fixture
+@pytest.fixture()
 def describe_cdf_comp_range_coop(analyse_cdf_comp_range_coop):
     return Description(analyse_cdf_comp_range_coop)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl(analyse_nacl):
     return Description(analyse_nacl)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl_valences(analyse_nacl_valences):
     return Description(analyse_nacl_valences)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl_distorted(analyse_nacl_distorted):
     return Description(analyse_nacl_distorted)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl_all(analyse_nacl_all):
     return Description(analyse_nacl_all)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl_madelung_all(analyse_nacl_madelung_all):
     return Description(analyse_nacl_madelung_all)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl_nan(analyse_nacl_nan):
     return Description(analyse_nacl_nan)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl_comp_range_cobi(analyse_nacl_comp_range_cobi):
     return Description(analyse_nacl_comp_range_cobi)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nasi_madelung_all(analyse_nasi_madelung_all):
     return Description(analyse_nasi_madelung_all)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nasbf6(analyse_nasbf6):
     return Description(analyse_nasbf6)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nasbf6_anbd(analyse_nasbf6_anbd):
     return Description(analyse_nasbf6_anbd)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_batao2n1():
     return Description(analyse_batao2n1)
 
 
 # tests for key error issues
-@pytest.fixture
+@pytest.fixture()
 def describe_k3sb(analyse_k3sb):
     return Description(analyse_k3sb)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_k3sb_all(analyse_k3sb_all):
     return Description(analyse_k3sb_all)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_batio3():
     analyse_batio3 = Analysis(
         path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
@@ -428,7 +429,7 @@ def describe_batio3():
     return Description(analyse_batio3)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_batio3_orb():
     analyse_bati03_orb_orb = Analysis(
         path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
@@ -443,7 +444,7 @@ def describe_batio3_orb():
     return Description(analyse_bati03_orb_orb)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_c_orb():
     analyse_c_orb = Analysis(
         path_to_poscar=TestDir / "test_data/C/POSCAR",
@@ -472,7 +473,7 @@ def describe_cdf():
 
 
 # test for empty bond dict text generation
-@pytest.fixture
+@pytest.fixture()
 def describe_cdf_anbd():
     analyse_cdf_anbd = Analysis(
         path_to_poscar=TestDir / "test_data/CdF/POSCAR",
@@ -486,7 +487,7 @@ def describe_cdf_anbd():
     return Description(analyse_cdf_anbd)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_csh_all():
     analyse_csh_all = Analysis(
         path_to_poscar=TestDir / "test_data/CsH/POSCAR.gz",
@@ -499,7 +500,7 @@ def describe_csh_all():
     return Description(analyse_csh_all)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nacl_spin():
     analyse_nacl_spin = Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR",
@@ -513,7 +514,7 @@ def describe_nacl_spin():
     return Description(analyse_nacl_spin)
 
 
-@pytest.fixture
+@pytest.fixture()
 def describe_nasbf6_orb():
     analyse_nasbf6_orb = Analysis(
         path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",

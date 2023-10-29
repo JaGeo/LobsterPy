@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import gzip
 import json
-import pytest
 from pathlib import Path
 
+import pytest
 from pymatgen.io.lobster import Doscar, Icohplist
+
 from lobsterpy.cohp.analyze import Analysis
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
 
 
-@pytest.fixture
+@pytest.fixture()
 def plot_analyse_nacl():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
@@ -25,7 +26,7 @@ def plot_analyse_nacl():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def plot_analyse_cdf_orb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
@@ -40,7 +41,7 @@ def plot_analyse_cdf_orb():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def plot_analyse_nacl_cobi():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
@@ -55,7 +56,7 @@ def plot_analyse_nacl_cobi():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def plot_analyse_nacl_cobi_orb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
@@ -71,7 +72,7 @@ def plot_analyse_nacl_cobi_orb():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def plot_analyse_nasi():
     return Analysis(
         path_to_poscar=TestDir / "test_data/NaSi/POSCAR",
@@ -84,7 +85,7 @@ def plot_analyse_nasi():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def plot_analyse_batio3_orb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
@@ -98,7 +99,7 @@ def plot_analyse_batio3_orb():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def plot_analyse_k3sb():
     return Analysis(
         path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
@@ -111,7 +112,7 @@ def plot_analyse_k3sb():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def lobsterpy_plot_data():
     plot_data_file_name = TestDir / "test_data/interactive_plotter_ref/mp-8818.json.gz"
 
@@ -125,22 +126,28 @@ def lobsterpy_plot_data():
     return lobsterpy_plot_data["all_bonds"]["lobsterpy_data"]["cohp_plot_data"]
 
 
-@pytest.fixture
+@pytest.fixture()
 def icohplist_nacl():
-    return Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz")
+    return Icohplist(
+        filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz"
+    )
 
 
-@pytest.fixture
+@pytest.fixture()
 def icooplist_nacl():
-    return Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOOPLIST.lobster.gz")
+    return Icohplist(
+        filename=TestDir / "test_data/NaCl_comp_range/ICOOPLIST.lobster.gz"
+    )
 
 
-@pytest.fixture
+@pytest.fixture()
 def icobilist_nacl():
-    return Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz")
+    return Icohplist(
+        filename=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz"
+    )
 
 
-@pytest.fixture
+@pytest.fixture()
 def nacl_dos():
     return Doscar(
         doscar=TestDir / "test_data/NaCl_comp_range/DOSCAR.LSO.lobster.gz",
@@ -148,7 +155,7 @@ def nacl_dos():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def k3sb_dos():
     return Doscar(
         doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",

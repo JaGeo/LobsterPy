@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import pytest
 import warnings
 from pathlib import Path
 
@@ -114,7 +113,9 @@ class TestDescribe:
         for key, items in results_dict.items():
             assert Description._coordination_environment_to_text(key) == items
 
-    def test_plot(self, describe_nacl, describe_nacl_spin, describe_nacl_all, describe_csh_all):
+    def test_plot(
+        self, describe_nacl, describe_nacl_spin, describe_nacl_all, describe_csh_all
+    ):
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmp0:
@@ -124,12 +125,16 @@ class TestDescribe:
 
         with tempfile.TemporaryDirectory() as tmp1:
             filename_test = Path(tmp1) / "test.pdf"
-            describe_nacl_spin.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            describe_nacl_spin.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
             assert Path(filename_test).exists()
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = Path(tmp2) / "test.pdf"
-            describe_nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            describe_nacl_all.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             assert not Path(filename_test).exists()
@@ -138,7 +143,9 @@ class TestDescribe:
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = str(Path(tmp2) / "test.pdf")
-            describe_nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
+            describe_nacl_all.plot_cohps(
+                save=True, filename=filename_test, xlim=[-4, 4]
+            )
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             assert not Path(filename_test).exists()
@@ -201,7 +208,8 @@ class TestDescribe:
             " 3.448 percent antibonding interaction below EFermi) bonds.",
         ]
         assert describe_nasbf6.text == [
-            "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: Na1, Sb2.",
+            "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: "
+            "Na1, Sb2.",
             "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
             "4.071 percent antibonding interaction below EFermi) bonds.",
             "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
@@ -331,7 +339,9 @@ class TestCalcQualityDescribe:
             bva_comp=True,
         )
 
-        calc_quality_k3sb_des = Description.get_calc_quality_description(calc_quality_K3Sb)
+        calc_quality_k3sb_des = Description.get_calc_quality_description(
+            calc_quality_K3Sb
+        )
         assert calc_quality_k3sb_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
@@ -344,7 +354,9 @@ class TestCalcQualityDescribe:
             " summed orbitals are: 0.8532, 0.9481, 0.9275.",
         ]
 
-        calc_quality_csh_des = Description.get_calc_quality_description(calc_quality_CsH)
+        calc_quality_csh_des = Description.get_calc_quality_description(
+            calc_quality_CsH
+        )
         assert calc_quality_csh_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
@@ -375,7 +387,7 @@ class TestCalcQualityDescribeWarnings:
                 bva_comp=False,
             )
         assert "Consider using DOSCAR.LSO.lobster" in str(w[0].message)
-        assert "Mimimum energy range requested" in str(w[2].message)
+        assert "Minimum energy range requested" in str(w[2].message)
         assert "Maximum energy range requested" in str(w[3].message)
         assert "Input DOS files have very few points" in str(w[4].message)
 
@@ -418,13 +430,16 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        assert "Consider rerunning the calc with the minimum basis" in str(w3[0].message)
+        assert "Consider rerunning the calc with the minimum basis" in str(
+            w3[0].message
+        )
 
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
         assert calc_des3 == [
             "Consider rerunning the calculation with the minimum basis as well. "
-            "Choosing a larger basis set is only recommended if you see a significant improvement of the charge spilling.",
+            "Choosing a larger basis set is only recommended if you see a significant improvement of "
+            "the charge spilling.",
             "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
             "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
             "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",

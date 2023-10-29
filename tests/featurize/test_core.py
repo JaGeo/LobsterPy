@@ -1,8 +1,10 @@
-import pytest
-import pandas as pd
-import numpy as np
 from pathlib import Path
-from lobsterpy.featurize.core import FeaturizeLobsterpy, FeaturizeCharges, FeaturizeCOXX
+
+import numpy as np
+import pandas as pd
+import pytest
+
+from lobsterpy.featurize.core import FeaturizeCharges, FeaturizeCOXX, FeaturizeLobsterpy
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -25,7 +27,9 @@ class TestFeaturizeLobsterpy:
             path_to_json=TestDir / "test_data/JSONS/mp-14652.json.gz", bonds="all"
         )
 
-        self.featurize_csh_madelung = FeaturizeLobsterpy(path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="all")
+        self.featurize_csh_madelung = FeaturizeLobsterpy(
+            path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="all"
+        )
 
     def test_featurize_mp1249_json(self):
         df = self.featurize_mp1249_json.get_df(ids="mp-1249")
@@ -54,18 +58,28 @@ class TestFeaturizeLobsterpy:
             "Madelung_Mull",
             "Madelung_Loew",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "mp-1249"
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-1249", "Icohp_mean_avg"] == pytest.approx(-1.020000, abs=1e-05)
-        assert df.loc["mp-1249", "Icohp_mean_max"] == pytest.approx(-1.020000, abs=1e-05)
-        assert df.loc["mp-1249", "Icohp_mean_min"] == pytest.approx(-1.020000, abs=1e-05)
+        assert df.loc["mp-1249", "Icohp_mean_avg"] == pytest.approx(
+            -1.020000, abs=1e-05
+        )
+        assert df.loc["mp-1249", "Icohp_mean_max"] == pytest.approx(
+            -1.020000, abs=1e-05
+        )
+        assert df.loc["mp-1249", "Icohp_mean_min"] == pytest.approx(
+            -1.020000, abs=1e-05
+        )
         assert df.loc["mp-1249", "Icohp_mean_std"] == pytest.approx(0.000000, abs=1e-05)
-        assert df.loc["mp-1249", "Madelung_Mull"] == pytest.approx(-52.000000, abs=1e-05)
-        assert df.loc["mp-1249", "bonding_perc_avg"] == pytest.approx(0.978985, abs=1e-05)
+        assert df.loc["mp-1249", "Madelung_Mull"] == pytest.approx(
+            -52.000000, abs=1e-05
+        )
+        assert df.loc["mp-1249", "bonding_perc_avg"] == pytest.approx(
+            0.978985, abs=1e-05
+        )
 
     def test_featurize_mp1249_json_ca(self):
         df = self.featurize_mp1249_json_ca.get_df(ids="mp-1249")
@@ -94,7 +108,7 @@ class TestFeaturizeLobsterpy:
             "Madelung_Mull",
             "Madelung_Loew",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "mp-1249"
@@ -126,7 +140,7 @@ class TestFeaturizeLobsterpy:
             "Madelung_Mull",
             "Madelung_Loew",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "mp-1958"
@@ -137,7 +151,9 @@ class TestFeaturizeLobsterpy:
         assert df.loc["mp-1958", "Icohp_sum_min"] == pytest.approx(-2.96000, abs=1e-05)
         assert df.loc["mp-1958", "Icohp_sum_std"] == pytest.approx(0.000000, abs=1e-05)
         assert df.loc["mp-1958", "Madelung_Loew"] == pytest.approx(-16.68000, abs=1e-05)
-        assert df.loc["mp-1958", "antibonding_perc_avg"] == pytest.approx(0.14528, abs=1e-05)
+        assert df.loc["mp-1958", "antibonding_perc_avg"] == pytest.approx(
+            0.14528, abs=1e-05
+        )
 
     def test_featurize_mp14652_json(self):
         df = self.featurize_mp14652_json.get_df(ids="mp-14652")
@@ -166,19 +182,33 @@ class TestFeaturizeLobsterpy:
             "Madelung_Mull",
             "Madelung_Loew",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "mp-14652"
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-14652", "Icohp_mean_std"] == pytest.approx(2.335070, abs=1e-05)
-        assert df.loc["mp-14652", "bonding_perc_max"] == pytest.approx(0.889620, abs=1e-05)
-        assert df.loc["mp-14652", "bonding_perc_min"] == pytest.approx(0.873420, abs=1e-05)
-        assert df.loc["mp-14652", "bonding_perc_std"] == pytest.approx(0.006339, abs=1e-05)
-        assert df.loc["mp-14652", "antibonding_perc_min"] == pytest.approx(0.110380, abs=1e-05)
-        assert df.loc["mp-14652", "antibonding_perc_max"] == pytest.approx(0.126580, abs=1e-05)
-        assert df.loc["mp-14652", "antibonding_perc_std"] == pytest.approx(0.006339, abs=1e-05)
+        assert df.loc["mp-14652", "Icohp_mean_std"] == pytest.approx(
+            2.335070, abs=1e-05
+        )
+        assert df.loc["mp-14652", "bonding_perc_max"] == pytest.approx(
+            0.889620, abs=1e-05
+        )
+        assert df.loc["mp-14652", "bonding_perc_min"] == pytest.approx(
+            0.873420, abs=1e-05
+        )
+        assert df.loc["mp-14652", "bonding_perc_std"] == pytest.approx(
+            0.006339, abs=1e-05
+        )
+        assert df.loc["mp-14652", "antibonding_perc_min"] == pytest.approx(
+            0.110380, abs=1e-05
+        )
+        assert df.loc["mp-14652", "antibonding_perc_max"] == pytest.approx(
+            0.126580, abs=1e-05
+        )
+        assert df.loc["mp-14652", "antibonding_perc_std"] == pytest.approx(
+            0.006339, abs=1e-05
+        )
 
     def test_featurize_csh_madelung(self):
         df = self.featurize_csh_madelung.get_df()
@@ -228,7 +258,7 @@ class TestFeaturizeCOXX:
             "skewness_COHP",
             "kurtosis_COHP",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "NaCl"
@@ -303,7 +333,7 @@ class TestFeaturizeCOXX:
             "skewness_COHP",
             "kurtosis_COHP",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "CdF"
@@ -320,7 +350,9 @@ class TestFeaturizeCOXX:
         assert df.loc["CdF", "kurtosis_COHP"] == pytest.approx(2.866611, abs=1e-05)
 
         # test using label list
-        df1 = self.featurize_cdf_coxx.get_summarized_coxx_df(label_list=["2", "3", "30"])
+        df1 = self.featurize_cdf_coxx.get_summarized_coxx_df(
+            label_list=["2", "3", "30"]
+        )
         assert df.loc["CdF", "center_COHP"] != df1.loc["CdF", "center_COHP"]
 
     def test_featurize_k3sb_coxx(self):
@@ -340,7 +372,7 @@ class TestFeaturizeCOXX:
             "skewness_COHP",
             "kurtosis_COHP",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "K3Sb"
@@ -385,7 +417,7 @@ class TestFeaturizeCharges:
         expected_cols = [
             "Ionicity_Mull",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "C"
@@ -403,7 +435,7 @@ class TestFeaturizeCharges:
         expected_cols = [
             "Ionicity_Mull",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "CdF"
@@ -421,7 +453,7 @@ class TestFeaturizeCharges:
         expected_cols = [
             "Ionicity_Loew",
         ]
-        assert sorted(list(df.columns)) == sorted(expected_cols)
+        assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that the DataFrame has the expected index
         assert df.index[0] == "K3Sb"
@@ -432,14 +464,19 @@ class TestFeaturizeCharges:
 
 class TestExceptions:
     def test_lobsterpy_featurize_exception(self):
-        with pytest.raises(Exception) as err:
-            self.featurize_mp1249_json = FeaturizeLobsterpy(path_to_json=None, path_to_lobster_calc=None, bonds="all")
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
+            self.featurize_mp1249_json = FeaturizeLobsterpy(
+                path_to_json=None, path_to_lobster_calc=None, bonds="all"
+            )
 
             _ = self.featurize_mp1249_json.get_df()
 
-        assert str(err.value) == "Please provide either path to lightweight lobster jsons or path to lobster calc"
+        assert (
+            str(err.value)
+            == "Please provide either path to lightweight lobster jsons or path to lobster calc"
+        )
 
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_mp1249_json = FeaturizeLobsterpy(
                 path_to_json=None, path_to_lobster_calc=TestDir, bonds="all"
             )
@@ -447,12 +484,13 @@ class TestExceptions:
             _ = self.featurize_mp1249_json.get_df()
 
         assert (
-            str(err.value) == "Path provided for Lobster calc directory seems incorrect."
+            str(err.value)
+            == "Path provided for Lobster calc directory seems incorrect."
             "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
             "CHARGE.lobster files needed for automatic analysis using LobsterPy"
         )
 
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_csh_cation_anion = FeaturizeLobsterpy(
                 path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="cation-anion"
             )
@@ -460,20 +498,24 @@ class TestExceptions:
             _ = self.featurize_csh_cation_anion.get_df()
 
         assert (
-            str(err.value) == "No cation-anion bonds detected for CsH structure. " "Please switch to ´all´ bonds mode"
+            str(err.value)
+            == "No cation-anion bonds detected for CsH structure. Please switch to `all` bonds mode"
         )
 
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_c_cation_anion = FeaturizeLobsterpy(
                 path_to_lobster_calc=TestDir / "test_data/C/", bonds="cation-anion"
             )
 
             _ = self.featurize_c_cation_anion.get_df()
 
-        assert str(err.value) == "No cation-anion bonds detected for C structure. " "Please switch to ´all´ bonds mode"
+        assert (
+            str(err.value)
+            == "No cation-anion bonds detected for C structure. Please switch to `all` bonds mode"
+        )
 
     def test_featurize_charges(self):
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_cdf_charge = FeaturizeCharges(
                 path_to_structure=TestDir / "test_data/CdF/POSCAR",
                 path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
@@ -483,11 +525,12 @@ class TestExceptions:
             _ = self.featurize_cdf_charge.get_df()
 
         assert (
-            str(err.value) == "Please check the requested charge_type. " "Possible options are `Mulliken` or `Loewdin`"
+            str(err.value)
+            == "Please check the requested charge_type. Possible options are `Mulliken` or `Loewdin`"
         )
 
     def test_featurize_coxx(self):
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
@@ -503,7 +546,7 @@ class TestExceptions:
             == "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall"
         )
 
-        with pytest.raises(Exception) as err2:
+        with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
             self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
@@ -514,9 +557,12 @@ class TestExceptions:
 
             _ = self.featurize_coxx.get_coxx_fingerprint_df(spin_type="-1")
 
-        assert str(err2.value) == "Check the spin_type argument." "Possible options are summed/up/down"
+        assert (
+            str(err2.value)
+            == "Check the spin_type argument.Possible options are summed/up/down"
+        )
 
-        with pytest.raises(Exception) as err3:
+        with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
             self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaSi/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaSi/ICOHPLIST.lobster",
@@ -529,9 +575,12 @@ class TestExceptions:
 
             _ = self.featurize_coxx.get_coxx_fingerprint_df()
 
-        assert str(err3.value) == "You cannot have info about COOPs and COBIs in the same file."
+        assert (
+            str(err3.value)
+            == "You cannot have info about COOPs and COBIs in the same file."
+        )
 
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_nacl_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
@@ -547,7 +596,7 @@ class TestExceptions:
             "Possible options are bonding/antibonding/overall"
         )
 
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_nacl_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
@@ -558,4 +607,7 @@ class TestExceptions:
 
             _ = self.featurize_nacl_coxx.get_coxx_fingerprint_df(spin_type="down")
 
-        assert str(err.value) == "LOBSTER calculation is non-spin polarized. " "Please switch spin_type to `up`"
+        assert (
+            str(err.value)
+            == "LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`"
+        )

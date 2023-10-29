@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-import pytest
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+import pytest
 from plotly.io import read_json
 from pymatgen.electronic_structure.cohp import Cohp
+
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import (
-    PlainCohpPlotter,
-    InteractiveCohpPlotter,
     IcohpDistancePlotter,
+    InteractiveCohpPlotter,
+    PlainCohpPlotter,
     PlainDosPlotter,
 )
 
@@ -21,7 +23,9 @@ class TestInteractiveCohpPlotter:
     def test_add_all_relevant_cohps_nacl(self, plot_analyse_nacl):
         iplotter = InteractiveCohpPlotter(zero_at_efermi=False)
 
-        iplotter.add_all_relevant_cohps(analyse=plot_analyse_nacl, label_resolved=False, suffix="")
+        iplotter.add_all_relevant_cohps(
+            analyse=plot_analyse_nacl, label_resolved=False, suffix=""
+        )
         assert "All" in iplotter._cohps
         assert len(iplotter._cohps) == 1
 
@@ -69,7 +73,8 @@ class TestInteractiveCohpPlotter:
 
         fig = iplotter.get_plot()
         ref_fig = read_json(
-            TestDir / "test_data/interactive_plotter_ref/analyse_NaCl_cobi_orb_res.json",
+            TestDir
+            / "test_data/interactive_plotter_ref/analyse_NaCl_cobi_orb_res.json",
             engine="json",
         )
         assert len(fig.data) == len(ref_fig.data)
@@ -111,7 +116,8 @@ class TestInteractiveCohpPlotter:
 
         fig = iplotter.get_plot()
         ref_fig = read_json(
-            TestDir / "test_data/interactive_plotter_ref/analyse_BaTiO3_orb_label_resol.json",
+            TestDir
+            / "test_data/interactive_plotter_ref/analyse_BaTiO3_orb_label_resol.json",
             engine="json",
         )
         assert len(fig.data) == len(ref_fig.data)
@@ -181,7 +187,9 @@ class TestInteractiveCohpPlotter:
     def test_add_all_relevant_cohps_nacl_cobi(self, plot_analyse_nacl_cobi):
         iplotter = InteractiveCohpPlotter(zero_at_efermi=False, are_cobis=True)
 
-        iplotter.add_all_relevant_cohps(analyse=plot_analyse_nacl_cobi, label_resolved=False, suffix="")
+        iplotter.add_all_relevant_cohps(
+            analyse=plot_analyse_nacl_cobi, label_resolved=False, suffix=""
+        )
         assert "All" in iplotter._cohps
         assert len(iplotter._cohps) == 1
 
@@ -218,7 +226,9 @@ class TestInteractiveCohpPlotter:
     def test_add_all_relevant_cohps_k3sb(self, plot_analyse_k3sb):
         iplotter = InteractiveCohpPlotter()
 
-        iplotter.add_all_relevant_cohps(analyse=plot_analyse_k3sb, label_resolved=True, suffix="")
+        iplotter.add_all_relevant_cohps(
+            analyse=plot_analyse_k3sb, label_resolved=True, suffix=""
+        )
         assert "All" in iplotter._cohps
         assert "K1: 8 x K-K" in iplotter._cohps
         assert "K1: 6 x K-Sb" in iplotter._cohps
@@ -261,7 +271,9 @@ class TestInteractiveCohpPlotter:
     def test_add_cohps_by_lobster_label_nacl(self, plot_analyse_nacl):
         iplotter = InteractiveCohpPlotter()
 
-        iplotter.add_cohps_by_lobster_label(analyse=plot_analyse_nacl, label_list=["5", "10", "15"], suffix="")
+        iplotter.add_cohps_by_lobster_label(
+            analyse=plot_analyse_nacl, label_list=["5", "10", "15"], suffix=""
+        )
         assert "All" in iplotter._cohps
         assert len(iplotter._cohps) == 1
 
@@ -368,7 +380,9 @@ class TestInteractiveCohpPlotter:
     def test_plot_colors(self, plot_analyse_k3sb):
         iplotter = InteractiveCohpPlotter()
 
-        iplotter.add_all_relevant_cohps(analyse=plot_analyse_k3sb, label_resolved=True, suffix="")
+        iplotter.add_all_relevant_cohps(
+            analyse=plot_analyse_k3sb, label_resolved=True, suffix=""
+        )
 
         Fig_ref = iplotter.get_plot()
 
@@ -410,7 +424,7 @@ class TestInteractiveCohpPlotter:
         iplotter = InteractiveCohpPlotter()
         fig = iplotter.get_plot()
 
-        assert fig.layout.xaxis["title"]["text"] == "−COHP (eV)"
+        assert fig.layout.xaxis["title"]["text"] == "−COHP (eV)"  # noqa: RUF001
         assert fig.layout.yaxis["title"]["text"] == "$E - E_f \\text{ (eV)}$"
 
     def test_plaincohp_plotter_options(self, lobsterpy_plot_data):
@@ -420,7 +434,9 @@ class TestInteractiveCohpPlotter:
             cohp_obj = Cohp.from_dict(cohp)
             plotter.add_cohp(label=label, cohp=cohp_obj)
 
-        fig = plotter.get_plot(integrated=True, xlim=(-5, 2), ylim=(-4, 4), invert_axes=False).gca()
+        fig = plotter.get_plot(
+            integrated=True, xlim=(-5, 2), ylim=(-4, 4), invert_axes=False
+        ).gca()
         assert fig.get_ylabel() == "$-$ICOHP (eV)"
         assert fig.get_xlabel() == "$E$ (eV)"
 
@@ -428,36 +444,50 @@ class TestInteractiveCohpPlotter:
 class TestIcohpDistancePlotter:
     def test_icohp_plotter_labels(self, icohplist_nacl, icooplist_nacl, icobilist_nacl):
         icohp_plotter = IcohpDistancePlotter()
-        icohp_plotter.add_icohps(label="NaCl", icohpcollection=icohplist_nacl.icohpcollection)
+        icohp_plotter.add_icohps(
+            label="NaCl", icohpcollection=icohplist_nacl.icohpcollection
+        )
         fig = icohp_plotter.get_plot().gca()
         assert fig.get_ylabel() == "$-$" + "ICOHP (eV)"
 
         icohp_plotter = IcohpDistancePlotter()
-        icohp_plotter.add_icohps(label="NaCl_icohp", icohpcollection=icohplist_nacl.icohpcollection)
+        icohp_plotter.add_icohps(
+            label="NaCl_icohp", icohpcollection=icohplist_nacl.icohpcollection
+        )
         fig = icohp_plotter.get_plot(plot_negative=True).gca()
         assert fig.get_ylabel() == "$-$" + "ICOHP (eV)"
 
         icohp_plotter = IcohpDistancePlotter(are_cobis=True)
-        icohp_plotter.add_icohps(label="NaCl_icobi", icohpcollection=icobilist_nacl.icohpcollection)
+        icohp_plotter.add_icohps(
+            label="NaCl_icobi", icohpcollection=icobilist_nacl.icohpcollection
+        )
         fig = icohp_plotter.get_plot().gca()
         assert fig.get_ylabel() == "ICOBI"
 
         icohp_plotter = IcohpDistancePlotter(are_coops=True)
-        icohp_plotter.add_icohps(label="NaCl_icoop", icohpcollection=icooplist_nacl.icohpcollection)
+        icohp_plotter.add_icohps(
+            label="NaCl_icoop", icohpcollection=icooplist_nacl.icohpcollection
+        )
         fig = icohp_plotter.get_plot().gca()
         assert fig.get_ylabel() == "ICOOP"
         assert fig.get_xlabel() == "Bond lengths (Å)"
 
     def test_plot_data(self, icohplist_nacl, icobilist_nacl, icooplist_nacl):
         icohp_plotter = IcohpDistancePlotter()
-        icohp_plotter.add_icohps(label="NaCl", icohpcollection=icohplist_nacl.icohpcollection)
+        icohp_plotter.add_icohps(
+            label="NaCl", icohpcollection=icohplist_nacl.icohpcollection
+        )
 
         ref_xdata = icohplist_nacl.icohpcollection._list_length
         ref_ydata = []
         for ydata in icohplist_nacl.icohpcollection._list_icohp:
-            ref_ydata.append(abs(sum(ydata.values())))  # get absolute icohp values as in plots
+            ref_ydata.append(
+                abs(sum(ydata.values()))
+            )  # get absolute icohp values as in plots
 
-        fig_xydata = icohp_plotter.get_plot().gcf().axes[0].get_children()[0].get_offsets().data
+        fig_xydata = (
+            icohp_plotter.get_plot().gcf().axes[0].get_children()[0].get_offsets().data
+        )
 
         fig_xdata = [row[0] for row in fig_xydata]
         fig_ydata = [row[1] for row in fig_xydata]
@@ -476,14 +506,20 @@ class TestIcohpDistancePlotter:
         # icobi
 
         icobi_plotter = IcohpDistancePlotter(are_cobis=True)
-        icobi_plotter.add_icohps(label="NaCl", icohpcollection=icobilist_nacl.icohpcollection)
+        icobi_plotter.add_icohps(
+            label="NaCl", icohpcollection=icobilist_nacl.icohpcollection
+        )
 
         ref_xdata = icobilist_nacl.icohpcollection._list_length
         ref_ydata = []
         for ydata in icobilist_nacl.icohpcollection._list_icohp:
-            ref_ydata.append(sum(ydata.values()))  # get absolute icohp values as in plots
+            ref_ydata.append(
+                sum(ydata.values())
+            )  # get absolute icohp values as in plots
 
-        fig_xydata = icobi_plotter.get_plot().gcf().axes[0].get_children()[0].get_offsets().data
+        fig_xydata = (
+            icobi_plotter.get_plot().gcf().axes[0].get_children()[0].get_offsets().data
+        )
 
         fig_xdata = [row[0] for row in fig_xydata]
         fig_ydata = [row[1] for row in fig_xydata]
@@ -502,14 +538,20 @@ class TestIcohpDistancePlotter:
         # icoop
 
         icoop_plotter = IcohpDistancePlotter(are_coops=True)
-        icoop_plotter.add_icohps(label="NaCl", icohpcollection=icooplist_nacl.icohpcollection)
+        icoop_plotter.add_icohps(
+            label="NaCl", icohpcollection=icooplist_nacl.icohpcollection
+        )
 
         ref_xdata = icooplist_nacl.icohpcollection._list_length
         ref_ydata = []
         for ydata in icooplist_nacl.icohpcollection._list_icohp:
-            ref_ydata.append(sum(ydata.values()))  # get absolute icohp values as in plots
+            ref_ydata.append(
+                sum(ydata.values())
+            )  # get absolute icohp values as in plots
 
-        fig_xydata = icoop_plotter.get_plot().gcf().axes[0].get_children()[0].get_offsets().data
+        fig_xydata = (
+            icoop_plotter.get_plot().gcf().axes[0].get_children()[0].get_offsets().data
+        )
 
         fig_xdata = [row[0] for row in fig_xydata]
         fig_ydata = [row[1] for row in fig_xydata]
@@ -528,28 +570,37 @@ class TestIcohpDistancePlotter:
 
 class TestPlotterExceptions:
     def test_plotter_exception(self):
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             iplotter = InteractiveCohpPlotter()
 
             data = {"N4: 1 x N-N": []}
 
             iplotter.add_cohps_from_plot_data(plot_data_dict=data, suffix="")
 
-        assert str(err.value) == "The data provided could not be converted to cohp object.Please recheck the input data"
+        assert (
+            str(err.value)
+            == "The data provided could not be converted to cohp object.Please recheck the input data"
+        )
 
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             iplotter = InteractiveCohpPlotter(are_cobis=True, are_coops=True)
 
             _ = iplotter.get_plot()
 
-        assert str(err.value) == "Plot data should not contain COBI and COOP data at same time"
+        assert (
+            str(err.value)
+            == "Plot data should not contain COBI and COOP data at same time"
+        )
 
-        with pytest.raises(Exception) as err:
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             plotter = PlainCohpPlotter(are_cobis=True, are_coops=True)
 
             _ = plotter.get_plot()
 
-        assert str(err.value) == "Plot data should not contain COBI and COOP data at same time"
+        assert (
+            str(err.value)
+            == "Plot data should not contain COBI and COOP data at same time"
+        )
 
 
 class TestPlainDosPlotter:
@@ -565,7 +616,9 @@ class TestPlainDosPlotter:
             ref_en = complete_dos_obj.energies.tolist()
             assert plot_en == ref_en
 
-        for plot_dos, ref_dos in zip(plt.axes[0].get_lines()[:-2], complete_dos_obj.densities.values()):
+        for plot_dos, ref_dos in zip(
+            plt.axes[0].get_lines()[:-2], complete_dos_obj.densities.values()
+        ):
             dos_plot = [abs(dos) for dos in plot_dos.get_data()[1].tolist()]
             dos_ref = [abs(dos) for dos in ref_dos.tolist()]
             assert dos_plot == dos_ref
@@ -587,7 +640,9 @@ class TestPlainDosPlotter:
             ref_en = complete_dos_obj_norm.energies.tolist()
             assert plot_en == ref_en
 
-        for plot_dos, ref_dos in zip(plt.axes[0].get_lines()[:-2], complete_dos_obj_norm.densities.values()):
+        for plot_dos, ref_dos in zip(
+            plt.axes[0].get_lines()[:-2], complete_dos_obj_norm.densities.values()
+        ):
             dos_plot = [abs(dos) for dos in plot_dos.get_data()[1].tolist()]
             dos_ref = [abs(dos) for dos in ref_dos.tolist()]
             assert dos_plot == dos_ref
@@ -631,7 +686,12 @@ class TestPlainDosPlotter:
 
         for plot_dos in plt.axes[0].get_lines()[:1]:
             dos_plot = [abs(dos) for dos in plot_dos.get_data()[1].tolist()]
-            dos_ref = [abs(dos) for dos in sum(complete_dos_obj.get_smeared_densities(sigma=0.1).values()).tolist()]
+            dos_ref = [
+                abs(dos)
+                for dos in sum(
+                    complete_dos_obj.get_smeared_densities(sigma=0.1).values()
+                ).tolist()
+            ]
             assert dos_plot == dos_ref
 
         plt_axes = dp.get_plot(invert_axes=False, beta_dashed=True).gca()
@@ -640,10 +700,12 @@ class TestPlainDosPlotter:
         assert plt_axes.get_ylabel() == "Density of states (states/eV)"
 
     def test_dos_plotter_exceptions(self, nacl_dos):
-        with pytest.raises(ValueError) as err:
+        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
             dp = PlainDosPlotter(summed=True, stack=False, sigma=None)
 
-            _ = dp.add_site_orbital_dos(site_index=0, orbital="5_s", dos=nacl_dos.completedos)
+            _ = dp.add_site_orbital_dos(
+                site_index=0, orbital="5_s", dos=nacl_dos.completedos
+            )
 
         assert (
             str(err.value)
