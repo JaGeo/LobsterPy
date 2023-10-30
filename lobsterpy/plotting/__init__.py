@@ -43,11 +43,6 @@ def get_style_list(
         Remaining kwargs are collected as a dict and take the highest priority.
     """
     base = [] if no_base_style else [base_style]
-    # if no_base_style:
-    #     base = []
-    # else:
-    #     base = [base_style]
-
     if styles is None:
         styles = []
 
@@ -117,10 +112,6 @@ class PlainCohpPlotter(CohpPlotter):
             cohp_label = "$-$" + cohp_label
 
         energy_label = "$E - E_f$ (eV)" if self.zero_at_efermi else "$E$ (eV)"
-        # if self.zero_at_efermi:
-        #     energy_label = "$E - E_f$ (eV)"
-        # else:
-        #     energy_label = "$E$ (eV)"
 
         colors = mpl.rcParams["axes.prop_cycle"].by_key()["color"]
         ncolors = len(colors)
@@ -137,10 +128,6 @@ class PlainCohpPlotter(CohpPlotter):
                 if not integrated
                 else self._cohps[key]["ICOHP"]
             )
-            # if not integrated:
-            #     populations = self._cohps[key]["COHP"]
-            # else:
-            #     populations = self._cohps[key]["ICOHP"]
             for spin in [Spin.up, Spin.down]:
                 if spin in populations:
                     if invert_axes:
@@ -916,18 +903,9 @@ class InteractiveCohpPlotter(CohpPlotter):
         energy_label = (
             "$E - E_f \\text{ (eV)}$" if self.zero_at_efermi else "$E \\text{ (eV)}$"
         )
-        # if self.zero_at_efermi:
-        #     energy_label = "$E - E_f \\text{ (eV)}$"
-        # else:
-        #     energy_label = "$E \\text{ (eV)}$"
 
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
         palette = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
-        # if colors is None:
-        #     palette = InteractiveCohpPlotter.COLOR_PALETTE
-        # else:
-        #     palette = colors
-
         pal_iter = cycle(palette)
 
         traces = {}

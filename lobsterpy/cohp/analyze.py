@@ -961,10 +961,6 @@ class Analysis:
 
         # will integrate spin.up and spin.down only below efermi
         energies_corrected = cohp.energies - cohp.efermi
-        # if Spin.down in cohp.cohp:
-        #     summedcohp = cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
-        # else:
-        #     summedcohp = cohp.cohp[Spin.up]
         summedcohp = (
             cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
             if Spin.down in cohp.cohp
@@ -1512,7 +1508,7 @@ class Analysis:
                     if dev > 0.1:
                         dev_val.append(dev)
 
-                quality_dict["band_overlaps"] = {
+                quality_dict["band_overlaps"] = {  # type: ignore
                     "file_exists": True,
                     "limit_maxDeviation": 0.1,
                     "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
@@ -1522,7 +1518,7 @@ class Analysis:
                     "percent_kpoints_abv_limit": round(
                         (len(dev_val) / total_kpoints) * 100, 4
                     ),
-                }  # type: ignore
+                }
 
             else:
                 quality_dict["band_overlaps"] = {

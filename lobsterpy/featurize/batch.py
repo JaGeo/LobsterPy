@@ -489,8 +489,6 @@ class BatchCoxxFingerprint:
             columns=list(self.fingerprint_df.index),
         )
 
-        # return df
-
     @staticmethod
     def _fp_to_dict(fp) -> dict:
         """
@@ -555,15 +553,12 @@ class BatchCoxxFingerprint:
                 + np.linalg.norm(vec2) ** 2
                 - np.dot(vec1, vec2)
             )
-            # return np.dot(vec1, vec2) / rescale
 
         elif not tanimoto and normalize:
             rescale = np.linalg.norm(vec1) * np.linalg.norm(vec2)
-            # return np.dot(vec1, vec2) / rescale
 
         elif not tanimoto and not normalize:
             rescale = 1.0
-            # return np.dot(vec1, vec2) / rescale
 
         else:
             raise ValueError(
@@ -659,8 +654,6 @@ class BatchCoxxFingerprint:
             normalize=self.normalize,
             label_list=self.label_list,
         )
-
-        # return df_fp
 
     def _get_fingerprints_df(self) -> pd.DataFrame:
         """

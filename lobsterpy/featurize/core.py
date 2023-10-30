@@ -598,11 +598,6 @@ class FeaturizeCOXX:
             if Spin.down in coxxcar
             else coxxcar[Spin.up]
         )
-        # if Spin.down in coxxcar:
-        #     coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
-        # else:
-        #     coxx_all = coxxcar[Spin.up]
-
         energies = self.completecoxx.energies - self.completecoxx.efermi
 
         coxx_dict = {}
@@ -695,8 +690,6 @@ class FeaturizeCOXX:
             n=1, coxx=coxx, energies=energies, e_range=e_range, center=False
         )
 
-        # return coxx_center
-
     def _get_n_moment(
         self,
         n: float,
@@ -745,8 +738,6 @@ class FeaturizeCOXX:
             p = energies
 
         return np.trapz(p**n * coxx, x=energies) / np.trapz(coxx, x=energies)
-
-        # return nth_moment
 
     def get_summarized_coxx_df(
         self,
@@ -914,8 +905,6 @@ class FeaturizeCharges:
                 ch_veff.append(val)
 
         return sum(ch_veff) / structure.num_sites
-
-        # return ionicity
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """

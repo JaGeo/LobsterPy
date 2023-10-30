@@ -120,19 +120,11 @@ class Description:
                     if len(bond_info) > 1
                     else bond_info[0]
                 )
-                # if len(bond_info) > 1:
-                #     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
-                # else:
-                #     bonds = bond_info[0]
 
                 if len(orb_info) > 1:
                     orb_bonds = "".join(orb_info).replace(".In", ". In")
                 else:
                     orb_bonds = orb_info[0] if orb_info else ""
-                    # if orb_info:
-                    #     orb_bonds = orb_info[0]
-                    # else:
-                    #     orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -234,18 +226,10 @@ class Description:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
                     bonds = bond_info[0] if bond_info else 0
-                    # if bond_info:
-                    #     bonds = bond_info[0]
-                    # else:
-                    #     bonds = 0
                 if len(orb_info) > 1:
                     orb_bonds = "".join(orb_info).replace(".In", ". In")
                 else:
                     orb_bonds = orb_info[0] if orb_info else ""
-                    # if orb_info:
-                    #     orb_bonds = orb_info[0]
-                    # else:
-                    #     orb_bonds = ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
