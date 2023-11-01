@@ -1012,35 +1012,6 @@ class FeaturizeCOXX:
         df.loc[ids, f"kurtosis_{type_pop}"] = ck
         df.loc[ids, f"edge_{type_pop}"] = ce
 
-        # elif self.are_cobis:
-        #     cc, cw, cs, ck, ce = FeaturizeCOXX._calc_moment_features(
-        #         complete_coxx_obj=self.completecoxx,
-        #         label_list=label_list, per_bond=per_bond, feature_type=self.feature_type, e_range=self.e_range,
-        #     )
-        #     df.loc[ids, "bnd_wICOBI"] = per_bnd_xx
-        #     df.loc[ids, "antibnd_wICOBI"] = per_antibnd_xx
-        #     df.loc[ids, "w_ICOBI"] = w_icoxx
-        #     df.loc[ids, "EIN_ICOBI"] = ein_xx
-        #     df.loc[ids, "center_COBI"] = cc
-        #     df.loc[ids, "width_COBI"] = cw
-        #     df.loc[ids, "skewness_COBI"] = cs
-        #     df.loc[ids, "kurtosis_COBI"] = ck
-        #     df.loc[ids, "edge_COBI"] = ce
-        # else:
-        #     cc, cw, cs, ck, ce = FeaturizeCOXX._calc_moment_features(
-        #         complete_coxx_obj=self.completecoxx,
-        #         label_list=label_list, per_bond=per_bond, feature_type=self.feature_type, e_range=self.e_range,
-        #     )
-        #     df.loc[ids, "bnd_wICOHP"] = per_bnd_xx
-        #     df.loc[ids, "antibnd_wICOHP"] = per_antibnd_xx
-        #     df.loc[ids, "w_ICOHP"] = w_icoxx
-        #     df.loc[ids, "EIN_ICOHP"] = ein_xx
-        #     df.loc[ids, "center_COHP"] = cc
-        #     df.loc[ids, "width_COHP"] = cw
-        #     df.loc[ids, "skewness_COHP"] = cs
-        #     df.loc[ids, "kurtosis_COHP"] = ck
-        #     df.loc[ids, "edge_COHP"] = ce
-
         return df
 
 

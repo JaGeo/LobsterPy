@@ -89,7 +89,7 @@ class BatchSummaryFeaturizer:
             featurize_lobsterpy = FeaturizeLobsterpy(
                 path_to_lobster_calc=file_name_or_path,
                 bonds=self.bonds,
-                orbital_resolved=self.orbital_resolved
+                orbital_resolved=self.orbital_resolved,
             )
 
         df = featurize_lobsterpy.get_df()
