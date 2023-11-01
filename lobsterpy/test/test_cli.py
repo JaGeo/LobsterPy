@@ -193,9 +193,9 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--file-lobsterin-out",
+            "-flobsterin",
             str(lobsterinpath),
-            "--file-incar-out",
+            "-fincarout",
             str(INCARpath),
         ]
         test = get_parser().parse_args(args)
@@ -215,7 +215,7 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "createinputs",
-            "--file-lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
             "--file-incar-out",
             str(INCARpath),
@@ -232,7 +232,7 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--file-lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
             "--file-incar-out",
             str(INCARpath),
@@ -249,7 +249,7 @@ class TestCLI:
 
         args = [
             "create-inputs",
-            "--file-lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
             "--file-incar-out",
             str(INCARpath),
@@ -284,7 +284,7 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--file-lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
             "--file-incar-out",
             str(INCARpath),
@@ -631,7 +631,7 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--file-lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
             "--file-incar-out",
             str(INCARpath),
@@ -651,9 +651,8 @@ class TestCLI:
         ]:
             self.assert_is_finite_file(filepath)
 
-        os.chdir(TestDir / "TestData/NaCl")
-
     def test_gz_cli_plot(self, tmp_path):
+        os.chdir(TestDir / "TestData/NaCl")
         plot_path = tmp_path / "plot.png"
         args = ["plot", "3", "--saveplot", str(plot_path)]
 

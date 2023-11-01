@@ -140,7 +140,7 @@ def get_parser() -> argparse.ArgumentParser:
         help='path to vasprun.xml. Default is "vasprun.xml".',
     )
     calc_quality_description_file_group.add_argument(
-        "-fbandoverlap",
+        "-fbandoverlaps",
         "--file-bandoverlaps",
         default="bandOverlaps.lobster",
         dest="bandoverlaps",
@@ -148,7 +148,7 @@ def get_parser() -> argparse.ArgumentParser:
         help='path to bandOverlaps.lobster. Default is "bandOverlaps.lobster".',
     )
     calc_quality_description_file_group.add_argument(
-        "-flobsin",
+        "-flobsterin",
         "--file-lobsterin",
         default="lobsterin",
         dest="lobsterin",
@@ -156,7 +156,7 @@ def get_parser() -> argparse.ArgumentParser:
         help='path to lobsterin. Default is "lobsterin".',
     )
     calc_quality_description_file_group.add_argument(
-        "-flobsout",
+        "-flobsterout",
         "--file-lobsterout",
         default="lobsterout",
         dest="lobsterout",
@@ -184,8 +184,8 @@ def get_parser() -> argparse.ArgumentParser:
         help='path to INCAR that lobsterpy generates. Default is "INCAR.lobsterpy"',
     )
     output_file_group.add_argument(
-        "-flobsinout",
-        "--file-lobsterin-out",
+        "-flobsterin",
+        "--file-lobsterin",
         default="lobsterin.lobsterpy",
         dest="lobsterinout",
         type=Path,
@@ -304,8 +304,8 @@ def get_parser() -> argparse.ArgumentParser:
     dos_plotting_group = dos_plotting_parent.add_argument_group("Plotting")
     dos_plotting_group.add_argument(
         "-addtdos",
-        "--addtotaldos",
-        "--add-total-dos",
+        "--addtotal",
+        "--add-total",
         action="store_true",
         help="Add total dos to DOS plot.",
     )
@@ -1206,7 +1206,7 @@ def run(args):
         lobs_dos = Doscar(doscar=args.doscar, structure_file=args.structure).completedos
 
         dos_plotter = PlainDosPlotter(summed=args.summedspins, sigma=args.sigma)
-        if args.addtotaldos:
+        if args.addtotal:
             dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
         if args.spddos:
             dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_spd_dos())
@@ -1245,7 +1245,7 @@ def run(args):
             and not args.element
             and not args.spddos
             and not args.elementdos
-            and not args.addtotaldos
+            and not args.addtotal
         ):
             dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
             dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_element_dos())
