@@ -101,6 +101,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
             "Ionicity_Mull",
             "Ionicity_Loew",
         ]
@@ -143,6 +144,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
             "Ionicity_Mull",
             "Ionicity_Loew",
         ]
@@ -185,6 +187,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
             "bnd_wICOBI",
             "antibnd_wICOBI",
             "w_ICOBI",
@@ -193,6 +196,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             "width_COBI",
             "skewness_COBI",
             "kurtosis_COBI",
+            "edge_COBI",
             "bnd_wICOOP",
             "antibnd_wICOOP",
             "w_ICOOP",
@@ -201,6 +205,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             "width_COOP",
             "skewness_COOP",
             "kurtosis_COOP",
+            "edge_COOP",
             "Ionicity_Mull",
             "Ionicity_Loew",
         ]
@@ -243,6 +248,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
             "Ionicity_Mull",
         ]
 
@@ -280,6 +286,7 @@ class TestBatchSummaryFeaturizer(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
             "Ionicity_Loew",
         ]
 

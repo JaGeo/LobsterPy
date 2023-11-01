@@ -8,7 +8,6 @@ This module defines classes to featurize Lobster data ready to be used for ML st
 from __future__ import annotations
 import gzip
 import json
-import os
 import warnings
 from pathlib import Path
 from typing import List, Tuple
@@ -16,12 +15,14 @@ from collections import namedtuple
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
+from monty.os.path import zpath
 from mendeleev import element
 from pymatgen.core.structure import Structure
 from pymatgen.io.lobster import Charge, Icohplist, MadelungEnergies
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
 from scipy.integrate import trapezoid
+from scipy.signal import hilbert
 from lobsterpy.cohp.analyze import Analysis
 
 warnings.filterwarnings("ignore")
@@ -35,6 +36,7 @@ class FeaturizeLobsterpy:
         path_to_lobster_calc: path containing lobster calc outputs
         path_to_json: path to lobster lightweight json
         bonds: "all" or "cation-anion" bonds
+        orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
     Attributes:
         get_df: returns a pandas dataframe with relevant icohp statistical data as columns from
         lobsterpy automatic bonding analysis
@@ -45,10 +47,12 @@ class FeaturizeLobsterpy:
         self,
         path_to_lobster_calc: str | None = None,
         path_to_json: str | None = None,
+        orbital_resolved: bool = False,
         bonds: str = "all",
     ):
         self.path_to_json = path_to_json
         self.path_to_lobster_calc = path_to_lobster_calc
+        self.orbital_resolved = orbital_resolved
         self.bonds = bonds
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
@@ -71,7 +75,9 @@ class FeaturizeLobsterpy:
         elif self.path_to_lobster_calc and not self.path_to_json:
             # get lobsterpy condensed bonding analysis data using get_lobsterpy_cba_dict method
             data = FeaturizeLobsterpy.get_lobsterpy_cba_dict(
-                path_to_lobster_calc=self.path_to_lobster_calc, bonds=self.bonds
+                path_to_lobster_calc=self.path_to_lobster_calc,
+                bonds=self.bonds,
+                orbital_resolved=self.orbital_resolved,
             )
 
             if not ids:
@@ -86,10 +92,18 @@ class FeaturizeLobsterpy:
 
         icohp_mean = []
         icohp_sum = []
+        icohp_mean_orb_bndg = []
+        icohp_sum_orb_bndg = []
+        icohp_mean_orb_antibndg = []
+        icohp_sum_orb_antibndg = []
+        bond_orb = []
+        antibond_orb = []
         bond = []
         antibond = []
         # extract lobsterpy icohp related data for bond type specified
+
         # Results will differ for "all" and "cation-anion" mode.
+
         # In "all" bonds mode, the bonds will come up twice, also
         # cation-cation, anion-anion bonds will also be considered
 
@@ -114,27 +128,185 @@ class FeaturizeLobsterpy:
                     icohp_sum.append(float(v1["ICOHP_sum"]))
                     bond.append(v1["bonding"]["perc"])
                     antibond.append(v1["antibonding"]["perc"])
+                    if self.orbital_resolved:
+                        if v1["orbital_data"]["orbital_summary_stats"]:
+                            if (
+                                "max_bonding_contribution"
+                                in v1["orbital_data"]["orbital_summary_stats"]
+                            ):
+                                # if v1["orbital_data"]["orbital_summary_stats"][
+                                #     "max_bonding_contribution"
+                                # ]:
+                                for orb_pair in v1["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_bonding_contribution"]:
+                                    icohp_mean_orb_bndg.append(
+                                        v1["orbital_data"][orb_pair]["ICOHP_mean"]
+                                    )
+                                    icohp_sum_orb_bndg.append(
+                                        v1["orbital_data"][orb_pair]["ICOHP_sum"]
+                                    )
+                                    bond_orb.append(
+                                        v1["orbital_data"][orb_pair][
+                                            "orb_contribution_perc_bonding"
+                                        ]
+                                    )
+                            if (
+                                "max_antibonding_contribution"
+                                in v1["orbital_data"]["orbital_summary_stats"]
+                            ):
+                                # if v1["orbital_data"]["orbital_summary_stats"][
+                                #     "max_antibonding_contribution"
+                                # ]:
+                                for orb_pair in v1["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_antibonding_contribution"]:
+                                    icohp_mean_orb_antibndg.append(
+                                        v1["orbital_data"][orb_pair]["ICOHP_mean"]
+                                    )
+                                    icohp_sum_orb_antibndg.append(
+                                        v1["orbital_data"][orb_pair]["ICOHP_sum"]
+                                    )
+                                    antibond_orb.append(
+                                        v1["orbital_data"][orb_pair][
+                                            "orb_contribution_perc_antibonding"
+                                        ]
+                                    )
 
         # add ICOHP stats data (mean, min, max, standard deviation) as columns to the dataframe
-        df.loc[ids, "Icohp_mean_avg"] = np.mean(icohp_mean)
-        df.loc[ids, "Icohp_mean_max"] = np.max(icohp_mean)
-        df.loc[ids, "Icohp_mean_min"] = np.min(icohp_mean)
-        df.loc[ids, "Icohp_mean_std"] = np.std(icohp_mean)
 
-        df.loc[ids, "Icohp_sum_avg"] = np.mean(icohp_sum)
-        df.loc[ids, "Icohp_sum_max"] = np.max(icohp_sum)
-        df.loc[ids, "Icohp_sum_min"] = np.min(icohp_sum)
-        df.loc[ids, "Icohp_sum_std"] = np.std(icohp_sum)
+        df.loc[ids, "Icohp_mean_avg"] = (
+            0 if len(icohp_mean) == 0 else np.mean(icohp_mean)
+        )
+        df.loc[ids, "Icohp_mean_max"] = (
+            0 if len(icohp_mean) == 0 else np.max(icohp_mean)
+        )
+        df.loc[ids, "Icohp_mean_min"] = (
+            0 if len(icohp_mean) == 0 else np.min(icohp_mean)
+        )
+        df.loc[ids, "Icohp_mean_std"] = (
+            0 if len(icohp_mean) == 0 else np.std(icohp_mean)
+        )
 
-        df.loc[ids, "bonding_perc_avg"] = np.mean(bond)
-        df.loc[ids, "bonding_perc_max"] = np.max(bond)
-        df.loc[ids, "bonding_perc_min"] = np.min(bond)
-        df.loc[ids, "bonding_perc_std"] = np.std(bond)
+        df.loc[ids, "Icohp_sum_avg"] = 0 if len(icohp_sum) == 0 else np.mean(icohp_sum)
+        df.loc[ids, "Icohp_sum_max"] = 0 if len(icohp_sum) == 0 else np.max(icohp_sum)
+        df.loc[ids, "Icohp_sum_min"] = 0 if len(icohp_sum) == 0 else np.min(icohp_sum)
+        df.loc[ids, "Icohp_sum_std"] = 0 if len(icohp_sum) == 0 else np.std(icohp_sum)
 
-        df.loc[ids, "antibonding_perc_avg"] = np.mean(antibond)
-        df.loc[ids, "antibonding_perc_min"] = np.min(antibond)
-        df.loc[ids, "antibonding_perc_max"] = np.max(antibond)
-        df.loc[ids, "antibonding_perc_std"] = np.std(antibond)
+        df.loc[ids, "bonding_perc_avg"] = 0 if len(bond) == 0 else np.mean(bond)
+        df.loc[ids, "bonding_perc_max"] = 0 if len(bond) == 0 else np.max(bond)
+        df.loc[ids, "bonding_perc_min"] = 0 if len(bond) == 0 else np.min(bond)
+        df.loc[ids, "bonding_perc_std"] = 0 if len(bond) == 0 else np.std(bond)
+
+        df.loc[ids, "antibonding_perc_avg"] = (
+            0 if len(antibond) == 0 else np.mean(antibond)
+        )
+        df.loc[ids, "antibonding_perc_min"] = (
+            0 if len(antibond) == 0 else np.min(antibond)
+        )
+        df.loc[ids, "antibonding_perc_max"] = (
+            0 if len(antibond) == 0 else np.max(antibond)
+        )
+        df.loc[ids, "antibonding_perc_std"] = (
+            0 if len(antibond) == 0 else np.std(antibond)
+        )
+
+        if self.orbital_resolved:
+            # bonding orbital
+            df.loc[ids, "Icohp_bndg_orb_mean_avg"] = (
+                0 if len(icohp_mean_orb_bndg) == 0 else np.mean(icohp_mean_orb_bndg)
+            )
+            df.loc[ids, "Icohp_bndg_orb_mean_max"] = (
+                0 if len(icohp_mean_orb_bndg) == 0 else np.max(icohp_mean_orb_bndg)
+            )
+            df.loc[ids, "Icohp_bndg_orb_mean_min"] = (
+                0 if len(icohp_mean_orb_bndg) == 0 else np.min(icohp_mean_orb_bndg)
+            )
+            df.loc[ids, "Icohp_bndg_orb_mean_std"] = (
+                0 if len(icohp_mean_orb_bndg) == 0 else np.std(icohp_mean_orb_bndg)
+            )
+
+            df.loc[ids, "Icohp_bndg_orb_sum_avg"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.mean(icohp_sum_orb_bndg)
+            )
+            df.loc[ids, "Icohp_bndg_orb_sum_max"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.max(icohp_sum_orb_bndg)
+            )
+            df.loc[ids, "Icohp_bndg_orb_sum_min"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.min(icohp_sum_orb_bndg)
+            )
+            df.loc[ids, "Icohp_bndg_orb_sum_std"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.std(icohp_sum_orb_bndg)
+            )
+
+            df.loc[ids, "bonding_orb_perc_avg"] = (
+                0 if len(bond_orb) == 0 else np.mean(bond_orb)
+            )
+            df.loc[ids, "bonding_orb_perc_max"] = (
+                0 if len(bond_orb) == 0 else np.max(bond_orb)
+            )
+            df.loc[ids, "bonding_orb_perc_min"] = (
+                0 if len(bond_orb) == 0 else np.min(bond_orb)
+            )
+            df.loc[ids, "bonding_orb_perc_std"] = (
+                0 if len(bond_orb) == 0 else np.std(bond_orb)
+            )
+
+            # anti-bonding orbital
+            df.loc[ids, "Icohp_antibndg_orb_mean_avg"] = (
+                0
+                if len(icohp_mean_orb_antibndg) == 0
+                else np.mean(icohp_mean_orb_antibndg)
+            )
+            df.loc[ids, "Icohp_antibndg_orb_mean_max"] = (
+                0
+                if len(icohp_mean_orb_antibndg) == 0
+                else np.max(icohp_mean_orb_antibndg)
+            )
+            df.loc[ids, "Icohp_antibndg_orb_mean_min"] = (
+                0
+                if len(icohp_mean_orb_antibndg) == 0
+                else np.min(icohp_mean_orb_antibndg)
+            )
+            df.loc[ids, "Icohp_antibndg_orb_mean_std"] = (
+                0
+                if len(icohp_mean_orb_antibndg) == 0
+                else np.std(icohp_mean_orb_antibndg)
+            )
+
+            df.loc[ids, "Icohp_antibndg_orb_sum_avg"] = (
+                0
+                if len(icohp_sum_orb_antibndg) == 0
+                else np.mean(icohp_sum_orb_antibndg)
+            )
+            df.loc[ids, "Icohp_antibndg_orb_sum_max"] = (
+                0
+                if len(icohp_sum_orb_antibndg) == 0
+                else np.max(icohp_sum_orb_antibndg)
+            )
+            df.loc[ids, "Icohp_antibndg_orb_sum_min"] = (
+                0
+                if len(icohp_sum_orb_antibndg) == 0
+                else np.min(icohp_sum_orb_antibndg)
+            )
+            df.loc[ids, "Icohp_antibndg_orb_sum_std"] = (
+                0
+                if len(icohp_sum_orb_antibndg) == 0
+                else np.std(icohp_sum_orb_antibndg)
+            )
+
+            df.loc[ids, "antibonding_orb_perc_avg"] = (
+                0 if len(antibond_orb) == 0 else np.mean(antibond_orb)
+            )
+            df.loc[ids, "antibonding_orb_perc_max"] = (
+                0 if len(antibond_orb) == 0 else np.max(antibond_orb)
+            )
+            df.loc[ids, "antibonding_orb_perc_min"] = (
+                0 if len(antibond_orb) == 0 else np.min(antibond_orb)
+            )
+            df.loc[ids, "antibonding_orb_perc_std"] = (
+                0 if len(antibond_orb) == 0 else np.std(antibond_orb)
+            )
 
         # add madelung energies for the structure
         df.loc[ids, "Madelung_Mull"] = data["madelung_energies"]["Mulliken"]
@@ -165,7 +337,9 @@ class FeaturizeLobsterpy:
         return lobster_data
 
     @staticmethod
-    def get_lobsterpy_cba_dict(path_to_lobster_calc: str, bonds: str) -> dict:
+    def get_lobsterpy_cba_dict(
+        path_to_lobster_calc: str, bonds: str, orbital_resolved: bool
+    ) -> dict:
         """
         This function uses lobsterpy.cohp.analyze.Analysis class to generate a python dictionary object
         with lobster summmarized bonding analysis data.
@@ -173,6 +347,7 @@ class FeaturizeLobsterpy:
         Args:
             path_to_lobster_calc: path to lobsterpy lightweight json file
             bonds: "all" or "cation-anion" bonds
+            orbital_resolved:  bool indicating whether analysis is performed orbital wise
 
         Returns:
             Returns a dictionary with lobster summmarized bonding analysis data
@@ -192,7 +367,7 @@ class FeaturizeLobsterpy:
             file_path = dir_name / default_value
             req_files_lobsterpy[file] = file_path  # type: ignore
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = Path(zpath(file_path))
                 if gz_file_path.exists():
                     req_files_lobsterpy[file] = gz_file_path  # type: ignore
                 else:
@@ -219,6 +394,7 @@ class FeaturizeLobsterpy:
                 summed_spins=False,  # we will always use spin polarization here
                 cutoff_icohp=0.10,
                 which_bonds=which_bonds,
+                orbital_resolved=orbital_resolved,
             )
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
@@ -228,9 +404,7 @@ class FeaturizeLobsterpy:
         madelung_energies_path = dir_name / "MadelungEnergies.lobster"
         # check if .gz file exists and update Madelung Energies path
         if not madelung_energies_path.exists():
-            gz_file_path = madelung_energies_path.with_name(
-                madelung_energies_path.name + ".gz"
-            )
+            gz_file_path = Path(zpath(madelung_energies_path))
             if gz_file_path.exists():
                 madelung_energies_path = gz_file_path
 
@@ -247,7 +421,7 @@ class FeaturizeLobsterpy:
         else:
             warnings.warn(
                 "MadelungEnergies.lobster file not found in Lobster calc directory provided"
-                " Will set Madelung Engeries for crystal structure values to NaN"
+                " Will set Madelung Energies for crystal structure values to NaN"
             )
             madelung_energies = {
                 "Mulliken": np.nan,
@@ -319,6 +493,7 @@ class FeaturizeCOXX:
         self,
         ids: str | None = None,
         label_list: List[str] | None = None,
+        orbital: str | None = None,
         per_bond: bool = True,
         spin_type: str = "summed",
         binning: bool = True,
@@ -336,7 +511,9 @@ class FeaturizeCOXX:
             n_bins: Number of bins to be used in the fingerprint (default is 256)
             normalize: If true, normalizes the area under fp to equal to 1 (default is True)
             label_list: Specify bond lables as a list for which cohp fingerprints are needed
-            per_bond: Will scale cohp values by number of bonds i.e length of label_list arg
+            orbital: Orbital for which fingerprint needs is to be computed. Cannot be used independently.
+            Always a needs label_list.
+            per_bond: Will scale cohp values by number of bonds i.e. length of label_list arg
             (Only affects when label_list is not None)
 
 
@@ -362,10 +539,17 @@ class FeaturizeCOXX:
         if min_e is None:
             min_e = np.min(energies)
 
-        if label_list:
+        if label_list is not None:
             divisor = len(label_list) if per_bond else 1
+        if label_list is not None and orbital is None:
             coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_list(
                 label_list, divisor=divisor
+            ).get_cohp()
+        elif label_list and orbital:
+            coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_and_orbital_list(
+                label_list=label_list,
+                orbital_list=[orbital] * len(label_list),
+                divisor=divisor,
             ).get_cohp()
         else:
             coxxcar_obj = coxxcar_obj.get_cohp()
@@ -542,38 +726,57 @@ class FeaturizeCOXX:
 
         return per_bnd, per_antibnd, w_icoxx, ein
 
+    @staticmethod
     def _calc_moment_features(
-        self, label_list: List[str] | None = None, per_bond=True
-    ) -> Tuple[float, float, float, float]:
+        complete_coxx_obj: CompleteCohp,
+        feature_type: str,
+        e_range: List[float],
+        label_list: List[str] | None = None,
+        orbital: str | None = None,
+        per_bond=True,
+    ) -> Tuple[float, float, float, float, float]:
         """
         Wrapper method to calculate band center,width, skewness, and kurtosis of the COXX
+
         Args:
+            complete_coxx_obj: CompleteCohp object
+            feature_type: feature type for moment features calculation
+            e_range: range of energy relative to fermi for which moment features needs to be computed
             label_list: List of bond labels
-            per_bond: Will scale cohp values by number of bonds i.e length of label_list arg
+            orbital: orbital for which moment features need to be calculated. Cannot be used independently.
+            Always needs a label_list.
+            per_bond: Will scale cohp values by number of bonds i.e. length of label_list arg
             (Only affects when label_list is not None)
 
         Returns:
             coxx center,width, skewness, and kurtosis in eV
         """
-        if label_list:
+        if label_list is not None:
             divisor = len(label_list) if per_bond else 1
-            coxxcar = self.completecoxx.get_summed_cohp_by_label_list(
+
+        if label_list and orbital is None:
+            coxxcar = complete_coxx_obj.get_summed_cohp_by_label_list(
                 label_list, divisor=divisor
             ).get_cohp()
-
+        elif label_list and orbital:
+            coxxcar = complete_coxx_obj.get_summed_cohp_by_label_and_orbital_list(
+                label_list=label_list,
+                orbital_list=[orbital] * len(label_list),
+                divisor=divisor,
+            )
         else:
-            coxxcar = self.completecoxx.get_cohp()
+            coxxcar = complete_coxx_obj.get_cohp()
 
         if Spin.down in coxxcar:
             coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
         else:
             coxx_all = coxxcar[Spin.up]
 
-        energies = self.completecoxx.energies - self.completecoxx.efermi
+        energies = complete_coxx_obj.energies - complete_coxx_obj.efermi
 
         coxx_dict = {}
         tol = 1e-6
-        if not self.are_cobis and not self.are_coops:
+        if not complete_coxx_obj.are_cobis and not complete_coxx_obj.are_coops:
             coxx_dict["bonding"] = np.array(
                 [scohp if scohp <= tol else 0 for scohp in coxx_all]
             )
@@ -591,63 +794,66 @@ class FeaturizeCOXX:
             coxx_dict["overall"] = coxx_all
 
         try:
-            coxx_center = self._get_coxx_center(
-                coxx=coxx_dict[self.feature_type],
+            coxx_center = FeaturizeCOXX.get_coxx_center(
+                coxx=coxx_dict[feature_type],
                 energies=energies,
-                e_range=self.e_range,
+                e_range=e_range,
             )
             coxx_width = np.sqrt(
-                self._get_n_moment(
+                FeaturizeCOXX.get_n_moment(
                     n=2,
-                    coxx=coxx_dict[self.feature_type],
+                    coxx=coxx_dict[feature_type],
                     energies=energies,
-                    e_range=self.e_range,
+                    e_range=e_range,
                 )
             )
-            coxx_skew = self._get_n_moment(
+            coxx_skew = FeaturizeCOXX.get_n_moment(
                 n=3,
-                coxx=coxx_dict[self.feature_type],
+                coxx=coxx_dict[feature_type],
                 energies=energies,
-                e_range=self.e_range,
-            ) / self._get_n_moment(
+                e_range=e_range,
+            ) / FeaturizeCOXX.get_n_moment(
                 n=2,
-                coxx=coxx_dict[self.feature_type],
+                coxx=coxx_dict[feature_type],
                 energies=energies,
-                e_range=self.e_range,
+                e_range=e_range,
             ) ** (
                 3 / 2
             )
 
             coxx_kurt = (
-                self._get_n_moment(
+                FeaturizeCOXX.get_n_moment(
                     n=4,
-                    coxx=coxx_dict[self.feature_type],
+                    coxx=coxx_dict[feature_type],
                     energies=energies,
-                    e_range=self.e_range,
+                    e_range=e_range,
                 )
-                / self._get_n_moment(
+                / FeaturizeCOXX.get_n_moment(
                     n=2,
-                    coxx=coxx_dict[self.feature_type],
+                    coxx=coxx_dict[feature_type],
                     energies=energies,
-                    e_range=self.e_range,
+                    e_range=e_range,
                 )
                 ** 2
+            )
+            coxx_edge = FeaturizeCOXX.get_cohp_edge(
+                coxx=coxx_dict[feature_type], energies=energies, e_range=e_range
             )
         except KeyError:
             raise ValueError(
                 "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall"
             )
 
-        return coxx_center, coxx_width, coxx_skew, coxx_kurt
+        return coxx_center, coxx_width, coxx_skew, coxx_kurt, coxx_edge
 
-    def _get_coxx_center(
-        self,
+    @staticmethod
+    def get_coxx_center(
         coxx: npt.NDArray[np.floating],
         energies: npt.NDArray[np.floating],
         e_range: List[float],
     ) -> float:
         """
-        Get the band width, defined as the first moment of the COXX
+        Get the bandwidth, defined as the first moment of the COXX
         Args:
             coxx: COXX array
             energies: energies corresponding  COXX
@@ -656,14 +862,14 @@ class FeaturizeCOXX:
         Returns:
             coxx center in eV
         """
-        coxx_center = self._get_n_moment(
+        coxx_center = FeaturizeCOXX.get_n_moment(
             n=1, coxx=coxx, energies=energies, e_range=e_range, center=False
         )
 
         return coxx_center
 
-    def _get_n_moment(
-        self,
+    @staticmethod
+    def get_n_moment(
         n: float,
         coxx: npt.NDArray[np.floating],
         energies: npt.NDArray[np.floating],
@@ -678,14 +884,15 @@ class FeaturizeCOXX:
             n: The order for the moment
             coxx: COXX array
             energies: energies array
+            e_range: range of energy to compute nth moment
             center: Take moments with respect to the COXX center
 
         Returns:
             COXX nth moment in eV
         """
         if e_range:
-            min_e = self.e_range[0]
-            max_e = self.e_range[1]
+            min_e = e_range[0]
+            max_e = e_range[1]
             if min_e is None:
                 min_e = min(energies)
             if max_e is None:
@@ -702,7 +909,7 @@ class FeaturizeCOXX:
         energies = energies[mask]
 
         if center:
-            coxx_center = self._get_coxx_center(
+            coxx_center = FeaturizeCOXX.get_coxx_center(
                 coxx=coxx, energies=energies, e_range=[min_e, max_e]
             )
             p = energies - coxx_center
@@ -712,6 +919,45 @@ class FeaturizeCOXX:
         nth_moment = np.trapz(p**n * coxx, x=energies) / np.trapz(coxx, x=energies)  # type: ignore
 
         return nth_moment
+
+    @staticmethod
+    def get_cohp_edge(
+        coxx: npt.NDArray[np.floating],
+        energies: npt.NDArray[np.floating],
+        e_range: list[float] | None,
+    ):
+        """
+        Get the highest peak position of hilbert transformed COXX
+
+        Args:
+            coxx: COXX array
+            energies: energies array
+            e_range: range of energy to coxx edge (max peak position)
+
+        Returns:
+            COXX edge (max peak position) in eV
+        """
+        if e_range:
+            min_e = e_range[0]
+            max_e = e_range[1]
+            if min_e is None:
+                min_e = min(energies)
+            if max_e is None:
+                max_e = max(energies)
+        else:
+            min_e = min(energies)
+            max_e = max(energies)
+
+        tol = 1e-6
+
+        mask = (energies >= min_e - tol) & (energies <= max_e + tol)
+
+        coxx = coxx[mask]
+        energies = energies[mask]
+
+        coxx_transformed = np.imag(hilbert(coxx))
+
+        return energies[np.argmax(coxx_transformed)]
 
     def get_summarized_coxx_df(
         self,
@@ -740,42 +986,60 @@ class FeaturizeCOXX:
             ein_xx,
         ) = self._calculate_wicoxx_ein()
 
-        if self.are_coops:
-            cc, cw, cs, ck = self._calc_moment_features(
-                label_list=label_list, per_bond=per_bond
-            )
-            df.loc[ids, "bnd_wICOOP"] = per_bnd_xx
-            df.loc[ids, "antibnd_wICOOP"] = per_antibnd_xx
-            df.loc[ids, "w_ICOOP"] = w_icoxx
-            df.loc[ids, "EIN_ICOOP"] = ein_xx
-            df.loc[ids, "center_COOP"] = cc
-            df.loc[ids, "width_COOP"] = cw
-            df.loc[ids, "skewness_COOP"] = cs
-            df.loc[ids, "kurtosis_COOP"] = ck
-        elif self.are_cobis:
-            cc, cw, cs, ck = self._calc_moment_features(
-                label_list=label_list, per_bond=per_bond
-            )
-            df.loc[ids, "bnd_wICOBI"] = per_bnd_xx
-            df.loc[ids, "antibnd_wICOBI"] = per_antibnd_xx
-            df.loc[ids, "w_ICOBI"] = w_icoxx
-            df.loc[ids, "EIN_ICOBI"] = ein_xx
-            df.loc[ids, "center_COBI"] = cc
-            df.loc[ids, "width_COBI"] = cw
-            df.loc[ids, "skewness_COBI"] = cs
-            df.loc[ids, "kurtosis_COBI"] = ck
+        if self.are_cobis:
+            type_pop = "COBI"
+        elif self.are_coops:
+            type_pop = "COOP"
         else:
-            cc, cw, cs, ck = self._calc_moment_features(
-                label_list=label_list, per_bond=per_bond
-            )
-            df.loc[ids, "bnd_wICOHP"] = per_bnd_xx
-            df.loc[ids, "antibnd_wICOHP"] = per_antibnd_xx
-            df.loc[ids, "w_ICOHP"] = w_icoxx
-            df.loc[ids, "EIN_ICOHP"] = ein_xx
-            df.loc[ids, "center_COHP"] = cc
-            df.loc[ids, "width_COHP"] = cw
-            df.loc[ids, "skewness_COHP"] = cs
-            df.loc[ids, "kurtosis_COHP"] = ck
+            type_pop = "COHP"
+
+        # if self.are_coops:
+        cc, cw, cs, ck, ce = FeaturizeCOXX._calc_moment_features(
+            complete_coxx_obj=self.completecoxx,
+            label_list=label_list,
+            per_bond=per_bond,
+            feature_type=self.feature_type,
+            e_range=self.e_range,
+            orbital=None,
+        )
+        df.loc[ids, f"bnd_wI{type_pop}"] = per_bnd_xx
+        df.loc[ids, f"antibnd_wI{type_pop}"] = per_antibnd_xx
+        df.loc[ids, f"w_I{type_pop}"] = w_icoxx
+        df.loc[ids, f"EIN_I{type_pop}"] = ein_xx
+        df.loc[ids, f"center_{type_pop}"] = cc
+        df.loc[ids, f"width_{type_pop}"] = cw
+        df.loc[ids, f"skewness_{type_pop}"] = cs
+        df.loc[ids, f"kurtosis_{type_pop}"] = ck
+        df.loc[ids, f"edge_{type_pop}"] = ce
+
+        # elif self.are_cobis:
+        #     cc, cw, cs, ck, ce = FeaturizeCOXX._calc_moment_features(
+        #         complete_coxx_obj=self.completecoxx,
+        #         label_list=label_list, per_bond=per_bond, feature_type=self.feature_type, e_range=self.e_range,
+        #     )
+        #     df.loc[ids, "bnd_wICOBI"] = per_bnd_xx
+        #     df.loc[ids, "antibnd_wICOBI"] = per_antibnd_xx
+        #     df.loc[ids, "w_ICOBI"] = w_icoxx
+        #     df.loc[ids, "EIN_ICOBI"] = ein_xx
+        #     df.loc[ids, "center_COBI"] = cc
+        #     df.loc[ids, "width_COBI"] = cw
+        #     df.loc[ids, "skewness_COBI"] = cs
+        #     df.loc[ids, "kurtosis_COBI"] = ck
+        #     df.loc[ids, "edge_COBI"] = ce
+        # else:
+        #     cc, cw, cs, ck, ce = FeaturizeCOXX._calc_moment_features(
+        #         complete_coxx_obj=self.completecoxx,
+        #         label_list=label_list, per_bond=per_bond, feature_type=self.feature_type, e_range=self.e_range,
+        #     )
+        #     df.loc[ids, "bnd_wICOHP"] = per_bnd_xx
+        #     df.loc[ids, "antibnd_wICOHP"] = per_antibnd_xx
+        #     df.loc[ids, "w_ICOHP"] = w_icoxx
+        #     df.loc[ids, "EIN_ICOHP"] = ein_xx
+        #     df.loc[ids, "center_COHP"] = cc
+        #     df.loc[ids, "width_COHP"] = cw
+        #     df.loc[ids, "skewness_COHP"] = cs
+        #     df.loc[ids, "kurtosis_COHP"] = ck
+        #     df.loc[ids, "edge_COHP"] = ce
 
         return df
 

@@ -12,6 +12,7 @@ from pathlib import Path
 import warnings
 import numpy as np
 import pandas as pd
+from monty.os.path import zpath
 from tqdm.autonotebook import tqdm
 from lobsterpy.featurize.core import (
     FeaturizeLobsterpy,
@@ -34,6 +35,7 @@ class BatchSummaryFeaturizer:
         charge_type : set charge type used for computing ionicity. Possible options are
         "mulliken", "loewdin or "both"
         bonds: "all_bonds" or "cation_anion_bonds"
+        orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
         include_cobi_data : bool stating to include COBICAR.lobster features
         include_coop_data: bool stating to include COOPCAR.lobster features
         e_range : range of energy relative to fermi for which moment features needs to be computed
@@ -50,6 +52,7 @@ class BatchSummaryFeaturizer:
         feature_type: str = "antibonding",
         charge_type: str = "both",
         bonds: str = "all",
+        orbital_resolved: bool = False,
         include_cobi_data: bool = False,
         include_coop_data: bool = False,
         e_range: List[float] = [-5.0, 0.0],
@@ -60,6 +63,7 @@ class BatchSummaryFeaturizer:
         self.feature_type = feature_type
         self.charge_type = charge_type
         self.bonds = bonds
+        self.orbital_resolved = orbital_resolved
         self.include_cobi_data = include_cobi_data
         self.include_coop_data = include_coop_data
         self.e_range = e_range
@@ -85,6 +89,7 @@ class BatchSummaryFeaturizer:
             featurize_lobsterpy = FeaturizeLobsterpy(
                 path_to_lobster_calc=file_name_or_path,
                 bonds=self.bonds,
+                orbital_resolved=self.orbital_resolved
             )
 
         df = featurize_lobsterpy.get_df()
@@ -111,7 +116,7 @@ class BatchSummaryFeaturizer:
             file_path = dir_name / default_value
             req_files[file] = file_path  # type: ignore
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = Path(zpath(file_path))
                 if gz_file_path.exists():
                     req_files[file] = gz_file_path  # type: ignore
 
@@ -148,7 +153,7 @@ class BatchSummaryFeaturizer:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -182,7 +187,7 @@ class BatchSummaryFeaturizer:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -236,7 +241,7 @@ class BatchSummaryFeaturizer:
             file_path = dir_name / default_value
             req_files[file] = file_path  # type: ignore
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = Path(zpath(file_path))
                 if gz_file_path.exists():
                     req_files[file] = gz_file_path  # type: ignore
 
@@ -554,7 +559,7 @@ class BatchCoxxFingerprint:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -572,7 +577,7 @@ class BatchCoxxFingerprint:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -590,7 +595,7 @@ class BatchCoxxFingerprint:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -601,7 +606,7 @@ class BatchCoxxFingerprint:
 
         structure_path = dir_name / "POSCAR"
         if not structure_path.exists():
-            gz_file_path = structure_path.with_name(structure_path.name + ".gz")
+            gz_file_path = Path(zpath(structure_path))
             if gz_file_path.exists():
                 structure_path = gz_file_path
 

@@ -245,6 +245,7 @@ class TestFeaturizeCOXX(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
         ]
         self.assertCountEqual(list(df.columns), expected_cols)
 
@@ -323,6 +324,7 @@ class TestFeaturizeCOXX(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
         ]
         self.assertCountEqual(list(df.columns), expected_cols)
 
@@ -365,6 +367,7 @@ class TestFeaturizeCOXX(unittest.TestCase):
             "width_COHP",
             "skewness_COHP",
             "kurtosis_COHP",
+            "edge_COHP",
         ]
         self.assertCountEqual(list(df.columns), expected_cols)
 
