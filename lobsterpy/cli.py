@@ -205,7 +205,6 @@ def get_parser() -> argparse.ArgumentParser:
     plotting_parent = argparse.ArgumentParser(add_help=False)
     plotting_group = plotting_parent.add_argument_group("Plotting")
     plotting_group.add_argument(
-        "-fs",
         "--fontsize",
         "--font-size",
         type=float,
