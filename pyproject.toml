@@ -40,6 +40,8 @@ changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
 
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.14.0"]
+dev = ["pre-commit>=2.12.1"]
+tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov"]
 docs = ["Sphinx==4.5.0",
     "jupyter",
     "sphinx-argparse",
