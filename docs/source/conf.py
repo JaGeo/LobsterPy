@@ -33,16 +33,20 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
+    "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
     "sphinxarg.ext",
-    "m2r2",
+    "myst_nb",
+    "sphinx_design",
+    "sphinx_copybutton",
 ]
 
-napoleon_include_private_with_doc = True
-napoleon_include_special_with_doc = True
-autoclass_content = "both"
+#napoleon_include_private_with_doc = True
+#napoleon_include_special_with_doc = True
+#autoclass_content = "both"
 
-source_suffix = [".rst", ".md"]
+
+source_suffix = [".rst", ".md", ".ipynb"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -52,15 +56,31 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 
 exclude_patterns = [
-    "../../lobsterpy/test",
-    "../../lobsterpy/cohp/test",
-    "../../lobsterpy/plotting/test",
-    "../../lobsterpy/featurize/test",
-    "../../lobsterpy/structuregraph/test",
-    "../../lobsterpy/TestData",
+    "**/test/*",
     "Thumbs.db",
     ".DS_Store",
 ]
+
+myst_heading_anchors = 2  # enable headings as link targets
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "dollarmath",
+    "html_admonition",
+    "html_image",
+]
+
+
+
+# use type hints
+autodoc_typehints = "description"
+# autoclass_content = "both"
+# autodoc_member_order = "bysource"
+
+# better napoleon support
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_use_ivar = True
 
 
 def run_apidoc(_):
@@ -108,3 +128,8 @@ html_theme = "sphinx_book_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+# hide sphinx footer
+html_show_sphinx = False
+html_show_sourcelink = False
+html_title = "lobsterpy"
