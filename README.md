@@ -11,11 +11,11 @@ Please note that LobsterPy relies on the LOBSTER computation output files. Thus,
 
 
 ## Installation
-#### Plain installation
-You can use ``pip install lobsterpy``
+#### Standard installation
+Install using ``pip install lobsterpy``
 
-Now Lobsterpy also has a featurizer module that enables one to generate features that could be used as input for Machine learning studies. 
-To install Lobsterpy with featurizer module capabilities use ``pip install lobsterpy[featurizer]``
+#### Installation with featurizer
+Install using ``pip install lobsterpy[featurizer]``
 
 
 ## Basic usage

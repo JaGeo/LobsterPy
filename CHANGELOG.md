@@ -1,3 +1,5 @@
+# Changelog
+
 ## v0.3.2
 - cli invert axis, add get site all orbitals dos plot by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/149
 - Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/150
