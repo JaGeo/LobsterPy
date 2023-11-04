@@ -271,9 +271,18 @@ plot COHP and COOP for bond 3 and 30.
 3. Plotting of DOS
 ~~~~~~~~~~~~~~~~~~~
 
--  ``lobsterpy plot-dos --summedspins`` will plot total and element DOS.
+-  ``lobsterpy plot-dos --summedspins`` will plot total and element DOS. Example output plot is shown below.
 
-4. Additional Options
+.. image:: tutorial_assets/DOS_example.png
+
+4. Plotting of ICOHPs/ ICOOPs/ICOBIS againsts bond lengths
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  ``lobsterpy plot-icohps-distances`` will plot ICOHPs against bond lengths. Example output plot is shown below.
+
+.. image:: tutorial_assets/ICOHPs_distance_example.png
+
+5. Additional Options
 ~~~~~~~~~~~~~~~~~~~~~
 
 You can also customize the style and parameters of the plots generated
@@ -286,7 +295,9 @@ either of these commands:
    lobsterpy automatic-plot-ia --help
    lobsterpy calc-description -h
    lobsterpy create-inputs --help
-   lobsterpy plot-dos --help 
+   lobsterpy description --help
+   lobsterpy plot-dos --help
+   lobsterpy plot-icohps-distances --help 
    lobsterpy plot --help
    
 

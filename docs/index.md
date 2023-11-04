@@ -2,6 +2,7 @@
 :caption: User Guide
 :hidden:
 installation/index
+fundamentals/index
 tutorial/index
 ```
 

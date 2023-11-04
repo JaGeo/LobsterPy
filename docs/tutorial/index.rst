@@ -1,7 +1,7 @@
 Tutorial
 =========
 
-Written by Aakash Naik (aakash.naik@bam.de) based on suggestions provided by Dr. Janine George (janine.george@bam.de)
+Written by Aakash Naik (aakash.naik@bam.de) based on suggestions provided by Prof. Dr. Janine George (janine.george@bam.de)
 
 .. note::
    

@@ -8,6 +8,8 @@ CLI Reference
    cli_subcommands/autoplot
    cli_subcommands/autoplotia
    cli_subcommands/calcdesc
+   cli_subcommands/description
    cli_subcommands/createinputs
    cli_subcommands/plotdos
    cli_subcommands/ploticohps
+   cli_subcommands/plot
