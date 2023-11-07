@@ -713,7 +713,6 @@ class BatchStructureGraphs:
         Returns:
             A  structure graph with LOBSTER data as edge and node properties in structure graph objects
         """
-
         graph_all = LobsterGraph(
             path_to_poscar=f"{path_to_lobster_calc}/POSCAR.gz",
             path_to_charge=f"{path_to_lobster_calc}/CHARGE.lobster.gz",
