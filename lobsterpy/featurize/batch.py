@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 from monty.os.path import zpath
 from tqdm.autonotebook import tqdm
+from lobsterpy.structuregraph.graph import LobsterGraph
 from lobsterpy.featurize.core import (
     FeaturizeLobsterpy,
     FeaturizeCharges,
@@ -313,19 +314,18 @@ class BatchSummaryFeaturizer:
                 and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
             ]
 
+        row = []
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
-                pool.imap_unordered(
-                    self._featurizelobsterpy, file_name_or_path, chunksize=1
-                ),
-                total=len(file_name_or_path),
-                desc="Generating LobsterPy summary stats",
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
-                row.append(result)
+            with tqdm(
+                total=len(file_name_or_path), desc="Generating LobsterPy summary stats"
+            ) as pbar:
+                for _, result in enumerate(
+                    pool.imap_unordered(
+                        self._featurizelobsterpy, file_name_or_path, chunksize=1
+                    )
+                ):
+                    pbar.update()
+                    row.append(result)
 
         df_lobsterpy = pd.concat(row)
         df_lobsterpy.sort_index(inplace=True)
@@ -338,32 +338,30 @@ class BatchSummaryFeaturizer:
             and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
         ]
 
+        row = []
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
-                pool.imap_unordered(self._featurizecoxx, paths, chunksize=1),
-                total=len(paths),
-                desc="Generating COHP/COOP/COBI summary stats",
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
-                row.append(result)
+            with tqdm(
+                total=len(paths), desc="Generating COHP/COOP/COBI summary stats"
+            ) as pbar:
+                for i, result in enumerate(
+                    pool.imap_unordered(self._featurizecoxx, paths, chunksize=1)
+                ):
+                    pbar.update()
+                    row.append(result)
 
         df_coxx = pd.concat(row)
         df_coxx.sort_index(inplace=True)
 
+        row = []
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
-                pool.imap_unordered(self._featurizecharges, paths, chunksize=1),
-                total=len(paths),
-                desc="Generating charge based features",
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
-                row.append(result)
+            with tqdm(
+                total=len(paths), desc="Generating charge based features"
+            ) as pbar:
+                for _, result in enumerate(
+                    pool.imap_unordered(self._featurizecharges, paths, chunksize=1)
+                ):
+                    pbar.update()
+                    row.append(result)
 
         df_charges = pd.concat(row)
         df_charges.sort_index(inplace=True)
@@ -646,19 +644,122 @@ class BatchCoxxFingerprint:
             and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
         ]
 
+        row = []
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
-                pool.imap_unordered(self._fingerprint_df, paths, chunksize=1),
+            with tqdm(
                 total=len(paths),
-                desc="Generating {} fingerprints".format(self.fingerprint_for.upper()),
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
-                row.append(result)
+                desc=f"Generating {self.fingerprint_for.upper()} fingerprints",
+            ) as pbar:
+                for _, result in enumerate(
+                    pool.imap_unordered(self._fingerprint_df, paths, chunksize=1)
+                ):
+                    pbar.update()
+                    row.append(result)
 
         df = pd.concat(row)
         df.sort_index(inplace=True)
 
         return df
+
+
+class BatchStructureGraphs:
+    """
+    Batch Featurizer that generates structure graphs with lobster data.
+
+    Args:
+        path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
+        path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
+        which_bonds : selects which kind of bonds are analyzed. "all" is the default
+        start: start energy for bonding antibonding percent integration
+        n_jobs : parallel processes to run
+
+    Attributes:
+        get_df: A pandas dataframe with summary features
+
+    """
+
+    def __init__(
+        self,
+        path_to_lobster_calcs: str | Path,
+        add_additional_data_sg: bool = True,
+        which_bonds: str = "all",
+        start: float | None = None,
+        n_jobs: int = 4,
+    ):
+        """
+        Generate structure graphs with LOBSTER data via multiprocessing.
+
+        Args:
+            path_to_lobster_calcs: path to root directory consisting of all lobster calc
+            add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
+            path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
+            which_bonds : selects which kind of bonds are analyzed. "all" is the default
+            start: start energy for bonding antibonding percent integration
+            n_jobs : parallel processes to run
+
+        """
+        self.path_to_lobster_calcs = path_to_lobster_calcs
+        self.add_additional_data_sg = add_additional_data_sg
+        self.which_bonds = which_bonds
+        self.start = start
+        self.n_jobs = n_jobs
+
+    @staticmethod
+    def _get_sg_df(path_to_lobster_calc) -> pd.DataFrame:
+        """
+        Generate a structure graph with LOBSTER data bonding analysis data.
+
+        Returns:
+            A  structure graph with LOBSTER data as edge and node properties in structure graph objects
+        """
+
+        graph_all = LobsterGraph(
+            path_to_poscar=f"{path_to_lobster_calc}/POSCAR.gz",
+            path_to_charge=f"{path_to_lobster_calc}/CHARGE.lobster.gz",
+            path_to_cohpcar=f"{path_to_lobster_calc}/COHPCAR.lobster.gz",
+            path_to_icohplist=f"{path_to_lobster_calc}/ICOHPLIST.lobster.gz",
+            add_additional_data_sg=True,
+            path_to_icooplist=f"{path_to_lobster_calc}/ICOOPLIST.lobster.gz",
+            path_to_icobilist=f"{path_to_lobster_calc}/ICOBILIST.lobster.gz",
+            path_to_madelung=f"{path_to_lobster_calc}/MadelungEnergies.lobster.gz",
+            which_bonds="all",
+            start=None,
+        )
+
+        df = pd.DataFrame(index=[path_to_lobster_calc])
+
+        df.loc[path_to_lobster_calc, "structure_graph"] = graph_all.sg
+
+        return df
+
+    def get_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with structure graph with LOBSTER data.
+
+        Uses multiprocessing to speed up the process.
+
+        Returns:
+            Returns a pandas dataframe
+
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
+            with tqdm(total=len(paths), desc="Generating Structure Graphs") as pbar:
+                for _, result in enumerate(
+                    pool.imap_unordered(self._get_sg_df, paths, chunksize=1)
+                ):
+                    pbar.update()
+                    row.append(result)
+
+        df_sg = pd.concat(row)
+        df_sg.sort_index(inplace=True)
+
+        return df_sg
