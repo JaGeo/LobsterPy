@@ -730,13 +730,13 @@ class BatchStructureGraphs:
                 if gz_file_path.exists():
                     req_files[file] = gz_file_path  # type: ignore
 
-        charge_path = req_files.get("charge_path")
-        cohpcar_path = req_files.get("cohpcar_path")
-        icohplist_path = req_files.get("icohplist_path")
-        icooplist_path = req_files.get("icooplist_path")
-        icobilist_path = req_files.get("icobilist_path")
-        madelung_path = req_files.get("madelung_path")
-        structure_path = req_files.get("structure_path")
+        charge_path = str(req_files.get("charge_path"))
+        cohpcar_path = str(req_files.get("cohpcar_path"))
+        icohplist_path = str(req_files.get("icohplist_path"))
+        icooplist_path = str(req_files.get("icooplist_path"))
+        icobilist_path = str(req_files.get("icobilist_path"))
+        madelung_path = str(req_files.get("madelung_path"))
+        structure_path = str(req_files.get("structure_path"))
 
         graph = LobsterGraph(
             path_to_poscar=structure_path,
