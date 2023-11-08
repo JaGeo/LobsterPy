@@ -1,9 +1,7 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""
-Script to analyze Lobster outputs from the command line
-"""
+"""Script to analyze Lobster outputs from the command line."""
 from __future__ import annotations
 
 import argparse
@@ -14,24 +12,25 @@ from pathlib import Path
 import matplotlib.style
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Icohplist
+
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import (
-    PlainCohpPlotter,
-    get_style_list,
     IcohpDistancePlotter,
+    PlainCohpPlotter,
     PlainDosPlotter,
+    get_style_list,
 )
 
 
 def main() -> None:
-    """Entry point for setup.py installer"""
+    """Entry point for setup.py installer."""
     args = get_parser().parse_args()
     run(args)
 
 
 def get_parser() -> argparse.ArgumentParser:
-    """Construct argumentparser with subcommands and sections"""
+    """Construct argumentparser with subcommands and sections."""
     parser = argparse.ArgumentParser(
         description="Analyze and plot results from Lobster runs."
     )
@@ -82,7 +81,6 @@ def get_parser() -> argparse.ArgumentParser:
         "--potcar-symbols",
         dest="potcarsymbols",
         type=_potcar_symbols,
-        # nargs="+",
         help="List of potcar symbols",
     )
 
@@ -284,7 +282,7 @@ def get_parser() -> argparse.ArgumentParser:
         type=int,
         nargs="+",
         default=None,
-        help="Site index in the crystal structure for " "which DOS need to be added",
+        help="Site index in the crystal structure for which DOS need to be added",
     )
 
     advanced_plotting_args = argparse.ArgumentParser(add_help=False)
@@ -543,9 +541,13 @@ def get_parser() -> argparse.ArgumentParser:
 
 def _element_basis(string: str):
     """
-    Parse element and basis from string
-    Args: str
-    Returns: element, basis
+    Parse element and basis from string.
+
+    Args:
+            string: string to parse
+
+    Returns:
+            element, basis
     """
     cut_list = string.split(".")
     element = cut_list[0]
@@ -555,20 +557,19 @@ def _element_basis(string: str):
 
 def _potcar_symbols(string: str):
     """
-    Parse string of potcar symbols and return a list
+    Parse string of potcar symbols and return a list.
+
     Args:
-        string:
+        string: string of potcar symbols
 
     Returns:
         list of potcar symbols
     """
-    potcar_symbols_list = string.split(" ")
-
-    return potcar_symbols_list
+    return string.split(" ")
 
 
 def _user_figsize(width, height, aspect=None):
-    """Get figsize options from user input, if any
+    """Get figsize options from user input, if any.
 
     If only width x or height is provided, use a target aspect ratio to derive
     the other one.
@@ -590,6 +591,7 @@ def _user_figsize(width, height, aspect=None):
 # TODO: add automatic functionality for COBIs, COOPs
 def run(args):
     """
+    Run actions based on args.
 
     Args:
         args: args for cli
@@ -616,7 +618,7 @@ def run(args):
             "cohpcar": "COHPCAR.lobster",
         }
 
-        for arg_name, _ in default_files.items():
+        for arg_name in default_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
@@ -688,10 +690,7 @@ def run(args):
         "auto-plot-ia",
         "autoplotia",
     ]:
-        if args.allbonds:
-            which_bonds = "all"
-        else:
-            which_bonds = "cation-anion"
+        which_bonds = "all" if args.allbonds else "cation-anion"
 
         analyse = Analysis(
             path_to_poscar=args.poscar,
@@ -803,7 +802,7 @@ def run(args):
             # TODO: add check if orbital is in args.orbitalwise
 
             for label in args.bond_numbers:
-                if str(label) not in completecohp.bonds.keys():
+                if str(label) not in completecohp.bonds:
                     raise IndexError(
                         "The provided bond label "
                         + str(label)
@@ -889,7 +888,7 @@ def run(args):
             "incar": "INCAR",
         }
 
-        for arg_name, _ in default_files.items():
+        for arg_name in default_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
@@ -975,7 +974,7 @@ def run(args):
             "lobsterout": "lobsterout",
         }
 
-        for arg_name, _ in mandatory_files.items():
+        for arg_name in mandatory_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
@@ -991,7 +990,7 @@ def run(args):
             "potcar": "POTCAR",
         }
 
-        for arg_name, _ in optional_file.items():
+        for arg_name in optional_file:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
@@ -1004,7 +1003,7 @@ def run(args):
             bva_files = {
                 "charge": "CHARGE.lobster",
             }
-            for arg_name, _ in bva_files.items():
+            for arg_name in bva_files:
                 file_path = getattr(args, arg_name)
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
@@ -1023,7 +1022,7 @@ def run(args):
                 "vasprun": "vasprun.xml",
             }
 
-            for arg_name, _ in dos_files.items():
+            for arg_name in dos_files:
                 file_path = getattr(args, arg_name)
                 if not file_path.exists():
                     gz_file_path = file_path.with_name(file_path.name + ".gz")
@@ -1033,7 +1032,7 @@ def run(args):
                         raise ValueError(
                             "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
                         )
-        potcar_file_path = getattr(args, "potcar")
+        potcar_file_path = args.potcar
 
         quality_dict = Analysis.get_lobster_calc_quality_summary(
             path_to_poscar=args.poscar,
@@ -1064,7 +1063,7 @@ def run(args):
             "poscar": "POSCAR",
         }
 
-        for arg_name, _ in mandatory_files.items():
+        for arg_name in mandatory_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(file_path.name + ".gz")
