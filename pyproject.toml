@@ -33,10 +33,10 @@ dependencies = [
 "lobsterpy.plotting" = ["lobsterpy_base.mplstyle"]
 
 [project.urls]
-homepage = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
+homepage = "https://jageo.github.io/LobsterPy/"
 repository = "https://github.com/JaGeo/LobsterPy"
-documentation = "https://lobsterpy.readthedocs.io/en/latest/?badge=latest"
-changelog = "https://lobsterpy.readthedocs.io/en/latest/changelog_link.html"
+documentation = "https://jageo.github.io/LobsterPy/"
+changelog = "https://jageo.github.io/LobsterPy/changelog_link.html"
 
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.14.0"]
