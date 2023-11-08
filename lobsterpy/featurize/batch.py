@@ -669,7 +669,6 @@ class BatchStructureGraphs:
     Args:
         path_to_lobster_calcs: path to root directory consisting of all lobster calc
         add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
-        path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
         which_bonds : selects which kind of bonds are analyzed. "all" is the default
         start: start energy for bonding antibonding percent integration
         n_jobs : parallel processes to run
@@ -693,7 +692,6 @@ class BatchStructureGraphs:
         Args:
             path_to_lobster_calcs: path to root directory consisting of all lobster calc
             add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
-            path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
             which_bonds : selects which kind of bonds are analyzed. "all" is the default
             start: start energy for bonding antibonding percent integration
             n_jobs : parallel processes to run
@@ -705,30 +703,59 @@ class BatchStructureGraphs:
         self.start = start
         self.n_jobs = n_jobs
 
-    @staticmethod
-    def _get_sg_df(path_to_lobster_calc) -> pd.DataFrame:
+    def _get_sg_df(self, path_to_lobster_calc) -> pd.DataFrame:
         """
         Generate a structure graph with LOBSTER data bonding analysis data.
 
         Returns:
             A  structure graph with LOBSTER data as edge and node properties in structure graph objects
         """
-        graph_all = LobsterGraph(
-            path_to_poscar=f"{path_to_lobster_calc}/POSCAR.gz",
-            path_to_charge=f"{path_to_lobster_calc}/CHARGE.lobster.gz",
-            path_to_cohpcar=f"{path_to_lobster_calc}/COHPCAR.lobster.gz",
-            path_to_icohplist=f"{path_to_lobster_calc}/ICOHPLIST.lobster.gz",
-            add_additional_data_sg=True,
-            path_to_icooplist=f"{path_to_lobster_calc}/ICOOPLIST.lobster.gz",
-            path_to_icobilist=f"{path_to_lobster_calc}/ICOBILIST.lobster.gz",
-            path_to_madelung=f"{path_to_lobster_calc}/MadelungEnergies.lobster.gz",
-            which_bonds="all",
-            start=None,
+        dir_name = Path(path_to_lobster_calc)
+
+        req_files = {
+            "charge_path": "CHARGE.lobster",
+            "cohpcar_path": "COHPCAR.lobster",
+            "icohplist_path": "ICOHPLIST.lobster",
+            "icooplist_path": "ICOOPLIST.lobster",
+            "icobilist_path": "ICOBILIST.lobster",
+            "madelung_path": "MadelungEnergies.lobster",
+            "structure_path": "POSCAR",
+        }
+
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path  # type: ignore
+            if not file_path.exists():
+                gz_file_path = Path(zpath(file_path))
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path  # type: ignore
+
+        charge_path = req_files.get("charge_path")
+        cohpcar_path = req_files.get("cohpcar_path")
+        icohplist_path = req_files.get("icohplist_path")
+        icooplist_path = req_files.get("icooplist_path")
+        icobilist_path = req_files.get("icobilist_path")
+        madelung_path = req_files.get("madelung_path")
+        structure_path = req_files.get("structure_path")
+
+        graph = LobsterGraph(
+            path_to_poscar=structure_path,
+            path_to_charge=charge_path,
+            path_to_cohpcar=cohpcar_path,
+            path_to_icohplist=icohplist_path,
+            add_additional_data_sg=self.add_additional_data_sg,
+            path_to_icooplist=icooplist_path,
+            path_to_icobilist=icobilist_path,
+            path_to_madelung=madelung_path,
+            which_bonds=self.which_bonds,
+            start=self.start,
         )
 
-        df = pd.DataFrame(index=[path_to_lobster_calc])
+        ids = dir_name.name
 
-        df.loc[path_to_lobster_calc, "structure_graph"] = graph_all.sg
+        df = pd.DataFrame(index=[ids])
+
+        df.loc[ids, "structure_graph"] = graph.sg
 
         return df
 
