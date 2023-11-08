@@ -723,7 +723,7 @@ class Analysis:
     @staticmethod
     def _sort_name(pair, nameion=None):
         """
-        Places the cation first in a list of name strings.
+        Place the cation first in a list of name strings.
 
         Args:
             pair: ["O","Cu"]
@@ -896,7 +896,7 @@ class Analysis:
 
     def _integrate_antbdstates_below_efermi(self, cohp, start):
         """
-        Integrates the cohp data to compute bonding and anti-bonding contribution below efermi.
+        Integrate the cohp data to compute bonding and anti-bonding contribution below efermi.
 
         .. warning:: NEEDS MORE TESTS
 
@@ -926,7 +926,7 @@ class Analysis:
 
         def integrate_positive(y, x):
             """
-            Integrates only bonding interactions of COHPs.
+            Integrate only bonding interactions of COHPs.
 
             Args:
                 y: COHP values
@@ -944,7 +944,7 @@ class Analysis:
 
         def integrate_negative(y, x):
             """
-            Integrates only anti-bonding interactions of COHPs.
+            Integrate only anti-bonding interactions of COHPs.
 
             Args:
                 y: COHP values

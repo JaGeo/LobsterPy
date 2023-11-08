@@ -81,7 +81,6 @@ def get_parser() -> argparse.ArgumentParser:
         "--potcar-symbols",
         dest="potcarsymbols",
         type=_potcar_symbols,
-        # nargs="+",
         help="List of potcar symbols",
     )
 
@@ -568,8 +567,6 @@ def _potcar_symbols(string: str):
     """
     return string.split(" ")
 
-    # return potcar_symbols_list
-
 
 def _user_figsize(width, height, aspect=None):
     """Get figsize options from user input, if any.
@@ -694,10 +691,6 @@ def run(args):
         "autoplotia",
     ]:
         which_bonds = "all" if args.allbonds else "cation-anion"
-        # if args.allbonds:
-        #     which_bonds = "all"
-        # else:
-        #     which_bonds = "cation-anion"
 
         analyse = Analysis(
             path_to_poscar=args.poscar,
