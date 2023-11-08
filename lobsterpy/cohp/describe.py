@@ -818,7 +818,7 @@ class Description:
                         quality_dict[key]["abs_total_spilling"],
                     )
                 )
-            elif key == "band_overlaps":
+            elif key == "band_overlaps_analysis":
                 if quality_dict[key]["file_exists"]:
                     if quality_dict[key]["has_good_quality_maxDeviation"]:
                         text_des.append(
@@ -846,18 +846,18 @@ class Description:
                         "bandOverlaps.lobster file is generated during the LOBSTER run."
                     )
 
-            elif key == "charges":
+            elif key == "charge_comparisons":
                 if val:
-                    for charge in ["Mulliken", "Loewdin"]:
-                        if val[f"BVA_{charge}_agree"]:
+                    for charge in ["mulliken", "loewdin"]:
+                        if val[f"bva_{charge}_agree"]:
                             text_des.append(
-                                f"The atomic charge signs from {charge} population analysis agree "
-                                "with the bond valence analysis."
+                                f"The atomic charge signs from {charge.capitalize()} population analysis "
+                                f"agree with the bond valence analysis."
                             )
-                        if not val[f"BVA_{charge}_agree"]:
+                        if not val[f"bva_{charge}_agree"]:
                             text_des.append(
-                                f"The atomic charge signs from {charge} population analysis do not agree with "
-                                "the bond valence analysis."
+                                f"The atomic charge signs from {charge.capitalize()} population analysis "
+                                f"do not agree with the bond valence analysis."
                             )
                 else:
                     text_des.append(
