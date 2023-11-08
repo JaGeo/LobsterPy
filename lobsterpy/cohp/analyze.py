@@ -44,8 +44,8 @@ class Analysis:
         noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
         seq_cohps: list of cohps
         seq_coord_ions: list of co-ordination environment strings for each cation
-        set_equivalent_sites: set of inequivalent sites
-        seq_ineq_ions: set of inequivalent cations/sites in the structure
+        seq_equivalent_sites: seq of inequivalent sites
+        seq_ineq_ions: seq of inequivalent cations/sites in the structure
         seq_infos_bonds (list): information on cation anion bonds (lists
         of pymatgen.io.lobster.lobsterenv.ICOHPNeighborsInfo)
         spg: space group information
@@ -150,7 +150,7 @@ class Analysis:
         symmetry_dataset = sga.get_symmetry_dataset()
         equivalent_sites = symmetry_dataset["equivalent_atoms"]
         self.list_equivalent_sites = equivalent_sites
-        self.set_equivalent_sites = list(set(equivalent_sites))
+        self.seq_equivalent_sites = list(set(equivalent_sites))
         self.spg = symmetry_dataset["international"]
 
         if self.which_bonds == "cation-anion":
@@ -264,7 +264,7 @@ class Analysis:
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
+                if ice in self.seq_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.seq_ineq_ions.append(ice)
 
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
@@ -306,7 +306,7 @@ class Analysis:
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
+                if ice in self.seq_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.seq_ineq_ions.append(ice)
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
                     self.seq_infos_bonds.append(
