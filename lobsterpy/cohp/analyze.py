@@ -1507,7 +1507,7 @@ class Analysis:
                 for dev in band_overlaps.max_deviation:
                     if dev > 0.1:
                         dev_val.append(dev)
-                        
+
                 quality_dict["band_overlaps_analysis"] = {  # type: ignore
                     "file_exists": True,
                     "limit_maxDeviation": 0.1,
