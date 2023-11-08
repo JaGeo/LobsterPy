@@ -849,12 +849,12 @@ class Description:
             elif key == "charge_comparisons":
                 if val:
                     for charge in ["mulliken", "loewdin"]:
-                        if val["bva_{}_agree".format(charge)]:
+                        if val[f"bva_{charge}_agree"]:
                             text_des.append(
                                 f"The atomic charge signs from {charge.capitalize()} population analysis "
                                 f"agree with the bond valence analysis."
                             )
-                        if not val["bva_{}_agree".format(charge)]:
+                        if not val[f"bva_{charge}_agree"]:
                             text_des.append(
                                 f"The atomic charge signs from {charge.capitalize()} population analysis "
                                 f"do not agree with the bond valence analysis."
