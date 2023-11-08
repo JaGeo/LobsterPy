@@ -1,26 +1,25 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""
-This module defines classes to describe the COHPs automatically
-"""
+"""This module defines classes to describe the COHPs automatically."""
 from __future__ import annotations
 
 from pathlib import Path
 
-from lobsterpy.plotting import PlainCohpPlotter
-from lobsterpy.plotting import InteractiveCohpPlotter
+from lobsterpy.plotting import InteractiveCohpPlotter, PlainCohpPlotter
 
 
 class Description:
     """
     Base class that will write generate a text description for all relevant bonds.
+
     It analyses all relevant coordination environments in the system based on electronic structure theory.
 
     """
 
     def __init__(self, analysis_object):
         """
+        Generate a text description for all relevant bonds.
 
         Args:
             analysis_object: Analysis object from lobsterpy.analysis
@@ -30,9 +29,9 @@ class Description:
 
     def set_description(self):
         """
-        This class will set the description of the structures correctly.
-        Important is that here the naming of the cations from the lobster files will be used
-        This means that the numbers will start at 1
+        Set the descriptions of the structures using the cation names, starting with numbers at 1.
+
+        Uses the cation names from the lobster files.
 
         Returns:
             None
@@ -67,6 +66,7 @@ class Description:
             for key, item in self.condensed_bonding_analysis["sites"].items():
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
+                orb_info = []
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
@@ -80,6 +80,16 @@ class Description:
                             + properties[f"I{type_pop}_mean"]
                             + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
                     else:
                         bond_info.append(
                             str(properties["number_of_bonds"])
@@ -94,11 +104,27 @@ class Description:
                             + str(round(properties["antibonding"]["perc"] * 100, 3))
                             + " percent antibonding interaction below EFermi)"
                         )
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
 
-                if len(bond_info) > 1:
-                    bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
+                bonds = (
+                    ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
+                    if len(bond_info) > 1
+                    else bond_info[0]
+                )
+
+                if len(orb_info) > 1:
+                    orb_bonds = "".join(orb_info).replace(".In", ". In")
                 else:
-                    bonds = bond_info[0]
+                    orb_bonds = orb_info[0] if orb_info else ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -109,6 +135,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
                 else:
                     self.text.append(
                         str(item["ion"])
@@ -119,6 +147,9 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
+
         elif self.analysis_object.which_bonds == "all":
             relevant_ions = ", ".join(
                 [
@@ -141,6 +172,7 @@ class Description:
             for key, item in self.condensed_bonding_analysis["sites"].items():
                 # It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),
                 bond_info = []
+                orb_info = []
                 for type, properties in item["bonds"].items():
                     if not properties["has_antibdg_states_below_Efermi"]:
                         bond_info.append(
@@ -154,6 +186,16 @@ class Description:
                             + properties[f"I{type_pop}_mean"]
                             + f"{units}, 0.0 percent antibonding interaction below EFermi)"
                         )
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
                     else:
                         bond_info.append(
                             str(properties["number_of_bonds"])
@@ -169,13 +211,25 @@ class Description:
                             + " percent antibonding interaction below EFermi)"
                         )
 
+                        if self.analysis_object.orbital_resolved:
+                            text_orbital = (
+                                self._generate_orbital_resolved_analysis_text(
+                                    orbital_resolved_data=properties,
+                                    type_pop=type_pop,
+                                    atom_name=str(type),
+                                    ion=item["ion"],
+                                )
+                            )
+                            orb_info.extend(text_orbital)
+
                 if len(bond_info) > 1:
                     bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
                 else:
-                    if bond_info:
-                        bonds = bond_info[0]
-                    else:
-                        bonds = 0
+                    bonds = bond_info[0] if bond_info else 0
+                if len(orb_info) > 1:
+                    orb_bonds = "".join(orb_info).replace(".In", ". In")
+                else:
+                    orb_bonds = orb_info[0] if orb_info else ""
                 if item["env"] == "O:6":
                     self.text.append(
                         str(item["ion"])
@@ -186,6 +240,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
                 else:
                     self.text.append(
                         str(item["ion"])
@@ -196,6 +252,8 @@ class Description:
                         + str(bonds)
                         + " bonds."
                     )
+                    if orb_bonds:
+                        self.text.append(orb_bonds)
 
         if "madelung_energy" in self.analysis_object.condensed_bonding_analysis:
             self.text.append(
@@ -205,6 +263,178 @@ class Description:
                 )
                 + " eV."
             )
+
+    def _generate_orbital_resolved_analysis_text(
+        self,
+        orbital_resolved_data: dict,
+        ion: str,
+        atom_name: str,
+        type_pop: str,
+    ):
+        """
+        Generate text from orbital-resolved analysis data of the most relevant COHP, COOP, or COBI.
+
+        Args:
+            orbital_resolved_data : dict of orbital data from condensed bonding analysis object
+            ion: name of ion at the site
+            atom_name: name of atomic speice to which ion is bonded
+            type_pop: population type analysed could be "COHP" or "COOP" or "COBI"
+
+        Returns:
+            A python list with text describing the orbital which contributes
+            the most to the bonding and antibonding in the bond at site
+        """
+        orb_info = []
+        if orbital_resolved_data["orbital_data"]["orbital_summary_stats"]:
+            orb_names = []
+            orb_contri = []
+            # get atom-pair list with ion placed first
+            atom_pair = self.analysis_object._sort_name([ion, atom_name], nameion=ion)
+            if (
+                "max_bonding_contribution"
+                in orbital_resolved_data["orbital_data"]["orbital_summary_stats"]
+            ):
+                for orb, data in orbital_resolved_data["orbital_data"][
+                    "orbital_summary_stats"
+                ]["max_bonding_contribution"].items():
+                    atom_pair_with_orb_name = (
+                        self.analysis_object._sort_orbital_atom_pair(
+                            atom_pair=atom_pair,
+                            complete_cohp=self.analysis_object.chemenv.completecohp,
+                            label=orbital_resolved_data["orbital_data"][
+                                "relevant_bonds"
+                            ][0],
+                            orb_pair=orb,
+                        )
+                    )
+                    orb_names.append("-".join(atom_pair_with_orb_name))
+                    orb_contri.append(
+                        str(
+                            round(
+                                data * 100,
+                                3,
+                            )
+                        )
+                    )
+            orb_names_anti = []
+            orb_antibonding = []
+            if (
+                "max_antibonding_contribution"
+                in orbital_resolved_data["orbital_data"]["orbital_summary_stats"]
+            ):
+                for orb, data in orbital_resolved_data["orbital_data"][
+                    "orbital_summary_stats"
+                ]["max_antibonding_contribution"].items():
+                    atom_pair_with_orb_name = (
+                        self.analysis_object._sort_orbital_atom_pair(
+                            atom_pair=atom_pair,
+                            complete_cohp=self.analysis_object.chemenv.completecohp,
+                            label=orbital_resolved_data["orbital_data"][
+                                "relevant_bonds"
+                            ][0],
+                            orb_pair=orb,
+                        )
+                    )
+                    orb_names_anti.append("-".join(atom_pair_with_orb_name))
+                    orb_antibonding.append(
+                        str(
+                            round(
+                                data * 100,
+                                3,
+                            )
+                        )
+                    )
+            if len(orb_contri) > 1:
+                orb_name_contri = ""
+                for inx, name in enumerate(orb_names):
+                    if len(orb_contri) == 2 and inx + 1 != len(orb_contri):
+                        orb_name_contri += f"{name} "
+                    elif 2 < len(orb_contri) != inx + 1:
+                        orb_name_contri += f"{name}, "
+                    else:
+                        orb_name_contri += f"and {name}"
+
+                orb_name_contri += " orbitals, contributing "
+                for inx, contribution in enumerate(orb_contri):
+                    if len(orb_contri) == 2 and inx + 1 != len(orb_contri):
+                        orb_name_contri += f"{contribution} "
+                    elif 2 < len(orb_contri) != inx + 1:
+                        orb_name_contri += f"{contribution}, "
+                    else:
+                        orb_name_contri += f"and {contribution} percent, respectively"
+                num_bonds = len(orbital_resolved_data["orbital_data"]["relevant_bonds"])
+                bonds = "bonds" if num_bonds > 1 else "bond"
+                orb_info.append(
+                    f"In the {num_bonds} "
+                    + "-".join(atom_pair)
+                    + f" {bonds}, relative to the summed I{type_pop}s, "
+                    + "the maximum bonding contribution is from "
+                    + orb_name_contri
+                )
+            elif not orb_contri:
+                num_bonds = len(orbital_resolved_data["orbital_data"]["relevant_bonds"])
+                bonds = "bonds" if num_bonds > 1 else "bond"
+                orb_info.append(
+                    f"In the {num_bonds} "
+                    + "-".join(atom_pair)
+                    + f" {bonds}, relative to the summed I{type_pop}s, "
+                    + f"no orbital has a bonding contribution greater than "
+                    f"{self.analysis_object.orbital_cutoff*100} percent"
+                )
+            else:
+                num_bonds = len(orbital_resolved_data["orbital_data"]["relevant_bonds"])
+                bonds = "bonds" if num_bonds > 1 else "bond"
+                orb_info.append(
+                    f"In the {num_bonds} "
+                    + "-".join(atom_pair)
+                    + f" {bonds}, relative to the summed I{type_pop}s, "
+                    + "the maximum bonding contribution is from the "
+                    + f"{orb_names[0]}"
+                    + f" orbital, contributing {orb_contri[0]} percent"
+                )
+
+            if len(orb_antibonding) > 1:
+                orb_anti = ""
+                for inx, name in enumerate(orb_names_anti):
+                    if len(orb_names_anti) == 2 and inx + 1 != len(orb_names_anti):
+                        orb_anti += f"{name} "
+                    elif 2 < len(orb_antibonding) != inx + 1:
+                        orb_anti += f"{name}, "
+                    else:
+                        orb_anti += f"and {name}"
+
+                orb_anti += " orbitals, contributing "
+                for inx, contribution in enumerate(orb_antibonding):
+                    if len(orb_names_anti) == 2 and inx + 1 != len(orb_names_anti):
+                        orb_anti += f"{contribution} "
+                    elif 2 < len(orb_antibonding) != inx + 1:
+                        orb_anti += f"{contribution}, "
+                    else:
+                        orb_anti += f"and {contribution} percent, respectively."
+                orb_info.append(
+                    f", whereas the maximum antibonding contribution is from {orb_anti}"
+                )
+            elif not orb_antibonding:
+                orb_info.append(
+                    ", whereas no significant antibonding contribution is found in this bond."
+                )
+            else:
+                orb_info.append(
+                    f", whereas the maximum antibonding contribution is from the "
+                    f"{orb_names_anti[0]} orbital, contributing {orb_antibonding[0]} percent."
+                )
+        else:
+            # get atom-pair list with ion placed first
+            atom_pair = self.analysis_object._sort_name([ion, atom_name], nameion=ion)
+            percentage_cutoff = round(self.analysis_object.orbital_cutoff * 100, 2)
+            orb_info.append(
+                f"No individual orbital interactions detected above {percentage_cutoff} percent"
+                f" with summed I{type_pop} as reference for the "
+                + "-".join(atom_pair)
+                + " bond."
+            )
+
+        return orb_info
 
     def plot_cohps(
         self,
@@ -218,16 +448,16 @@ class Description:
         hide=False,
     ):
         """
-        Will automatically generate plots of the most relevant COHP or COOP or COBI
+        Automatically generate plots of the most relevant COHPs, COOPs, or COBIs.
 
         Args:
             save (bool): will save the plot to a file
-            filename (str/Path):
+            filename (str/Path): name of the file to save the plot.
             ylim (list of float): energy scale that is shown in plot (eV)
             xlim(list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
-                population data. If None, no broadening will be added.
+            population data. If None, no broadening will be added.
             title: sets the title of figure generated
             hide (bool): if True, the plot will not be shown.
 
@@ -255,6 +485,7 @@ class Description:
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cp.add_cohp(namecation + str(ication + 1) + ": " + label, cohp)
+
             plot = cp.get_plot(integrated=integrated, sigma=sigma)
             plot.ylim(ylim)
             if xlim is not None:
@@ -287,25 +518,27 @@ class Description:
         title="",
         sigma=None,
         label_resolved=False,
+        orbital_resolved=False,
         hide=False,
     ):
         """
-        Will automatically generate interactive plots of the most relevant COHP
+        Automatically generate interactive plots of the most relevant COHPs, COBIs or COOPs.
 
         Args:
             save_as_html (bool): will save the plot to a html file
-            filename (str/Path):
+            filename (str/Path): name of the file to save the plot.
             ylim (list of float): energy scale that is shown in plot (eV)
             xlim (list of float): energy range for COHPs in eV
             integrated (bool): if True, integrated COHPs will be shown
             sigma: Standard deviation of Gaussian broadening applied to
-                population data. If None, no broadening will be added.
+            population data. If None, no broadening will be added.
+            label_resolved: if true, relevant cohp curves will be further resolved based on band labels
+            orbital_resolved: if true, relevant orbital interactions in cohp curves will be added to figure
             title : Title of the interactive plot
             hide (bool): if True, the plot will not be shown.
 
         Returns:
             A plotly.graph_objects.Figure object.
-
         """
         cba_cohp_plot_data = {}  # Initialize dict to store plot data
         set_cohps = self.analysis_object.seq_cohps
@@ -316,7 +549,7 @@ class Description:
         for _iplot, (ication, labels, cohps) in enumerate(
             zip(set_inequivalent_cations, set_labels_cohps, set_cohps)
         ):
-            label_str = f"{str(structure[ication].specie)}{str(ication + 1)}: "
+            label_str = f"{structure[ication].specie!s}{ication + 1!s}: "
             for label, cohp in zip(labels, cohps):
                 if label is not None:
                     cba_cohp_plot_data[label_str + label] = cohp
@@ -325,9 +558,11 @@ class Description:
             are_coops=self.analysis_object.are_coops,
             are_cobis=self.analysis_object.are_cobis,
         )
-        if label_resolved:
+        if label_resolved or orbital_resolved:
             ip.add_all_relevant_cohps(
-                analyse=self.analysis_object, label_resolved=label_resolved
+                analyse=self.analysis_object,
+                label_resolved=label_resolved,
+                orbital_resolved=orbital_resolved,
             )
         else:
             ip.add_cohps_from_plot_data(plot_data_dict=cba_cohp_plot_data)
@@ -345,7 +580,7 @@ class Description:
     @staticmethod
     def _coordination_environment_to_text(ce):
         """
-        This method transfers a coordination environment str into a text description of the environment
+        Convert a coordination environment string into a text description of the environment.
 
         Args:
             ce (str): output from ChemEnv package (e.g., "O:6")
@@ -550,17 +785,14 @@ class Description:
         return ce
 
     def write_description(self):
-        """
-        This method will print the description of the COHPs to the screen
-
-        """
+        """Print the description of the COHPs or COBIs or COOPs to the screen."""
         for textpart in self.text:
             print(textpart)
 
     @staticmethod
     def get_calc_quality_description(quality_dict):
         """
-        This method will generate a text description of the LOBSTER calculation quality
+        Generate a text description of the LOBSTER calculation quality.
 
         Args:
             quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
@@ -617,15 +849,15 @@ class Description:
             elif key == "charges":
                 if val:
                     for charge in ["Mulliken", "Loewdin"]:
-                        if val["BVA_{}_agree".format(charge)]:
+                        if val[f"BVA_{charge}_agree"]:
                             text_des.append(
-                                "The atomic charge signs from {} population analysis agree "
-                                "with the bond valence analysis.".format(charge)
+                                f"The atomic charge signs from {charge} population analysis agree "
+                                "with the bond valence analysis."
                             )
-                        if not val["BVA_{}_agree".format(charge)]:
+                        if not val[f"BVA_{charge}_agree"]:
                             text_des.append(
-                                "The atomic charge signs from {} population analysis do not agree with "
-                                "the bond valence analysis.".format(charge)
+                                f"The atomic charge signs from {charge} population analysis do not agree with "
+                                "the bond valence analysis."
                             )
                 else:
                     text_des.append(
@@ -654,8 +886,5 @@ class Description:
 
     @staticmethod
     def write_calc_quality_description(calc_quality_text):
-        """
-        This method will print the calculation quality description to the screen
-
-        """
+        """Print the calculation quality description to the screen."""
         print(" ".join(calc_quality_text))

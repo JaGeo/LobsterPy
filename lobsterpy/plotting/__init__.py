@@ -1,35 +1,27 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""
-Here classes and functions to plot Lobster outputs are provided
-"""
+"""Here classes and functions to plot Lobster outputs are provided."""
+
+from __future__ import annotations
 
 import typing
-from typing import (
-    Any,
-    Tuple,
-    Dict,
-    TYPE_CHECKING,
-    List,
-    Literal,
-    Sequence,
-    cast,
-    no_type_check,
-)
 from itertools import cycle
-import matplotlib
+from typing import TYPE_CHECKING, Any
+
+import matplotlib as mpl
 import numpy as np
-from numpy.typing import ArrayLike
+import plotly.graph_objs as go
 from matplotlib import pyplot as plt
 from pkg_resources import resource_filename
-from pymatgen.io.lobster import Icohplist
+from pymatgen.core import Structure
+from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp, IcohpCollection
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.dos import LobsterCompleteDos
-from pymatgen.electronic_structure.cohp import Cohp, IcohpCollection
 from pymatgen.electronic_structure.plotter import CohpPlotter, DosPlotter
-import plotly.graph_objs as go
-from lobsterpy.cohp.analyze import Analysis
+
+if TYPE_CHECKING:
+    from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
 
 base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
@@ -37,24 +29,20 @@ base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 def get_style_list(
     no_base_style: bool = False,
-    styles: "List[str | Dict[str, Any]] | None" = None,
+    styles: list[str | dict[str, Any]] | None = None,
     **kwargs,
-) -> "List[str | Dict[str, Any]]":
-    """Get *args for matplotlib.style from user input
+) -> list[str | dict[str, Any]]:
+    """Get *args for matplotlib.style from user input.
 
     Args:
         no_base_style: If true, do not include lobsterpy_base.mplstyle
         styles: User-requested styles. These can be paths to mplstyle files,
-                the names of known (matplotlib-supplied) styles,
-                or dicts of rcParam options.
+        the names of known (matplotlib-supplied) styles, or dicts of rcParam options.
+        **kwargs: matplotlib-style sheet keyword arguments
 
-    Remaining kwargs are collected as a dict and take highest priority.
+        Remaining kwargs are collected as a dict and take the highest priority.
     """
-    if no_base_style:
-        base = []
-    else:
-        base = [base_style]
-
+    base = [] if no_base_style else [base_style]
     if styles is None:
         styles = []
 
@@ -63,7 +51,7 @@ def get_style_list(
 
 class PlainCohpPlotter(CohpPlotter):
     """
-    Modified Pymatgen CohpPlotter with styling removed
+    Modified Pymatgen CohpPlotter with styling removed.
 
     This allows the styling to be manipulated more easily using matplotlib
     style sheets.
@@ -71,13 +59,13 @@ class PlainCohpPlotter(CohpPlotter):
 
     def get_plot(
         self,
-        ax: "matplotlib.axes.Axes | None" = None,
-        xlim: "Tuple[float, float] | None" = None,
-        ylim: "Tuple[float, float] | None" = None,
-        plot_negative: "bool | None" = None,
+        ax: mpl.axes.Axes | None = None,
+        xlim: tuple[float, float] | None = None,
+        ylim: tuple[float, float] | None = None,
+        plot_negative: bool | None = None,
         integrated: bool = False,
         invert_axes: bool = True,
-        sigma: "float | None" = None,
+        sigma: float | None = None,
     ):
         """
         Get a matplotlib plot showing the COHP.
@@ -85,22 +73,23 @@ class PlainCohpPlotter(CohpPlotter):
         Args:
             ax: Existing Matplotlib Axes object to plot to.
             xlim: Specifies the x-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             ylim: Specifies the y-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             plot_negative: It is common to plot -COHP(E) so that the
-                sign means the same for COOPs and COHPs. Defaults to None
-                for automatic determination: If are_coops is True, this
-                will be set to False, else it will be set to True.
+            sign means the same for COOPs and COHPs. Defaults to None
+            for automatic determination: If are_coops is True, this
+            will be set to False, else it will be set to True.
             integrated: Switch to plot ICOHPs. Defaults to False.
             invert_axes: Put the energies onto the y-axis, which is
-                common in chemistry.
+            common in chemistry.
             sigma: Standard deviation of Gaussian broadening applied to
-                population data. If this is unset (None) no broadening will be
-                added.
+            population data. If this is unset (None) no broadening will be
+            added.
 
         Returns:
             A matplotlib object.
+
         """
         if self.are_coops and not self.are_cobis:
             cohp_label = "COOP"
@@ -122,12 +111,9 @@ class PlainCohpPlotter(CohpPlotter):
         if plot_negative:
             cohp_label = "$-$" + cohp_label
 
-        if self.zero_at_efermi:
-            energy_label = "$E - E_f$ (eV)"
-        else:
-            energy_label = "$E$ (eV)"
+        energy_label = "$E - E_f$ (eV)" if self.zero_at_efermi else "$E$ (eV)"
 
-        colors = matplotlib.rcParams["axes.prop_cycle"].by_key()["color"]
+        colors = mpl.rcParams["axes.prop_cycle"].by_key()["color"]
         ncolors = len(colors)
 
         if ax is None:
@@ -137,10 +123,11 @@ class PlainCohpPlotter(CohpPlotter):
         keys = self._cohps.keys()
         for i, key in enumerate(keys):
             energies = self._cohps[key]["energies"]
-            if not integrated:
-                populations = self._cohps[key]["COHP"]
-            else:
-                populations = self._cohps[key]["ICOHP"]
+            populations = (
+                self._cohps[key]["COHP"]
+                if not integrated
+                else self._cohps[key]["ICOHP"]
+            )
             for spin in [Spin.up, Spin.down]:
                 if spin in populations:
                     if invert_axes:
@@ -176,10 +163,10 @@ class PlainCohpPlotter(CohpPlotter):
                 plt.ylim((min(relevanty), max(relevanty)))
 
         grid_like_line_kwargs = {
-            "color": matplotlib.rcParams["grid.color"],
-            "linewidth": matplotlib.rcParams["grid.linewidth"],
-            "linestyle": matplotlib.rcParams["grid.linestyle"],
-            "alpha": matplotlib.rcParams["grid.alpha"],
+            "color": mpl.rcParams["grid.color"],
+            "linewidth": mpl.rcParams["grid.linewidth"],
+            "linestyle": mpl.rcParams["grid.linestyle"],
+            "alpha": mpl.rcParams["grid.alpha"],
             "zorder": 0,
         }
 
@@ -212,7 +199,7 @@ class PlainCohpPlotter(CohpPlotter):
 
     @staticmethod
     def _broaden(energies: np.ndarray, population: np.ndarray, sigma=None, cutoff=4.0):
-        """Broaden the spectrum with a given standard deviation
+        """Broaden the spectrum with a given standard deviation.
 
         The population is convolved with a normalised Gaussian kernel. This
         requires the energy grid to be regularly-spaced.
@@ -221,11 +208,12 @@ class PlainCohpPlotter(CohpPlotter):
             energies: Regularly-spaced energy series
             population: Population data for broadening
             sigma: Standard deviation for Gaussian broadening. If sigma is None
-                then the input data is returned without any processing.
+            then the input data is returned without any processing.
             cutoff: Range cutoff for broadening kernel, as a multiple of sigma.
 
         Return:
             Broadened population
+
         """
         from scipy.signal import convolve
         from scipy.stats import norm
@@ -251,7 +239,7 @@ class PlainCohpPlotter(CohpPlotter):
 
 class PlainDosPlotter(DosPlotter):
     """
-    Modified Pymatgen DosPlotter with styling removed
+    Modified Pymatgen DosPlotter with styling removed.
 
     This allows the styling to be manipulated more easily using matplotlib
     style sheets. It also adds additional functionalities to plotter
@@ -261,14 +249,17 @@ class PlainDosPlotter(DosPlotter):
         self, zero_at_efermi: bool = True, stack: bool = False, sigma=None, summed=False
     ) -> None:
         """
+        Generate COHP or COOP or COBI plots.
+
         Args:
             zero_at_efermi (bool): Whether to shift all Dos to have zero energy at the
-                fermi energy. Defaults to True.
+            fermi energy. Defaults to True.
             stack (bool): Whether to plot the DOS as a stacked area graph
             sigma (float): Specify a standard deviation for Gaussian smearing
-                the DOS for nicer looking plots. Defaults to None for no
-                smearing.
+            the DOS for nicer looking plots. Defaults to None for no
+            smearing.
             summed (bool): Whether to plot the summed DOS
+
         """
         self.zero_at_efermi = zero_at_efermi
         self.stack = stack
@@ -278,7 +269,7 @@ class PlainDosPlotter(DosPlotter):
         self.summed = summed
 
     def add_dos(self, label: str, dos: LobsterCompleteDos) -> None:
-        """Adds a dos for plotting.
+        """Add a dos for plotting.
 
         Args:
             label: label for the DOS. Must be unique.
@@ -313,7 +304,7 @@ class PlainDosPlotter(DosPlotter):
         }
 
     def add_site_orbital_dos(self, dos: LobsterCompleteDos, orbital, site_index):
-        """Adds a dos for plotting.
+        """Add orbital dos at particular site.
 
         Args:
             dos: LobsterCompleteDos object
@@ -398,12 +389,12 @@ class PlainDosPlotter(DosPlotter):
     @typing.no_type_check
     def get_plot(
         self,
-        ax: "matplotlib.axes.Axes | None" = None,
-        xlim: "Tuple[float, float] | None" = None,
-        ylim: "Tuple[float, float] | None" = None,
+        ax: mpl.axes.Axes | None = None,
+        xlim: tuple[float, float] | None = None,
+        ylim: tuple[float, float] | None = None,
         invert_axes: bool = False,
         beta_dashed: bool = False,
-        sigma: "float | None" = None,
+        sigma: float | None = None,
     ):
         """
         Get a matplotlib plot showing the COHP.
@@ -411,24 +402,25 @@ class PlainDosPlotter(DosPlotter):
         Args:
             ax: Existing Matplotlib Axes object to plot to.
             xlim: Specifies the x-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             ylim: Specifies the y-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             invert_axes: Put the energies onto the y-axis, which is
-                common in chemistry.
+            common in chemistry.
             beta_dashed: Plots the beta spin channel with a dashed line. Defaults to False
             sigma: Standard deviation of Gaussian broadening applied to
-                population data. If this is unset (None) no broadening will be
-                added.
+            population data. If this is unset (None) no broadening will be
+            added.
 
         Returns:
             A matplotlib object.
+
         """
         ys = None
         all_densities = []
         all_energies = []
 
-        colors = matplotlib.rcParams["axes.prop_cycle"].by_key()["color"]
+        colors = mpl.rcParams["axes.prop_cycle"].by_key()["color"]
         n_colors = len(colors)
 
         if ax is None:
@@ -541,9 +533,7 @@ class PlainDosPlotter(DosPlotter):
 
 
 class InteractiveCohpPlotter(CohpPlotter):
-    """
-    Interactive COHP plotter to view all relevant / multiple COHPs in one figure.
-    """
+    """Interactive COHP, COBI or COOP plotter to view all relevant bonds in one figure."""
 
     COLOR_PALETTE = [
         "#e41a1c",
@@ -558,10 +548,14 @@ class InteractiveCohpPlotter(CohpPlotter):
     ]
 
     def add_all_relevant_cohps(
-        self, analyse: Analysis, suffix: str = "", label_resolved: bool = True
+        self,
+        analyse: Analysis,
+        suffix: str = "",
+        label_resolved: bool = True,
+        orbital_resolved: bool = False,
     ) -> None:
         """
-        Adds all relevant COHPs from lobsterpy analyse object.
+        Add all relevant COHPs from lobsterpy analyse object.
 
         Args:
             analyse: Analyse object from lobsterpy.
@@ -569,33 +563,11 @@ class InteractiveCohpPlotter(CohpPlotter):
             calcs or just for additional legend information.
             label_resolved: bool indicating to obtain label resolved interactive plots for relevant bonds.
             If false, will return summed cohp curves of unique relevant bonds.
+            orbital_resolved: bool indicating to include orbital resolved interactive cohps for relevant bonds.
         """
         complete_cohp = analyse.chemenv.completecohp
 
-        # extract bond atom pairs and corresponding cohp bond label
-        bonds = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        labels = [[] for _ in range(len(analyse.seq_infos_bonds))]  # type: ignore
-        for inx, bond_info in enumerate(analyse.seq_infos_bonds):
-            for ixx, val in enumerate(bond_info.atoms):
-                label_srt = sorted(val.copy())
-                bonds[inx].append(
-                    analyse.structure.sites[bond_info.central_isites[0]].species_string
-                    + str(bond_info.central_isites[0] + 1)
-                    + ": "
-                    + label_srt[0].strip("0123456789")
-                    + "-"
-                    + label_srt[1].strip("0123456789")
-                )
-                labels[inx].append(bond_info.labels[ixx])
-
-        # create a dict seperating the unique atom pairs for each site and corresponding cohp bond label
-        plot_data = {}
-        for indx, atom_pairs in enumerate(bonds):
-            search_items = set(atom_pairs)
-            for item in search_items:
-                indices = [i for i, x in enumerate(atom_pairs) if x == item]
-                filtered_bond_label_list = [labels[indx][i] for i in indices]
-                plot_data.update({item: filtered_bond_label_list})
+        plot_data = analyse.get_site_bond_resolved_labels()
 
         if "All" not in self._cohps:
             self._cohps["All"] = {}
@@ -606,63 +578,30 @@ class InteractiveCohpPlotter(CohpPlotter):
             label_with_count = self._insert_number_of_bonds_in_label(
                 label=bond_key, character=":", number_of_bonds=count
             )
-            if (
-                label_resolved
-            ):  # will add cohp data for each relevant bond label iteratively
-                self._cohps[label_with_count + suffix] = {}
-                for label in labels:
-                    cohp = complete_cohp.get_cohp_by_label(label)
-                    energies = (
-                        cohp.energies - cohp.efermi
-                        if self.zero_at_efermi
-                        else cohp.energies
-                    )
-                    outer_key = label_with_count + suffix
-                    struct = analyse.structure
-                    atom_pairs = []
-                    for site in complete_cohp.bonds[label]["sites"]:
-                        atom = site.species_string + str(struct.sites.index(site) + 1)
-                        atom_pairs.append(atom)
-                    key = "{}: {} ({} \u00c5)".format(
-                        label,
-                        "-".join(atom_pairs),
-                        str(round(complete_cohp.bonds[label]["length"], 2)),
-                    )
-                    self._cohps[outer_key].update(
-                        {
-                            key: {
-                                "energies": energies,
-                                "COHP": cohp.get_cohp(),
-                                "ICOHP": cohp.get_icohp(),
-                                "efermi": cohp.efermi,
-                            }
-                        }
-                    )
-
-                    key = key + suffix
-                    self._cohps["All"].update(
-                        {
-                            key: {
-                                "energies": energies,
-                                "COHP": cohp.get_cohp(),
-                                "ICOHP": cohp.get_icohp(),
-                                "efermi": cohp.efermi,
-                            }
-                        }
-                    )
-
-            else:
-                # add summed cohps for each relevant bond sites
-                cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
-                energies = (
-                    cohp.energies - cohp.efermi
-                    if self.zero_at_efermi
-                    else cohp.energies
-                )
-                key = label_with_count + suffix
-                self._cohps["All"].update(
+            # get summed cohps from the relevant bond label at the site
+            cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
+            energies = (
+                cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+            )
+            drop_down_key = plot_legend = (
+                label_with_count + suffix
+            )  # label for the dropdown menu
+            self._cohps["All"].update(
+                {
+                    plot_legend: {
+                        "energies": energies,
+                        "COHP": cohp.get_cohp(),
+                        "ICOHP": cohp.get_icohp(),
+                        "efermi": cohp.efermi,
+                    }
+                }
+            )
+            if len(plot_data) > 1:
+                if drop_down_key not in self._cohps:
+                    self._cohps[drop_down_key] = {}
+                self._cohps[drop_down_key].update(
                     {
-                        key: {
+                        plot_legend: {
                             "energies": energies,
                             "COHP": cohp.get_cohp(),
                             "ICOHP": cohp.get_icohp(),
@@ -671,23 +610,176 @@ class InteractiveCohpPlotter(CohpPlotter):
                     }
                 )
 
+            # Add cohp data for each relevant bond label iteratively
+            if label_resolved and not orbital_resolved:
+                if label_with_count + suffix not in self._cohps:
+                    self._cohps[label_with_count + suffix] = {}
+                # Get cohp data for each relevant bond label at the site
+                for label in labels:
+                    cohp = complete_cohp.get_cohp_by_label(label)
+                    energies = (
+                        cohp.energies - cohp.efermi
+                        if self.zero_at_efermi
+                        else cohp.energies
+                    )
+                    drop_down_key = (
+                        label_with_count + suffix
+                    )  # label for the dropdown menu
+                    plot_legend = self._get_plot_label_for_label_resolved(
+                        structure=analyse.structure,
+                        label_list=[label],
+                        complete_cohp=complete_cohp,
+                        orb_list=[],
+                        label_resolved=True,
+                        orbital_resolved=False,
+                    )
+                    if len(plot_data) > 1:
+                        self._cohps[drop_down_key].update(
+                            {
+                                plot_legend: {
+                                    "energies": energies,
+                                    "COHP": cohp.get_cohp(),
+                                    "ICOHP": cohp.get_icohp(),
+                                    "efermi": cohp.efermi,
+                                }
+                            }
+                        )
+
+                    plot_legend_here = plot_legend + suffix
+                    self._cohps["All"].update(
+                        {
+                            plot_legend_here: {
+                                "energies": energies,
+                                "COHP": cohp.get_cohp(),
+                                "ICOHP": cohp.get_icohp(),
+                                "efermi": cohp.efermi,
+                            }
+                        }
+                    )
+            # Adds cohp data for each relevant orbitals and bond label iteratively
+            if orbital_resolved and label_resolved:
+                if label_with_count + suffix not in self._cohps:
+                    self._cohps[label_with_count + suffix] = {}
+                # get relevant orbitals associated with each bond label
+                plot_data_orb = analyse.get_site_orbital_resolved_labels()
+                drop_down_key = label_with_count + suffix  # label for the dropdown menu
+                key_val = plot_data_orb[bond_key]
+                # get cohp data for each orbital and associated bond labels iteratively
+                for orb, val in key_val.items():
+                    for lab in val:
+                        cohp_orb = (
+                            complete_cohp.get_summed_cohp_by_label_and_orbital_list(
+                                label_list=[lab], orbital_list=[orb]
+                            )
+                        )
+
+                        energies = (
+                            cohp_orb.energies - cohp_orb.efermi
+                            if self.zero_at_efermi
+                            else cohp_orb.energies
+                        )
+                        # plot legends will contain species and orbital along with relevant bond label
+                        plot_legend = self._get_plot_label_for_label_resolved(
+                            structure=analyse.structure,
+                            label_list=[lab],
+                            complete_cohp=complete_cohp,
+                            orb_list=[orb],
+                            orbital_resolved=True,
+                            label_resolved=True,
+                        )
+                        if len(plot_data) > 1:
+                            self._cohps[drop_down_key].update(
+                                {
+                                    plot_legend: {
+                                        "energies": energies,
+                                        "COHP": cohp_orb.get_cohp(),
+                                        "ICOHP": cohp_orb.get_icohp(),
+                                        "efermi": cohp_orb.efermi,
+                                    }
+                                }
+                            )
+
+                        plot_legend_here = plot_legend + suffix
+
+                        self._cohps["All"].update(
+                            {
+                                plot_legend_here: {
+                                    "energies": energies,
+                                    "COHP": cohp_orb.get_cohp(),
+                                    "ICOHP": cohp_orb.get_icohp(),
+                                    "efermi": cohp_orb.efermi,
+                                }
+                            }
+                        )
+            # Adds summed cohp data for each relevant orbitals
+            if orbital_resolved and not label_resolved:
+                if label_with_count + suffix not in self._cohps:
+                    self._cohps[label_with_count + suffix] = {}
+                # get relevant orbitals associated with each bond label
+                plot_data_orb = analyse.get_site_orbital_resolved_labels()
+                drop_down_key = label_with_count + suffix  # label for the dropdown menu
+                key_val = plot_data_orb[bond_key]
+                # get summed cohp data for each relevant orbital
+                for orb, val in key_val.items():
+                    cohp_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
+                        label_list=val, orbital_list=[orb] * len(val)
+                    )
+
+                    energies = (
+                        cohp_orb.energies - cohp_orb.efermi
+                        if self.zero_at_efermi
+                        else cohp_orb.energies
+                    )
+                    # plot legends will contain species and orbital along with number of bonds at the site
+                    plot_legend = self._get_plot_label_for_label_resolved(
+                        structure=analyse.structure,
+                        label_list=val,
+                        complete_cohp=complete_cohp,
+                        orb_list=[orb],
+                        orbital_resolved=True,
+                        label_resolved=False,
+                    )
+
+                    if len(plot_data) > 1:
+                        self._cohps[drop_down_key].update(
+                            {
+                                plot_legend: {
+                                    "energies": energies,
+                                    "COHP": cohp_orb.get_cohp(),
+                                    "ICOHP": cohp_orb.get_icohp(),
+                                    "efermi": cohp_orb.efermi,
+                                }
+                            }
+                        )
+
+                    plot_legend_here = plot_legend + suffix
+
+                    self._cohps["All"].update(
+                        {
+                            plot_legend_here: {
+                                "energies": energies,
+                                "COHP": cohp_orb.get_cohp(),
+                                "ICOHP": cohp_orb.get_icohp(),
+                                "efermi": cohp_orb.efermi,
+                            }
+                        }
+                    )
+
     def add_cohps_by_lobster_label(
         self, analyse: Analysis, label_list: list, suffix: str = ""
     ):
         """
-        Adds COHPs explicitly specified in label list.
+        Add COHPs explicitly specified in label list.
 
         Args:
             analyse: Analyse object from lobsterpy.
             label_list: List of COHP labels as from LOBSTER.
             suffix: Optional addition to LOBSTER label to avoid key
-                conflicts when plotting multiple calcs or just for additional legend information.
+            conflicts when plotting multiple calcs or just for additional legend information.
         """
         complete_cohp = analyse.chemenv.completecohp
 
-        if "All" in self._cohps:
-            pass
-        else:
+        if "All" not in self._cohps:
             self._cohps["All"] = {}
 
         for label in label_list:
@@ -712,7 +804,7 @@ class InteractiveCohpPlotter(CohpPlotter):
 
     def add_cohps_from_plot_data(self, plot_data_dict: dict, suffix: str = ""):
         """
-        Adds all relevant COHPs for specified bond type from lobster lightweight json.gz file
+        Add all relevant COHPs for specified bond type from lobster lightweight json.gz file.
 
         Args:
             plot_data_dict: Lobsterpy plot data dict
@@ -768,25 +860,25 @@ class InteractiveCohpPlotter(CohpPlotter):
 
         Args:
             xlim: Specifies the x-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             rangeslider: Adds a plotly.graph_objs.layout.xaxis.Rangeslider
-                object to figure to allow easy manipulation of x-axis..
+            object to figure to allow easy manipulation of x-axis..
             ylim: Specifies the y-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             plot_negative: It is common to plot -COHP(E) so that the
-                sign means the same for COOPs and COHPs. Defaults to None
-                for automatic determination: If are_coops is True, this
-                will be set to False, else it will be set to True.
+            sign means the same for COOPs and COHPs. Defaults to None
+            for automatic determination: If are_coops is True, this
+            will be set to False, else it will be set to True.
             integrated: Switch to plot ICOHPs. Defaults to False.
             invert_axes: Put the energies onto the y-axis, which is
-                common in chemistry.
+            common in chemistry.
             sigma: Standard deviation of Gaussian broadening applied to
-                population data. If this is unset (None) no broadening will be
-                added.
+            population data. If this is unset (None) no broadening will be added.
             colors: list of hex color codes to be used in plot
 
         Returns:
             A  plotly.graph_objects.Figure object.
+
         """
         if self.are_coops and not self.are_cobis:
             cohp_label = "COOP"
@@ -808,23 +900,18 @@ class InteractiveCohpPlotter(CohpPlotter):
         if plot_negative:
             cohp_label = "\u2212" + cohp_label
 
-        if self.zero_at_efermi:
-            energy_label = "$E - E_f \\text{ (eV)}$"
-        else:
-            energy_label = "$E \\text{ (eV)}$"
+        energy_label = (
+            "$E - E_f \\text{ (eV)}$" if self.zero_at_efermi else "$E \\text{ (eV)}$"
+        )
 
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
-        if colors is None:
-            palette = InteractiveCohpPlotter.COLOR_PALETTE
-        else:
-            palette = colors
-
+        palette = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
         pal_iter = cycle(palette)
 
         traces = {}
         for k, v in self._cohps.items():
             traces.update({k: []})
-            for label, val in v.items():
+            for label in v:
                 population_key = v[label]["ICOHP"] if integrated else v[label]["COHP"]
                 band_color = next(pal_iter)
                 for spin in [Spin.up, Spin.down]:
@@ -878,7 +965,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         fig.update_layout(legend=ld.legend_style_dict)
 
         # Add all traces to figure
-        for _, val_trace in traces.items():
+        for val_trace in traces.values():
             for trace in val_trace:
                 fig.add_trace(trace)
 
@@ -908,7 +995,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                                 "label": selected_group,
                                 "method": "update",
                             }
-                            for selected_group in traces.keys()
+                            for selected_group in traces
                         ],
                         "direction": "down",
                         "showactive": True,
@@ -938,7 +1025,8 @@ class InteractiveCohpPlotter(CohpPlotter):
         label: str, character: str, number_of_bonds: int
     ) -> str:
         """
-        Adds number of bonds to bond label.
+        Add number of bonds to bond label.
+
         For example : for input label 'Ba1: Ba-Ti', character ':', number_of_bonds: 3,
         Will return 'Ba1: 3 x Ba-Ti'
 
@@ -952,19 +1040,85 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         return label.replace(character, f"{character} {number_of_bonds} x", 1)
 
+    @staticmethod
+    def _get_plot_label_for_label_resolved(
+        structure: Structure,
+        label_list: list,
+        complete_cohp: CompleteCohp,
+        orb_list: list,
+        label_resolved: bool = False,
+        orbital_resolved: bool = False,
+    ) -> str:
+        """
+        Generate plot labels for both orbital and label-resolved plots.
+
+        For example for NaCl structure, label:21, orb: 3s-3s
+        Will return '21: Cl2-Na1 (2.85 Å)' if label_resolved is True and orbital_resolved is False
+        Will return '21: Cl2(3s)-Na1(3s) (2.85 Å)' If label and orbital resolved True
+        Will return 'Cl(3s)-Na(3s) (2.85 Å)' if orbital_resolved is True and label_resolved is False
+
+        Args:
+            structure: pymatgen structure object
+            label_list: bond label to which number of bonds needs to be inserted
+            complete_cohp:  complete cohp object
+            orb_list: relevant orbital
+            label_resolved: specifies type of label to be returned is for label_resolved case
+            orbital_resolved: specifies type of label to be returned is for orbital_resolved case
+
+        Returns:
+             plot label string
+        """
+        if label_resolved and not orbital_resolved:
+            atom_pairs = []
+            for site in complete_cohp.bonds[label_list[0]]["sites"]:
+                atom = f"{site.species_string}{structure.sites.index(site) + 1!s}"
+                atom_pairs.append(atom)
+            atom_pair_str = "-".join(atom_pairs)
+            bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
+            plot_label = f"{label_list[0]}: {atom_pair_str} ({bond_length} \u00c5)"
+
+        elif not label_resolved and orbital_resolved:
+            orb_atom_pairs = []
+            orb_pair = orb_list[0].split("-")
+            for site, site_orb in zip(
+                complete_cohp.bonds[label_list[0]]["sites"], orb_pair
+            ):
+                atom_orb = f"{site.species_string} ({site_orb})"
+                orb_atom_pairs.append(atom_orb)
+            orb_atom_pairs_str = "-".join(orb_atom_pairs)
+            bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
+            plot_label = (
+                f"{len(label_list)}x {orb_atom_pairs_str} ({bond_length} \u00c5)"
+            )
+        else:
+            orb_atom_pairs = []
+            orb_pair = orb_list[0].split("-")
+            for site, site_orb in zip(
+                complete_cohp.bonds[label_list[0]]["sites"], orb_pair
+            ):
+                atom_orb = f"{site.species_string}{structure.sites.index(site) + 1!s} ({site_orb})"
+                orb_atom_pairs.append(atom_orb)
+            orb_atom_pairs_str = "-".join(orb_atom_pairs)
+            bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
+            plot_label = (
+                f"{label_list[0]}:  {orb_atom_pairs_str} ({bond_length} \u00c5)"
+            )
+
+        return plot_label
+
 
 class IcohpDistancePlotter:
-    """
-    Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots
-    """
+    """Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots."""
 
     def __init__(self, are_coops: bool = False, are_cobis: bool = False):
         """
+        Plot ICOHPs or ICOBI or ICOOP vs bond lengths.
+
         Args:
             are_coops: Switch to indicate that these are ICOOPs, not ICOHPs.
-                Defaults to False for ICOHPs.
+            Defaults to False for ICOHPs.
             are_cobis: Switch to indicate that these are ICOBIs, not ICOHPs/COOPs.
-                Defaults to False for ICOHPs.
+            Defaults to False for ICOHPs.
         """
         self.are_coops = are_coops
         self.are_cobis = are_cobis
@@ -972,11 +1126,12 @@ class IcohpDistancePlotter:
 
     def add_icohps(self, label, icohpcollection: IcohpCollection):
         """
-        Adds a ICOHPs or ICOBIs or ICOOPS for plotting.
+        Add ICOHPs or ICOBIs or ICOOPS for plotting.
 
         Args:
             label: Label for the ICOHPs. Must be unique.
             icohpcollection: IcohpCollection object.
+
         """
         icohps = []
         bond_len = []
@@ -1002,11 +1157,11 @@ class IcohpDistancePlotter:
 
     def get_plot(
         self,
-        ax: "matplotlib.axes.Axes | None" = None,
+        ax: mpl.axes.Axes | None = None,
         marker_size: float = 50,
         marker_style: str = "o",
-        xlim: "Tuple[float, float] | None" = None,
-        ylim: "Tuple[float, float] | None" = None,
+        xlim: tuple[float, float] | None = None,
+        ylim: tuple[float, float] | None = None,
         plot_negative: bool = True,
     ):
         """
@@ -1017,9 +1172,9 @@ class IcohpDistancePlotter:
             marker_size: sets the size of markers in scatter plots
             marker_style: sets type of marker used in plot
             xlim: Specifies the x-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             ylim: Specifies the y-axis limits. Defaults to None for
-                automatic determination.
+            automatic determination.
             plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
 
         Returns:

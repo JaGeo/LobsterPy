@@ -1,8 +1,0 @@
-COHPstartEnergy -24.0856
-COHPendEnergy 37.1791
-COHPSteps 10000
-basisSet pbeVaspFit2015
-cohpGenerator from 0.1 to 6.0 orbitalwise
-saveProjectionToFile
-LSODOS
-basisfunctions C 2p 2s
