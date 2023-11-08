@@ -1,22 +1,24 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""
-This module defines wrapper classes to quickly obtain similarity matrix of input fingerprint objects
-"""
+"""This module defines wrapper classes to quickly obtain similarity matrix of input fingerprint objects."""
+
 from __future__ import annotations
-import os
-from typing import NamedTuple, List
+
 import multiprocessing as mp
-from pathlib import Path
+import os
 import warnings
+from pathlib import Path
+from typing import NamedTuple
+
 import numpy as np
 import pandas as pd
 from tqdm.autonotebook import tqdm
+
 from lobsterpy.featurize.core import (
-    FeaturizeLobsterpy,
     FeaturizeCharges,
     FeaturizeCOXX,
+    FeaturizeLobsterpy,
 )
 
 warnings.filterwarnings("ignore")
@@ -45,16 +47,33 @@ class BatchSummaryFeaturizer:
 
     def __init__(
         self,
-        path_to_lobster_calcs: str,
-        path_to_jsons: str | None = None,
+        path_to_lobster_calcs: str | Path,
+        path_to_jsons: str | Path | None = None,
         feature_type: str = "antibonding",
         charge_type: str = "both",
         bonds: str = "all",
         include_cobi_data: bool = False,
         include_coop_data: bool = False,
-        e_range: List[float] = [-5.0, 0.0],
+        e_range: list[float] = [-5.0, 0.0],
         n_jobs: int = 4,
     ):
+        """
+        Featurize lobster data via multiprocessing for large number of compounds.
+
+        Args:
+            path_to_lobster_calcs: path to root directory consisting of all lobster calc
+            path_to_jsons: path to root directory consisting of all lobster lightweight jsons
+            feature_type: set the feature type for moment features.
+            Possible options are "bonding", "antibonding" or "overall"
+            charge_type : set charge type used for computing ionicity. Possible options are
+            "mulliken", "loewdin or "both"
+            bonds: "all_bonds" or "cation_anion_bonds"
+            include_cobi_data : bool stating to include COBICAR.lobster features
+            include_coop_data: bool stating to include COOPCAR.lobster features
+            e_range : range of energy relative to fermi for which moment features needs to be computed
+            n_jobs : parallel processes to run
+
+        """
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.path_to_jsons = path_to_jsons
         self.feature_type = feature_type
@@ -67,8 +86,9 @@ class BatchSummaryFeaturizer:
 
     def _featurizelobsterpy(self, file_name_or_path) -> pd.DataFrame:
         """
-        Wrapper method to featurize Lobsterpy condensed bonding analysis data by loading lightweight json
-        if json file exists or invokes lobsterpy.analzye.Analysis module
+        Featurize Lobsterpy condensed bonding analysis data.
+
+        if lightweight json file exists loads that or invokes LobsterPy Analysis class
 
         Returns:
             A pandas dataframe with ICOHP stats like mean, min, max of relevant bonds and
@@ -87,13 +107,13 @@ class BatchSummaryFeaturizer:
                 bonds=self.bonds,
             )
 
-        df = featurize_lobsterpy.get_df()
+        return featurize_lobsterpy.get_df()
 
-        return df
+        # return df
 
     def _featurizecoxx(self, path_to_lobster_calc) -> pd.DataFrame:
         """
-        Wrapper method to featurize COHP/COBI/COOPCAR data that uses FeaturizeCOXX under the hood
+        Featurize COHP/COBI/COOPCAR data using FeaturizeCOXX.
 
         Returns:
             A pandas dataframe with COHP summary stats data mainly weighted ICOHP/ICOOP/ICOBI,
@@ -136,7 +156,7 @@ class BatchSummaryFeaturizer:
         else:
             raise Exception(
                 "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file "
-                "not found in {}".format(dir_name.name)
+                f"not found in {dir_name.name}"
             )
 
         if self.include_cobi_data:
@@ -170,7 +190,7 @@ class BatchSummaryFeaturizer:
             else:
                 raise Exception(
                     "COBICAR.lobster or ICOBILIST.lobster file "
-                    "not found in {}".format(dir_name.name)
+                    f"not found in {dir_name.name}"
                 )
 
         if self.include_coop_data:
@@ -204,7 +224,7 @@ class BatchSummaryFeaturizer:
             else:
                 raise Exception(
                     "COOPCAR.lobster or ICOOPLIST.lobster file "
-                    "not found in {}".format(dir_name.name)
+                    f"not found in {dir_name.name}"
                 )
 
         if self.include_cobi_data and self.include_coop_data:
@@ -220,7 +240,7 @@ class BatchSummaryFeaturizer:
 
     def _featurizecharges(self, path_to_lobster_calc) -> pd.DataFrame:
         """
-        Wrapper method to featurize CHARGE.lobster.gz data that uses FeaturizeCharges under the hood
+        Featurize CHARGE.lobster.gz data that using FeaturizeCharges.
 
         Returns:
             A pandas dataframe with computed ionicity for the structure
@@ -274,17 +294,16 @@ class BatchSummaryFeaturizer:
                 df_loew = charge_loew.get_df()
 
                 df = pd.concat([df_mull, df_loew], axis=1)
-
-            return df
         else:
-            raise Exception(
-                "CHARGE.lobster or POSCAR not found in {}".format(dir_name.name)
-            )
+            raise Exception(f"CHARGE.lobster or POSCAR not found in {dir_name.name}")
+
+        return df
 
     def get_df(self) -> pd.DataFrame:
         """
-        This method will return a pandas dataframe with summary features extracted from LOBSTER files
-        as columns. Uses multiprocessing to speed up the process.
+        Generate a pandas dataframe with summary features extracted from LOBSTER files.
+
+        Uses multiprocessing to speed up the process.
 
         Returns:
             Returns a pandas dataframe
@@ -320,10 +339,10 @@ class BatchSummaryFeaturizer:
             pool.join()
             row = []
             for result in results:
-                row.append(result)
+                row.append(result)  # noqa: PERF402
 
         df_lobsterpy = pd.concat(row)
-        df_lobsterpy.sort_index(inplace=True)
+        df_lobsterpy.sort_index(inplace=True)  # noqa: PD002
 
         paths = [
             os.path.join(self.path_to_lobster_calcs, f)
@@ -346,7 +365,7 @@ class BatchSummaryFeaturizer:
                 row.append(result)
 
         df_coxx = pd.concat(row)
-        df_coxx.sort_index(inplace=True)
+        df_coxx.sort_index(inplace=True)  # noqa: PD002
 
         with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
             results = tqdm(
@@ -361,24 +380,23 @@ class BatchSummaryFeaturizer:
                 row.append(result)
 
         df_charges = pd.concat(row)
-        df_charges.sort_index(inplace=True)
+        df_charges.sort_index(inplace=True)  # noqa: PD002
 
-        df = pd.concat([df_lobsterpy, df_coxx, df_charges], axis=1)
+        return pd.concat([df_lobsterpy, df_coxx, df_charges], axis=1)
 
-        return df
+        # return df
 
 
 class BatchCoxxFingerprint:
     """
-    BatchFeaturizer that generates COHP/COOP/COBI fingerprints and
-    Tanimoto index similarity matrix from fingerprint objects.
+    BatchFeaturizer to generate COHP/COOP/COBI fingerprints and Tanimoto index similarity matrix.
 
     Args:
         path_to_lobster_calcs: path to root directory consisting of all lobster calc
         feature_type: set the feature type for moment features.
         Possible options are "bonding", "antibonding" or "overall"
         label_list: bond labels list for which fingerprints needs to be generated.
-        tanimoto : bool to state to compute tanimoto index betweeen fingerprint objects
+        tanimoto : bool to state to compute tanimoto index between fingerprint objects
         normalize: bool to state to normalize the fingerprint data
         n_bins: sets number for bins for fingerprint objects
         e_range : range of energy relative to fermi for which moment features needs to be computed
@@ -390,22 +408,40 @@ class BatchCoxxFingerprint:
         fingerprint_df: A pandas dataframe with fingerprint objects
         get_similarity_matrix_df: A symmetric pandas dataframe consisting of
         similarity index (tanimoto/normalized dot product/dot product)
-        computed between all pairs of compunds
+        computed between all pairs of compounds
     """
 
     def __init__(
         self,
-        path_to_lobster_calcs: str,
+        path_to_lobster_calcs: str | Path,
         feature_type: str = "overall",
-        label_list: List[str] | None = None,
+        label_list: list[str] | None = None,
         tanimoto: bool = True,
         normalize: bool = True,
         spin_type: str = "summed",
         n_bins: int = 56,
-        e_range: List[float] = [-15.0, 0.0],
+        e_range: list[float] = [-15.0, 0.0],
         n_jobs=4,
         fingerprint_for: str = "cohp",
     ):
+        """
+        Generate COHP/COOP/COBI fingerprints and pair-wise Tanimoto index similarity matrix.
+
+        Args:
+            path_to_lobster_calcs: path to root directory consisting of all lobster calc
+            feature_type: set the feature type for moment features.
+            Possible options are "bonding", "antibonding" or "overall"
+            label_list: bond labels list for which fingerprints needs to be generated.
+            tanimoto : bool to state to compute tanimoto index between fingerprint objects
+            normalize: bool to state to normalize the fingerprint data
+            spin_type: can be summed or up or down.
+            n_bins: sets number for bins for fingerprint objects
+            e_range : range of energy relative to fermi for which moment features needs to be computed
+            n_jobs : number of parallel processes to run
+            fingerprint_for: Possible options are 'cohp/cobi/coop'.
+            Based on this fingerprints will be computed for COHPCAR/COOBICAR/COOPCAR.lobster files
+
+        """
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.feature_type = feature_type
         self.tanimoto = tanimoto
@@ -421,7 +457,7 @@ class BatchCoxxFingerprint:
 
     def get_similarity_matrix_df(self) -> pd.DataFrame:
         """
-        This function will compute pairwise similarity index for each fingerprint object in input dataframe
+        Compute pairwise similarity index for each fingerprint object in input dataframe.
 
         Returns:
              A Pandas dataframe
@@ -429,8 +465,8 @@ class BatchCoxxFingerprint:
         matrix = np.full(
             (self.fingerprint_df.shape[0], self.fingerprint_df.shape[0]), np.nan
         )
-        for i, (row, col) in enumerate(self.fingerprint_df.iterrows()):
-            for j, (row1, col1) in enumerate(self.fingerprint_df.iterrows()):
+        for i, (_, col) in enumerate(self.fingerprint_df.iterrows()):
+            for j, (_, col1) in enumerate(self.fingerprint_df.iterrows()):
                 if self.tanimoto:
                     simi = self._get_fp_similarity(
                         col["COXX_FP"],
@@ -447,18 +483,16 @@ class BatchCoxxFingerprint:
                     )
                 matrix[i][j] = simi
 
-        df = pd.DataFrame(
+        return pd.DataFrame(
             matrix,
             index=list(self.fingerprint_df.index),
             columns=list(self.fingerprint_df.index),
         )
 
-        return df
-
     @staticmethod
     def _fp_to_dict(fp) -> dict:
         """
-        Converts a fingerprint into a dictionary
+        Convert a fingerprint obj into a dictionary.
 
         Args:
             fp: The fingerprint to be converted into a dictionary
@@ -481,7 +515,7 @@ class BatchCoxxFingerprint:
         tanimoto: bool = True,
     ) -> float:
         """
-        Calculates the similarity index (dot product) of two fingerprints
+        Calculate the similarity index (dot product) of two fingerprints.
 
         Args:
             fp1 (NamedTuple): The 1st dos fingerprint object
@@ -519,25 +553,24 @@ class BatchCoxxFingerprint:
                 + np.linalg.norm(vec2) ** 2
                 - np.dot(vec1, vec2)
             )
-            return np.dot(vec1, vec2) / rescale
 
         elif not tanimoto and normalize:
             rescale = np.linalg.norm(vec1) * np.linalg.norm(vec2)
-            return np.dot(vec1, vec2) / rescale
 
         elif not tanimoto and not normalize:
             rescale = 1.0
-            return np.dot(vec1, vec2) / rescale
 
         else:
             raise ValueError(
                 "Cannot compute similarity index. Please set either normalize=True or tanimoto=True or both to False."
             )
+        return np.dot(vec1, vec2) / rescale
 
     def _fingerprint_df(self, path_to_lobster_calc) -> pd.DataFrame:
         """
-        Wrapper method to get fingerprint object dataframe using FeaturizeCOXX.get_coxx_fingerprint_df method.
-        Also helps switching the data used for fingerprint generation
+        Get fingerprint object dataframe via  FeaturizeCOXX.get_coxx_fingerprint_df.
+
+        Also helps to generate the data used for fingerprint generation
 
         Returns:
             A pandas dataframe with COXX fingerprint object
@@ -615,19 +648,16 @@ class BatchCoxxFingerprint:
             are_cobis=are_cobis,
         )
 
-        df_fp = coxx.get_coxx_fingerprint_df(
+        return coxx.get_coxx_fingerprint_df(
             spin_type=self.spin_type,
             n_bins=self.n_bins,
             normalize=self.normalize,
             label_list=self.label_list,
         )
 
-        return df_fp
-
     def _get_fingerprints_df(self) -> pd.DataFrame:
         """
-        Batch wrapper method to get fingerprint objects dataframe using
-        BatchCoxxFingerprint._fingerprint_df method.
+        Generate fingerprint objects dataframe using BatchCoxxFingerprint._fingerprint_df.
 
         Returns:
             A pandas dataframe with COXX fingerprint objects
@@ -645,15 +675,15 @@ class BatchCoxxFingerprint:
             results = tqdm(
                 pool.imap_unordered(self._fingerprint_df, paths, chunksize=1),
                 total=len(paths),
-                desc="Generating {} fingerprints".format(self.fingerprint_for.upper()),
+                desc=f"Generating {self.fingerprint_for.upper()} fingerprints",
             )
             pool.close()
             pool.join()
             row = []
             for result in results:
-                row.append(result)
+                row.append(result)  # noqa: PERF402
 
         df = pd.concat(row)
-        df.sort_index(inplace=True)
+        df.sort_index(inplace=True)  # noqa: PD002
 
         return df
