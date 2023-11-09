@@ -139,6 +139,7 @@ class BatchSummaryFeaturizer:
             )
 
             df_cohp = coxx.get_summarized_coxx_df()
+            del coxx
         else:
             raise Exception(
                 "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file "
@@ -172,6 +173,7 @@ class BatchSummaryFeaturizer:
                 )
 
                 df_cobi = coxx.get_summarized_coxx_df()
+                del coxx
 
             else:
                 raise Exception(
@@ -206,6 +208,7 @@ class BatchSummaryFeaturizer:
                 )
 
                 df_coop = coxx.get_summarized_coxx_df()
+                del coxx
 
             else:
                 raise Exception(
