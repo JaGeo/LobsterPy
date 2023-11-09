@@ -1,28 +1,27 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""
-This module defines classes to analyze the COHPs automatically
-"""
+"""This module defines classes to analyze the COHPs automatically."""
 from __future__ import annotations
-from pathlib import Path
 
 import warnings
 from collections import Counter
+from pathlib import Path
+
 import numpy as np
-from pymatgen.core.structure import Structure
 from pymatgen.analysis.bond_valence import BVAnalyzer
-from pymatgen.electronic_structure.core import Spin
+from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.io.vasp.outputs import Vasprun
-from pymatgen.io.lobster import Lobsterin, Doscar, Lobsterout, Charge, Bandoverlaps
+from pymatgen.electronic_structure.core import Spin
+from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Lobsterin, Lobsterout
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
+from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 
 class Analysis:
     """
-    Analysis class of COHP data from Lobster
+    Class to analyze COHP/COOP/COBI  data from Lobster.
 
     Attributes:
         condensed_bonding_analysis: dict including a summary of the most important bonding properties
@@ -31,10 +30,10 @@ class Analysis:
         chemenv: pymatgen.io.lobster.lobsterenv.LobsterNeighbors object
         lse: LightStructureEnvironment from pymatgen
         cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
-         cutoff_icohp*max_icohp limits the number of considered environments
+        cutoff_icohp*max_icohp limits the number of considered environments
         anion_types: Set of Element objects from pymatgen
         list_equivalent_sites: list of site indices of sites that indicate which sites are equivalent
-         e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other
+        e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other
         path_to_charge: str that describes the path to CHARGE.lobster
         path_to_cohpcar: str that describes the path to COHPCAR.lobster
         path_to_icohplist: str that describes the path to ICOHPLIST.lobster
@@ -43,29 +42,27 @@ class Analysis:
         are_cobis : bool indicating if file contains COBI/ICOBI data
         are_coops : bool indicating if file contains COOP/ICOOP data
         noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
-        set_cohps: list of cohps
-        set_coordination_ions: list of coodination environment strings for each cation
-        set_equivalent_sites: set of inequivalent sites
-        seq_ineq_ions: set of inequivalent cations/sites in the structure
+        seq_cohps: list of cohps
+        seq_coord_ions: list of co-ordination environment strings for each cation
+        seq_equivalent_sites: seq of inequivalent sites
+        seq_ineq_ions: seq of inequivalent cations/sites in the structure
         seq_infos_bonds (list): information on cation anion bonds (lists
-            of pymatgen.io.lobster.lobsterenv.ICOHPNeighborsInfo)
+        of pymatgen.io.lobster.lobsterenv.ICOHPNeighborsInfo)
         spg: space group information
         structure: Structure object
         type_charge: which charges are considered here
         orbital_resolved: bool indicating whether analysis is performed
         orbital wise
         which_bonds: which bonds will be considered in analysis
-
-
     """
 
     def __init__(
         self,
-        path_to_poscar: str,
-        path_to_icohplist: str,
-        path_to_cohpcar: str,
-        path_to_charge: str | None = None,
-        path_to_madelung: str | None = None,
+        path_to_poscar: str | Path,
+        path_to_icohplist: str | Path,
+        path_to_cohpcar: str | Path,
+        path_to_charge: str | Path | None = None,
+        path_to_madelung: str | Path | None = None,
         which_bonds: str = "cation-anion",
         cutoff_icohp: float = 0.1,
         noise_cutoff: float = 0.1,
@@ -78,7 +75,7 @@ class Analysis:
         orbital_resolved=False,
     ):
         """
-        This is a class to analyse bonding information automatically
+        Automatically analyze bonding information with this class.
 
         Args:
             path_to_poscar: path to POSCAR (e.g., "POSCAR")
@@ -90,16 +87,17 @@ class Analysis:
             are_coops : bool indicating if file contains COOP/ICOOP data
             noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
             orbital_cutoff : float that sets the minimum percentage for the orbital resolved analysis.
-                                (Affects only when orbital_resolved argument is set to True)
-                                Set it to 0 to get results of all orbitals in the detected relevant bonds.
-                                Default is to 0.05 i.e. only analyses if orbital contribution is 5 % or more.
+            (Affects only when orbital_resolved argument is set to True) Set it to 0 to get results
+            of all orbitals in the detected relevant bonds. Default is to 0.05 i.e. only analyzes
+            if orbital contribution is 5 % or more.
             which_bonds: selects which kind of bonds are analyzed. "cation-anion" is the default
             cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
             summed_spins: if true, spins will be summed
             type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
-                        Löwdin charges cannot be selected at the moment.
+            Löwdin charges cannot be selected at the moment.
             orbital_resolved: bool indicating whether analysis is performed orbital wise
             start: start energy for integration
+
         """
         self.start = start
         self.path_to_poscar = path_to_poscar
@@ -141,7 +139,7 @@ class Analysis:
 
     def setup_env(self):
         """
-        This method helps setting up the light structure environments based on COHPs
+        Set up the light structure environments based on COHPs using this method.
 
         Returns:
             None
@@ -152,7 +150,7 @@ class Analysis:
         symmetry_dataset = sga.get_symmetry_dataset()
         equivalent_sites = symmetry_dataset["equivalent_atoms"]
         self.list_equivalent_sites = equivalent_sites
-        self.set_equivalent_sites = list(set(equivalent_sites))
+        self.seq_equivalent_sites = list(set(equivalent_sites))
         self.spg = symmetry_dataset["international"]
 
         if self.which_bonds == "cation-anion":
@@ -211,11 +209,11 @@ class Analysis:
         except ValueError:
 
             class Lse:
-                """Test class when error was raised"""
+                """Test class when error was raised."""
 
                 def __init__(self, chemenv, valences=None):
                     """
-                    Test class when error was raised
+                    Test class when error was raised.
 
                     Args:
                         chemenv (LobsterNeighbors): LobsterNeighbors object
@@ -247,7 +245,7 @@ class Analysis:
 
     def get_information_all_bonds(self, summed_spins=True):
         """
-        This method will gather all information on the bonds within the compound
+        Gather all information on the bonds within the compound with this method.
 
         Returns:
             None
@@ -262,11 +260,11 @@ class Analysis:
             self.seq_cohps = []
             # only_bonds_to
 
-            self.anion_types = self.chemenv.get_anion_types()
+            self.anion_types = self.chemenv.anion_types
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
+                if ice in self.seq_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.seq_ineq_ions.append(ice)
 
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
@@ -308,7 +306,7 @@ class Analysis:
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
-                if ice in self.set_equivalent_sites and ce[0]["ce_symbol"] is not None:
+                if ice in self.seq_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.seq_ineq_ions.append(ice)
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
                     self.seq_infos_bonds.append(
@@ -337,6 +335,7 @@ class Analysis:
 
     def get_site_bond_resolved_labels(self):
         """
+        Return relevant bond labels for each symmetrically independent site.
 
         Returns:
             dict with bond labels for each site, e.g.
@@ -374,7 +373,7 @@ class Analysis:
         self, nameion, iion, labels, bond_resolved_labels, type_pop
     ):
         """
-        Method to retrieve orbital wise analysis data
+        Retrieve orbital-wise analysis data.
 
         Args:
             nameion: name of symmetrically relevant cation or anion
@@ -433,7 +432,7 @@ class Analysis:
 
                 orb_bonding_dict_data = {}
                 # For each orbital collect the contributions of summed bonding
-                # and antibonding interactions seperately
+                # and antibonding interactions separately
                 for orb in available_orbitals:
                     cohp_summed_orb = self.chemenv.completecohp.get_summed_cohp_by_label_and_orbital_list(
                         label_list=bond_labels, orbital_list=[orb] * len(bond_labels)
@@ -585,7 +584,7 @@ class Analysis:
 
     def _get_bond_resolved_data_stats(self, orb_resolved_bond_data: dict):
         """
-        Method to get maximum bonding and antibonding orbital contribution
+        Retrieve the maximum bonding and anti-bonding orbital contributions.
 
         Args:
             orb_resolved_bond_data: A dictionary with orbital names as keys and corresponding bonding data
@@ -647,6 +646,7 @@ class Analysis:
 
     def get_site_orbital_resolved_labels(self):
         """
+        Return relevant orbitals and bond labels for each symmetrically independent site.
 
         Returns:
             dict with bond labels for each site for relevant orbitals, e.g.
@@ -654,15 +654,13 @@ class Analysis:
 
         """
         site_bond_labels = self.get_site_bond_resolved_labels()
-        orb_plot_data = {i: {} for i in site_bond_labels.keys()}
+        orb_plot_data = {atom_pair: {} for atom_pair in site_bond_labels}
         if self.orbital_resolved:
             for site_index, cba_data in self.condensed_bonding_analysis[
                 "sites"
             ].items():
-                for atom, _ in cba_data["bonds"].items():
-                    for orb_pair, bond_data in cba_data["bonds"][atom][
-                        "orbital_data"
-                    ].items():
+                for atom in cba_data["bonds"]:
+                    for orb_pair in cba_data["bonds"][atom]["orbital_data"]:
                         if orb_pair not in ("orbital_summary_stats", "relevant_bonds"):
                             atom_pair = [cba_data["ion"], atom]
                             atom_pair.sort()
@@ -685,6 +683,7 @@ class Analysis:
     @staticmethod
     def _get_strenghts_for_each_bond(pairs, strengths, nameion=None):
         """
+        Return a dictionary of bond strengths.
 
         Args:
             pairs: list of list including labels for the atoms, e.g., [['O3', 'Cu1'], ['O3', 'Cu1']]
@@ -724,7 +723,8 @@ class Analysis:
     @staticmethod
     def _sort_name(pair, nameion=None):
         """
-        Will place the cation first in a list of name strings
+        Place the cation first in a list of name strings.
+
         Args:
             pair: ["O","Cu"]
             nameion: "Cu"
@@ -753,8 +753,8 @@ class Analysis:
         orb_pair: str,
     ):
         """
-        Will place the cation first in a list of name strings and
-        add associated orbital name alongside atom name
+        Place the cation first in a list of name strings and add the associated orbital name alongside the atom name.
+
         Args:
             atom_pair: list of atom pair with cation first eg., ["Cl","Na"]
             label: LOBSTER relevant bond label eg ., "3"
@@ -768,7 +768,7 @@ class Analysis:
         orb_atom = {}  # type: ignore
         orb_pair_list = orb_pair.split("-")
         # get orbital associated to the atom and store in a dict
-        for inx, (site, site_orb) in enumerate(
+        for _inx, (site, site_orb) in enumerate(
             zip(complete_cohp.bonds[label]["sites"], orb_pair_list)
         ):
             if (
@@ -792,11 +792,12 @@ class Analysis:
 
     def _get_antibdg_states(self, cohps, labels, nameion=None, limit=0.01):
         """
-        Will return a dictionary including information on antibonding states
+        Return a dictionary containing information on anti-bonding states.
+
         e.g., similar to: {'Cu-O': True, 'Cu-F': True}
 
         Args:
-            cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects
+            cohps: list of pymatgen.electronic_structure.cohp.Cohp objects
             labels: ['2 x Cu-O', '4 x Cu-F']
             nameion: string of the cation name, e.g. "Cu"
             limit: limit to detect antibonding states
@@ -829,16 +830,18 @@ class Analysis:
 
     def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels, cohps, nameion):
         """
+        Return a dictionary containing information on antibonding states.
+
         .. warning:: NEEDS MORE TESTS
 
-        This method will return a dictionary including information on antibonding states
-        important is however that only the energy range can be considered that has been computed
+        It is important to note that only the energy range that has been computed can be considered
         (i.e., this might not be all)
-        e.g., similar to: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995},
+
+        e.g. output: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995},
         'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
 
         Args:
-            cohps: list of pymatgen.electronic_structure.cohp.Cohp ojbects
+            cohps: list of pymatgen.electronic_structure.cohp.Cohp objects
             labels: ['2 x Cu-O', '4 x Cu-F']
             nameion: string of the cation name, e.g. "Cu"
 
@@ -893,12 +896,14 @@ class Analysis:
 
     def _integrate_antbdstates_below_efermi(self, cohp, start):
         """
+        Integrate the cohp data to compute bonding and anti-bonding contribution below efermi.
+
         .. warning:: NEEDS MORE TESTS
 
         This integrates the whole COHP curve that has been computed.
         The energy range is very important.
         At present the energy range considered is dependent on COHPstartEnergy
-        set during lobster runs. The bonding / antibonding intergral values are sensitive to this parameter.
+        set during lobster runs. The bonding / antibonding integral values are sensitive to this parameter.
         If COHPstartEnergy value does not cover entire range of VASP calculations then
         absolute value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.
 
@@ -921,8 +926,7 @@ class Analysis:
 
         def integrate_positive(y, x):
             """
-
-            This will integrate only bonding interactions of the COHP
+            Integrate only bonding interactions of COHPs.
 
             Args:
                 y: COHP values
@@ -940,12 +944,14 @@ class Analysis:
 
         def integrate_negative(y, x):
             """
-            Will integrate only one side of the COHP
+            Integrate only anti-bonding interactions of COHPs.
+
             Args:
                 y: COHP values
                 x: Energy values
+
             Returns:
-                integrated value of antibonding interactions
+                integrated value of anti-bonding interactions
             """
             y = np.asanyarray(y)
             x = np.asanyarray(x)
@@ -955,10 +961,11 @@ class Analysis:
 
         # will integrate spin.up and spin.down only below efermi
         energies_corrected = cohp.energies - cohp.efermi
-        if Spin.down in cohp.cohp:
-            summedcohp = cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
-        else:
-            summedcohp = cohp.cohp[Spin.up]
+        summedcohp = (
+            cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
+            if Spin.down in cohp.cohp
+            else cohp.cohp[Spin.up]
+        )
 
         cohp_bf = []
         en_bf = []
@@ -1000,7 +1007,7 @@ class Analysis:
 
     def _get_pop_type(self):
         """
-        Convenience method to return the type of input population file
+        Return the type of the input population file.
 
         Returns:
             A String of analysed population can be COOP/COBI/COHP
@@ -1023,15 +1030,14 @@ class Analysis:
         type_pop=None,
     ):
         """
-        Will return a bond_dict including information for each site
+        Return a bond_dict that contains information for each site.
 
         Args:
             bond_strength_dict (dict): dict with bond names as key and lists of bond strengths as items
             small_antbd_dict (dict): dict including if there are antibonding interactions, {'Yb-Sb': False}
             nameion (str): name of the cation, e.g. Yb
-            large_antbdg_dict: will be implemented later
+            large_antbd_dict: will be implemented later
             type_pop: population type analyzed. eg. COHP
-
 
         Returns:
             Eg., if type_pop == 'COHP', will return
@@ -1041,10 +1047,9 @@ class Analysis:
             has_antibdg_states_below_Efermi is True if there are antibonding interactions below Efermi
             "number_of_bonds" will count the numbers of bonds to the cation
 
-            example:
+        Example:
             {'Sb': {'ICOHP_mean': '-1.85', 'ICOHP_sum': '-11.09',
             'has_antibdg_states_below_Efermi': False, 'number_of_bonds': 6}}
-
 
         """
         bond_dict = {}
@@ -1078,7 +1083,7 @@ class Analysis:
 
     def set_condensed_bonding_analysis(self):
         """
-        Sets a condensed version of the bonding analysis including a summary dictionary
+        Condense the bonding analysis into a summary dictionary.
 
         Returns:
             None
@@ -1167,10 +1172,7 @@ class Analysis:
                                     )
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
-                                for (
-                                    ion_atom_pair_orb,
-                                    _,
-                                ) in orb_resolved_bond_info.items():
+                                for ion_atom_pair_orb in orb_resolved_bond_info:
                                     orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
                                         -1
                                     ]
@@ -1251,10 +1253,7 @@ class Analysis:
                                     )
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
-                                for (
-                                    ion_atom_pair_orb,
-                                    _,
-                                ) in orb_resolved_bond_info.items():
+                                for ion_atom_pair_orb in orb_resolved_bond_info:
                                     orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
                                         -1
                                     ]
@@ -1339,7 +1338,7 @@ class Analysis:
 
     def set_summary_dicts(self):
         """
-        Sets summary dicts that can be used for correlations
+        Set summary dict that can be used for correlations.
 
         bond_dict that includes information on each bond
 
@@ -1431,7 +1430,7 @@ class Analysis:
         bva_comp: bool = False,
     ) -> dict:
         """
-        This method will analyze LOBSTER calculation quality
+        Analyze LOBSTER calculation quality.
 
         Args:
             path_to_poscar: path to structure file
@@ -1509,7 +1508,7 @@ class Analysis:
                     if dev > 0.1:
                         dev_val.append(dev)
 
-                quality_dict["band_overlaps"] = {
+                quality_dict["band_overlaps_analysis"] = {  # type: ignore
                     "file_exists": True,
                     "limit_maxDeviation": 0.1,
                     "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
@@ -1519,16 +1518,16 @@ class Analysis:
                     "percent_kpoints_abv_limit": round(
                         (len(dev_val) / total_kpoints) * 100, 4
                     ),
-                }  # type: ignore
+                }
 
             else:
-                quality_dict["band_overlaps"] = {
+                quality_dict["band_overlaps_analysis"] = {  # type: ignore
                     "file_exists": False,
                     "limit_maxDeviation": None,
                     "has_good_quality_maxDeviation": True,
                     "max_deviation": None,
                     "percent_kpoints_abv_limit": None,
-                }  # type: ignore
+                }
 
         if bva_comp:
             try:
@@ -1556,18 +1555,18 @@ class Analysis:
                     else:
                         loew_oxi.append("NEG")
 
-                quality_dict["charges"] = {}  # type: ignore
+                quality_dict["charge_comparisons"] = {}  # type: ignore
                 if mull_oxi == bva_oxi:
-                    quality_dict["charges"]["BVA_Mulliken_agree"] = True  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_mulliken_agree"] = True  # type: ignore
                 else:
-                    quality_dict["charges"]["BVA_Mulliken_agree"] = False  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_mulliken_agree"] = False  # type: ignore
 
                 if mull_oxi == bva_oxi:
-                    quality_dict["charges"]["BVA_Loewdin_agree"] = True  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_loewdin_agree"] = True  # type: ignore
                 else:
-                    quality_dict["charges"]["BVA_Loewdin_agree"] = False  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_loewdin_agree"] = False  # type: ignore
             except ValueError:
-                quality_dict["charges"] = {}  # type: ignore
+                quality_dict["charge_comparisons"] = {}  # type: ignore
                 warnings.warn(
                     "Oxidation states from BVA analyzer cannot be determined. "
                     "Thus BVA charge comparison will be skipped"
@@ -1597,7 +1596,7 @@ class Analysis:
                     min_e = e_range[0]
                 else:
                     warnings.warn(
-                        "Mimimum energy range requested for DOS comparisons is not available "
+                        "Minimum energy range requested for DOS comparisons is not available "
                         "in VASP or LOBSTER calculation. Thus, setting min_e to -5 eV"
                     )
                     min_e = -5
@@ -1649,7 +1648,7 @@ class Analysis:
                     4,
                 )
                 quality_dict["dos_comparisons"][
-                    "tanimoto_orb_{}".format(orb.name)
+                    f"tanimoto_orb_{orb.name}"
                 ] = tani_orb  # type: ignore
 
             fp_lobster = dos_lobster.get_dos_fp(
