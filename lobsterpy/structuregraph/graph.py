@@ -1,22 +1,25 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""
-This package provides the modules for generating graph objects using lobsterpy data
-"""
+"""This module provides a class for generating graph objects using lobsterpy data."""
+
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
 from pymatgen.core.structure import Structure
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.lobster.outputs import Charge
+
 from lobsterpy.cohp.analyze import Analysis
 
 
 class LobsterGraph:
     """
-    Class to generate structure graph objects with bonding data from Lobster
+    Class to generate structure graph objects with bonding data from Lobster.
 
     Attributes:
         sg: return structure_graph object
@@ -30,14 +33,15 @@ class LobsterGraph:
         path_to_icohplist: str | Path,
         path_to_madelung: str | Path,
         add_additional_data_sg=True,
-        path_to_icooplist: Optional[str] = None,
-        path_to_icobilist: Optional[str] = None,
+        path_to_icooplist: str | Path | None = None,
+        path_to_icobilist: str | Path | None = None,
         which_bonds: str = "all",
         cutoff_icohp: float = 0.10,
         start: float | None = None,
     ):
         """
-        This class will return structure graph objects with bonding information from Lobster data.
+        Return a structure graph objects with bonding information from Lobster data.
+
         Mode of automatic bonding analysis can be “cation-anion” or “all” bonds. The strongest bond is
         determined based on the ICOHPs. The coordination environments are determined based on
         cutoff_icohp *ICOHPs values. If the path of ICOBILIST (ICOOPLIST) is provided, the ICOBI (ICOOP)
@@ -59,6 +63,7 @@ class LobsterGraph:
             and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond
             which_bonds: selects which kind of bonds are analyzed. "all" is the default
             start: start energy for bonding antibonding percent integration
+
         """
         if add_additional_data_sg:
             self.add_additional_data_sg = add_additional_data_sg
@@ -96,7 +101,8 @@ class LobsterGraph:
 
     def get_decorated_sg(self):
         """
-        Method to generate graph object decorated with bonding data from lobsterpy
+        Create a graph object decorated with bonding data from LobsterPy.
+
         Returns:
             structure graph object
         """
@@ -155,11 +161,11 @@ class LobsterGraph:
         cba = analyze.condensed_bonding_analysis
 
         # Iterate over sites in the dictionary
-        for k, v in cba["sites"].items():
-            for k2, v2 in lobster_env.graph.nodes.data():
+        for cba_data in cba["sites"].values():
+            for _, node_data in lobster_env.graph.nodes.data():
                 # Check if ions are same and add its corresponding environment in node properties
-                if v["ion"] == v2["specie"]:
-                    v2["properties"].update({"env": v["env"]})
+                if cba_data["ion"] == node_data["specie"]:
+                    node_data["properties"].update({"env": cba_data["env"]})
 
         for (
             edge_prop
