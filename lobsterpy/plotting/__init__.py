@@ -32,15 +32,16 @@ def get_style_list(
     styles: list[str | dict[str, Any]] | None = None,
     **kwargs,
 ) -> list[str | dict[str, Any]]:
-    """Get *args for matplotlib.style from user input.
+    """
+    Get args for matplotlib.style from user input.
 
-    Args:
-        no_base_style: If true, do not include lobsterpy_base.mplstyle
-        styles: User-requested styles. These can be paths to mplstyle files,
+    Remaining kwargs are collected as a dict and take the highest priority.
+
+    :param no_base_style: If true, do not include lobsterpy_base.mplstyle
+    :param styles: User-requested styles. These can be paths to mplstyle files,
         the names of known (matplotlib-supplied) styles, or dicts of rcParam options.
-        **kwargs: matplotlib-style sheet keyword arguments
+    :param kwargs: matplotlib-style sheet keyword arguments
 
-        Remaining kwargs are collected as a dict and take the highest priority.
     """
     base = [] if no_base_style else [base_style]
     if styles is None:
@@ -70,20 +71,19 @@ class PlainCohpPlotter(CohpPlotter):
         """
         Get a matplotlib plot showing the COHP.
 
-        Args:
-            ax: Existing Matplotlib Axes object to plot to.
-            xlim: Specifies the x-axis limits. Defaults to None for
+        :param ax: Existing Matplotlib Axes object to plot to.
+        :param xlim: Specifies the x-axis limits. Defaults to None for
             automatic determination.
-            ylim: Specifies the y-axis limits. Defaults to None for
+        :param ylim: Specifies the y-axis limits. Defaults to None for
             automatic determination.
-            plot_negative: It is common to plot -COHP(E) so that the
+        :param plot_negative: It is common to plot -COHP(E) so that the
             sign means the same for COOPs and COHPs. Defaults to None
             for automatic determination: If are_coops is True, this
             will be set to False, else it will be set to True.
-            integrated: Switch to plot ICOHPs. Defaults to False.
-            invert_axes: Put the energies onto the y-axis, which is
+        :param integrated: Switch to plot ICOHPs. Defaults to False.
+        :param invert_axes: Put the energies onto the y-axis, which is
             common in chemistry.
-            sigma: Standard deviation of Gaussian broadening applied to
+        :param sigma: Standard deviation of Gaussian broadening applied to
             population data. If this is unset (None) no broadening will be
             added.
 
@@ -199,17 +199,17 @@ class PlainCohpPlotter(CohpPlotter):
 
     @staticmethod
     def _broaden(energies: np.ndarray, population: np.ndarray, sigma=None, cutoff=4.0):
-        """Broaden the spectrum with a given standard deviation.
+        """
+        Broaden the spectrum with a given standard deviation.
 
         The population is convolved with a normalised Gaussian kernel. This
         requires the energy grid to be regularly-spaced.
 
-        Args:
-            energies: Regularly-spaced energy series
-            population: Population data for broadening
-            sigma: Standard deviation for Gaussian broadening. If sigma is None
+        :param energies: Regularly-spaced energy series
+        :param population: Population data for broadening
+        :param sigma: Standard deviation for Gaussian broadening. If sigma is None
             then the input data is returned without any processing.
-            cutoff: Range cutoff for broadening kernel, as a multiple of sigma.
+        :param cutoff: Range cutoff for broadening kernel, as a multiple of sigma.
 
         Return:
             Broadened population
@@ -251,14 +251,12 @@ class PlainDosPlotter(DosPlotter):
         """
         Generate COHP or COOP or COBI plots.
 
-        Args:
-            zero_at_efermi (bool): Whether to shift all Dos to have zero energy at the
+        :param zero_at_efermi: Whether to shift all Dos to have zero energy at the
             fermi energy. Defaults to True.
-            stack (bool): Whether to plot the DOS as a stacked area graph
-            sigma (float): Specify a standard deviation for Gaussian smearing
-            the DOS for nicer looking plots. Defaults to None for no
-            smearing.
-            summed (bool): Whether to plot the summed DOS
+        :param stack: Whether to plot the DOS as a stacked area graph
+        :param sigma: Specify a standard deviation for Gaussian smearing
+            the DOS for nicer looking plots. Defaults to None for no smearing.
+        :param summed: Whether to plot the summed DOS
 
         """
         self.zero_at_efermi = zero_at_efermi
@@ -269,11 +267,12 @@ class PlainDosPlotter(DosPlotter):
         self.summed = summed
 
     def add_dos(self, label: str, dos: LobsterCompleteDos) -> None:
-        """Add a dos for plotting.
+        """
+        Add a dos for plotting.
 
-        Args:
-            label: label for the DOS. Must be unique.
-            dos: LobsterCompleteDos object
+        :param label: label for the DOS. Must be unique.
+        :param dos: LobsterCompleteDos object
+
         """
         if dos.norm_vol is None:
             self._norm_val = False
@@ -304,12 +303,13 @@ class PlainDosPlotter(DosPlotter):
         }
 
     def add_site_orbital_dos(self, dos: LobsterCompleteDos, orbital, site_index):
-        """Add orbital dos at particular site.
+        """
+        Add orbital dos at particular site.
 
-        Args:
-            dos: LobsterCompleteDos object
-            orbital: Orbitals name at the site. Must be unique.
-            site_index: site index in the structure
+        :param dos: LobsterCompleteDos object
+        :param orbital: Orbitals name at the site. Must be unique.
+        :param site_index: site index in the structure
+
         """
         if dos.norm_vol is None:
             self._norm_val = False
@@ -399,18 +399,16 @@ class PlainDosPlotter(DosPlotter):
         """
         Get a matplotlib plot showing the COHP.
 
-        Args:
-            ax: Existing Matplotlib Axes object to plot to.
-            xlim: Specifies the x-axis limits. Defaults to None for
+        :param ax: Existing Matplotlib Axes object to plot to.
+        :param xlim: Specifies the x-axis limits. Defaults to None for
             automatic determination.
-            ylim: Specifies the y-axis limits. Defaults to None for
+        :param ylim: Specifies the y-axis limits. Defaults to None for
             automatic determination.
-            invert_axes: Put the energies onto the y-axis, which is
+        :param invert_axes: Put the energies onto the y-axis, which is
             common in chemistry.
-            beta_dashed: Plots the beta spin channel with a dashed line. Defaults to False
-            sigma: Standard deviation of Gaussian broadening applied to
-            population data. If this is unset (None) no broadening will be
-            added.
+        :param beta_dashed: Plots the beta spin channel with a dashed line. Defaults to False
+        :param sigma: Standard deviation of Gaussian broadening applied to population data.
+            If this is unset (None) no broadening will be added.
 
         Returns:
             A matplotlib object.
@@ -551,9 +549,9 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         Add COHP object to the plotter.
 
-        Args:
-            label: Label for the COHP. Must be unique.
-            cohp: COHP object.
+        :param label: Label for the COHP. Must be unique.
+        :param cohp: COHP object.
+
         """
         if "All" not in self._cohps:
             self._cohps["All"] = {}
@@ -587,13 +585,13 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         Add all relevant COHPs from lobsterpy analyse object.
 
-        Args:
-            analyse: Analyse object from lobsterpy.
-            suffix: Optional addition to LOBSTER label to avoid key conflicts when plotting multiple
+        :param analyse: Analyse object from lobsterpy.
+        :param suffix: Optional addition to LOBSTER label to avoid key conflicts when plotting multiple
             calcs or just for additional legend information.
-            label_resolved: bool indicating to obtain label resolved interactive plots for relevant bonds.
+        :param label_resolved: bool indicating to obtain label resolved interactive plots for relevant bonds.
             If false, will return summed cohp curves of unique relevant bonds.
-            orbital_resolved: bool indicating to include orbital resolved interactive cohps for relevant bonds.
+        :param orbital_resolved: bool indicating to include orbital resolved interactive cohps for relevant bonds.
+
         """
         complete_cohp = analyse.chemenv.completecohp
 
@@ -801,11 +799,11 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         Add COHPs explicitly specified in label list.
 
-        Args:
-            analyse: Analyse object from lobsterpy.
-            label_list: List of COHP labels as from LOBSTER.
-            suffix: Optional addition to LOBSTER label to avoid key
+        :param analyse: Analyse object from lobsterpy.
+        :param label_list: List of COHP labels as from LOBSTER.
+        :param suffix: Optional addition to LOBSTER label to avoid key
             conflicts when plotting multiple calcs or just for additional legend information.
+
         """
         complete_cohp = analyse.chemenv.completecohp
 
@@ -836,10 +834,10 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         Add all relevant COHPs for specified bond type from lobster lightweight json.gz file.
 
-        Args:
-            plot_data_dict: Lobsterpy plot data dict
-            suffix: Optional addition to LOBSTER label to avoid key
+        :param plot_data_dict: Lobsterpy plot data dict
+        :param suffix: Optional addition to LOBSTER label to avoid key
             conflicts when plotting multiple calcs or just for additional legend information.
+
         """
         # convert to cohp objects
         plot_data_dict = plot_data_dict.copy()
@@ -888,23 +886,22 @@ class InteractiveCohpPlotter(CohpPlotter):
         """
         Get an interactive plotly figure showing the COHPs.
 
-        Args:
-            xlim: Specifies the x-axis limits. Defaults to None for
+        :param xlim: Specifies the x-axis limits. Defaults to None for
             automatic determination.
-            rangeslider: Adds a plotly.graph_objs.layout.xaxis.Rangeslider
+        :param rangeslider: Adds a plotly.graph_objs.layout.xaxis.Rangeslider
             object to figure to allow easy manipulation of x-axis..
-            ylim: Specifies the y-axis limits. Defaults to None for
+        :param ylim: Specifies the y-axis limits. Defaults to None for
             automatic determination.
-            plot_negative: It is common to plot -COHP(E) so that the
+        :param plot_negative: It is common to plot -COHP(E) so that the
             sign means the same for COOPs and COHPs. Defaults to None
-            for automatic determination: If are_coops is True, this
+            for automatic determination - If are_coops is True, this
             will be set to False, else it will be set to True.
-            integrated: Switch to plot ICOHPs. Defaults to False.
-            invert_axes: Put the energies onto the y-axis, which is
+        :param integrated: Switch to plot ICOHPs. Defaults to False.
+        :param invert_axes: Put the energies onto the y-axis, which is
             common in chemistry.
-            sigma: Standard deviation of Gaussian broadening applied to
+        :param sigma: Standard deviation of Gaussian broadening applied to
             population data. If this is unset (None) no broadening will be added.
-            colors: list of hex color codes to be used in plot
+        :param colors: list of hex color codes to be used in plot
 
         Returns:
             A  plotly.graph_objects.Figure object.
@@ -1060,10 +1057,9 @@ class InteractiveCohpPlotter(CohpPlotter):
         For example : for input label 'Ba1: Ba-Ti', character ':', number_of_bonds: 3,
         Will return 'Ba1: 3 x Ba-Ti'
 
-        Args:
-            label: bond label to which number of bonds needs to be inserted
-            character: string character where number of bonds needs to be inserted
-            number_of_bonds: number of bonds corresponding to the label
+        :param label: bond label to which number of bonds needs to be inserted
+        :param character: string character where number of bonds needs to be inserted
+        :param number_of_bonds: number of bonds corresponding to the label
 
         Returns:
              bond label with number of bonds inserted
@@ -1087,13 +1083,12 @@ class InteractiveCohpPlotter(CohpPlotter):
         Will return '21: Cl2(3s)-Na1(3s) (2.85 Å)' If label and orbital resolved True
         Will return 'Cl(3s)-Na(3s) (2.85 Å)' if orbital_resolved is True and label_resolved is False
 
-        Args:
-            structure: pymatgen structure object
-            label_list: bond label to which number of bonds needs to be inserted
-            complete_cohp:  complete cohp object
-            orb_list: relevant orbital
-            label_resolved: specifies type of label to be returned is for label_resolved case
-            orbital_resolved: specifies type of label to be returned is for orbital_resolved case
+        :param structure: pymatgen structure object
+        :param label_list: bond label to which number of bonds needs to be inserted
+        :param complete_cohp:  complete cohp object
+        :param orb_list: relevant orbital
+        :param label_resolved: specifies type of label to be returned is for label_resolved case
+        :param orbital_resolved: specifies type of label to be returned is for orbital_resolved case
 
         Returns:
              plot label string
@@ -1144,11 +1139,11 @@ class IcohpDistancePlotter:
         """
         Plot ICOHPs or ICOBI or ICOOP vs bond lengths.
 
-        Args:
-            are_coops: Switch to indicate that these are ICOOPs, not ICOHPs.
+        :param are_coops: Switch to indicate that these are ICOOPs, not ICOHPs.
             Defaults to False for ICOHPs.
-            are_cobis: Switch to indicate that these are ICOBIs, not ICOHPs/COOPs.
+        :param are_cobis: Switch to indicate that these are ICOBIs, not ICOHPs/COOPs.
             Defaults to False for ICOHPs.
+
         """
         self.are_coops = are_coops
         self.are_cobis = are_cobis
@@ -1158,9 +1153,8 @@ class IcohpDistancePlotter:
         """
         Add ICOHPs or ICOBIs or ICOOPS for plotting.
 
-        Args:
-            label: Label for the ICOHPs. Must be unique.
-            icohpcollection: IcohpCollection object.
+        :param label: Label for the ICOHPs. Must be unique.
+        :param icohpcollection: IcohpCollection object.
 
         """
         icohps = []
@@ -1197,15 +1191,14 @@ class IcohpDistancePlotter:
         """
         Get a matplotlib plot showing the COHP or COBI or COOP with respect to bond lengths.
 
-        Args:
-            ax: Existing Matplotlib Axes object to plot to.
-            marker_size: sets the size of markers in scatter plots
-            marker_style: sets type of marker used in plot
-            xlim: Specifies the x-axis limits. Defaults to None for
+        :param ax: Existing Matplotlib Axes object to plot to.
+        :param marker_size: sets the size of markers in scatter plots
+        :param marker_style: sets type of marker used in plot
+        :param xlim: Specifies the x-axis limits. Defaults to None for
             automatic determination.
-            ylim: Specifies the y-axis limits. Defaults to None for
+        :param ylim: Specifies the y-axis limits. Defaults to None for
             automatic determination.
-            plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
+        :param plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
 
         Returns:
             A matplotlib object.
