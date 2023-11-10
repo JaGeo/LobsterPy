@@ -99,4 +99,4 @@ jobs:
           pip install .[docs,featurizer]
 
       - name: Build
-        run: sphinx-build docs/source docs_build
+        run: sphinx-build docs _build
