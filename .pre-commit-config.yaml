@@ -1,4 +1,4 @@
-exclude: ^(docs|.*examples|TestData)
+exclude: ^(docs|examples|tests/test_data)
 
 ci:
   autoupdate_schedule: monthly
@@ -6,50 +6,65 @@ ci:
   autofix_commit_msg: pre-commit auto-fixes
   autoupdate_commit_msg: pre-commit autoupdate
 
+default_language_version:
+  python: python3
 repos:
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.260
-    hooks:
-      - id: ruff
-        args: [ --fix, --ignore, D ]
- 
-
-  - repo: https://github.com/pre-commit/mirrors-pydocstyle
-    rev: v6.0.0
-    hooks:
-    - id: pydocstyle
-      args: [--config, pyproject.toml]
-      
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
-    hooks:
-    - id: check-yaml
-    - id: end-of-file-fixer
-    - id: trailing-whitespace
-    - id: flake8
-
-  - repo: https://github.com/psf/black
-    rev: 23.3.0
-    hooks:
-    - id: black
-      language_version: python3.9
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.5.1
-    hooks:
-    - id: mypy
-
-  - repo: https://github.com/adamchainz/blacken-docs
-    rev: 1.16.0
-    hooks:
-    - id: blacken-docs
-
-  - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v2.0.2
-    hooks:
-    - id: autopep8
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-    - id: isort
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: v0.1.1
+  hooks:
+  - id: ruff
+    args: [--fix]
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: check-yaml
+  - id: fix-encoding-pragma
+    args: [--remove]
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+- repo: https://github.com/psf/black
+  rev: 23.10.0
+  hooks:
+  - id: black
+- repo: https://github.com/asottile/blacken-docs
+  rev: 1.16.0
+  hooks:
+  - id: blacken-docs
+    additional_dependencies: [black]
+    exclude: README.md
+- repo: https://github.com/pycqa/flake8
+  rev: 6.1.0
+  hooks:
+  - id: flake8
+    entry: pflake8
+    files: lobsterpy/*
+    additional_dependencies:
+    - pyproject-flake8==6.0.0a1
+    - flake8-bugbear==22.12.6
+    - flake8-typing-imports==1.14.0
+    - flake8-docstrings==1.6.0
+    - flake8-rst-docstrings==0.3.0
+    - flake8-rst==0.8.0
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: v1.10.0
+  hooks:
+  - id: python-use-type-annotations
+  - id: rst-backticks
+  - id: rst-directive-colons
+  - id: rst-inline-touching-normal
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.6.1
+  hooks:
+  - id: mypy
+    files: lobsterpy/*
+    additional_dependencies:
+    - tokenize-rt==4.1.0
+    - types-pkg_resources==0.1.2
+    - types-paramiko
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.2.6
+  hooks:
+  - id: codespell
+    stages: [commit, commit-msg]
+    args: [--ignore-words-list, 'titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo']
+    types_or: [python, rst, markdown]
