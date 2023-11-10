@@ -71,6 +71,8 @@ myst_enable_extensions = [
     "html_image",
 ]
 
+nb_execution_timeout = 500
+
 
 # use type hints
 autodoc_typehints = "description"
