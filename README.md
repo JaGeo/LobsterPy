@@ -11,10 +11,10 @@ Please note that LobsterPy relies on the LOBSTER computation output files. Thus,
 
 
 ## Installation
-#### Standard installation
+### Standard installation
 Install using ``pip install lobsterpy``
 
-#### Installation with featurizer
+### Installation with featurizer
 Install using ``pip install lobsterpy[featurizer]``
 
 
