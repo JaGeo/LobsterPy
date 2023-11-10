@@ -128,7 +128,7 @@ def get_parser() -> argparse.ArgumentParser:
 
     # Input args for specifically needed for calculation quality description
     calc_quality_description_file_group = (
-        calc_quality_description_file_parent.add_argument_group()
+        calc_quality_description_file_parent.add_argument_group("")
     )
     calc_quality_description_file_group.add_argument(
         "-fvasprun",
