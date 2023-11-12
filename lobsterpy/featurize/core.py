@@ -19,7 +19,7 @@ from monty.os.path import zpath
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.io.lobster import Charge, Icohplist, MadelungEnergies
+from pymatgen.io.lobster import Charge, Doscar, Icohplist, MadelungEnergies
 from scipy.integrate import trapezoid
 from scipy.signal import hilbert
 
@@ -627,7 +627,7 @@ class FeaturizeCOXX:
                     np.diff(energies)[0],
                 )
 
-                df.at[ids, "COXX_FP"] = fp  # noqa: PD008
+                df.loc[ids, "COXX_FP"] = fp
 
                 return df
 
@@ -661,7 +661,7 @@ class FeaturizeCOXX:
                 bin_width,
             )
 
-            df.at[ids, "COXX_FP"] = fp  # noqa: PD008
+            df.loc[ids, "COXX_FP"] = fp
 
             return df
 
@@ -1166,5 +1166,125 @@ class FeaturizeCharges:
             df.loc[ids, "Ionicity_Mull"] = self._calc_ionicity()
         else:
             df.loc[ids, "Ionicity_Loew"] = self._calc_ionicity()
+
+        return df
+
+
+dos_fingerprint = namedtuple(
+    "dos_fingerprint", "energies densities type n_bins bin_width"
+)
+
+
+class FeaturizeDoscar:
+    """
+    Class to compute DOS moments and fingerprints from DOSCAR.lobster / DOSCAR.LSO.lobster.
+
+    Attributes:
+        path_to_structure: path to POSCAR
+        path_to_doscar : path to DOSCAR.lobster or DOSCAR.LSO.lobster
+        e_range : range of energy relative to fermi for which moment features and features needs to be computed
+
+    Methods:
+        get_df: pandas dataframe
+
+    """
+
+    def __init__(
+        self,
+        path_to_structure: str | Path,
+        path_to_doscar: str | Path,
+        e_range: list[float] = [-10.0, 0.0],
+    ):
+        """
+        Featurize DOSCAR.lobster or DOSCAR.LSO.lobster data.
+
+        Args:
+            path_to_structure: path to POSCAR
+            path_to_doscar : path to DOSCAR.lobster or DOSCAR.LSO.lobster
+            e_range : range of energy relative to fermi for which moment features and features needs to be computed
+
+        """
+        self.path_to_structure = path_to_structure
+        self.path_to_doscar = path_to_doscar
+        self.e_range = e_range
+        self.doscar = Doscar(
+            doscar=self.path_to_doscar, structure_file=self.path_to_structure
+        ).completedos
+
+    def get_df(self, ids: str | None = None) -> pd.DataFrame:
+        """
+        Return a pandas dataframe with computed DOS moment features as columns.
+
+        Moment features are PDOS center, width, skewness, kurtosis and upper band edge.
+
+        Returns:
+            A pandas dataframe object
+        """
+        if ids:
+            df = pd.DataFrame(index=[ids])
+        else:
+            ids = Path(self.path_to_doscar).parent.name
+            df = pd.DataFrame(index=[ids])
+
+        spd_dos_lobster = self.doscar.get_spd_dos()
+
+        for orbital in spd_dos_lobster:
+            df.loc[ids, f"{orbital.name}_band_center"] = round(
+                self.doscar.get_band_center(band=orbital, erange=self.e_range), 4
+            )
+            df.loc[ids, f"{orbital.name}_band_width"] = round(
+                self.doscar.get_band_width(band=orbital, erange=self.e_range), 4
+            )
+            df.loc[ids, f"{orbital.name}_band_skew"] = round(
+                self.doscar.get_band_skewness(band=orbital, erange=self.e_range), 4
+            )
+            df.loc[ids, f"{orbital.name}_band_kurtosis"] = round(
+                self.doscar.get_band_kurtosis(band=orbital, erange=self.e_range), 4
+            )
+            df.loc[ids, f"{orbital.name}_band_upperband_edge"] = round(
+                self.doscar.get_upper_band_edge(band=orbital, erange=self.e_range), 4
+            )
+
+        return df
+
+    def get_fingerprint_df(
+        self,
+        ids: str | None = None,
+        fp_type: str = "summed_pdos",
+        binning: bool = True,
+        n_bins: int = 256,
+        normalize: bool = True,
+    ) -> pd.DataFrame:
+        """
+        Generate a dataframe consisting of DOS fingerprint (fp).
+
+        Args:
+            ids: set index of pandas dataframe
+            fp_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+            (default is summed_pdos)
+            binning: If true, the DOS fingerprint is binned using np.linspace and n_bins.
+            Default is True.
+            n_bins: Number of bins to be used in the fingerprint (default is 256)
+            normalize: If true, normalizes the area under fp to equal to 1. Default is True.
+
+        Returns:
+            A pandas dataframe object with DOS fingerprints
+        """
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=["DOS_FP"])
+        else:
+            ids = Path(self.path_to_doscar).parent.name
+            df = pd.DataFrame(index=[ids], columns=["DOS_FP"])
+
+        fp = self.doscar.get_dos_fp(
+            type=fp_type,
+            normalize=normalize,
+            n_bins=n_bins,
+            binning=binning,
+            max_e=self.e_range[-1],
+            min_e=self.e_range[0],
+        )._asdict()
+
+        df.loc[ids, "DOS_FP"] = dos_fingerprint(**fp)
 
         return df

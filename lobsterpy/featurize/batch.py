@@ -19,6 +19,7 @@ from tqdm.autonotebook import tqdm
 from lobsterpy.featurize.core import (
     FeaturizeCharges,
     FeaturizeCOXX,
+    FeaturizeDoscar,
     FeaturizeLobsterpy,
 )
 from lobsterpy.structuregraph.graph import LobsterGraph
@@ -818,3 +819,196 @@ class BatchStructureGraphs:
         df_sg.sort_index(inplace=True)  # noqa: PD002
 
         return df_sg
+
+
+class BatchDosFeaturizer:
+    """
+    BatchFeaturizer to generate Lobster DOS moment features and  fingerprints.
+
+    Attributes:
+        path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        normalize: bool to state to normalize the fingerprint data
+        n_bins: sets number for bins for fingerprint objects
+        e_range : range of energy relative to fermi for which moment features needs to be computed
+        n_jobs : number of parallel processes to run
+        fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+        (default is summed_pdos)
+
+    Methods:
+        get_df: A pandas dataframe with DOS moment features as columns
+        get_fingerprints_df: A pandas dataframe with DOS fingerprint object as columns
+    """
+
+    def __init__(
+        self,
+        path_to_lobster_calcs: str | Path,
+        fingerprint_type: str = "summed_pdos",
+        normalize: bool = True,
+        n_bins: int = 56,
+        e_range: list[float] = [-15.0, 0.0],
+        n_jobs=4,
+        use_lso_dos: bool = True,
+    ):
+        """
+        Initialize BatchDosFeaturizer attributes.
+
+        Args:
+            path_to_lobster_calcs: path to root directory consisting of all lobster calc
+            normalize: bool to state to normalize the fingerprint data
+            n_bins: sets number for bins for fingerprint objects
+            e_range : range of energy relative to fermi for which moment features needs to be computed
+            n_jobs : number of parallel processes to run
+            fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+            (default is summed_pdos)
+            use_lso_dos: Will force feeaturizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster
+        """
+        self.path_to_lobster_calcs = path_to_lobster_calcs
+        self.fingerprint_type = fingerprint_type
+        self.e_range = e_range
+        self.normalize = normalize
+        self.n_jobs = n_jobs
+        self.n_bins = n_bins
+        self.use_lso_dos = use_lso_dos
+
+    def _get_dos_moments_df(self, path_to_lobster_calc) -> pd.DataFrame:
+        """
+        Featurize DOSCAR.lobster data using FeaturizeDOSCAR.
+
+        Returns:
+            A pandas dataframe with computed PDOS moment features
+        """
+        dir_name = Path(path_to_lobster_calc)
+        req_files = {
+            "doscar_path": "DOSCAR.LSO.lobster"
+            if self.use_lso_dos
+            else "DOSCAR.lobster",
+            "structure_path": "POSCAR",
+        }
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path  # type: ignore
+            if not file_path.exists():
+                gz_file_path = Path(zpath(file_path))
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path  # type: ignore
+
+        doscar_path = req_files.get("doscar_path")
+        structure_path = req_files.get("structure_path")
+
+        if doscar_path.exists() and structure_path.exists():  # type: ignore
+            featurize_dos = FeaturizeDoscar(
+                path_to_doscar=str(doscar_path),
+                path_to_structure=str(structure_path),
+                e_range=self.e_range,
+            )
+            df = featurize_dos.get_df()
+        else:
+            raise Exception(
+                f"DOSCAR.lobster or DOSCAR.LSO.lobster or POSCAR not found in {dir_name.name}"
+            )
+
+        return df
+
+    def _get_dos_fingerprints_df(self, path_to_lobster_calc) -> pd.DataFrame:
+        """
+        Featurize DOSCAR.lobster data into fingerprints using FeaturizeDOSCAR.
+
+        Returns:
+            A pandas dataframe with DOS finerprint objects
+        """
+        dir_name = Path(path_to_lobster_calc)
+
+        req_files = {
+            "doscar_path": "DOSCAR.LSO.lobster"
+            if self.use_lso_dos
+            else "DOSCAR.lobster",
+            "structure_path": "POSCAR",
+        }
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path  # type: ignore
+            if not file_path.exists():
+                gz_file_path = Path(zpath(file_path))
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path  # type: ignore
+
+        doscar_path = req_files.get("doscar_path")
+        structure_path = req_files.get("structure_path")
+
+        if doscar_path.exists() and structure_path.exists():  # type: ignore
+            featurize_dos = FeaturizeDoscar(
+                path_to_doscar=str(doscar_path),
+                path_to_structure=str(structure_path),
+                e_range=self.e_range,
+            )
+            df = featurize_dos.get_fingerprint_df(
+                fp_type=self.fingerprint_type,
+                normalize=self.normalize,
+                n_bins=self.n_bins,
+            )
+        else:
+            raise Exception(
+                f"DOSCAR.lobster or DOSCAR.LSO.lobster or POSCAR not found in {dir_name.name}"
+            )
+
+        return df
+
+    def get_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with moment features.
+
+        Moment features are PDOS center, width, skewness, kurtosis and upper band edge.
+
+        Returns:
+            A pandas dataframe
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths), desc="Generating PDOS moment features"
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._get_dos_moments_df, paths, chunksize=1)
+            ):
+                pbar.update()
+                row.append(result)
+
+        df_dos = pd.concat(row)
+        df_dos.sort_index(inplace=True)  # noqa: PD002
+
+        return df_dos
+
+    def get_fingerprints_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with DOS fingerprints.
+
+        Returns:
+            A pandas dataframe with fingerprint objects
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths), desc="Generating DOS fingerprints"
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._get_dos_fingerprints_df, paths, chunksize=1)
+            ):
+                pbar.update()
+                row.append(result)
+
+        df_dos_fp = pd.concat(row)
+        df_dos_fp.sort_index(inplace=True)  # noqa: PD002
+
+        return df_dos_fp
