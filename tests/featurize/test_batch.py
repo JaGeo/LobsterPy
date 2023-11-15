@@ -10,69 +10,19 @@ TestDir = CurrentDir / "../"
 
 
 class TestBatchSummaryFeaturizer:
-    def setup_method(self):
-        self.summary_featurize_with_json = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
-            bonds="all",
-            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
-            feature_type="antibonding",
-            include_cobi_data=False,
-            include_coop_data=False,
-            e_range=[-15, 0],
-            n_jobs=3,
-        )
-
-        self.summary_featurize_without_json = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
-            bonds="all",
-            include_cobi_data=False,
-            include_coop_data=False,
-            e_range=[-15, 0],
-            n_jobs=3,
-        )
-
-        self.summary_featurize_with_json_overall = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
-            bonds="all",
-            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
-            feature_type="overall",
-            include_cobi_data=True,
-            include_coop_data=True,
-            e_range=[-15, 0],
-            n_jobs=3,
-        )
-
-        self.summary_featurize_with_json_bonding = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
-            bonds="all",
-            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
-            feature_type="bonding",
-            include_cobi_data=False,
-            include_coop_data=False,
-            e_range=[-15, 0],
-            charge_type="mulliken",
-            n_jobs=3,
-        )
-
-        self.summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
-            bonds="cation-anion",
-            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
-            feature_type="antibonding",
-            include_cobi_data=False,
-            include_coop_data=False,
-            e_range=[-15, 0],
-            charge_type="loewdin",
-            n_jobs=3,
-        )
-
     def test_summary_featurize_with_json(self):
-        df = self.summary_featurize_with_json.get_df()
+        summary_featurize_with_json = BatchSummaryFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            bonds="all",
+            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
+            feature_type="antibonding",
+            include_cobi_data=False,
+            include_coop_data=False,
+            e_range=[-15, 0],
+            n_jobs=3,
+        )
+        df = summary_featurize_with_json.get_df()
 
         assert isinstance(df, pd.DataFrame)
 
@@ -115,7 +65,17 @@ class TestBatchSummaryFeaturizer:
         assert list(df.index) == expected_index
 
     def test_summary_featurize_without_json(self):
-        df = self.summary_featurize_without_json.get_df()
+        summary_featurize_without_json = BatchSummaryFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            bonds="all",
+            include_cobi_data=False,
+            include_coop_data=False,
+            e_range=[-15, 0],
+            n_jobs=3,
+        )
+
+        df = summary_featurize_without_json.get_df()
 
         assert isinstance(df, pd.DataFrame)
 
@@ -158,7 +118,19 @@ class TestBatchSummaryFeaturizer:
         assert list(df.index) == expected_index
 
     def test_summary_featurize_with_json_overall(self):
-        df = self.summary_featurize_with_json_overall.get_df()
+        summary_featurize_with_json_overall = BatchSummaryFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            bonds="all",
+            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
+            feature_type="overall",
+            include_cobi_data=True,
+            include_coop_data=True,
+            e_range=[-15, 0],
+            n_jobs=3,
+        )
+
+        df = summary_featurize_with_json_overall.get_df()
 
         assert isinstance(df, pd.DataFrame)
 
@@ -219,7 +191,20 @@ class TestBatchSummaryFeaturizer:
         assert list(df.index) == expected_index
 
     def test_summary_featurize_with_json_bonding(self):
-        df = self.summary_featurize_with_json_bonding.get_df()
+        summary_featurize_with_json_bonding = BatchSummaryFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            bonds="all",
+            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
+            feature_type="bonding",
+            include_cobi_data=False,
+            include_coop_data=False,
+            e_range=[-15, 0],
+            charge_type="mulliken",
+            n_jobs=3,
+        )
+
+        df = summary_featurize_with_json_bonding.get_df()
 
         assert isinstance(df, pd.DataFrame)
 
@@ -257,7 +242,20 @@ class TestBatchSummaryFeaturizer:
         assert list(df.columns) == expected_cols
 
     def test_summary_featurize_with_json_antibonding(self):
-        df = self.summary_featurize_with_json_antibonding.get_df()
+        summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            bonds="cation-anion",
+            path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
+            feature_type="antibonding",
+            include_cobi_data=False,
+            include_coop_data=False,
+            e_range=[-15, 0],
+            charge_type="loewdin",
+            n_jobs=3,
+        )
+
+        df = summary_featurize_with_json_antibonding.get_df()
 
         assert isinstance(df, pd.DataFrame)
 
@@ -296,8 +294,8 @@ class TestBatchSummaryFeaturizer:
 
 
 class TestBatchCoxxFingerprint:
-    def setup_method(self):
-        self.fp_cohp_overall = BatchCoxxFingerprint(
+    def test_fp_cohp_overall(self):
+        fp_cohp_overall = BatchCoxxFingerprint(
             path_to_lobster_calcs=TestDir
             / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
@@ -306,8 +304,15 @@ class TestBatchCoxxFingerprint:
             tanimoto=True,
             n_jobs=3,
         )
+        df = fp_cohp_overall.get_similarity_matrix_df()
 
-        self.fp_cohp_bonding = BatchCoxxFingerprint(
+        assert df.loc["mp-463", "mp-1000"] == pytest.approx(-0.033251, abs=1e-05)
+        assert df.loc["mp-463", "mp-2176"] == pytest.approx(-0.013751, abs=1e-05)
+        assert df.loc["mp-463", "mp-463"] == pytest.approx(1, abs=1e-05)
+        assert df.loc["mp-1000", "mp-2176"] == pytest.approx(0.046889, abs=1e-05)
+
+    def test_fp_cohp_bonding(self):
+        fp_cohp_bonding = BatchCoxxFingerprint(
             path_to_lobster_calcs=TestDir
             / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
@@ -316,8 +321,16 @@ class TestBatchCoxxFingerprint:
             tanimoto=True,
             n_jobs=3,
         )
+        _ = fp_cohp_bonding.fingerprint_df
+        df = fp_cohp_bonding.get_similarity_matrix_df()
 
-        self.fp_cobi = BatchCoxxFingerprint(
+        assert df.loc["mp-463", "mp-1000"] == pytest.approx(0.000017, abs=1e-05)
+        assert df.loc["mp-463", "mp-2176"] == pytest.approx(0.000000, abs=1e-05)
+        assert df.loc["mp-463", "mp-463"] == pytest.approx(1, abs=1e-05)
+        assert df.loc["mp-1000", "mp-2176"] == pytest.approx(0.001532, abs=1e-05)
+
+    def test_fp_cobi(self):
+        fp_cobi = BatchCoxxFingerprint(
             path_to_lobster_calcs=TestDir
             / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
@@ -327,8 +340,16 @@ class TestBatchCoxxFingerprint:
             fingerprint_for="cobi",
             n_jobs=3,
         )
+        _ = fp_cobi.fingerprint_df
+        df = fp_cobi.get_similarity_matrix_df()
 
-        self.fp_coop = BatchCoxxFingerprint(
+        assert df.loc["mp-463", "mp-1000"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-463", "mp-2176"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-463", "mp-463"] == pytest.approx(1, abs=1e-05)
+        assert df.loc["mp-1000", "mp-2176"] == pytest.approx(0, abs=1e-05)
+
+    def test_fp_coop(self):
+        fp_coop = BatchCoxxFingerprint(
             path_to_lobster_calcs=TestDir
             / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
@@ -338,36 +359,8 @@ class TestBatchCoxxFingerprint:
             fingerprint_for="coop",
             n_jobs=3,
         )
-
-    def test_fp_cohp_overall(self):
-        df = self.fp_cohp_overall.get_similarity_matrix_df()
-
-        assert df.loc["mp-463", "mp-1000"] == pytest.approx(-0.033251, abs=1e-05)
-        assert df.loc["mp-463", "mp-2176"] == pytest.approx(-0.013751, abs=1e-05)
-        assert df.loc["mp-463", "mp-463"] == pytest.approx(1, abs=1e-05)
-        assert df.loc["mp-1000", "mp-2176"] == pytest.approx(0.046889, abs=1e-05)
-
-    def test_fp_cohp_bonding(self):
-        _ = self.fp_cohp_bonding.fingerprint_df
-        df = self.fp_cohp_bonding.get_similarity_matrix_df()
-
-        assert df.loc["mp-463", "mp-1000"] == pytest.approx(0.000017, abs=1e-05)
-        assert df.loc["mp-463", "mp-2176"] == pytest.approx(0.000000, abs=1e-05)
-        assert df.loc["mp-463", "mp-463"] == pytest.approx(1, abs=1e-05)
-        assert df.loc["mp-1000", "mp-2176"] == pytest.approx(0.001532, abs=1e-05)
-
-    def test_fp_cobi(self):
-        _ = self.fp_cobi.fingerprint_df
-        df = self.fp_cobi.get_similarity_matrix_df()
-
-        assert df.loc["mp-463", "mp-1000"] == pytest.approx(0, abs=1e-05)
-        assert df.loc["mp-463", "mp-2176"] == pytest.approx(0, abs=1e-05)
-        assert df.loc["mp-463", "mp-463"] == pytest.approx(1, abs=1e-05)
-        assert df.loc["mp-1000", "mp-2176"] == pytest.approx(0, abs=1e-05)
-
-    def test_fp_coop(self):
-        _ = self.fp_coop.fingerprint_df
-        df = self.fp_coop.get_similarity_matrix_df()
+        _ = fp_coop.fingerprint_df
+        df = fp_coop.get_similarity_matrix_df()
 
         assert df.loc["mp-463", "mp-1000"] == pytest.approx(0, abs=1e-05)
         assert df.loc["mp-463", "mp-2176"] == pytest.approx(0, abs=1e-05)
@@ -378,7 +371,7 @@ class TestBatchCoxxFingerprint:
 class TestExceptions:
     def test_batch_summary_featurizer_exception(self):
         with pytest.raises(Exception) as err1:  # noqa: PT012, PT011
-            self.summary_featurize_with_json = BatchSummaryFeaturizer(
+            self.summary_featurize_with_json_ex = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
                 / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/1/",
                 bonds="all",
@@ -388,7 +381,7 @@ class TestExceptions:
                 e_range=[-15, 0],
             )
 
-            _ = self.summary_featurize_with_json.get_df()
+            _ = self.summary_featurize_with_json_ex.get_df()
 
         assert (
             str(err1.value)
@@ -396,7 +389,7 @@ class TestExceptions:
         )
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
-            self.summary_featurize_with_json = BatchSummaryFeaturizer(
+            self.summary_featurize_with_json_ex2 = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir
                 / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/2/",
                 bonds="all",
@@ -406,7 +399,7 @@ class TestExceptions:
                 e_range=[-15, 0],
             )
 
-            _ = self.summary_featurize_with_json.get_df()
+            _ = self.summary_featurize_with_json_ex2.get_df()
 
         assert (
             str(err2.value)
