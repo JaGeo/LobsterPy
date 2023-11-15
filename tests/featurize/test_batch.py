@@ -2,8 +2,13 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+from pymatgen.analysis.graphs import StructureGraph
 
-from lobsterpy.featurize.batch import BatchCoxxFingerprint, BatchSummaryFeaturizer
+from lobsterpy.featurize.batch import (
+    BatchCoxxFingerprint,
+    BatchStructureGraphs,
+    BatchSummaryFeaturizer,
+)
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -366,6 +371,38 @@ class TestBatchCoxxFingerprint:
         assert df.loc["mp-463", "mp-2176"] == pytest.approx(0, abs=1e-05)
         assert df.loc["mp-463", "mp-463"] == pytest.approx(1, abs=1e-05)
         assert df.loc["mp-1000", "mp-2176"] == pytest.approx(0, abs=1e-05)
+
+
+class TestBatchStructureGraphs:
+    def test_batch_structure_graphs_all_bonds(self):
+        batch_sg = BatchStructureGraphs(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            which_bonds="all",
+            n_jobs=3,
+        )
+
+        df = batch_sg.get_df()
+
+        assert isinstance(df, pd.DataFrame)
+        for graph_obj in df["structure_graph"]:
+            assert isinstance(graph_obj, StructureGraph)
+        assert len(df.index) == 3
+
+    def test_batch_structure_graphs_cation_anion_bonds(self):
+        batch_sg = BatchStructureGraphs(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            which_bonds="cation-anion",
+            n_jobs=3,
+        )
+
+        df = batch_sg.get_df()
+
+        assert isinstance(df, pd.DataFrame)
+        for graph_obj in df["structure_graph"]:
+            assert isinstance(graph_obj, StructureGraph)
+        assert len(df.index) == 3
 
 
 class TestExceptions:
