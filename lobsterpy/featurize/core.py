@@ -1260,7 +1260,7 @@ class FeaturizeDoscar:
 
         Args:
             ids: set index of pandas dataframe
-            fp_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+            fp_type: Specify fingerprint type to compute, can accept `s/p/d/f/summed_pdos`
             (default is summed_pdos)
             binning: If true, the DOS fingerprint is binned using np.linspace and n_bins.
             Default is True.

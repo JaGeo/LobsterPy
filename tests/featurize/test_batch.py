@@ -6,6 +6,7 @@ from pymatgen.analysis.graphs import StructureGraph
 
 from lobsterpy.featurize.batch import (
     BatchCoxxFingerprint,
+    BatchDosFeaturizer,
     BatchStructureGraphs,
     BatchSummaryFeaturizer,
 )
@@ -403,6 +404,42 @@ class TestBatchStructureGraphs:
         for graph_obj in df["structure_graph"]:
             assert isinstance(graph_obj, StructureGraph)
         assert len(df.index) == 3
+
+
+class TestBatchDosFeaturizer:
+    def test_batch_dos_featurizer_non_lso(self):
+        batch_dos = BatchDosFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            use_lso_dos=False,
+            e_range=[-5, 0],
+            fingerprint_type="p",
+            n_bins=256,
+            n_jobs=3,
+        )
+
+        df_moments = batch_dos.get_df()
+        assert isinstance(df_moments, pd.DataFrame)
+
+        df_fp = batch_dos.get_fingerprints_df()
+        assert isinstance(df_fp, pd.DataFrame)
+
+    def test_batch_dos_featurizer_lso(self):
+        batch_dos_lso = BatchDosFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            use_lso_dos=True,
+            e_range=[-5, 0],
+            fingerprint_type="summed_pdos",
+            n_bins=256,
+            n_jobs=3,
+        )
+
+        df_moments_lso = batch_dos_lso.get_df()
+        assert isinstance(df_moments_lso, pd.DataFrame)
+
+        df_fp_lso = batch_dos_lso.get_fingerprints_df()
+        assert isinstance(df_fp_lso, pd.DataFrame)
 
 
 class TestExceptions:
