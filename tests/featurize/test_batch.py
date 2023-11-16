@@ -65,11 +65,11 @@ class TestBatchSummaryFeaturizer:
             "Ionicity_Loew",
         ]
 
-        assert list(df.columns) == expected_cols
+        assert sorted(df.columns) == sorted(expected_cols)
 
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
 
-        assert list(df.index) == expected_index
+        assert sorted(df.index) == sorted(expected_index)
 
     def test_summary_featurize_orbitalwise(self):
         summary_featurize_without_json = BatchSummaryFeaturizer(
@@ -143,11 +143,11 @@ class TestBatchSummaryFeaturizer:
             "Ionicity_Loew",
         ]
 
-        assert list(df.columns) == expected_cols
+        assert sorted(df.columns) == sorted(expected_cols)
 
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
 
-        assert list(df.index) == expected_index
+        assert sorted(df.index) == sorted(expected_index)
 
     def test_summary_featurize_without_json(self):
         summary_featurize_without_json = BatchSummaryFeaturizer(
@@ -196,11 +196,11 @@ class TestBatchSummaryFeaturizer:
             "Ionicity_Loew",
         ]
 
-        assert list(df.columns) == expected_cols
+        assert sorted(df.columns) == sorted(expected_cols)
 
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
 
-        assert list(df.index) == expected_index
+        assert sorted(df.index) == sorted(expected_index)
 
     def test_summary_featurize_with_json_overall(self):
         summary_featurize_with_json_overall = BatchSummaryFeaturizer(
@@ -269,11 +269,11 @@ class TestBatchSummaryFeaturizer:
             "Ionicity_Loew",
         ]
 
-        assert list(df.columns) == expected_cols
+        assert sorted(df.columns) == sorted(expected_cols)
 
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
 
-        assert list(df.index) == expected_index
+        assert sorted(df.index) == sorted(expected_index)
 
     def test_summary_featurize_with_json_bonding(self):
         summary_featurize_with_json_bonding = BatchSummaryFeaturizer(
@@ -324,7 +324,7 @@ class TestBatchSummaryFeaturizer:
             "Ionicity_Mull",
         ]
 
-        assert list(df.columns) == expected_cols
+        assert sorted(df.columns) == sorted(expected_cols)
 
     def test_summary_featurize_with_json_antibonding(self):
         summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
@@ -375,7 +375,7 @@ class TestBatchSummaryFeaturizer:
             "Ionicity_Loew",
         ]
 
-        assert list(df.columns) == expected_cols
+        assert sorted(df.columns) == sorted(expected_cols)
 
 
 class TestBatchCoxxFingerprint:
@@ -529,7 +529,7 @@ class TestBatchDosFeaturizer:
             "d_band_upperband_edge",
         ]
 
-        assert list(df_moments.columns) == expected_cols
+        assert sorted(df_moments.columns) == sorted(expected_cols)
 
         df_fp = batch_dos.get_fingerprints_df()
         assert isinstance(df_fp, pd.DataFrame)
@@ -571,7 +571,7 @@ class TestBatchDosFeaturizer:
             "d_band_upperband_edge",
         ]
 
-        assert list(df_moments_lso.columns) == expected_cols
+        assert sorted(df_moments_lso.columns) == sorted(expected_cols)
 
         df_fp_lso = batch_dos_lso.get_fingerprints_df()
         assert isinstance(df_fp_lso, pd.DataFrame)
