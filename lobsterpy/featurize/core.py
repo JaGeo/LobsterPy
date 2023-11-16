@@ -1193,7 +1193,7 @@ class FeaturizeDoscar:
         self,
         path_to_structure: str | Path,
         path_to_doscar: str | Path,
-        e_range: list[float] = [-10.0, 0.0],
+        e_range: list[float] | None = [-10.0, 0.0],
     ):
         """
         Featurize DOSCAR.lobster or DOSCAR.LSO.lobster data.
@@ -1281,8 +1281,8 @@ class FeaturizeDoscar:
             normalize=normalize,
             n_bins=n_bins,
             binning=binning,
-            max_e=self.e_range[-1],
-            min_e=self.e_range[0],
+            max_e=self.e_range[-1] if self.e_range is not None else None,
+            min_e=self.e_range[0] if self.e_range is not None else None,
         )._asdict()
 
         df.loc[ids, "DOS_FP"] = dos_fingerprint(**fp)

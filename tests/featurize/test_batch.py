@@ -10,6 +10,7 @@ from lobsterpy.featurize.batch import (
     BatchStructureGraphs,
     BatchSummaryFeaturizer,
 )
+from lobsterpy.featurize.core import coxx_fingerprint, dos_fingerprint
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -49,6 +50,84 @@ class TestBatchSummaryFeaturizer:
             "antibonding_perc_min",
             "antibonding_perc_max",
             "antibonding_perc_std",
+            "Madelung_Mull",
+            "Madelung_Loew",
+            "bnd_wICOHP",
+            "antibnd_wICOHP",
+            "w_ICOHP",
+            "EIN_ICOHP",
+            "center_COHP",
+            "width_COHP",
+            "skewness_COHP",
+            "kurtosis_COHP",
+            "edge_COHP",
+            "Ionicity_Mull",
+            "Ionicity_Loew",
+        ]
+
+        assert list(df.columns) == expected_cols
+
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
+
+        assert list(df.index) == expected_index
+
+    def test_summary_featurize_orbitalwise(self):
+        summary_featurize_without_json = BatchSummaryFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/Lobster_calcs",
+            bonds="all",
+            include_cobi_data=False,
+            include_coop_data=False,
+            orbital_resolved=True,
+            e_range=[-15, 0],
+            n_jobs=3,
+        )
+
+        df = summary_featurize_without_json.get_df()
+
+        assert isinstance(df, pd.DataFrame)
+
+        expected_cols = [
+            "Icohp_mean_avg",
+            "Icohp_mean_max",
+            "Icohp_mean_min",
+            "Icohp_mean_std",
+            "Icohp_sum_avg",
+            "Icohp_sum_max",
+            "Icohp_sum_min",
+            "Icohp_sum_std",
+            "bonding_perc_avg",
+            "bonding_perc_max",
+            "bonding_perc_min",
+            "bonding_perc_std",
+            "antibonding_perc_avg",
+            "antibonding_perc_min",
+            "antibonding_perc_max",
+            "antibonding_perc_std",
+            "Icohp_bndg_orb_mean_avg",
+            "Icohp_bndg_orb_mean_max",
+            "Icohp_bndg_orb_mean_min",
+            "Icohp_bndg_orb_mean_std",
+            "Icohp_bndg_orb_sum_avg",
+            "Icohp_bndg_orb_sum_max",
+            "Icohp_bndg_orb_sum_min",
+            "Icohp_bndg_orb_sum_std",
+            "bonding_orb_perc_avg",
+            "bonding_orb_perc_max",
+            "bonding_orb_perc_min",
+            "bonding_orb_perc_std",
+            "Icohp_antibndg_orb_mean_avg",
+            "Icohp_antibndg_orb_mean_max",
+            "Icohp_antibndg_orb_mean_min",
+            "Icohp_antibndg_orb_mean_std",
+            "Icohp_antibndg_orb_sum_avg",
+            "Icohp_antibndg_orb_sum_max",
+            "Icohp_antibndg_orb_sum_min",
+            "Icohp_antibndg_orb_sum_std",
+            "antibonding_orb_perc_avg",
+            "antibonding_orb_perc_max",
+            "antibonding_orb_perc_min",
+            "antibonding_orb_perc_std",
             "Madelung_Mull",
             "Madelung_Loew",
             "bnd_wICOHP",
@@ -327,7 +406,10 @@ class TestBatchCoxxFingerprint:
             tanimoto=True,
             n_jobs=3,
         )
-        _ = fp_cohp_bonding.fingerprint_df
+        df_fp_cohp = fp_cohp_bonding.fingerprint_df
+        for fp in df_fp_cohp["COXX_FP"]:
+            assert isinstance(fp, coxx_fingerprint)
+            assert fp.fp_type == "bonding"
         df = fp_cohp_bonding.get_similarity_matrix_df()
 
         assert df.loc["mp-463", "mp-1000"] == pytest.approx(0.000017, abs=1e-05)
@@ -346,7 +428,11 @@ class TestBatchCoxxFingerprint:
             fingerprint_for="cobi",
             n_jobs=3,
         )
-        _ = fp_cobi.fingerprint_df
+        df_fp_cobi = fp_cobi.fingerprint_df
+        for fp in df_fp_cobi["COXX_FP"]:
+            assert isinstance(fp, coxx_fingerprint)
+            assert fp.fp_type == "antibonding"
+
         df = fp_cobi.get_similarity_matrix_df()
 
         assert df.loc["mp-463", "mp-1000"] == pytest.approx(0, abs=1e-05)
@@ -365,7 +451,11 @@ class TestBatchCoxxFingerprint:
             fingerprint_for="coop",
             n_jobs=3,
         )
-        _ = fp_coop.fingerprint_df
+        df_fp_coop = fp_coop.fingerprint_df
+        for fp in df_fp_coop["COXX_FP"]:
+            assert isinstance(fp, coxx_fingerprint)
+            assert fp.fp_type == "bonding"
+
         df = fp_coop.get_similarity_matrix_df()
 
         assert df.loc["mp-463", "mp-1000"] == pytest.approx(0, abs=1e-05)
@@ -414,15 +504,40 @@ class TestBatchDosFeaturizer:
             use_lso_dos=False,
             e_range=[-5, 0],
             fingerprint_type="p",
-            n_bins=256,
+            n_bins=100,
             n_jobs=3,
         )
 
         df_moments = batch_dos.get_df()
         assert isinstance(df_moments, pd.DataFrame)
 
+        expected_cols = [
+            "s_band_center",
+            "s_band_width",
+            "s_band_skew",
+            "s_band_kurtosis",
+            "s_band_upperband_edge",
+            "p_band_center",
+            "p_band_width",
+            "p_band_skew",
+            "p_band_kurtosis",
+            "p_band_upperband_edge",
+            "d_band_center",
+            "d_band_width",
+            "d_band_skew",
+            "d_band_kurtosis",
+            "d_band_upperband_edge",
+        ]
+
+        assert list(df_moments.columns) == expected_cols
+
         df_fp = batch_dos.get_fingerprints_df()
         assert isinstance(df_fp, pd.DataFrame)
+
+        for dos_fp in df_fp["DOS_FP"]:
+            assert isinstance(dos_fp, dos_fingerprint)
+            assert dos_fp.type == "p"
+            assert dos_fp.n_bins == 100
 
     def test_batch_dos_featurizer_lso(self):
         batch_dos_lso = BatchDosFeaturizer(
@@ -438,8 +553,33 @@ class TestBatchDosFeaturizer:
         df_moments_lso = batch_dos_lso.get_df()
         assert isinstance(df_moments_lso, pd.DataFrame)
 
+        expected_cols = [
+            "s_band_center",
+            "s_band_width",
+            "s_band_skew",
+            "s_band_kurtosis",
+            "s_band_upperband_edge",
+            "p_band_center",
+            "p_band_width",
+            "p_band_skew",
+            "p_band_kurtosis",
+            "p_band_upperband_edge",
+            "d_band_center",
+            "d_band_width",
+            "d_band_skew",
+            "d_band_kurtosis",
+            "d_band_upperband_edge",
+        ]
+
+        assert list(df_moments_lso.columns) == expected_cols
+
         df_fp_lso = batch_dos_lso.get_fingerprints_df()
         assert isinstance(df_fp_lso, pd.DataFrame)
+
+        for dos_fp in df_fp_lso["DOS_FP"]:
+            assert isinstance(dos_fp, dos_fingerprint)
+            assert dos_fp.type == "summed_pdos"
+            assert dos_fp.n_bins == 256
 
 
 class TestExceptions:
