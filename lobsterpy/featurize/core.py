@@ -336,6 +336,14 @@ class FeaturizeLobsterpy:
 
         lobster_data = {}
         for item in data:
+            for key in item:
+                # check applicable only for updated cba jsons in atomate2
+                if (key == "cation_anion_bonds" or key == "all_bonds") and (
+                    "sites" in item[key]["lobsterpy_data"]["sites"]
+                ):
+                    item[key]["lobsterpy_data"]["sites"] = item[key]["lobsterpy_data"][
+                        "sites"
+                    ]["sites"]
             lobster_data.update(item)
 
         return lobster_data
