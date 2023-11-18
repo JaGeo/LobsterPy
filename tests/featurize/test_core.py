@@ -395,9 +395,9 @@ class TestFeaturizeLobsterpy:
 class TestFeaturizeCOXX:
     def test_featurize_nacl_coxx(self):
         featurize_nacl_coxx = FeaturizeCOXX(
-            path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-            path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-            path_to_structure=TestDir / "test_data/NaCl/POSCAR",
+            path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+            path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
             feature_type="overall",
             e_range=[-5, 0],
         )
@@ -458,9 +458,9 @@ class TestFeaturizeCOXX:
 
     def test_featurize_cdf_coxx(self):
         featurize_cdf_coxx = FeaturizeCOXX(
-            path_to_coxxcar=TestDir / "test_data/CdF/COHPCAR.lobster",
-            path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster",
-            path_to_structure=TestDir / "test_data/CdF/POSCAR",
+            path_to_coxxcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
+            path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
             feature_type="bonding",
             e_range=[-5, 0],
         )
@@ -564,8 +564,8 @@ class TestFeaturizeCOXX:
 class TestFeaturizeCharges:
     def test_featurize_c_charge(self):
         featurize_c_charge = FeaturizeCharges(
-            path_to_structure=TestDir / "test_data/C/POSCAR",
-            path_to_charge=TestDir / "test_data/C/CHARGE.lobster",
+            path_to_structure=TestDir / "test_data/C/POSCAR.gz",
+            path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
             charge_type="mulliken",
         )
         df = featurize_c_charge.get_df(ids="C")
@@ -587,8 +587,8 @@ class TestFeaturizeCharges:
 
     def test_featurize_cdf_charge(self):
         featurize_cdf_charge = FeaturizeCharges(
-            path_to_structure=TestDir / "test_data/CdF/POSCAR",
-            path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
+            path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
+            path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
             charge_type="mulliken",
         )
         df = featurize_cdf_charge.get_df(ids="CdF")
@@ -687,8 +687,8 @@ class TestExceptions:
     def test_featurize_charges(self):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_cdf_charge = FeaturizeCharges(
-                path_to_structure=TestDir / "test_data/CdF/POSCAR",
-                path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
+                path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
+                path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
                 charge_type="Mull",
             )
 
@@ -702,9 +702,9 @@ class TestExceptions:
     def test_featurize_coxx(self):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_coxx = FeaturizeCOXX(
-                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR",
+                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
                 feature_type="summed",
                 e_range=[-5, 0],
             )
@@ -718,9 +718,9 @@ class TestExceptions:
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
             self.featurize_coxx = FeaturizeCOXX(
-                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR",
+                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
                 feature_type="bonding",
                 e_range=[-5, 0],
             )
@@ -734,9 +734,9 @@ class TestExceptions:
 
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
             self.featurize_coxx = FeaturizeCOXX(
-                path_to_coxxcar=TestDir / "test_data/NaSi/COHPCAR.lobster",
-                path_to_icoxxlist=TestDir / "test_data/NaSi/ICOHPLIST.lobster",
-                path_to_structure=TestDir / "test_data/NaSi/POSCAR",
+                path_to_coxxcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
+                path_to_icoxxlist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
+                path_to_structure=TestDir / "test_data/NaSi/POSCAR.gz",
                 feature_type="bonding",
                 e_range=[-5, 0],
                 are_cobis=True,
@@ -752,9 +752,9 @@ class TestExceptions:
 
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_nacl_coxx = FeaturizeCOXX(
-                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR",
+                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
                 feature_type="antibond",
                 e_range=[-5, 0],
             )
@@ -768,9 +768,9 @@ class TestExceptions:
 
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_nacl_coxx = FeaturizeCOXX(
-                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR",
+                path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
                 feature_type="antibonding",
                 e_range=[-5, 0],
             )

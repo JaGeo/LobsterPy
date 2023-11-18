@@ -1367,10 +1367,10 @@ class TestAnalyse:
             )
         with pytest.raises(ValueError) as err:  # noqa: PT011
             self.analyse_c = Analysis(
-                path_to_poscar=TestDir / "test_data/C/POSCAR",
-                path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster",
-                path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster",
-                path_to_charge=TestDir / "test_data/C/CHARGE.lobster",
+                path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+                path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
+                path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
                 which_bonds="cation-anion",
                 cutoff_icohp=0.1,
             )
