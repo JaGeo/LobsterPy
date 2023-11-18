@@ -122,8 +122,9 @@ class FeaturizeLobsterpy:
         elif self.bonds == "cation-anion":
             bond_type = "cation_anion_bonds"
 
-        if (
-            not data[bond_type]["lobsterpy_data"]
+        if bond_type == "cation_anion_bonds" and (
+            not data[bond_type]
+            or not data[bond_type]["lobsterpy_data"]
             or not data[bond_type]["lobsterpy_data"]["sites"]
         ):
             raise Exception(
@@ -131,52 +132,57 @@ class FeaturizeLobsterpy:
                 "Please switch to `all` bonds mode"
             )
 
-        for site_data in data[bond_type]["lobsterpy_data"]["sites"].values():
-            if site_data["bonds"]:
-                for bond_data in site_data["bonds"].values():
-                    icohp_mean.append(float(bond_data["ICOHP_mean"]))
-                    icohp_sum.append(float(bond_data["ICOHP_sum"]))
-                    bond.append(bond_data["bonding"]["perc"])
-                    antibond.append(bond_data["antibonding"]["perc"])
-                    if self.orbital_resolved:
-                        if (
-                            bond_data["orbital_data"]["orbital_summary_stats"]
-                            and "max_bonding_contribution"
-                            in bond_data["orbital_data"]["orbital_summary_stats"]
-                        ):
-                            for orb_pair in bond_data["orbital_data"][
-                                "orbital_summary_stats"
-                            ]["max_bonding_contribution"]:
-                                icohp_mean_orb_bndg.append(
-                                    bond_data["orbital_data"][orb_pair]["ICOHP_mean"]
-                                )
-                                icohp_sum_orb_bndg.append(
-                                    bond_data["orbital_data"][orb_pair]["ICOHP_sum"]
-                                )
-                                bond_orb.append(
-                                    bond_data["orbital_data"][orb_pair][
-                                        "orb_contribution_perc_bonding"
-                                    ]
-                                )
-                        if (
-                            bond_data["orbital_data"]["orbital_summary_stats"]
-                            and "max_antibonding_contribution"
-                            in bond_data["orbital_data"]["orbital_summary_stats"]
-                        ):
-                            for orb_pair in bond_data["orbital_data"][
-                                "orbital_summary_stats"
-                            ]["max_antibonding_contribution"]:
-                                icohp_mean_orb_antibndg.append(
-                                    bond_data["orbital_data"][orb_pair]["ICOHP_mean"]
-                                )
-                                icohp_sum_orb_antibndg.append(
-                                    bond_data["orbital_data"][orb_pair]["ICOHP_sum"]
-                                )
-                                antibond_orb.append(
-                                    bond_data["orbital_data"][orb_pair][
-                                        "orb_contribution_perc_antibonding"
-                                    ]
-                                )
+        if data[bond_type]["lobsterpy_data"]:
+            for site_data in data[bond_type]["lobsterpy_data"]["sites"].values():
+                if site_data["bonds"]:
+                    for bond_data in site_data["bonds"].values():
+                        icohp_mean.append(float(bond_data["ICOHP_mean"]))
+                        icohp_sum.append(float(bond_data["ICOHP_sum"]))
+                        bond.append(bond_data["bonding"]["perc"])
+                        antibond.append(bond_data["antibonding"]["perc"])
+                        if self.orbital_resolved:
+                            if (
+                                bond_data["orbital_data"]["orbital_summary_stats"]
+                                and "max_bonding_contribution"
+                                in bond_data["orbital_data"]["orbital_summary_stats"]
+                            ):
+                                for orb_pair in bond_data["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_bonding_contribution"]:
+                                    icohp_mean_orb_bndg.append(
+                                        bond_data["orbital_data"][orb_pair][
+                                            "ICOHP_mean"
+                                        ]
+                                    )
+                                    icohp_sum_orb_bndg.append(
+                                        bond_data["orbital_data"][orb_pair]["ICOHP_sum"]
+                                    )
+                                    bond_orb.append(
+                                        bond_data["orbital_data"][orb_pair][
+                                            "orb_contribution_perc_bonding"
+                                        ]
+                                    )
+                            if (
+                                bond_data["orbital_data"]["orbital_summary_stats"]
+                                and "max_antibonding_contribution"
+                                in bond_data["orbital_data"]["orbital_summary_stats"]
+                            ):
+                                for orb_pair in bond_data["orbital_data"][
+                                    "orbital_summary_stats"
+                                ]["max_antibonding_contribution"]:
+                                    icohp_mean_orb_antibndg.append(
+                                        bond_data["orbital_data"][orb_pair][
+                                            "ICOHP_mean"
+                                        ]
+                                    )
+                                    icohp_sum_orb_antibndg.append(
+                                        bond_data["orbital_data"][orb_pair]["ICOHP_sum"]
+                                    )
+                                    antibond_orb.append(
+                                        bond_data["orbital_data"][orb_pair][
+                                            "orb_contribution_perc_antibonding"
+                                        ]
+                                    )
 
         # add ICOHP stats data (mean, min, max, standard deviation) as columns to the dataframe
 
@@ -337,13 +343,16 @@ class FeaturizeLobsterpy:
         lobster_data = {}
         for item in data:
             for key in item:
-                # check applicable only for updated cba jsons in atomate2
-                if (key == "cation_anion_bonds" or key == "all_bonds") and (
-                    "sites" in item[key]["lobsterpy_data"]["sites"]
-                ):
-                    item[key]["lobsterpy_data"]["sites"] = item[key]["lobsterpy_data"][
-                        "sites"
-                    ]["sites"]
+                # check applicable only for updated cba jsons from atomate2
+                try:
+                    if (key == "cation_anion_bonds" or key == "all_bonds") and (
+                        "sites" in item[key]["lobsterpy_data"]["sites"]
+                    ):
+                        item[key]["lobsterpy_data"]["sites"] = item[key][
+                            "lobsterpy_data"
+                        ]["sites"]["sites"]
+                except KeyError:
+                    pass
             lobster_data.update(item)
 
         return lobster_data
@@ -716,9 +725,8 @@ class FeaturizeCOXX:
             icoxx = self.icoxxlist.icohpcollection.get_icohp_by_label(
                 lab, summed_spin_channels=True
             )
-            weight = (
-                icoxx / icoxx_total
-            )  # calculate the weights based on icohp contri to total icohp of the structure
+            # calculate the weights based on icohp contri to total icohp of the structure
+            weight = (icoxx / icoxx_total) if icoxx_total != 0 else 0
             weighted_coxx = weight * coxx
             summed_weighted_coxx.append(weighted_coxx)
 
@@ -1123,7 +1131,11 @@ class FeaturizeCharges:
                 )
             ):
                 valence_elec = element(structure.species[i].value)
-                val = j / (valence_elec.nvalence() - 0)
+                val = (
+                    j / (valence_elec.nvalence() - 0)
+                    if valence_elec.nvalence() != tol
+                    else 0
+                )
                 ch_veff.append(val)
 
             elif (
@@ -1135,7 +1147,11 @@ class FeaturizeCharges:
                 )
             ):
                 valence_elec = element(structure.species[i].value)
-                val = j / (valence_elec.nvalence() - 8)
+                val = (
+                    j / (valence_elec.nvalence() - 8)
+                    if valence_elec.nvalence() != 8
+                    else 0
+                )
                 ch_veff.append(val)
 
             elif j > tol and (
@@ -1143,7 +1159,11 @@ class FeaturizeCharges:
                 or structure.species[i].is_actinoid
                 or structure.species[i].is_lanthanoid
             ):
-                val = j / (structure.species[i].max_oxidation_state - 0)
+                val = (
+                    j / (structure.species[i].max_oxidation_state - 0)
+                    if structure.species[i].max_oxidation_state != tol
+                    else 0
+                )
                 ch_veff.append(val)
 
             elif j < tol and (
@@ -1151,7 +1171,11 @@ class FeaturizeCharges:
                 or structure.species[i].is_actinoid
                 or structure.species[i].is_lanthanoid
             ):
-                val = j / (structure.species[i].min_oxidation_state - 8)
+                val = (
+                    j / (structure.species[i].max_oxidation_state - 8)
+                    if structure.species[i].max_oxidation_state != 8
+                    else 0
+                )
                 ch_veff.append(val)
 
         return sum(ch_veff) / structure.num_sites
