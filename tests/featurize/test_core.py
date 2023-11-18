@@ -818,6 +818,7 @@ class TestFeaturizeDoscar:
         feat_dos = FeaturizeDoscar(
             path_to_doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",
             path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
+            add_element_dos_moments=True,
             e_range=None,
         )
 
@@ -825,7 +826,7 @@ class TestFeaturizeDoscar:
 
         df = feat_dos.get_df(ids="K3Sb")
 
-        # Test that all the values in the DataFrame
+        # Test that all the orbital moment values in the DataFrame
         assert df.loc["K3Sb", "s_band_center"] == pytest.approx(-13.3722, abs=1e-05)
         assert df.loc["K3Sb", "s_band_width"] == pytest.approx(15.5141, abs=1e-05)
         assert df.loc["K3Sb", "s_band_skew"] == pytest.approx(-0.1718, abs=1e-05)
@@ -840,6 +841,40 @@ class TestFeaturizeDoscar:
         assert df.loc["K3Sb", "p_band_kurtosis"] == pytest.approx(2.5024, abs=1e-05)
         assert df.loc["K3Sb", "p_band_upperband_edge"] == pytest.approx(
             -14.0357, abs=1e-05
+        )
+
+        # Test Element orbital moment features
+
+        assert df.loc["K3Sb", "K_s_band_center"] == pytest.approx(-14.6044, abs=1e-05)
+        assert df.loc["K3Sb", "K_s_band_width"] == pytest.approx(16.3903, abs=1e-05)
+        assert df.loc["K3Sb", "K_s_band_skew"] == pytest.approx(0.0309, abs=1e-05)
+        assert df.loc["K3Sb", "K_s_band_kurtosis"] == pytest.approx(1.0352, abs=1e-05)
+        assert df.loc["K3Sb", "K_s_band_upperband_edge"] == pytest.approx(
+            -31.5650, abs=1e-05
+        )
+
+        assert df.loc["K3Sb", "Sb_s_band_center"] == pytest.approx(-5.9795, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_s_band_width"] == pytest.approx(3.0357, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_s_band_skew"] == pytest.approx(1.9959, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_s_band_kurtosis"] == pytest.approx(8.4750, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_s_band_upperband_edge"] == pytest.approx(
+            -6.9954, abs=1e-05
+        )
+
+        assert df.loc["K3Sb", "K_p_band_center"] == pytest.approx(-14.3425, abs=1e-05)
+        assert df.loc["K3Sb", "K_p_band_width"] == pytest.approx(1.1348, abs=1e-05)
+        assert df.loc["K3Sb", "K_p_band_skew"] == pytest.approx(10.7021, abs=1e-05)
+        assert df.loc["K3Sb", "K_p_band_kurtosis"] == pytest.approx(147.5038, abs=1e-05)
+        assert df.loc["K3Sb", "K_p_band_upperband_edge"] == pytest.approx(
+            -14.0357, abs=1e-05
+        )
+
+        assert df.loc["K3Sb", "Sb_p_band_center"] == pytest.approx(0.1300, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_p_band_width"] == pytest.approx(2.1458, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_p_band_skew"] == pytest.approx(-6.1882, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_p_band_kurtosis"] == pytest.approx(84.5825, abs=1e-05)
+        assert df.loc["K3Sb", "Sb_p_band_upperband_edge"] == pytest.approx(
+            -0.0775, abs=1e-05
         )
 
         # Test for the case where e_range is set to None and trying to get fingerprint
