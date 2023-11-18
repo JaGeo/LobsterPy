@@ -827,6 +827,7 @@ class BatchDosFeaturizer:
 
     Attributes:
         path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        add_element_dos_moments : add element dos moment features alongside orbital dos
         normalize: bool to state to normalize the fingerprint data
         n_bins: sets number for bins for fingerprint objects
         e_range : range of energy relative to fermi for which moment features needs to be computed
@@ -842,6 +843,7 @@ class BatchDosFeaturizer:
     def __init__(
         self,
         path_to_lobster_calcs: str | Path,
+        add_element_dos_moments: bool = False,
         fingerprint_type: str = "summed_pdos",
         normalize: bool = True,
         n_bins: int = 56,
@@ -854,6 +856,7 @@ class BatchDosFeaturizer:
 
         Args:
             path_to_lobster_calcs: path to root directory consisting of all lobster calc
+            add_element_dos_moments : add element dos moment features alongside orbital dos
             normalize: bool to state to normalize the fingerprint data
             n_bins: sets number for bins for fingerprint objects
             e_range : range of energy relative to fermi for which moment features needs to be computed
@@ -863,6 +866,7 @@ class BatchDosFeaturizer:
             use_lso_dos: Will force feeaturizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster
         """
         self.path_to_lobster_calcs = path_to_lobster_calcs
+        self.add_element_dos_moments = add_element_dos_moments
         self.fingerprint_type = fingerprint_type
         self.e_range = e_range
         self.normalize = normalize
@@ -899,6 +903,7 @@ class BatchDosFeaturizer:
             featurize_dos = FeaturizeDoscar(
                 path_to_doscar=str(doscar_path),
                 path_to_structure=str(structure_path),
+                add_element_dos_moments=self.add_element_dos_moments,
                 e_range=self.e_range,
             )
             df = featurize_dos.get_df()

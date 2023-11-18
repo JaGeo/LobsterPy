@@ -1226,6 +1226,7 @@ class FeaturizeDoscar:
         path_to_structure: str | Path,
         path_to_doscar: str | Path,
         e_range: list[float] | None = [-10.0, 0.0],
+        add_element_dos_moments: bool = False,
     ):
         """
         Featurize DOSCAR.lobster or DOSCAR.LSO.lobster data.
@@ -1234,14 +1235,16 @@ class FeaturizeDoscar:
             path_to_structure: path to POSCAR
             path_to_doscar : path to DOSCAR.lobster or DOSCAR.LSO.lobster
             e_range : range of energy relative to fermi for which moment features and features needs to be computed
+            add_element_dos_moments : add element dos moment features alongside orbital dos
 
         """
         self.path_to_structure = path_to_structure
         self.path_to_doscar = path_to_doscar
         self.e_range = e_range
-        self.doscar = Doscar(
+        self.dos = Doscar(
             doscar=self.path_to_doscar, structure_file=self.path_to_structure
         ).completedos
+        self.add_element_dos_moments = add_element_dos_moments
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """
@@ -1258,24 +1261,60 @@ class FeaturizeDoscar:
             ids = Path(self.path_to_doscar).parent.name
             df = pd.DataFrame(index=[ids])
 
-        spd_dos_lobster = self.doscar.get_spd_dos()
+        spd_dos_lobster = self.dos.get_spd_dos()
 
         for orbital in spd_dos_lobster:
             df.loc[ids, f"{orbital.name}_band_center"] = round(
-                self.doscar.get_band_center(band=orbital, erange=self.e_range), 4
+                self.dos.get_band_center(band=orbital, erange=self.e_range), 4
             )
             df.loc[ids, f"{orbital.name}_band_width"] = round(
-                self.doscar.get_band_width(band=orbital, erange=self.e_range), 4
+                self.dos.get_band_width(band=orbital, erange=self.e_range), 4
             )
             df.loc[ids, f"{orbital.name}_band_skew"] = round(
-                self.doscar.get_band_skewness(band=orbital, erange=self.e_range), 4
+                self.dos.get_band_skewness(band=orbital, erange=self.e_range), 4
             )
             df.loc[ids, f"{orbital.name}_band_kurtosis"] = round(
-                self.doscar.get_band_kurtosis(band=orbital, erange=self.e_range), 4
+                self.dos.get_band_kurtosis(band=orbital, erange=self.e_range), 4
             )
             df.loc[ids, f"{orbital.name}_band_upperband_edge"] = round(
-                self.doscar.get_upper_band_edge(band=orbital, erange=self.e_range), 4
+                self.dos.get_upper_band_edge(band=orbital, erange=self.e_range), 4
             )
+            if self.add_element_dos_moments:
+                elements_list = self.dos.structure.elements
+                for el in elements_list:
+                    if orbital in self.dos.get_element_spd_dos(el=el.name):
+                        df.loc[ids, f"{el.name}_{orbital.name}_band_center"] = round(
+                            self.dos.get_band_center(
+                                band=orbital, elements=[el], erange=self.e_range
+                            ),
+                            4,
+                        )
+                        df.loc[ids, f"{el.name}_{orbital.name}_band_width"] = round(
+                            self.dos.get_band_width(
+                                band=orbital, elements=[el], erange=self.e_range
+                            ),
+                            4,
+                        )
+                        df.loc[ids, f"{el.name}_{orbital.name}_band_skew"] = round(
+                            self.dos.get_band_skewness(
+                                band=orbital, elements=[el], erange=self.e_range
+                            ),
+                            4,
+                        )
+                        df.loc[ids, f"{el.name}_{orbital.name}_band_kurtosis"] = round(
+                            self.dos.get_band_kurtosis(
+                                band=orbital, elements=[el], erange=self.e_range
+                            ),
+                            4,
+                        )
+                        df.loc[
+                            ids, f"{el.name}_{orbital.name}_band_upperband_edge"
+                        ] = round(
+                            self.dos.get_upper_band_edge(
+                                band=orbital, elements=[el], erange=self.e_range
+                            ),
+                            4,
+                        )
 
         return df
 
@@ -1308,7 +1347,7 @@ class FeaturizeDoscar:
             ids = Path(self.path_to_doscar).parent.name
             df = pd.DataFrame(index=[ids], columns=["DOS_FP"])
 
-        fp = self.doscar.get_dos_fp(
+        fp = self.dos.get_dos_fp(
             type=fp_type,
             normalize=normalize,
             n_bins=n_bins,
