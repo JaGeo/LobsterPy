@@ -288,6 +288,100 @@ class TestFeaturizeLobsterpy:
             0.015000, abs=1e-05
         )
 
+    # Tests for new jsons from atomate2
+    def test_featurize_mp66_json(self):
+        featurize_mp66_json = FeaturizeLobsterpy(
+            path_to_json=TestDir
+            / "test_data/Featurizer_test_data/New_JSONS/mp-66.json.gz",
+            bonds="all",
+        )
+        df = featurize_mp66_json.get_df(ids="mp-66")
+
+        # Test that the function returns a pandas DataFrame
+        assert isinstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "Icohp_mean_avg",
+            "Icohp_mean_max",
+            "Icohp_mean_min",
+            "Icohp_mean_std",
+            "Icohp_sum_avg",
+            "Icohp_sum_max",
+            "Icohp_sum_min",
+            "Icohp_sum_std",
+            "bonding_perc_avg",
+            "bonding_perc_max",
+            "bonding_perc_min",
+            "bonding_perc_std",
+            "antibonding_perc_avg",
+            "antibonding_perc_min",
+            "antibonding_perc_max",
+            "antibonding_perc_std",
+            "Madelung_Mull",
+            "Madelung_Loew",
+        ]
+        assert sorted(df.columns) == sorted(expected_cols)
+
+        # Test that all the values in the DataFrame
+        assert df.loc["mp-66", "Icohp_mean_avg"] == pytest.approx(-9.59, abs=1e-05)
+        assert df.loc["mp-66", "Icohp_sum_max"] == pytest.approx(-38.34, abs=1e-05)
+        assert df.loc["mp-66", "Icohp_mean_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-66", "bonding_perc_max"] == pytest.approx(1, abs=1e-05)
+        assert df.loc["mp-66", "bonding_perc_min"] == pytest.approx(1, abs=1e-05)
+        assert df.loc["mp-66", "bonding_perc_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-66", "antibonding_perc_min"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-66", "antibonding_perc_max"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-66", "antibonding_perc_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-66", "Madelung_Mull"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-66", "Madelung_Loew"] == pytest.approx(0, abs=1e-05)
+
+    def test_featurize_mp7000_json(self):
+        featurize_mp7000_json = FeaturizeLobsterpy(
+            path_to_json=TestDir
+            / "test_data/Featurizer_test_data/New_JSONS/mp-7000.json.gz",
+            bonds="cation-anion",
+        )
+        df = featurize_mp7000_json.get_df(ids="mp-7000")
+        # Test that the function returns a pandas DataFrame
+        assert isinstance(df, pd.DataFrame)
+
+        # Test that the DataFrame has the expected columns
+        expected_cols = [
+            "Icohp_mean_avg",
+            "Icohp_mean_max",
+            "Icohp_mean_min",
+            "Icohp_mean_std",
+            "Icohp_sum_avg",
+            "Icohp_sum_max",
+            "Icohp_sum_min",
+            "Icohp_sum_std",
+            "bonding_perc_avg",
+            "bonding_perc_max",
+            "bonding_perc_min",
+            "bonding_perc_std",
+            "antibonding_perc_avg",
+            "antibonding_perc_min",
+            "antibonding_perc_max",
+            "antibonding_perc_std",
+            "Madelung_Mull",
+            "Madelung_Loew",
+        ]
+        assert sorted(df.columns) == sorted(expected_cols)
+
+        # Test that all the values in the DataFrame
+        assert df.loc["mp-7000", "Icohp_mean_avg"] == pytest.approx(-7.98, abs=1e-05)
+        assert df.loc["mp-7000", "Icohp_sum_max"] == pytest.approx(-31.90, abs=1e-05)
+        assert df.loc["mp-7000", "Icohp_mean_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-7000", "bonding_perc_max"] == pytest.approx(1, abs=1e-05)
+        assert df.loc["mp-7000", "bonding_perc_min"] == pytest.approx(1, abs=1e-05)
+        assert df.loc["mp-7000", "bonding_perc_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-7000", "antibonding_perc_min"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-7000", "antibonding_perc_max"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-7000", "antibonding_perc_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-7000", "Madelung_Mull"] == pytest.approx(-163.37, abs=1e-05)
+        assert df.loc["mp-7000", "Madelung_Loew"] == pytest.approx(-99.01, abs=1e-05)
+
     def test_featurize_csh_madelung(self):
         featurize_csh_madelung = FeaturizeLobsterpy(
             path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="all"

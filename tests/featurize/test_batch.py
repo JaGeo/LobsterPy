@@ -71,6 +71,61 @@ class TestBatchSummaryFeaturizer:
 
         assert sorted(df.index) == sorted(expected_index)
 
+    def test_summary_featurize_with_no_bonds(self):
+        summary_featurize = BatchSummaryFeaturizer(
+            path_to_lobster_calcs=TestDir
+            / "test_data/Featurizer_test_data/No_bonds_cases",
+            bonds="all",
+            path_to_jsons=None,
+            feature_type="antibonding",
+            include_cobi_data=False,
+            include_coop_data=False,
+            e_range=[-15, 0],
+            n_jobs=2,
+        )
+
+        df = summary_featurize.get_df()
+
+        assert isinstance(df, pd.DataFrame)
+
+        expected_cols = [
+            "Icohp_mean_avg",
+            "Icohp_mean_max",
+            "Icohp_mean_min",
+            "Icohp_mean_std",
+            "Icohp_sum_avg",
+            "Icohp_sum_max",
+            "Icohp_sum_min",
+            "Icohp_sum_std",
+            "bonding_perc_avg",
+            "bonding_perc_max",
+            "bonding_perc_min",
+            "bonding_perc_std",
+            "antibonding_perc_avg",
+            "antibonding_perc_min",
+            "antibonding_perc_max",
+            "antibonding_perc_std",
+            "Madelung_Mull",
+            "Madelung_Loew",
+            "bnd_wICOHP",
+            "antibnd_wICOHP",
+            "w_ICOHP",
+            "EIN_ICOHP",
+            "center_COHP",
+            "width_COHP",
+            "skewness_COHP",
+            "kurtosis_COHP",
+            "edge_COHP",
+            "Ionicity_Mull",
+            "Ionicity_Loew",
+        ]
+
+        assert sorted(df.columns) == sorted(expected_cols)
+
+        expected_index = ["mp-111", "mp-23155"]
+
+        assert sorted(df.index) == sorted(expected_index)
+
     def test_summary_featurize_orbitalwise(self):
         summary_featurize_without_json = BatchSummaryFeaturizer(
             path_to_lobster_calcs=TestDir
