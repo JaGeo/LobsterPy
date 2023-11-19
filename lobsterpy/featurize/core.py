@@ -684,7 +684,7 @@ class FeaturizeCOXX:
 
         except KeyError:
             raise ValueError(
-                "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall"
+                "Please recheck fingerprint type requested argument. Possible options are bonding/antibonding/overall"
             )
 
     def _calculate_wicoxx_ein(self) -> tuple[float, float, float, float]:
@@ -881,7 +881,7 @@ class FeaturizeCOXX:
             )
         except KeyError:
             raise ValueError(
-                "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall"
+                "Please recheck feature type requested argument. Possible options are bonding/antibonding/overall"
             )
 
         return coxx_center, coxx_width, coxx_skew, coxx_kurt, coxx_edge

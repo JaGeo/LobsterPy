@@ -706,14 +706,14 @@ class TestExceptions:
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
                 path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
                 feature_type="summed",
-                e_range=[-5, 0],
+                e_range=[None, None],
             )
 
-            _ = self.featurize_coxx.get_summarized_coxx_df()
+            _ = self.featurize_coxx.get_summarized_coxx_df(ids="exception")
 
         assert (
             str(err.value)
-            == "Please recheck fp_type requested argument.Possible options are bonding/antibonding/overall"
+            == "Please recheck feature type requested argument. Possible options are bonding/antibonding/overall"
         )
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
@@ -722,7 +722,7 @@ class TestExceptions:
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
                 path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
                 feature_type="bonding",
-                e_range=[-5, 0],
+                e_range=[None, None],
             )
 
             _ = self.featurize_coxx.get_coxx_fingerprint_df(spin_type="-1")
@@ -759,10 +759,10 @@ class TestExceptions:
                 e_range=[-5, 0],
             )
 
-            _ = self.featurize_nacl_coxx.get_summarized_coxx_df()
+            _ = self.featurize_nacl_coxx.get_coxx_fingerprint_df(ids="NACL")
 
         assert (
-            str(err.value) == "Please recheck fp_type requested argument."
+            str(err.value) == "Please recheck fingerprint type requested argument. "
             "Possible options are bonding/antibonding/overall"
         )
 
