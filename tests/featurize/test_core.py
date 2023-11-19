@@ -496,6 +496,7 @@ class TestFeaturizeCOXX:
         assert df.loc["CdF", "width_COHP"] == pytest.approx(0.157761, abs=1e-05)
         assert df.loc["CdF", "skewness_COHP"] == pytest.approx(0.910094, abs=1e-05)
         assert df.loc["CdF", "kurtosis_COHP"] == pytest.approx(2.866611, abs=1e-05)
+        assert df.loc["CdF", "edge_COHP"] == pytest.approx(-4.96241, abs=1e-05)
 
         # test using label list
         df1 = featurize_cdf_coxx.get_summarized_coxx_df(label_list=["2", "3", "30"])
@@ -525,7 +526,7 @@ class TestFeaturizeCOXX:
             path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
             feature_type="antibonding",
-            e_range=[-5, 0],
+            e_range=[None, None],
         )
         df = featurize_k3sb_coxx.get_summarized_coxx_df(ids="K3Sb")
 
@@ -555,10 +556,11 @@ class TestFeaturizeCOXX:
         assert df.loc["K3Sb", "w_ICOHP"] == pytest.approx(-0.318218, abs=1e-05)
 
         assert df.loc["K3Sb", "EIN_ICOHP"] == pytest.approx(11.597595, abs=1e-05)
-        assert df.loc["K3Sb", "center_COHP"] == pytest.approx(-0.198211, abs=1e-05)
-        assert df.loc["K3Sb", "width_COHP"] == pytest.approx(0.233826, abs=1e-05)
-        assert df.loc["K3Sb", "skewness_COHP"] == pytest.approx(-1.626643, abs=1e-05)
-        assert df.loc["K3Sb", "kurtosis_COHP"] == pytest.approx(3.771873, abs=1e-05)
+        assert df.loc["K3Sb", "center_COHP"] == pytest.approx(2.786451, abs=1e-05)
+        assert df.loc["K3Sb", "width_COHP"] == pytest.approx(0.765492, abs=1e-05)
+        assert df.loc["K3Sb", "skewness_COHP"] == pytest.approx(-1.52563, abs=1e-05)
+        assert df.loc["K3Sb", "kurtosis_COHP"] == pytest.approx(6.829327, abs=1e-05)
+        assert df.loc["K3Sb", "edge_COHP"] == pytest.approx(3.1916, abs=1e-05)
 
 
 class TestFeaturizeCharges:
