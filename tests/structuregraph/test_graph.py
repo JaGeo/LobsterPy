@@ -518,3 +518,50 @@ class TestGraph:
         assert (
             graph_cdf_close_fermi.sg.graph.get_edge_data(0, 1)[3]["bond_label"] == "63"
         )
+
+    def test_graph_exceptions(self):
+        with pytest.raises(ValueError) as err1:  # noqa: PT012, PT011
+            _ = LobsterGraph(
+                path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+                path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
+                path_to_cohpcar=TestDir
+                / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir
+                / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
+                add_additional_data_sg=True,
+                path_to_icooplist=TestDir
+                / "test_data/NaCl_comp_range/ICOOPLIST.lobster.gz",
+                path_to_icobilist=TestDir
+                / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz",
+                path_to_madelung=TestDir
+                / "test_data/NaCl_comp_range/MadelungEnergies.lobster.gz",
+                which_bonds="cation-anin",
+                start=None,
+            )
+
+            assert (
+                str(err1.value) == "Only accepted values are 'all' and 'cation-anion'. "
+                "Please check the input parameters of which_bonds arg"
+            )
+
+        with pytest.raises(ValueError) as err2:  # noqa: PT012, PT011
+            _ = LobsterGraph(
+                path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+                path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
+                path_to_cohpcar=TestDir
+                / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir
+                / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
+                add_additional_data_sg=True,
+                path_to_icooplist=None,
+                path_to_icobilist=None,
+                path_to_madelung=TestDir
+                / "test_data/NaCl_comp_range/MadelungEnergies.lobster.gz",
+                which_bonds="cation-anion",
+                start=None,
+            )
+
+            assert (
+                str(err2.value) == "add_additional_data_sg is set to True. "
+                "Please provide path_to_icooplist and path_to_icobilist"
+            )
