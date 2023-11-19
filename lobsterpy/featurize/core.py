@@ -807,21 +807,12 @@ class FeaturizeCOXX:
         else:
             coxxcar = complete_coxx_obj.get_cohp()
 
-        # <<<<<<< HEAD
-        #         if Spin.down in coxxcar:
-        #             coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down]
-        #         else:
-        #             coxx_all = coxxcar[Spin.up]
-        #
-        #         energies = complete_coxx_obj.energies - complete_coxx_obj.efermi
-        # =======
         coxx_all = (
             coxxcar[Spin.up] + coxxcar[Spin.down]
             if Spin.down in coxxcar
             else coxxcar[Spin.up]
         )
         energies = complete_coxx_obj.energies - complete_coxx_obj.efermi
-        # >>>>>>> master
 
         coxx_dict = {}
         tol = 1e-6
@@ -912,9 +903,6 @@ class FeaturizeCOXX:
         Returns:
             coxx center in eV
         """
-        # coxx_center = FeaturizeCOXX.get_n_moment(
-        #     n=1, coxx=coxx, energies=energies, e_range=e_range, center=False
-        # )
         return FeaturizeCOXX.get_n_moment(
             n=1, coxx=coxx, energies=energies, e_range=e_range, center=False
         )
@@ -1044,7 +1032,6 @@ class FeaturizeCOXX:
         else:
             type_pop = "COHP"
 
-        # if self.are_coops:
         cc, cw, cs, ck, ce = FeaturizeCOXX._calc_moment_features(
             complete_coxx_obj=self.completecoxx,
             label_list=label_list,

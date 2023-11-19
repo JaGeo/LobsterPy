@@ -117,8 +117,6 @@ class BatchSummaryFeaturizer:
 
         return featurize_lobsterpy.get_df()
 
-        # return df
-
     def _featurizecoxx(self, path_to_lobster_calc) -> pd.DataFrame:
         """
         Featurize COHP/COBI/COOPCAR data using FeaturizeCOXX.
