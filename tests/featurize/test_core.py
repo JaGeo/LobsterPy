@@ -456,6 +456,22 @@ class TestFeaturizeCOXX:
 
         assert fingerprint.__str__() != fingerprint_label.__str__()
 
+        # test moment features using label and orbital list
+        label_list = ["21", "23", "24", "27", "28", "30"]
+        (coxx_c, coxx_w, coxx_s, coxx_k, coxx_e) = FeaturizeCOXX._calc_moment_features(
+            complete_coxx_obj=featurize_nacl_coxx.completecoxx,
+            e_range=[None, 0],
+            feature_type=featurize_nacl_coxx.feature_type,
+            label_list=label_list,
+            orbital="3px-2px",
+        )
+
+        assert coxx_c == pytest.approx(-5.8369822833428735, abs=1e-05)
+        assert coxx_w == pytest.approx(0.4523359129845927, abs=1e-05)
+        assert coxx_s == pytest.approx(-0.15433775869720565, abs=1e-05)
+        assert coxx_k == pytest.approx(1.6916251153182233, abs=1e-05)
+        assert coxx_e == pytest.approx(-5.26316, abs=1e-05)
+
     def test_featurize_cdf_coxx(self):
         featurize_cdf_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
@@ -520,6 +536,22 @@ class TestFeaturizeCOXX:
 
         assert fingerprint.__str__() != fingerprint_label.__str__()
 
+        # test moment features using label and orbital list
+        label_list = ["25", "32", "35", "36", "57", "58", "61", "68"]
+        (coxx_c, coxx_w, coxx_s, coxx_k, coxx_e) = FeaturizeCOXX._calc_moment_features(
+            complete_coxx_obj=featurize_cdf_coxx.completecoxx,
+            e_range=featurize_cdf_coxx.e_range,
+            feature_type=featurize_cdf_coxx.feature_type,
+            label_list=label_list,
+            orbital="2py-5s",
+        )
+
+        assert coxx_c == pytest.approx(-4.609186587118677, abs=1e-05)
+        assert coxx_w == pytest.approx(0.2416386973020571, abs=1e-05)
+        assert coxx_s == pytest.approx(0.7943687717963166, abs=1e-05)
+        assert coxx_k == pytest.approx(3.196850488714957, abs=1e-05)
+        assert coxx_e == pytest.approx(-4.96241, abs=1e-05)
+
     def test_featurize_k3sb_coxx(self):
         featurize_k3sb_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
@@ -561,6 +593,37 @@ class TestFeaturizeCOXX:
         assert df.loc["K3Sb", "skewness_COHP"] == pytest.approx(-1.52563, abs=1e-05)
         assert df.loc["K3Sb", "kurtosis_COHP"] == pytest.approx(6.829327, abs=1e-05)
         assert df.loc["K3Sb", "edge_COHP"] == pytest.approx(3.1916, abs=1e-05)
+
+        # test moment features using label and orbital list
+        label_list = [
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+        ]
+        (coxx_c, coxx_w, coxx_s, coxx_k, coxx_e) = FeaturizeCOXX._calc_moment_features(
+            complete_coxx_obj=featurize_k3sb_coxx.completecoxx,
+            e_range=featurize_k3sb_coxx.e_range,
+            feature_type=featurize_k3sb_coxx.feature_type,
+            label_list=label_list,
+            orbital="5s-4s",
+        )
+
+        assert coxx_c == pytest.approx(1.4416312688111554, abs=1e-05)
+        assert coxx_w == pytest.approx(3.4768865885682962, abs=1e-05)
+        assert coxx_s == pytest.approx(-7.434008678770313, abs=1e-05)
+        assert coxx_k == pytest.approx(70.35977484462431, abs=1e-05)
+        assert coxx_e == pytest.approx(-31.56499, abs=1e-05)
 
 
 class TestFeaturizeCharges:
