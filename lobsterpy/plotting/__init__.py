@@ -848,7 +848,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 try:
                     cohps = Cohp.from_dict(cohps)
                     plot_data_dict.update({key: cohps})
-                except TypeError:
+                except (TypeError, AttributeError):
                     raise ValueError(
                         "The data provided could not be converted to cohp object.Please recheck the input data"
                     )

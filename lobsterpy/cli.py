@@ -915,8 +915,17 @@ def run(args):
                 filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": False, "are_coops": False}
 
+        struture_filename = args.structure.parent / "POSCAR"
+        if not struture_filename.exists():
+            struture_filename = struture_filename.with_name(
+                zpath(struture_filename.name)
+            )
+
         completecohp = CompleteCohp.from_file(
-            fmt="LOBSTER", filename=filename, structure_file=args.structure, **options
+            fmt="LOBSTER",
+            filename=filename,
+            structure_file=struture_filename,
+            **options,
         )
         cp = PlainCohpPlotter(**options)
 
