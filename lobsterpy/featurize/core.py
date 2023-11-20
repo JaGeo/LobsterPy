@@ -803,7 +803,8 @@ class FeaturizeCOXX:
                 label_list=label_list,
                 orbital_list=[orbital] * len(label_list),
                 divisor=divisor,
-            )
+                summed_spin_channels=False,
+            ).get_cohp()
         else:
             coxxcar = complete_coxx_obj.get_cohp()
 
