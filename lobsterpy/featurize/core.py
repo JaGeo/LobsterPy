@@ -12,10 +12,10 @@ from collections import namedtuple
 from pathlib import Path
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 from mendeleev import element
 from monty.os.path import zpath
+from numpy import ndarray
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
@@ -726,7 +726,10 @@ class FeaturizeCOXX:
                 lab, summed_spin_channels=True
             )
             # calculate the weights based on icohp contri to total icohp of the structure
-            weight = (icoxx / icoxx_total) if icoxx_total != 0 else 0
+            try:
+                weight = icoxx / icoxx_total
+            except ZeroDivisionError:
+                weight = 0
             weighted_coxx = weight * coxx
             summed_weighted_coxx.append(weighted_coxx)
 
@@ -889,8 +892,8 @@ class FeaturizeCOXX:
 
     @staticmethod
     def get_coxx_center(
-        coxx: npt.NDArray[np.floating],
-        energies: npt.NDArray[np.floating],
+        coxx: ndarray[np.floating],
+        energies: ndarray[np.floating],
         e_range: list[float],
     ) -> float:
         """
@@ -911,8 +914,8 @@ class FeaturizeCOXX:
     @staticmethod
     def get_n_moment(
         n: float,
-        coxx: npt.NDArray[np.floating],
-        energies: npt.NDArray[np.floating],
+        coxx: ndarray[np.floating],
+        energies: ndarray[np.floating],
         e_range: list[float] | None,
         center: bool = True,
     ) -> float:
@@ -960,8 +963,8 @@ class FeaturizeCOXX:
 
     @staticmethod
     def get_cohp_edge(
-        coxx: npt.NDArray[np.floating],
-        energies: npt.NDArray[np.floating],
+        coxx: ndarray[np.floating],
+        energies: ndarray[np.floating],
         e_range: list[float] | None,
     ):
         """
@@ -1119,11 +1122,10 @@ class FeaturizeCharges:
                 )
             ):
                 valence_elec = element(structure.species[i].value)
-                val = (
-                    j / (valence_elec.nvalence() - 0)
-                    if valence_elec.nvalence() != tol
-                    else 0
-                )
+                try:
+                    val = j / valence_elec.nvalence()
+                except ZeroDivisionError:
+                    val = 0
                 ch_veff.append(val)
 
             elif (
