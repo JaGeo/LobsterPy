@@ -789,7 +789,7 @@ class FeaturizeCOXX:
             (Only affects when label_list is not None)
 
         Returns:
-            coxx center,width, skewness, kurtosis and edge in eV
+            coxx center, width, skewness, kurtosis, and edge in eV
         """
         if label_list is not None:
             divisor = len(label_list) if per_bond else 1
