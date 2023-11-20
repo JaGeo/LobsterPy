@@ -10,6 +10,7 @@ from math import log, sqrt
 from pathlib import Path
 
 import matplotlib.style
+from monty.os.path import zpath
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Icohplist
 
@@ -35,107 +36,159 @@ def get_parser() -> argparse.ArgumentParser:
         description="Analyze and plot results from Lobster runs."
     )
 
-    # Arguments common to all actions
-    input_parent = argparse.ArgumentParser(add_help=False)
-    input_file_group = input_parent.add_argument_group("Input files")
-    input_file_group.add_argument(
-        "--poscar",
-        "--POSCAR",
-        dest="poscar",
-        default="POSCAR",
-        type=Path,
-        help='path to POSCAR. Default is "POSCAR"',
-    )
-    input_file_group.add_argument(
-        "--charge",
-        default="CHARGE.lobster",
-        type=Path,
-        help='path to CHARGE.lobster. Default is "CHARGE.lobster"',
-    )
-    input_file_group.add_argument(
-        "--icohplist",
-        default="ICOHPLIST.lobster",
-        type=Path,
-        help='path to ICOHPLIST.lobster. Default is "ICOHPLIST.lobster"',
-    )
-    input_file_group.add_argument(
-        "--cohpcar",
-        default="COHPCAR.lobster",
-        type=Path,
-        help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument'
-        "will also be read when COBICARs or COOPCARs are plotted.",
-    )
-    input_file_group.add_argument(
-        "--incar",
+    # Arguments that are needed by different actions, but not always
+
+    incar_file = argparse.ArgumentParser(add_help=False)
+    incar_file.add_argument(
+        "-fincar",
+        "--file-incar",
         default="INCAR",
+        dest="incar",
         type=Path,
         help='path to INCAR. Default is "INCAR".',
     )
-    input_file_group.add_argument(
-        "--potcar",
+
+    charge_file = argparse.ArgumentParser(add_help=False)
+    charge_file.add_argument(
+        "-fcharge",
+        "--file-charge",
+        default="CHARGE.lobster",
+        dest="charge",
+        type=Path,
+        help='path to CHARGE.lobster. Default is "CHARGE.lobster"',
+    )
+
+    structure_file = argparse.ArgumentParser(add_help=False)
+    structure_file.add_argument(
+        "-fstruct",
+        "--file-structure",
+        default="POSCAR",
+        dest="structure",
+        type=Path,
+        help='path to structure file. Default is "POSCAR"',
+    )
+
+    potcar_file = argparse.ArgumentParser(add_help=False)
+    potcar_file.add_argument(
+        "-fpotcar",
+        "--file-potcar",
         default="POTCAR",
+        dest="potcar",
         type=Path,
         help='path to POTCAR. Default is "POTCAR".',
     )
-    input_file_group.add_argument(
-        "--potcar-symbols",
-        dest="potcarsymbols",
-        type=_potcar_symbols,
-        help="List of potcar symbols",
-    )
 
-    input_file_group.add_argument(
-        "--lobsterin",
-        default="lobsterin",
+    icohplist_file = argparse.ArgumentParser(add_help=False)
+    icohplist_file.add_argument(
+        "-ficohp",
+        "--file-icohplist",
+        default="ICOHPLIST.lobster",
+        dest="icohplist",
         type=Path,
-        help='path to lobsterin. Default is "lobsterin".',
+        help='path to ICOHPLIST.lobster. Default is "ICOHPLIST.lobster"',
     )
 
-    input_file_group.add_argument(
-        "--lobsterout",
-        default="lobsterout",
+    coxxcar_file = argparse.ArgumentParser(add_help=False)
+    coxxcar_file.add_argument(
+        "-fcohp",
+        "--file-cohpcar",
+        default="COHPCAR.lobster",
+        dest="cohpcar",
         type=Path,
-        help='path to lobsterout. Default is "lobsterout".',
+        help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument'
+        "can also read COBICARs or COOPCARs. One needs to use appropriate --cobis or "
+        "--coops options along with this argument when plotting",
     )
 
-    input_file_group.add_argument(
-        "--doscar",
+    doscar_file = argparse.ArgumentParser(add_help=False)
+    doscar_file.add_argument(
+        "-fdos",
+        "--file-doscar",
         default="DOSCAR.lobster",
+        dest="doscar",
         type=Path,
         help='path to DOSCAR.lobster. Default is "DOSCAR.lobster".',
     )
 
-    input_file_group.add_argument(
-        "--vasprun",
+    user_basis_arg = argparse.ArgumentParser(add_help=False)
+    user_basis_arg.add_argument(
+        "--userbasis",
+        "--user-basis",
+        default=None,
+        type=_element_basis,
+        nargs="+",
+        help="Use the specific basis provided by the user to "
+        "generate the inputs (e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). "
+        "Default is None.",
+    )
+
+    # groups of arguments for specific actions
+
+    calc_quality_description_file_parent = argparse.ArgumentParser(add_help=False)
+
+    # Input args for specifically needed for calculation quality description
+    calc_quality_description_file_group = (
+        calc_quality_description_file_parent.add_argument_group()
+    )
+    calc_quality_description_file_group.add_argument(
+        "-fvasprun",
+        "--file-vasprun",
         default="vasprun.xml",
+        dest="vasprun",
         type=Path,
         help='path to vasprun.xml. Default is "vasprun.xml".',
     )
-
-    input_file_group.add_argument(
-        "--bandoverlaps",
+    calc_quality_description_file_group.add_argument(
+        "-fbandoverlaps",
+        "--file-bandoverlaps",
         default="bandOverlaps.lobster",
+        dest="bandoverlaps",
         type=Path,
         help='path to bandOverlaps.lobster. Default is "bandOverlaps.lobster".',
     )
+    calc_quality_description_file_group.add_argument(
+        "-flobsterin",
+        "--file-lobsterin",
+        default="lobsterin",
+        dest="lobsterin",
+        type=Path,
+        help='path to lobsterin. Default is "lobsterin".',
+    )
+    calc_quality_description_file_group.add_argument(
+        "-flobsterout",
+        "--file-lobsterout",
+        default="lobsterout",
+        dest="lobsterout",
+        type=Path,
+        help='path to lobsterout. Default is "lobsterout".',
+    )
+    calc_quality_description_file_group.add_argument(
+        "-potsymbols",
+        "--potcar-symbols",
+        dest="potcarsymbols",
+        type=_potcar_symbols,
+        # nargs="+",
+        help="List of potcar symbols",
+    )
 
+    # group of arguments related to writing LOBSTER calcs inputs
     output_parent = argparse.ArgumentParser(add_help=False)
     output_file_group = output_parent.add_argument_group("Output files")
     output_file_group.add_argument(
-        "--incar-out",
-        "--incarout",
-        dest="incarout",
+        "-fincarout",
+        "--file-incar-out",
         default="INCAR.lobsterpy",
+        dest="incarout",
         type=Path,
-        help='path to INCAR that will be generated by lobsterpy. Default is "INCAR.lobsterpy"',
+        help='path to INCAR that lobsterpy generates. Default is "INCAR.lobsterpy"',
     )
     output_file_group.add_argument(
-        "--lobsterin-out",
-        "--lobsterinout",
-        dest="lobsterinout",
+        "-flobsterin",
+        "--file-lobsterin",
         default="lobsterin.lobsterpy",
+        dest="lobsterinout",
         type=Path,
-        help='base for path to lobsterins that will be generated by lobsterpy. Default is "lobsterin.lobsterpy"',
+        help='Base for path to lobsterins that lobsterpy generates. Default is "lobsterin.lobsterpy"',
     )
     output_file_group.add_argument(
         "--overwrite",
@@ -146,73 +199,35 @@ def get_parser() -> argparse.ArgumentParser:
         help="overwrites already created INCARs an lobsterins with the give name.",
     )
     # TODO: Add some output arguments: options to supply your own basis
-    output_file_group.add_argument(
-        "--userbasis",
-        "--user-basis",
-        default=None,
-        type=_element_basis,
-        nargs="+",
-        help="This setting will rely on a specific basis provided by the user "
-        "(e.g.,  --userbasis Cr.3d.3p.4s N.2s.2p). Default is None.",
-    )
+    # General matplotlib plotting arguments common to all kinds of plots
 
     plotting_parent = argparse.ArgumentParser(add_help=False)
     plotting_group = plotting_parent.add_argument_group("Plotting")
-
-    broadening_group = plotting_group.add_mutually_exclusive_group()
-    broadening_group.add_argument_group("Broadening")
-    broadening_group.add_argument(
-        "--sigma",
-        type=float,
-        default=None,
-        help="Standard deviation of Gaussian broadening.",
-    )
-
-    broadening_group.add_argument(
-        "--fwhm",
-        type=float,
-        default=None,
-        help="Full-width-half-maximum of Gaussian broadening.",
-    )
-
     plotting_group.add_argument(
-        "--integrated",
-        action="store_true",
-        help="Show integrated cohp/cobi/coop plots.",
+        "--fontsize",
+        "--font-size",
+        type=float,
+        dest="fontsize",
+        default=None,
+        help="Base font size",
     )
-
+    plotting_group.add_argument(
+        "-ht",
+        "--height",
+        type=float,
+        dest="height",
+        default=None,
+        help="Plot height in inches",
+    )
     plotting_group.add_argument(
         "--hideplot",
         "--hide-plot",
+        dest="hideplot",
         action="store_true",
-        help="Will hide plots generated by automaticplot/auto-plot/autoplot/plot args",
-    )
-
-    plotting_group.add_argument(
-        "--ylim",
-        dest="ylim",
-        nargs=2,
-        default=None,
-        type=float,
-        help="Energy range for plots",
+        help="Hide plot output. Especially relevant when plots are saved.",
     )
     plotting_group.add_argument(
-        "--xlim",
-        dest="xlim",
-        nargs=2,
-        default=None,
-        type=float,
-        help="COHP/COBI/COOP range for plots",
-    )
-
-    plotting_group.add_argument(
-        "--style",
-        type=str,
-        nargs="+",
-        default=None,
-        help="Matplotlib style sheet(s) for plot appearance",
-    )
-    plotting_group.add_argument(
+        "-nbs",
         "--no-base-style",
         "--nobasestyle",
         action="store_true",
@@ -222,7 +237,15 @@ def get_parser() -> argparse.ArgumentParser:
             "stylesheets when using --style."
         ),
     )
-    plotting_group.add_argument("--title", type=str, default="", help="Plot title")
+    plotting_group.add_argument(
+        "-sty",
+        "--style",
+        type=str,
+        nargs="+",
+        dest="style",
+        default=None,
+        help="Matplotlib style sheet(s) for plot appearance",
+    )
     plotting_group.add_argument(
         "--save-plot",
         "--saveplot",
@@ -233,90 +256,155 @@ def get_parser() -> argparse.ArgumentParser:
         dest="save_plot",
         help="Save plot to file",
     )
+    plotting_group.add_argument("--title", type=str, default="", help="Plot title")
     plotting_group.add_argument(
-        "--width", type=float, default=None, help="Plot width in inches"
+        "-wd",
+        "--width",
+        type=float,
+        dest="width",
+        default=None,
+        help="Plot width in inches",
     )
     plotting_group.add_argument(
-        "--height", type=float, default=None, help="Plot height in inches"
+        "-x",
+        "--xlim",
+        dest="xlim",
+        nargs=2,
+        default=None,
+        type=float,
+        help="Set x-axis limits for the plots",
     )
     plotting_group.add_argument(
-        "--fontsize", "--font-size", type=float, default=None, help="Base font size"
+        "-y",
+        "--ylim",
+        dest="ylim",
+        nargs=2,
+        default=None,
+        type=float,
+        help="Set y-axis limits for the plots",
     )
-    group = plotting_group.add_mutually_exclusive_group()
-    group.add_argument(
-        "--spddos",
-        "--spd-dos",
+    broadening_group = plotting_group.add_mutually_exclusive_group()
+    broadening_group.add_argument_group("Broadening")
+    broadening_group.add_argument(
+        "--fwhm",
+        type=float,
+        default=None,
+        help="Full-width-half-maximum of Gaussian broadening.",
+    )
+    broadening_group.add_argument(
+        "--sigma",
+        type=float,
+        default=None,
+        help="Standard deviation of Gaussian broadening.",
+    )
+    # Group pf arguments specific to dos plotter
+    dos_plotting_parent = argparse.ArgumentParser(add_help=False)
+    dos_plotting_group = dos_plotting_parent.add_argument_group("Plotting")
+    dos_plotting_group.add_argument(
+        "-addtdos",
+        "--addtotal",
+        "--add-total",
         action="store_true",
-        help="Will add spd projected dos to the DOS plot",
+        help="Add total dos to DOS plot.",
     )
-    group.add_argument(
-        "--elementdos",
-        "--el-dos",
-        action="store_true",
-        help="Will add DOS projections for each element to the DOS plot",
-    )
-    plotting_group.add_argument(
-        "--summedspins",
-        "--summed-spins",
-        action="store_true",
-        help="Will plot summed DOS",
-    )
-    plotting_group.add_argument(
+    dos_plotting_group.add_argument(
+        "-el",
         "--element",
-        "--el",
         type=str,
+        dest="element",
         nargs="+",
         default=None,
-        help="Will add spd DOS projections for requested element to the DOS plot",
+        help="Add spd DOS projections for requested element to the DOS plot",
     )
-    plotting_group.add_argument(
+    dos_plotting_group.add_argument(
+        "-orb",
         "--orbital",
-        "--orb",
         type=str,
+        dest="orbital",
         nargs="+",
         default=None,
         help="Orbital name for the site for which DOS are to be added",
     )
-    plotting_group.add_argument(
+    dos_plotting_group.add_argument(
         "--site",
         type=int,
+        dest="site",
         nargs="+",
         default=None,
         help="Site index in the crystal structure for which DOS need to be added",
     )
+    dos_plotting_group.add_argument(
+        "-sspin",
+        "--summedspins",
+        "--summed-spins",
+        dest="summedspins",
+        action="store_true",
+        help="Plot summed spins DOS",
+    )
 
+    group = dos_plotting_parent.add_mutually_exclusive_group()
+    group.add_argument(
+        "-eldos",
+        "--elementdos",
+        dest="elementdos",
+        action="store_true",
+        help="Add DOS projections for each element to the DOS plot",
+    )
+    group.add_argument(
+        "--spddos",
+        "--spd-dos",
+        dest="spddos",
+        action="store_true",
+        help="Add spd projected dos to the DOS plot",
+    )
+    # Argument common to COHPs / COOPs / COBIs or DOS plots
     advanced_plotting_args = argparse.ArgumentParser(add_help=False)
     advanced_plotting_args.add_argument(
         "--invertaxis",
         "--invert-axis",
+        dest="invertaxis",
         action="store_true",
-        help="Will invert plot axis of DOS or COOPs COHPs or COBIS",
+        help="Invert plot axis of DOS or COOPs COHPs or COBIS",
     )
-    advanced_plotting_args.add_argument(
-        "--addtotaldos",
-        "--add-total-dos",
+    # Argument specific to COHPs / COOPs / COBIs plots
+    coxx_plotting_args = argparse.ArgumentParser(add_help=False)
+    coxx_plotting_args.add_argument(
+        "-integr--integrated",
+        dest="integrated",
         action="store_true",
-        help="Will all total dos to the DOS plot",
+        help="Show integrated cohp/cobi/coop plots.",
     )
-
+    # Arguments specific to lobsterpy.cohp.analyze.Analysis and
+    # lobsterpy.cohp.describe.Description class
     auto_parent = argparse.ArgumentParser(add_help=False)
-    auto_group = auto_parent.add_argument_group("Automatic analysis")
+    auto_group = auto_parent.add_argument_group(
+        "Adjustable automatic analysis parameters"
+    )
     auto_group.add_argument(
-        "--json",
+        "-allb",
+        "--allbonds",
+        "--all-bonds",
+        action="store_true",
+        default=False,
+        help="Consider all bonds during the automatic analysis,"
+        " not only cation-anion bonds (default) ",
+    )
+    auto_group.add_argument(
+        "--cutofficohp",
+        type=float,
+        default=0.1,
+        help="Consider only bonds that are stronger than cutoff_icoxx * strongest ICOXX "
+        " (ICOHP or ICOBI or ICOOP) for automatic analysis.",
+    )
+    auto_group.add_argument(
+        "-fjson",
+        "--file-json",
         nargs="?",
         type=Path,
         default=None,
         metavar="FILENAME",
         const=Path("lobsterpy.json"),
         help="Write a JSON file with the most important information",
-    )
-    auto_group.add_argument(
-        "--allbonds",
-        "--all-bonds",
-        action="store_true",
-        default=False,
-        help="This option will force the automatc analysis to consider"
-        " all bonds, not only cation-anion bonds (default) ",
     )
     auto_group.add_argument(
         "--noisecutoff",
@@ -326,80 +414,88 @@ def get_parser() -> argparse.ArgumentParser:
         " automatic analysis",
     )
     auto_group.add_argument(
-        "--cutofficohp",
-        type=float,
-        default=0.1,
-        help="Only bonds that are stronger than cutoff_icoxx *strongest ICOHP "
-        " (ICOBI or ICOOP) will be considered for automatic analysis.",
-    )
-    auto_group.add_argument(
+        "-orbresol",
         "--orbitalresolved",
         "--orbital-resolved",
         action="store_true",
         default=False,
-        help="Will switch on orbital resolved analysis of (I)COHPs or (I)COBIs or (I)COOPs with all relevant orbitals.",
+        help="Switch on orbital resolved analysis of (I)COHPs or (I)COBIs or (I)COOPs with all relevant orbitals.",
     )
     auto_group.add_argument(
+        "-orbcutoff",
         "--orbitalcutoff",
         "--orbital-cutoff",
         type=float,
         default=0.05,
-        help="Will only work when orbital wise analysis is switched on (--orbitalresolved) "
-        "and only orbital interactions that are stronger than orbitalintcutoff * 100 of relevant "
-        "bonds (ICOHP or ICOBI or ICOOP) will be considered in automatic analysis.",
-    )
-    analysis_switch = argparse.ArgumentParser(add_help=False)
-    analysis_group = analysis_switch.add_argument_group(
-        "Switch type of analysis or plots"
-    )
-    analysis_group.add_argument(
-        "--cobis",
-        "--cobis",
-        action="store_true",
-        help="This option will start automatic bonding analysis of COBIs or"
-        " plot COBIs",
-    )
-    analysis_group.add_argument(
-        "--coops",
-        "--coops",
-        action="store_true",
-        help="This option will start automatic bonding analysis of COOPs or"
-        " plot COOPs",
+        help="Consider only orbital interactions that are stronger than orbitalintcutoff * 100 of "
+        "relevant bonds (ICOHP or ICOBI or ICOOP). Can only be used in combination "
+        "with orbital-resolved automatic analysis (--orbitalresolved).",
     )
 
+    # Argument that will help to switch automatic analysis
+    analysis_switch = argparse.ArgumentParser(add_help=False)
+    analysis_group = analysis_switch.add_argument_group(
+        "Arguments to switches type of files analyzed during automatic analysis"
+        " (Also indicates file type for 'plot/plot-icohp-distance' action in cli)"
+    )
+    analysis_group.add_argument(
+        "--cobis",
+        "--cobis",
+        action="store_true",
+        help="Setting this option starts automatic bonding analysis using COBIs"
+        " (Also indicates plotter that input file contains COBI data)",
+    )
+    analysis_group.add_argument(
+        "--coops",
+        "--coops",
+        action="store_true",
+        help="Setting this option starts automatic bonding analysis using COOPs"
+        " (Also indicates plotter that input file contains COOP data)",
+    )
+    # Specific to interactive plotter args
     interactive_plotter_args = argparse.ArgumentParser(add_help=False)
     interactive_plotter_group = interactive_plotter_args.add_argument_group(
         "Options specific to interactive plotter"
     )
-
     interactive_plotter_group.add_argument(
+        "-labresol",
         "--labelresolved",
         "--label-resolved",
         action="store_true",
-        help="Will create automatic interactive plots with all relevant bond labels. "
-        "If not set, plots will consists of summed cohps. (This argument works only"
-        "for interactive plots) ",
+        help="Create automatic interactive plots with all relevant bond labels. "
+        "If not set, plots consist of summed cohps.",
     )
     interactive_plotter_group.add_argument(
+        "-orbplot",
         "--orbitalplot",
         "--orbital-plot",
         action="store_true",
-        help="Will generate automatic interactive (I)COHP or (I)COBI or (I)COOP plots with all relevant orbitals "
-        "If used along with  --labelresolved arg, plots will be further label resolved else,"
-        "plots will consists of summed orbital cohps. ",
+        help="Generate automatic interactive (I)COHP or (I)COBI or (I)COOP plots with all relevant orbitals"
+        "(Works only when '--orbitalresolved' arg is set : i.e Orbital resolved analysis is switched on). "
+        "If used along with  '--labelresolved' arg, the plots are label resolved."
+        "Otherwise, the plots consist of summed orbital-resolved cohps.",
     )
 
-    auto_group.add_argument(
-        "--calcqualityjson",
-        nargs="?",
-        type=Path,
-        default=None,
-        metavar="FILENAME",
-        const=Path("calc_quality_json.json"),
-        help="Write a JSON file with the LOBSTER calc quality analysis",
+    # Args specific to calc quality description dict and texts
+    calc_quality_args = argparse.ArgumentParser(add_help=False)
+    calc_quality_args_group = calc_quality_args.add_argument_group(
+        "Options to change default output of quality description"
     )
-
-    auto_group.add_argument(
+    calc_quality_args_group.add_argument(
+        "--bvacomp",
+        "--bva-comp",
+        action="store_true",
+        default=False,
+        help="Enable the BVA charge comparison in automatic LOBSTER calc quality analysis ",
+    )
+    calc_quality_args_group.add_argument(
+        "--doscomp",
+        "--dos-comp",
+        action="store_true",
+        default=False,
+        help="Enable the DOS comparison in automatic LOBSTER calc quality analysis ",
+    )
+    calc_quality_args_group.add_argument(
         "--erange",
         dest="erange",
         nargs=2,
@@ -407,72 +503,114 @@ def get_parser() -> argparse.ArgumentParser:
         type=int,
         help="Energy range for DOS comparisons",
     )
-
-    auto_group.add_argument(
+    calc_quality_args_group.add_argument(
+        "-fcalcqualjson",
+        "--file-calc-quality-json",
+        nargs="?",
+        type=Path,
+        default=None,
+        metavar="FILENAME",
+        const=Path("calc_quality_json.json"),
+        help="Write a JSON file with the LOBSTER calc quality analysis",
+    )
+    calc_quality_args_group.add_argument(
         "--nbins",
         dest="nbins",
         default=None,
         type=int,
         help="Number of bins for DOS comparisons",
     )
-
-    auto_group.add_argument(
-        "--doscomp",
-        "--dos-comp",
-        action="store_true",
-        default=False,
-        help="This option will force the DOS comparison in automatic LOBSTER calc quality  analysis ",
-    )
-
-    auto_group.add_argument(
-        "--bvacomp",
-        "--bva-comp",
-        action="store_true",
-        default=False,
-        help="This option will force the BVA charge comparison in automatic LOBSTER calc quality analysis ",
-    )
-
+    # Build the actions using arguments defined earlier
     subparsers = parser.add_subparsers(
         dest="action",
         required=True,
         help="Use -h/--help after the chosen subcommand to see further options.",
     )
     subparsers.add_parser(
+        "create-inputs",
+        aliases=["createinputs"],
+        parents=[
+            incar_file,
+            structure_file,
+            potcar_file,
+            user_basis_arg,
+            output_parent,
+        ],
+        help="Create inputs for lobster computation. It works only with PBE POTCARs.",
+    )
+    subparsers.add_parser(
         "description",
-        parents=[input_parent, auto_parent, analysis_switch],
+        parents=[
+            charge_file,
+            coxxcar_file,
+            icohplist_file,
+            structure_file,
+            auto_parent,
+            analysis_switch,
+        ],
         help=(
             "Deliver a text description of the COHPs or COBIS or COOP results from Lobster "
             "and VASP"
         ),
     )
     subparsers.add_parser(
-        "calc-description",
-        parents=[input_parent, auto_parent],
+        "description-quality",
+        parents=[
+            calc_quality_description_file_parent,
+            charge_file,
+            doscar_file,
+            potcar_file,
+            structure_file,
+            calc_quality_args,
+        ],
         help=(
             "Deliver a text description of the LOBSTER calc quality analysis. "
             "Mandatory required files: POSCAR, POTCAR, lobsterout, lobsterin. "
             "Optional files (BVA comparison): CHARGE.lobster, "
-            "(DOS comparison): DOSCAR.lobster, Vasprun.xml."
+            "(DOS comparison): DOSCAR.lobster/ DOSCAR.LSO.lobster, Vasprun.xml."
         ),
     )
-
     subparsers.add_parser(
-        "automatic-plot",
-        aliases=["automaticplot", "auto-plot", "autoplot"],
-        parents=[input_parent, auto_parent, plotting_parent, analysis_switch],
+        "plot-automatic",
+        aliases=[
+            "plot-auto",
+            "automatic-plot",
+            "automaticplot",
+            "auto-plot",
+            "autoplot",
+        ],
+        parents=[
+            charge_file,
+            coxxcar_file,
+            icohplist_file,
+            structure_file,
+            auto_parent,
+            plotting_parent,
+            coxx_plotting_args,
+            analysis_switch,
+        ],
         help=(
             "Plot most important COHPs or COBIs or COOPs automatically."
             " This option also includes an automatic description."
         ),
     )
-
     subparsers.add_parser(
-        "automatic-plot-ia",
-        aliases=["automaticplotia", "autoplotia", "auto-plot-ia"],
+        "plot-automatic-ia",
+        aliases=[
+            "plot-auto-ia",
+            "automatic-plot-ia",
+            "automaticplotia",
+            "autoplotia",
+            "auto-plot-ia",
+        ],
         parents=[
-            input_parent,
+            charge_file,
+            coxxcar_file,
+            icohplist_file,
+            structure_file,
             auto_parent,
             plotting_parent,
+            coxx_plotting_args,
             interactive_plotter_args,
             analysis_switch,
         ],
@@ -480,41 +618,47 @@ def get_parser() -> argparse.ArgumentParser:
             "Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."
         ),
     )
-
-    subparsers.add_parser(
-        "create-inputs",
-        aliases=["createinputs"],
-        parents=[input_parent, output_parent],
-        help=(
-            "Will create inputs for lobster computation. It only works with PBE POTCARs."
-        ),
-    )
-
     subparsers.add_parser(
         "plot-dos",
         aliases=["plotdos"],
-        parents=[input_parent, plotting_parent, advanced_plotting_args],
-        help=("Will plot DOS from lobster computation."),
+        parents=[
+            doscar_file,
+            structure_file,
+            dos_plotting_parent,
+            advanced_plotting_args,
+            plotting_parent,
+        ],
+        help="Plots DOS from lobster computation.",
     )
     subparsers.add_parser(
-        "plot-icohps-distances",
-        aliases=["ploticohpsdistances"],
-        parents=[input_parent, plotting_parent, analysis_switch],
-        help=("Will plot icohps with respect to bond lengths"),
+        "plot-icohp-distance",
+        aliases=["ploticohpdistance"],
+        parents=[icohplist_file, plotting_parent, analysis_switch],
+        help="Plot ICOHPs or ICOOPs or ICOBIs with respect to bond lengths",
     )
-
     # Mode for normal plotting (without automatic detection of relevant COHPs)
     plot_parser = subparsers.add_parser(
         "plot",
-        parents=[input_parent, plotting_parent, analysis_switch],
+        parents=[
+            coxxcar_file,
+            structure_file,
+            plotting_parent,
+            advanced_plotting_args,
+            analysis_switch,
+        ],
         help="Plot specific COHPs/COBIs/COOPs based on bond numbers.",
     )
-
     plot_parser.add_argument(
         "bond_numbers",
         nargs="+",
         type=int,
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
+    )
+    plot_parser.add_argument(
+        "-integr",
+        "--integrated",
+        action="store_true",
+        help="Show integrated cohp/cobi/coop plots.",
     )
     plot_grouping = plot_parser.add_mutually_exclusive_group()
     plot_grouping.add_argument(
@@ -523,6 +667,7 @@ def get_parser() -> argparse.ArgumentParser:
         help="Show a summed COHP",
     )
     plot_grouping.add_argument(
+        "-orbwise",
         "--orbitalwise",
         dest="orbitalwise",
         nargs="+",
@@ -598,21 +743,31 @@ def run(args):
 
     """
     if args.action in [
-        "automaticplot",
-        "autoplot",
-        "auto-plot",
-        "description",
+        "plot-auto",
         "automatic-plot",
-        "plot",
+        "automaticplot",
+        "auto-plot",
+        "autoplot",
+    ]:
+        args.action = "plot-automatic"
+
+    if args.action in [
+        "plot-auto-ia",
         "automatic-plot-ia",
-        "interactplot",
         "automaticplotia",
-        "auto-plot-ia",
         "autoplotia",
+        "auto-plot-ia",
+    ]:
+        args.action = "plot-automatic-ia"
+
+    if args.action in [
+        "description",
+        "plot-automatic",
+        "plot-automatic-ia",
     ]:
         # Check for .gz files exist for default values and update accordingly
         default_files = {
-            "poscar": "POSCAR",
+            "structure": "POSCAR",
             "charge": "CHARGE.lobster",
             "icohplist": "ICOHPLIST.lobster",
             "cohpcar": "COHPCAR.lobster",
@@ -621,7 +776,7 @@ def run(args):
         for arg_name in default_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = file_path.with_name(zpath(file_path.name))
                 if gz_file_path.exists():
                     setattr(args, arg_name, gz_file_path)
                 else:
@@ -631,20 +786,15 @@ def run(args):
                     )
 
         if args.coops:
-            if args.action != "plot":
-                default_files_coops = {
-                    "icohplist": "ICOOPLIST.lobster",
-                    "cohpcar": "COOPCAR.lobster",
-                }
-            else:
-                default_files_coops = {
-                    "cohpcar": "COOPCAR.lobster",
-                }
+            default_files_coops = {
+                "icohplist": "ICOOPLIST.lobster",
+                "cohpcar": "COOPCAR.lobster",
+            }
             for arg_name, file_name in default_files_coops.items():
                 setattr(args, arg_name, Path(file_name))
                 file_path = getattr(args, arg_name)
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = file_path.with_name(zpath(file_path.name))
                     if gz_file_path.exists():
                         setattr(args, arg_name, gz_file_path)
                     else:
@@ -654,46 +804,28 @@ def run(args):
                         )
 
         if args.cobis:
-            if args.action != "plot":
-                default_files_cobis = {
-                    "icohplist": "ICOBILIST.lobster",
-                    "cohpcar": "COBICAR.lobster",
-                }
-            else:
-                default_files_cobis = {
-                    "cohpcar": "COBICAR.lobster",
-                }
+            default_files_cobis = {
+                "icohplist": "ICOBILIST.lobster",
+                "cohpcar": "COBICAR.lobster",
+            }
             for arg_name, file_name in default_files_cobis.items():
                 setattr(args, arg_name, Path(file_name))
                 file_path = getattr(args, arg_name)
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = file_path.with_name(zpath(file_path.name))
                     if gz_file_path.exists():
                         setattr(args, arg_name, gz_file_path)
                     else:
                         raise ValueError(
-                            "Files required for automatic analysis of COOPs (ICOBILIST.lobster and"
+                            "Files required for automatic analysis of COBIs (ICOBILIST.lobster and"
                             " COBICAR.lobster) not found in the directory"
                         )
 
-    if args.action in ["automaticplot", "autoplot", "auto-plot"]:
-        args.action = "automatic-plot"
-
-    if args.action in ["automaticplotia", "automatic-plot-ia", "auto-plot-ia"]:
-        args.action = "automaticplotia"
-
-    if args.action in [
-        "description",
-        "automatic-plot",
-        "automatic-plot-ia",
-        "automaticplotia",
-        "auto-plot-ia",
-        "autoplotia",
-    ]:
+    if args.action in ["description", "plot-automatic", "plot-automatic-ia"]:
         which_bonds = "all" if args.allbonds else "cation-anion"
 
         analyse = Analysis(
-            path_to_poscar=args.poscar,
+            path_to_poscar=args.structure,
             path_to_charge=args.charge,
             path_to_cohpcar=args.cohpcar,
             path_to_icohplist=args.icohplist,
@@ -709,22 +841,19 @@ def run(args):
         describe = Description(analysis_object=analyse)
         describe.write_description()
 
-        if args.json is not None:
+        if args.file_json is not None:
             analysedict = analyse.condensed_bonding_analysis
-            with open(args.json, "w") as fd:
+            with open(args.file_json, "w") as fd:
                 json.dump(analysedict, fd)
 
     if args.action in [
         "plot",
-        "automatic-plot",
-        "automaticplotia",
-        "automatic-plot-ia",
-        "auto-plot-ia",
-        "autoplotia",
+        "plot-automatic",
+        "plot-automatic-ia",
         "plot-dos",
         "plotdos",
-        "plot-icohps-distances",
-        "ploticohpsdistances",
+        "plot-icohp-distance",
+        "ploticohpdistance",
     ]:
         style_kwargs = {}
         style_kwargs.update(_user_figsize(args.width, args.height))
@@ -743,7 +872,7 @@ def run(args):
         else:
             sigma = None
 
-    if args.action in ["automatic-plot"]:
+    if args.action in ["plot-automatic"]:
         describe.plot_cohps(
             ylim=args.ylim,
             xlim=args.xlim,
@@ -755,12 +884,7 @@ def run(args):
             hide=args.hideplot,
         )
 
-    if args.action in [
-        "automatic-plot-ia",
-        "automaticplotia",
-        "auto-plot-ia",
-        "autoplotia",
-    ]:
+    if args.action in ["plot-automatic-ia"]:
         describe.plot_interactive_cohps(
             ylim=args.ylim,
             xlim=args.xlim,
@@ -778,21 +902,30 @@ def run(args):
         if args.cobis:
             filename = args.cohpcar.parent / "COBICAR.lobster"
             if not filename.exists():
-                filename = filename.with_name(filename.name + ".gz")
+                filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
             filename = args.cohpcar.parent / "COOPCAR.lobster"
             if not filename.exists():
-                filename = filename.with_name(filename.name + ".gz")
+                filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": False, "are_coops": True}
         else:
             filename = args.cohpcar.parent / "COHPCAR.lobster"
             if not filename.exists():
-                filename = filename.with_name(filename.name + ".gz")
+                filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": False, "are_coops": False}
 
+        struture_filename = args.structure.parent / "POSCAR"
+        if not struture_filename.exists():
+            struture_filename = struture_filename.with_name(
+                zpath(struture_filename.name)
+            )
+
         completecohp = CompleteCohp.from_file(
-            fmt="LOBSTER", filename=filename, structure_file=args.poscar, **options
+            fmt="LOBSTER",
+            filename=filename,
+            structure_file=struture_filename,
+            **options,
         )
         cp = PlainCohpPlotter(**options)
 
@@ -883,7 +1016,7 @@ def run(args):
 
         # Check for .gz files exist for default values and update accordingly
         default_files = {
-            "poscar": "POSCAR",
+            "structure": "POSCAR",
             "potcar": "POTCAR",
             "incar": "INCAR",
         }
@@ -891,12 +1024,12 @@ def run(args):
         for arg_name in default_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = file_path.with_name(zpath(file_path.name))
                 if gz_file_path.exists():
                     setattr(args, arg_name, gz_file_path)
                 else:
                     raise ValueError(
-                        "Files necessary for creating puts for LOBSTER calcs not found in the current directory."
+                        "Files necessary for creating inputs for LOBSTER calcs not found in the current directory."
                     )
 
         if args.userbasis is None:
@@ -905,12 +1038,13 @@ def run(args):
             potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=args.potcar)
 
             list_basis_dict = Lobsterin.get_all_possible_basis_functions(
-                structure=Structure.from_file(args.poscar), potcar_symbols=potcar_names
+                structure=Structure.from_file(args.structure),
+                potcar_symbols=potcar_names,
             )
 
             for ibasis, basis_dict in enumerate(list_basis_dict):
                 lobsterinput = Lobsterin.standard_calculations_from_vasp_files(
-                    args.poscar,
+                    args.structure,
                     args.incar,
                     None,
                     option="standard",
@@ -927,7 +1061,7 @@ def run(args):
                     lobsterinput.write_INCAR(
                         incar_input=args.incar,
                         incar_output=incar_path,
-                        poscar_input=args.poscar,
+                        poscar_input=args.structure,
                         isym=0,
                     )
                 else:
@@ -941,7 +1075,7 @@ def run(args):
                 userbasis[userbasis_single[0]] = userbasis_single[1]
 
             lobsterinput = Lobsterin.standard_calculations_from_vasp_files(
-                args.poscar,
+                args.structure,
                 args.incar,
                 None,
                 option="standard",
@@ -958,7 +1092,7 @@ def run(args):
                 lobsterinput.write_INCAR(
                     incar_input=args.incar,
                     incar_output=incar_path,
-                    poscar_input=args.poscar,
+                    poscar_input=args.structure,
                     isym=0,
                 )
             else:
@@ -966,10 +1100,10 @@ def run(args):
                     'please use "--overwrite" if you would like to overwrite existing lobster inputs'
                 )
 
-    if args.action in ["calc-description"]:
+    if args.action in ["description-quality"]:
         # Check for .gz files exist for default values and update accordingly
         mandatory_files = {
-            "poscar": "POSCAR",
+            "structure": "POSCAR",
             "lobsterin": "lobsterin",
             "lobsterout": "lobsterout",
         }
@@ -977,7 +1111,7 @@ def run(args):
         for arg_name in mandatory_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = file_path.with_name(zpath(file_path.name))
                 if gz_file_path.exists():
                     setattr(args, arg_name, gz_file_path)
                 else:
@@ -993,7 +1127,7 @@ def run(args):
         for arg_name in optional_file:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = file_path.with_name(zpath(file_path.name))
                 if gz_file_path.exists():
                     setattr(args, arg_name, gz_file_path)
 
@@ -1006,7 +1140,7 @@ def run(args):
             for arg_name in bva_files:
                 file_path = getattr(args, arg_name)
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = file_path.with_name(zpath(file_path.name))
                     if gz_file_path.exists():
                         setattr(args, arg_name, gz_file_path)
                     else:
@@ -1025,7 +1159,7 @@ def run(args):
             for arg_name in dos_files:
                 file_path = getattr(args, arg_name)
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = file_path.with_name(zpath(file_path.name))
                     if gz_file_path.exists():
                         setattr(args, arg_name, gz_file_path)
                     else:
@@ -1035,7 +1169,7 @@ def run(args):
         potcar_file_path = args.potcar
 
         quality_dict = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=args.poscar,
+            path_to_poscar=args.structure,
             path_to_charge=args.charge,
             path_to_lobsterout=args.lobsterout,
             path_to_lobsterin=args.lobsterin,
@@ -1053,20 +1187,20 @@ def run(args):
         quality_text = Description.get_calc_quality_description(quality_dict)
         Description.write_calc_quality_description(quality_text)
 
-        if args.calcqualityjson is not None:
-            with open(args.calcqualityjson, "w") as fd:
+        if args.file_calc_quality_json is not None:
+            with open(args.file_calc_quality_json, "w") as fd:
                 json.dump(quality_dict, fd)
 
     if args.action in ["plot-dos", "plotdos"]:
         mandatory_files = {
             "doscar": "DOSCAR.lobster",
-            "poscar": "POSCAR",
+            "structure": "POSCAR",
         }
 
         for arg_name in mandatory_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = file_path.with_name(zpath(file_path.name))
                 if gz_file_path.exists():
                     setattr(args, arg_name, gz_file_path)
                 else:
@@ -1077,10 +1211,10 @@ def run(args):
 
         from pymatgen.io.lobster import Doscar
 
-        lobs_dos = Doscar(doscar=args.doscar, structure_file=args.poscar).completedos
+        lobs_dos = Doscar(doscar=args.doscar, structure_file=args.structure).completedos
 
         dos_plotter = PlainDosPlotter(summed=args.summedspins, sigma=args.sigma)
-        if args.addtotaldos:
+        if args.addtotal:
             dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
         if args.spddos:
             dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_spd_dos())
@@ -1113,6 +1247,16 @@ def run(args):
                     dos_plotter.add_site_orbital_dos(
                         site_index=site, orbital=orbital, dos=lobs_dos
                     )
+        elif (
+            args.site is None
+            and not args.orbital
+            and not args.element
+            and not args.spddos
+            and not args.elementdos
+            and not args.addtotal
+        ):
+            dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
+            dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_element_dos())
 
         elif (args.site is None or not args.orbital) and (
             not args.element and not args.spddos and not args.elementdos
@@ -1140,21 +1284,21 @@ def run(args):
         if args.save_plot and args.hideplot:
             plt.savefig(args.save_plot)
 
-    if args.action in ["plot-icohps-distances", "ploticohpsdistances"]:
+    if args.action in ["plot-icohp-distance", "ploticohpdistance"]:
         if args.cobis:
             filename = args.icohplist.parent / "ICOBILIST.lobster"
             if not filename.exists():
-                filename = filename.with_name(filename.name + ".gz")
+                filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
             filename = args.icohplist.parent / "ICOOPLIST.lobster"
             if not filename.exists():
-                filename = filename.with_name(filename.name + ".gz")
+                filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": False, "are_coops": True}
         else:
             filename = args.icohplist.parent / "ICOHPLIST.lobster"
             if not filename.exists():
-                filename = filename.with_name(filename.name + ".gz")
+                filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": False, "are_coops": False}
 
         icohpcollection = Icohplist(filename=filename, **options).icohpcollection

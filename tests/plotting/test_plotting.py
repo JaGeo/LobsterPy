@@ -377,6 +377,27 @@ class TestInteractiveCohpPlotter:
         np.testing.assert_array_almost_equal(sorted(og_x), sorted(ref_x), decimal=4)
         np.testing.assert_array_almost_equal(sorted(og_y), sorted(ref_y), decimal=4)
 
+    def test_add_cohp_nacl(self, plot_analyse_nacl):
+        iplotter = InteractiveCohpPlotter()
+
+        for _, (ication, labels, cohps) in enumerate(
+            zip(
+                plot_analyse_nacl.seq_ineq_ions,
+                plot_analyse_nacl.seq_labels_cohps,
+                plot_analyse_nacl.seq_cohps,
+            )
+        ):
+            namecation = str(plot_analyse_nacl.structure[ication].specie)
+            for label, cohp in zip(labels, cohps):
+                if label is not None:
+                    iplotter.add_cohp(
+                        namecation + str(ication + 1) + ": " + label, cohp
+                    )
+
+        fig = iplotter.get_plot()
+
+        assert len(fig.data) == 1
+
     def test_plot_colors(self, plot_analyse_k3sb):
         iplotter = InteractiveCohpPlotter()
 
@@ -569,7 +590,7 @@ class TestIcohpDistancePlotter:
 
 
 class TestPlotterExceptions:
-    def test_plotter_exception(self):
+    def test_plotter_exception(self, plot_analyse_nasi):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             iplotter = InteractiveCohpPlotter()
 
@@ -601,6 +622,23 @@ class TestPlotterExceptions:
             str(err.value)
             == "Plot data should not contain COBI and COOP data at same time"
         )
+
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
+            iplotter = InteractiveCohpPlotter()
+            iplotter.add_cohp(
+                label="10",
+                cohp=plot_analyse_nasi.chemenv.completecohp.get_cohp_by_label("10"),
+            )
+            plotter.add_cohp(
+                label="10",
+                cohp=plot_analyse_nasi.chemenv.completecohp.get_cohp_by_label("20"),
+            )
+
+            assert (
+                str(err.value)
+                == "Please use another label to add the COHP, provided label already exists "
+                "in the plot data, which will result in overwriting the existing COHP data."
+            )
 
 
 class TestPlainDosPlotter:
@@ -674,7 +712,7 @@ class TestPlainDosPlotter:
         assert plt_axes.get_ylabel() == "Energies (eV)"
         assert plt_axes.get_xlabel() == "Density of states (states/eV)"
 
-        # add and test total non normalized smeared dos data and axis labels in the plot
+        # add and test total non-normalized smeared dos data and axis labels in the plot
         dp = PlainDosPlotter(summed=True, stack=False, sigma=0.1)
         dp.add_dos(dos=complete_dos_obj, label="Total")
         plt = dp.get_plot(invert_axes=False, beta_dashed=True).gcf()

@@ -547,6 +547,36 @@ class InteractiveCohpPlotter(CohpPlotter):
         "#999999",
     ]
 
+    def add_cohp(self, label, cohp):
+        """
+        Add COHP object to the plotter.
+
+        Args:
+            label: Label for the COHP. Must be unique.
+            cohp: COHP object.
+        """
+        if "All" not in self._cohps:
+            self._cohps["All"] = {}
+
+        energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+
+        if label not in self._cohps["All"]:
+            self._cohps["All"].update(
+                {
+                    label: {
+                        "energies": energies,
+                        "COHP": cohp.get_cohp(),
+                        "ICOHP": cohp.get_icohp(),
+                        "efermi": cohp.efermi,
+                    }
+                }
+            )
+        else:
+            raise ValueError(
+                "Please use another label to add the COHP, provided label already exists "
+                "in the plot data, which will result in overwriting the existing COHP data."
+            )
+
     def add_all_relevant_cohps(
         self,
         analyse: Analysis,
@@ -820,7 +850,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 try:
                     cohps = Cohp.from_dict(cohps)
                     plot_data_dict.update({key: cohps})
-                except TypeError:
+                except (TypeError, AttributeError):
                     raise ValueError(
                         "The data provided could not be converted to cohp object.Please recheck the input data"
                     )

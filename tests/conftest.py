@@ -17,10 +17,10 @@ TestDir = Path(__file__).absolute().parent
 @pytest.fixture()
 def analyse_nacl():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
     )
@@ -84,10 +84,10 @@ def analyse_nacl_comp_range_cobi_orb():
 @pytest.fixture()
 def analyse_nacl_nan():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
         start=-4.0,
@@ -97,9 +97,9 @@ def analyse_nacl_nan():
 @pytest.fixture()
 def analyse_nacl_valences():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=None,
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
@@ -109,11 +109,11 @@ def analyse_nacl_valences():
 @pytest.fixture()
 def analyse_nacl_madelung():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
-        path_to_madelung=TestDir / "test_data/NaCl/MadelungEnergies.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
+        path_to_madelung=TestDir / "test_data/NaCl/MadelungEnergies.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
     )
@@ -122,10 +122,10 @@ def analyse_nacl_madelung():
 @pytest.fixture()
 def analyse_bati03():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
     )
@@ -146,10 +146,10 @@ def analyse_batao2n1():
 @pytest.fixture()
 def analyse_bati03_differentcutoff():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.001,
     )
@@ -158,10 +158,10 @@ def analyse_bati03_differentcutoff():
 @pytest.fixture()
 def analyse_nacl_distorted():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_distorted/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl_distorted/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl_distorted/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl_distorted/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl_distorted/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl_distorted/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl_distorted/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl_distorted/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
     )
@@ -170,10 +170,10 @@ def analyse_nacl_distorted():
 @pytest.fixture()
 def analyse_nacl_spin():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl_spin/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl_spin/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl_spin/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl_spin/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl_spin/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl_spin/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
     )
@@ -182,10 +182,10 @@ def analyse_nacl_spin():
 @pytest.fixture()
 def analyse_nacl_all():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
         which_bonds="all",
         cutoff_icohp=0.1,
     )
@@ -194,11 +194,11 @@ def analyse_nacl_all():
 @pytest.fixture()
 def analyse_nacl_madelung_all():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
-        path_to_madelung=TestDir / "test_data/NaCl/MadelungEnergies.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
+        path_to_madelung=TestDir / "test_data/NaCl/MadelungEnergies.lobster.gz",
         which_bonds="all",
         cutoff_icohp=0.1,
     )
@@ -207,11 +207,11 @@ def analyse_nacl_madelung_all():
 @pytest.fixture()
 def analyse_nasi_madelung_all():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaSi/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster",
-        path_to_madelung=TestDir / "test_data/NaSi/MadelungEnergies.lobster",
+        path_to_poscar=TestDir / "test_data/NaSi/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster.gz",
+        path_to_madelung=TestDir / "test_data/NaSi/MadelungEnergies.lobster.gz",
         which_bonds="all",
         cutoff_icohp=0.1,
     )
@@ -257,10 +257,10 @@ def analyse_nasbf6_anbd():
 @pytest.fixture()
 def analyse_cdf():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/CdF/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/CdF/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
         start=-4.0,
@@ -421,10 +421,10 @@ def describe_k3sb_all(analyse_k3sb_all):
 @pytest.fixture()
 def describe_batio3():
     analyse_batio3 = Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
     )
@@ -434,10 +434,10 @@ def describe_batio3():
 @pytest.fixture()
 def describe_batio3_orb():
     analyse_bati03_orb_orb = Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
         orbital_cutoff=0.10,
@@ -449,10 +449,10 @@ def describe_batio3_orb():
 @pytest.fixture()
 def describe_c_orb():
     analyse_c_orb = Analysis(
-        path_to_poscar=TestDir / "test_data/C/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/C/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
         which_bonds="all",
         cutoff_icohp=0.1,
         orbital_resolved=True,
@@ -464,10 +464,10 @@ def describe_c_orb():
 @pytest.fixture(scope="class")
 def describe_cdf():
     analyse_cdf = Analysis(
-        path_to_poscar=TestDir / "test_data/CdF/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/CdF/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
     )
@@ -478,10 +478,10 @@ def describe_cdf():
 @pytest.fixture()
 def describe_cdf_anbd():
     analyse_cdf_anbd = Analysis(
-        path_to_poscar=TestDir / "test_data/CdF/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/CdF/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
         start=-4.0,
@@ -505,10 +505,10 @@ def describe_csh_all():
 @pytest.fixture()
 def describe_nacl_spin():
     analyse_nacl_spin = Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl_spin/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl_spin/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl_spin/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl_spin/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl_spin/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl_spin/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
         summed_spins=False,
@@ -537,10 +537,10 @@ def describe_nasbf6_orb():
 @pytest.fixture()
 def plot_analyse_nacl():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
         summed_spins=False,
@@ -596,10 +596,10 @@ def plot_analyse_nacl_cobi_orb():
 @pytest.fixture()
 def plot_analyse_nasi():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaSi/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/NaSi/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster.gz",
         which_bonds="all",
         cutoff_icohp=0.1,
         summed_spins=True,
@@ -609,10 +609,10 @@ def plot_analyse_nasi():
 @pytest.fixture()
 def plot_analyse_batio3_orb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR",
-        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster",
-        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster",
-        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster",
+        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
         which_bonds="all",
         summed_spins=False,
         orbital_cutoff=0.10,

@@ -260,7 +260,7 @@ class Analysis:
             self.seq_cohps = []
             # only_bonds_to
 
-            self.anion_types = self.chemenv.get_anion_types()
+            self.anion_types = self.chemenv.anion_types
             for ice, ce in enumerate(self.lse.coordination_environments):
                 # only look at inequivalent sites (use of symmetry to speed everything up!)!
                 # only look at those cations that have cation-anion bonds
@@ -1508,7 +1508,7 @@ class Analysis:
                     if dev > 0.1:
                         dev_val.append(dev)
 
-                quality_dict["band_overlaps"] = {  # type: ignore
+                quality_dict["band_overlaps_analysis"] = {  # type: ignore
                     "file_exists": True,
                     "limit_maxDeviation": 0.1,
                     "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
@@ -1521,13 +1521,13 @@ class Analysis:
                 }
 
             else:
-                quality_dict["band_overlaps"] = {
+                quality_dict["band_overlaps_analysis"] = {  # type: ignore
                     "file_exists": False,
                     "limit_maxDeviation": None,
                     "has_good_quality_maxDeviation": True,
                     "max_deviation": None,
                     "percent_kpoints_abv_limit": None,
-                }  # type: ignore
+                }
 
         if bva_comp:
             try:
@@ -1555,18 +1555,18 @@ class Analysis:
                     else:
                         loew_oxi.append("NEG")
 
-                quality_dict["charges"] = {}  # type: ignore
+                quality_dict["charge_comparisons"] = {}  # type: ignore
                 if mull_oxi == bva_oxi:
-                    quality_dict["charges"]["BVA_Mulliken_agree"] = True  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_mulliken_agree"] = True  # type: ignore
                 else:
-                    quality_dict["charges"]["BVA_Mulliken_agree"] = False  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_mulliken_agree"] = False  # type: ignore
 
                 if mull_oxi == bva_oxi:
-                    quality_dict["charges"]["BVA_Loewdin_agree"] = True  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_loewdin_agree"] = True  # type: ignore
                 else:
-                    quality_dict["charges"]["BVA_Loewdin_agree"] = False  # type: ignore
+                    quality_dict["charge_comparisons"]["bva_loewdin_agree"] = False  # type: ignore
             except ValueError:
-                quality_dict["charges"] = {}  # type: ignore
+                quality_dict["charge_comparisons"] = {}  # type: ignore
                 warnings.warn(
                     "Oxidation states from BVA analyzer cannot be determined. "
                     "Thus BVA charge comparison will be skipped"

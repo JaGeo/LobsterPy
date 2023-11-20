@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import gzip
 import io
 import json
 import os
+import shutil
 import sys
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -106,7 +108,7 @@ class TestCLI:
 
     def test_json_saved(self, tmp_path, inject_mocks, clean_plot):
         json_path = tmp_path / "data.json"
-        args = ["automatic-plot", "--json", str(json_path)]
+        args = ["automatic-plot", "--file-json", str(json_path)]
         test = get_parser().parse_args(args)
         run(test)
         self.assert_is_finite_file(json_path)
@@ -182,7 +184,7 @@ class TestCLI:
 
     def test_icohpplot_saved(self, tmp_path, inject_mocks, clean_plot):
         plot_path = tmp_path / "plot.png"
-        args = ["ploticohpsdistances", "--hideplot", "--saveplot", str(plot_path)]
+        args = ["ploticohpdistance", "--hideplot", "--saveplot", str(plot_path)]
         test = get_parser().parse_args(args)
         run(test)
         self.assert_is_finite_file(plot_path)
@@ -193,9 +195,9 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--lobsterin-out",
+            "-flobsterin",
             str(lobsterinpath),
-            "--incar-out",
+            "-fincarout",
             str(INCARpath),
         ]
         test = get_parser().parse_args(args)
@@ -215,9 +217,9 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "createinputs",
-            "--lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
-            "--incar-out",
+            "--file-incar-out",
             str(INCARpath),
             "--overwrite",
         ]
@@ -232,9 +234,9 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
-            "--incar-out",
+            "--file-incar-out",
             str(INCARpath),
         ]
         test = get_parser().parse_args(args)
@@ -249,9 +251,9 @@ class TestCLI:
 
         args = [
             "create-inputs",
-            "--lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
-            "--incar-out",
+            "--file-incar-out",
             str(INCARpath),
         ]
         test = get_parser().parse_args(args)
@@ -284,9 +286,9 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
-            "--incar-out",
+            "--file-incar-out",
             str(INCARpath),
             "--userbasis",
             "Na.3s.3p Cl.3s.3p",
@@ -311,7 +313,7 @@ class TestCLI:
         os.chdir(TestDir / "test_data/NaCl_comp_range")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
-            "calc-description",
+            "description-quality",
             "--potcar-symbols",
             "Na_pv Cl",
             "--bvacomp",
@@ -319,7 +321,7 @@ class TestCLI:
             "--erange",
             "-20",
             "0",
-            "--calcqualityjson",
+            "--file-calc-quality-json",
             str(calc_quality_json_path),
         ]
         captured_output = io.StringIO()
@@ -350,17 +352,17 @@ class TestCLI:
         os.chdir(TestDir / "test_data/K3Sb")
         calc_quality_json_path = tmp_path / "calc_quality_json.json"
         args = [
-            "calc-description",
+            "description-quality",
             "--bvacomp",
             "--potcar-symbols",
             "K_sv Sb",
             "--doscomp",
-            "--doscar",
+            "--file-doscar",
             "DOSCAR.LSO.lobster",
             "--erange",
             "-20",
             "0",
-            "--calcqualityjson",
+            "--file-calc-quality-json",
             str(calc_quality_json_path),
         ]
         captured_output = io.StringIO()
@@ -395,7 +397,7 @@ class TestCLI:
         args = [
             "plot-dos",
             "--spddos",
-            "--doscar",
+            "--file-doscar",
             "DOSCAR.LSO.lobster",
             "--sigma",
             "0.2",
@@ -416,7 +418,7 @@ class TestCLI:
         args = [
             "plot-dos",
             "--elementdos",
-            "--doscar",
+            "--file-doscar",
             "DOSCAR.LSO.lobster",
             "--ylim",
             "-5",
@@ -433,7 +435,7 @@ class TestCLI:
         os.chdir(TestDir / "test_data/K3Sb")
         args = [
             "plot-dos",
-            "--doscar",
+            "--file-doscar",
             "DOSCAR.LSO.lobster",
             "--element",
             "K",
@@ -507,12 +509,20 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
+        os.chdir(TestDir / "test_data/NaCl_comp_range")
+        args = [
+            "plot-dos",
+        ]
+
+        test = get_parser().parse_args(args)
+        run(test)
+
     def test_cli_exceptions(self):
         # Calc files missing exception test
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
             os.chdir(TestDir)
             args = [
-                "calc-description",
+                "description-quality",
             ]
 
             test = get_parser().parse_args(args)
@@ -527,7 +537,7 @@ class TestCLI:
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/NaCl")
             args = [
-                "calc-description",
+                "description-quality",
                 "--doscomp",
             ]
 
@@ -542,7 +552,12 @@ class TestCLI:
         # BVA comparison exceptions test
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/NaCl")
-            args = ["calc-description", "--bvacomp", "--charge", "../CHARGE.lobster"]
+            args = [
+                "description-quality",
+                "--bvacomp",
+                "--file-charge",
+                "../CHARGE.lobster",
+            ]
 
             test = get_parser().parse_args(args)
             run(test)
@@ -585,7 +600,7 @@ class TestCLI:
             os.chdir(TestDir / "test_data/K3Sb")
             args = [
                 "plot-dos",
-                "--doscar",
+                "--file-doscar",
                 "DOSCAR.LSO.lobster",
                 "--site",
                 "1",
@@ -599,9 +614,21 @@ class TestCLI:
                 == "Please set both args i.e site and orbital to generate the plot"
             )
 
-    def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
+    def test_nongz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files
         os.chdir(TestDir / "test_data/CsH")
+        for file in os.listdir():
+            shutil.copy(file, tmp_path)
+        os.chdir(tmp_path)
+        for file in os.listdir():
+            if file.endswith(".gz"):
+                uncompressed_file_path = file.split(".gz")[0]  # Remove '.gz' extension
+                with gzip.open(file, "rb") as f_in, open(
+                    uncompressed_file_path, "wb"
+                ) as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+                    # Delete the source gzipped file
+                    os.remove(file)
         args = ["description", "--allbonds"]
 
         test = get_parser().parse_args(args)
@@ -609,7 +636,7 @@ class TestCLI:
 
         # test autoplot and json generation from gz input files
         json_path = tmp_path / "data.json"
-        args = ["automatic-plot", "--all-bonds", "--json", str(json_path)]
+        args = ["automatic-plot", "--all-bonds", "--file-json", str(json_path)]
         test = get_parser().parse_args(args)
         run(test)
         self.assert_is_finite_file(json_path)
@@ -620,9 +647,9 @@ class TestCLI:
         INCARpath = tmp_path / "INCAR.lobsterpy"
         args = [
             "create-inputs",
-            "--lobsterin-out",
+            "--file-lobsterin",
             str(lobsterinpath),
-            "--incar-out",
+            "--file-incar-out",
             str(INCARpath),
             "--userbasis",
             "Na.3s.3p Cl.3s.3p",
@@ -643,15 +670,6 @@ class TestCLI:
             self.assert_is_finite_file(filepath)
 
         os.chdir(TestDir / "test_data/NaCl")
-
-    def test_gz_cli_plot(self, tmp_path):
-        plot_path = tmp_path / "plot.png"
-        args = ["plot", "3", "--saveplot", str(plot_path)]
-
-        test = get_parser().parse_args(args)
-        run(test)
-
-        self.assert_is_finite_file(plot_path)
 
     @staticmethod
     def assert_is_finite_file(path: Path) -> None:
