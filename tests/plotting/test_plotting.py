@@ -712,7 +712,7 @@ class TestPlainDosPlotter:
         assert plt_axes.get_ylabel() == "Energies (eV)"
         assert plt_axes.get_xlabel() == "Density of states (states/eV)"
 
-        # add and test total non normalized smeared dos data and axis labels in the plot
+        # add and test total non-normalized smeared dos data and axis labels in the plot
         dp = PlainDosPlotter(summed=True, stack=False, sigma=0.1)
         dp.add_dos(dos=complete_dos_obj, label="Total")
         plt = dp.get_plot(invert_axes=False, beta_dashed=True).gcf()

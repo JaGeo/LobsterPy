@@ -13,13 +13,16 @@ from typing import NamedTuple
 
 import numpy as np
 import pandas as pd
+from monty.os.path import zpath
 from tqdm.autonotebook import tqdm
 
 from lobsterpy.featurize.core import (
     FeaturizeCharges,
     FeaturizeCOXX,
+    FeaturizeDoscar,
     FeaturizeLobsterpy,
 )
+from lobsterpy.structuregraph.graph import LobsterGraph
 
 warnings.filterwarnings("ignore")
 
@@ -36,6 +39,7 @@ class BatchSummaryFeaturizer:
         charge_type : set charge type used for computing ionicity. Possible options are
         "mulliken", "loewdin or "both"
         bonds: "all_bonds" or "cation_anion_bonds"
+        orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
         include_cobi_data : bool stating to include COBICAR.lobster features
         include_coop_data: bool stating to include COOPCAR.lobster features
         e_range : range of energy relative to fermi for which moment features needs to be computed
@@ -52,6 +56,7 @@ class BatchSummaryFeaturizer:
         feature_type: str = "antibonding",
         charge_type: str = "both",
         bonds: str = "all",
+        orbital_resolved: bool = False,
         include_cobi_data: bool = False,
         include_coop_data: bool = False,
         e_range: list[float] = [-5.0, 0.0],
@@ -68,6 +73,7 @@ class BatchSummaryFeaturizer:
             charge_type : set charge type used for computing ionicity. Possible options are
             "mulliken", "loewdin or "both"
             bonds: "all_bonds" or "cation_anion_bonds"
+            orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
             include_cobi_data : bool stating to include COBICAR.lobster features
             include_coop_data: bool stating to include COOPCAR.lobster features
             e_range : range of energy relative to fermi for which moment features needs to be computed
@@ -79,6 +85,7 @@ class BatchSummaryFeaturizer:
         self.feature_type = feature_type
         self.charge_type = charge_type
         self.bonds = bonds
+        self.orbital_resolved = orbital_resolved
         self.include_cobi_data = include_cobi_data
         self.include_coop_data = include_coop_data
         self.e_range = e_range
@@ -105,11 +112,10 @@ class BatchSummaryFeaturizer:
             featurize_lobsterpy = FeaturizeLobsterpy(
                 path_to_lobster_calc=file_name_or_path,
                 bonds=self.bonds,
+                orbital_resolved=self.orbital_resolved,
             )
 
         return featurize_lobsterpy.get_df()
-
-        # return df
 
     def _featurizecoxx(self, path_to_lobster_calc) -> pd.DataFrame:
         """
@@ -131,7 +137,7 @@ class BatchSummaryFeaturizer:
             file_path = dir_name / default_value
             req_files[file] = file_path  # type: ignore
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = Path(zpath(file_path))
                 if gz_file_path.exists():
                     req_files[file] = gz_file_path  # type: ignore
 
@@ -153,6 +159,7 @@ class BatchSummaryFeaturizer:
             )
 
             df_cohp = coxx.get_summarized_coxx_df()
+            del coxx
         else:
             raise Exception(
                 "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file "
@@ -168,7 +175,7 @@ class BatchSummaryFeaturizer:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -186,6 +193,7 @@ class BatchSummaryFeaturizer:
                 )
 
                 df_cobi = coxx.get_summarized_coxx_df()
+                del coxx
 
             else:
                 raise Exception(
@@ -202,7 +210,7 @@ class BatchSummaryFeaturizer:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -220,6 +228,7 @@ class BatchSummaryFeaturizer:
                 )
 
                 df_coop = coxx.get_summarized_coxx_df()
+                del coxx
 
             else:
                 raise Exception(
@@ -256,7 +265,7 @@ class BatchSummaryFeaturizer:
             file_path = dir_name / default_value
             req_files[file] = file_path  # type: ignore
             if not file_path.exists():
-                gz_file_path = file_path.with_name(file_path.name + ".gz")
+                gz_file_path = Path(zpath(file_path))
                 if gz_file_path.exists():
                     req_files[file] = gz_file_path  # type: ignore
 
@@ -327,19 +336,17 @@ class BatchSummaryFeaturizer:
                 and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
             ]
 
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(file_name_or_path), desc="Generating LobsterPy summary stats"
+        ) as pbar:
+            for _, result in enumerate(
                 pool.imap_unordered(
                     self._featurizelobsterpy, file_name_or_path, chunksize=1
-                ),
-                total=len(file_name_or_path),
-                desc="Generating LobsterPy summary stats",
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
-                row.append(result)  # noqa: PERF402
+                )
+            ):
+                pbar.update()
+                row.append(result)
 
         df_lobsterpy = pd.concat(row)
         df_lobsterpy.sort_index(inplace=True)  # noqa: PD002
@@ -352,39 +359,33 @@ class BatchSummaryFeaturizer:
             and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
         ]
 
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
-                pool.imap_unordered(self._featurizecoxx, paths, chunksize=1),
-                total=len(paths),
-                desc="Generating COHP/COOP/COBI summary stats",
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths), desc="Generating COHP/COOP/COBI summary stats"
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._featurizecoxx, paths, chunksize=1)
+            ):
+                pbar.update()
                 row.append(result)
 
         df_coxx = pd.concat(row)
         df_coxx.sort_index(inplace=True)  # noqa: PD002
 
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
-                pool.imap_unordered(self._featurizecharges, paths, chunksize=1),
-                total=len(paths),
-                desc="Generating charge based features",
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths), desc="Generating charge based features"
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._featurizecharges, paths, chunksize=1)
+            ):
+                pbar.update()
                 row.append(result)
 
         df_charges = pd.concat(row)
         df_charges.sort_index(inplace=True)  # noqa: PD002
 
         return pd.concat([df_lobsterpy, df_coxx, df_charges], axis=1)
-
-        # return df
 
 
 class BatchCoxxFingerprint:
@@ -587,7 +588,7 @@ class BatchCoxxFingerprint:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -605,7 +606,7 @@ class BatchCoxxFingerprint:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -623,7 +624,7 @@ class BatchCoxxFingerprint:
                 file_path = dir_name / default_value
                 req_files[file] = file_path  # type: ignore
                 if not file_path.exists():
-                    gz_file_path = file_path.with_name(file_path.name + ".gz")
+                    gz_file_path = Path(zpath(file_path))
                     if gz_file_path.exists():
                         req_files[file] = gz_file_path  # type: ignore
 
@@ -634,7 +635,7 @@ class BatchCoxxFingerprint:
 
         structure_path = dir_name / "POSCAR"
         if not structure_path.exists():
-            gz_file_path = structure_path.with_name(structure_path.name + ".gz")
+            gz_file_path = Path(zpath(structure_path))
             if gz_file_path.exists():
                 structure_path = gz_file_path
 
@@ -671,19 +672,346 @@ class BatchCoxxFingerprint:
             and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
         ]
 
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool:
-            results = tqdm(
-                pool.imap_unordered(self._fingerprint_df, paths, chunksize=1),
-                total=len(paths),
-                desc=f"Generating {self.fingerprint_for.upper()} fingerprints",
-            )
-            pool.close()
-            pool.join()
-            row = []
-            for result in results:
-                row.append(result)  # noqa: PERF402
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths),
+            desc=f"Generating {self.fingerprint_for.upper()} fingerprints",
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._fingerprint_df, paths, chunksize=1)
+            ):
+                pbar.update()
+                row.append(result)
 
         df = pd.concat(row)
         df.sort_index(inplace=True)  # noqa: PD002
 
         return df
+
+
+class BatchStructureGraphs:
+    """
+    Batch Featurizer that generates structure graphs with lobster data.
+
+    Args:
+        path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
+        which_bonds : selects which kind of bonds are analyzed. "all" is the default
+        start: start energy for bonding antibonding percent integration
+        n_jobs : parallel processes to run
+
+    Attributes:
+        get_df: A pandas dataframe with summary features
+
+    """
+
+    def __init__(
+        self,
+        path_to_lobster_calcs: str | Path,
+        add_additional_data_sg: bool = True,
+        which_bonds: str = "all",
+        start: float | None = None,
+        n_jobs: int = 4,
+    ):
+        """
+        Generate structure graphs with LOBSTER data via multiprocessing.
+
+        Args:
+            path_to_lobster_calcs: path to root directory consisting of all lobster calc
+            add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
+            which_bonds : selects which kind of bonds are analyzed. "all" is the default
+            start: start energy for bonding antibonding percent integration
+            n_jobs : parallel processes to run
+
+        """
+        self.path_to_lobster_calcs = path_to_lobster_calcs
+        self.add_additional_data_sg = add_additional_data_sg
+        self.which_bonds = which_bonds
+        self.start = start
+        self.n_jobs = n_jobs
+
+    def _get_sg_df(self, path_to_lobster_calc) -> pd.DataFrame:
+        """
+        Generate a structure graph with LOBSTER data bonding analysis data.
+
+        Returns:
+            A  structure graph with LOBSTER data as edge and node properties in structure graph objects
+        """
+        dir_name = Path(path_to_lobster_calc)
+
+        req_files = {
+            "charge_path": "CHARGE.lobster",
+            "cohpcar_path": "COHPCAR.lobster",
+            "icohplist_path": "ICOHPLIST.lobster",
+            "icooplist_path": "ICOOPLIST.lobster",
+            "icobilist_path": "ICOBILIST.lobster",
+            "madelung_path": "MadelungEnergies.lobster",
+            "structure_path": "POSCAR",
+        }
+
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path  # type: ignore
+            if not file_path.exists():
+                gz_file_path = Path(zpath(file_path))
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path  # type: ignore
+
+        charge_path = str(req_files.get("charge_path"))
+        cohpcar_path = str(req_files.get("cohpcar_path"))
+        icohplist_path = str(req_files.get("icohplist_path"))
+        icooplist_path = str(req_files.get("icooplist_path"))
+        icobilist_path = str(req_files.get("icobilist_path"))
+        madelung_path = str(req_files.get("madelung_path"))
+        structure_path = str(req_files.get("structure_path"))
+
+        graph = LobsterGraph(
+            path_to_poscar=structure_path,
+            path_to_charge=charge_path,
+            path_to_cohpcar=cohpcar_path,
+            path_to_icohplist=icohplist_path,
+            add_additional_data_sg=self.add_additional_data_sg,
+            path_to_icooplist=icooplist_path,
+            path_to_icobilist=icobilist_path,
+            path_to_madelung=madelung_path,
+            which_bonds=self.which_bonds,
+            start=self.start,
+        )
+
+        ids = dir_name.name
+
+        df = pd.DataFrame(index=[ids])
+
+        df.loc[ids, "structure_graph"] = graph.sg
+
+        return df
+
+    def get_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with structure graph with LOBSTER data.
+
+        Uses multiprocessing to speed up the process.
+
+        Returns:
+            Returns a pandas dataframe
+
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths), desc="Generating Structure Graphs"
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._get_sg_df, paths, chunksize=1)
+            ):
+                pbar.update()
+                row.append(result)
+
+        df_sg = pd.concat(row)
+        df_sg.sort_index(inplace=True)  # noqa: PD002
+
+        return df_sg
+
+
+class BatchDosFeaturizer:
+    """
+    BatchFeaturizer to generate Lobster DOS moment features and  fingerprints.
+
+    Attributes:
+        path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        add_element_dos_moments : add element dos moment features alongside orbital dos
+        normalize: bool to state to normalize the fingerprint data
+        n_bins: sets number for bins for fingerprint objects
+        e_range : range of energy relative to fermi for which moment features needs to be computed
+        n_jobs : number of parallel processes to run
+        fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+        (default is summed_pdos)
+
+    Methods:
+        get_df: A pandas dataframe with DOS moment features as columns
+        get_fingerprints_df: A pandas dataframe with DOS fingerprint object as columns
+    """
+
+    def __init__(
+        self,
+        path_to_lobster_calcs: str | Path,
+        add_element_dos_moments: bool = False,
+        fingerprint_type: str = "summed_pdos",
+        normalize: bool = True,
+        n_bins: int = 56,
+        e_range: list[float] = [-15.0, 0.0],
+        n_jobs=4,
+        use_lso_dos: bool = True,
+    ):
+        """
+        Initialize BatchDosFeaturizer attributes.
+
+        Args:
+            path_to_lobster_calcs: path to root directory consisting of all lobster calc
+            add_element_dos_moments : add element dos moment features alongside orbital dos
+            normalize: bool to state to normalize the fingerprint data
+            n_bins: sets number for bins for fingerprint objects
+            e_range : range of energy relative to fermi for which moment features needs to be computed
+            n_jobs : number of parallel processes to run
+            fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+            (default is summed_pdos)
+            use_lso_dos: Will force feeaturizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster
+        """
+        self.path_to_lobster_calcs = path_to_lobster_calcs
+        self.add_element_dos_moments = add_element_dos_moments
+        self.fingerprint_type = fingerprint_type
+        self.e_range = e_range
+        self.normalize = normalize
+        self.n_jobs = n_jobs
+        self.n_bins = n_bins
+        self.use_lso_dos = use_lso_dos
+
+    def _get_dos_moments_df(self, path_to_lobster_calc) -> pd.DataFrame:
+        """
+        Featurize DOSCAR.lobster data using FeaturizeDOSCAR.
+
+        Returns:
+            A pandas dataframe with computed PDOS moment features
+        """
+        dir_name = Path(path_to_lobster_calc)
+        req_files = {
+            "doscar_path": "DOSCAR.LSO.lobster"
+            if self.use_lso_dos
+            else "DOSCAR.lobster",
+            "structure_path": "POSCAR",
+        }
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path  # type: ignore
+            if not file_path.exists():
+                gz_file_path = Path(zpath(file_path))
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path  # type: ignore
+
+        doscar_path = req_files.get("doscar_path")
+        structure_path = req_files.get("structure_path")
+
+        if doscar_path.exists() and structure_path.exists():  # type: ignore
+            featurize_dos = FeaturizeDoscar(
+                path_to_doscar=str(doscar_path),
+                path_to_structure=str(structure_path),
+                add_element_dos_moments=self.add_element_dos_moments,
+                e_range=self.e_range,
+            )
+            df = featurize_dos.get_df()
+        else:
+            raise Exception(
+                f"DOSCAR.lobster or DOSCAR.LSO.lobster or POSCAR not found in {dir_name.name}"
+            )
+
+        return df
+
+    def _get_dos_fingerprints_df(self, path_to_lobster_calc) -> pd.DataFrame:
+        """
+        Featurize DOSCAR.lobster data into fingerprints using FeaturizeDOSCAR.
+
+        Returns:
+            A pandas dataframe with DOS finerprint objects
+        """
+        dir_name = Path(path_to_lobster_calc)
+
+        req_files = {
+            "doscar_path": "DOSCAR.LSO.lobster"
+            if self.use_lso_dos
+            else "DOSCAR.lobster",
+            "structure_path": "POSCAR",
+        }
+        for file, default_value in req_files.items():
+            file_path = dir_name / default_value
+            req_files[file] = file_path  # type: ignore
+            if not file_path.exists():
+                gz_file_path = Path(zpath(file_path))
+                if gz_file_path.exists():
+                    req_files[file] = gz_file_path  # type: ignore
+
+        doscar_path = req_files.get("doscar_path")
+        structure_path = req_files.get("structure_path")
+
+        if doscar_path.exists() and structure_path.exists():  # type: ignore
+            featurize_dos = FeaturizeDoscar(
+                path_to_doscar=str(doscar_path),
+                path_to_structure=str(structure_path),
+                e_range=self.e_range,
+            )
+            df = featurize_dos.get_fingerprint_df(
+                fp_type=self.fingerprint_type,
+                normalize=self.normalize,
+                n_bins=self.n_bins,
+            )
+        else:
+            raise Exception(
+                f"DOSCAR.lobster or DOSCAR.LSO.lobster or POSCAR not found in {dir_name.name}"
+            )
+
+        return df
+
+    def get_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with moment features.
+
+        Moment features are PDOS center, width, skewness, kurtosis and upper band edge.
+
+        Returns:
+            A pandas dataframe
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths), desc="Generating PDOS moment features"
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._get_dos_moments_df, paths, chunksize=1)
+            ):
+                pbar.update()
+                row.append(result)
+
+        df_dos = pd.concat(row)
+        df_dos.sort_index(inplace=True)  # noqa: PD002
+
+        return df_dos
+
+    def get_fingerprints_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with DOS fingerprints.
+
+        Returns:
+            A pandas dataframe with fingerprint objects
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
+            total=len(paths), desc="Generating DOS fingerprints"
+        ) as pbar:
+            for _, result in enumerate(
+                pool.imap_unordered(self._get_dos_fingerprints_df, paths, chunksize=1)
+            ):
+                pbar.update()
+                row.append(result)
+
+        df_dos_fp = pd.concat(row)
+        df_dos_fp.sort_index(inplace=True)  # noqa: PD002
+
+        return df_dos_fp

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import gzip
 import io
 import json
 import os
+import shutil
 import sys
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -612,9 +614,21 @@ class TestCLI:
                 == "Please set both args i.e site and orbital to generate the plot"
             )
 
-    def test_gz_file_cli(self, tmp_path, inject_mocks, clean_plot):
+    def test_nongz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files
         os.chdir(TestDir / "test_data/CsH")
+        for file in os.listdir():
+            shutil.copy(file, tmp_path)
+        os.chdir(tmp_path)
+        for file in os.listdir():
+            if file.endswith(".gz"):
+                uncompressed_file_path = file.split(".gz")[0]  # Remove '.gz' extension
+                with gzip.open(file, "rb") as f_in, open(
+                    uncompressed_file_path, "wb"
+                ) as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+                    # Delete the source gzipped file
+                    os.remove(file)
         args = ["description", "--allbonds"]
 
         test = get_parser().parse_args(args)
@@ -656,16 +670,6 @@ class TestCLI:
             self.assert_is_finite_file(filepath)
 
         os.chdir(TestDir / "test_data/NaCl")
-
-    def test_gz_cli_plot(self, tmp_path):
-        os.chdir(TestDir / "test_data/NaCl")
-        plot_path = tmp_path / "plot.png"
-        args = ["plot", "3", "--saveplot", str(plot_path)]
-
-        test = get_parser().parse_args(args)
-        run(test)
-
-        self.assert_is_finite_file(plot_path)
 
     @staticmethod
     def assert_is_finite_file(path: Path) -> None:

@@ -403,10 +403,10 @@ class TestCalcQualityDescribeWarnings:
         with warnings.catch_warnings(record=True) as w2:
             warnings.simplefilter("once")
             calc_quality_warnings2 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/C/POSCAR",
-                path_to_charge=TestDir / "test_data/C/CHARGE.lobster",
-                path_to_lobsterout=TestDir / "test_data/C/lobsterout",
-                path_to_lobsterin=TestDir / "test_data/C/lobsterin",
+                path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+                path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
+                path_to_lobsterout=TestDir / "test_data/C/lobsterout.gz",
+                path_to_lobsterin=TestDir / "test_data/C/lobsterin.gz",
                 potcar_symbols=["C"],
                 bva_comp=True,
             )
