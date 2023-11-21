@@ -433,7 +433,7 @@ def describe_batio3():
 
 @pytest.fixture()
 def describe_batio3_orb():
-    analyse_bati03_orb_orb = Analysis(
+    analyse_bati03_orb = Analysis(
         path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
@@ -443,7 +443,7 @@ def describe_batio3_orb():
         orbital_cutoff=0.10,
         orbital_resolved=True,
     )
-    return Description(analyse_bati03_orb_orb)
+    return Description(analyse_bati03_orb)
 
 
 @pytest.fixture()
