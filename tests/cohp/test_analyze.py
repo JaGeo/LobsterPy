@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import io
+import sys
 from pathlib import Path
 
 import pytest
@@ -54,7 +56,17 @@ class TestAnalyse:
             "30",
         ]
         assert analyse_nacl.condensed_bonding_analysis["type_charges"] == "Mulliken"
-        # assert analyse_nacl_madelung.condensed_bonding_analysis["madelung_energy"] == pytest.approx(-5.40)
+
+        # capture and test printed text when orbital resolved analysis is not switched on
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+
+        analyse_nacl.get_site_orbital_resolved_labels()
+
+        console_text_printed = captured_output.getvalue().strip()
+
+        ref_text = "Please set orbital_resolved to True when instantiating Analysis object, to get this data"
+        assert console_text_printed == ref_text
 
     def test_all_attributes_nacl_valences(self, analyse_nacl_valences):
         assert analyse_nacl_valences.condensed_bonding_analysis["formula"] == "NaCl"

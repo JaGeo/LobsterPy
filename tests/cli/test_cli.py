@@ -182,12 +182,25 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-    def test_icohpplot_saved(self, tmp_path, inject_mocks, clean_plot):
+    def test_icoxxlist_plots(self, tmp_path, inject_mocks, clean_plot):
+        os.chdir(TestDir / "test_data/NaCl")
         plot_path = tmp_path / "plot.png"
         args = ["ploticohpdistance", "--hideplot", "--saveplot", str(plot_path)]
         test = get_parser().parse_args(args)
         run(test)
         self.assert_is_finite_file(plot_path)
+
+        os.chdir(TestDir / "test_data/CdF_comp_range")
+        plot_path = tmp_path / "plot.png"
+        args = ["ploticohpdistance", "--coops", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_path)
+
+        os.chdir(TestDir / "test_data/CdF_comp_range")
+        args = ["ploticohpdistance", "--cobis"]
+        test = get_parser().parse_args(args)
+        run(test)
 
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
@@ -249,35 +262,67 @@ class TestCLI:
         ]:
             self.assert_is_finite_file(filepath)
 
-        args = [
-            "create-inputs",
-            "--file-lobsterin",
-            str(lobsterinpath),
-            "--file-incar-out",
-            str(INCARpath),
-        ]
-        test = get_parser().parse_args(args)
-        with pytest.raises(ValueError):  # noqa: PT011
+        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+            args = [
+                "create-inputs",
+                "--file-lobsterin",
+                str(lobsterinpath),
+                "--file-incar-out",
+                str(INCARpath),
+            ]
+            test = get_parser().parse_args(args)
             run(test)
-        os.chdir(TestDir / "test_data/NaCl")
+            assert (
+                str(err.value)
+                == 'please use "--overwrite" if you would like to overwrite existing lobster inputs'
+            )
+
+        with pytest.raises(ValueError) as err2:  # noqa: PT012, PT011
+            args = [
+                "create-inputs",
+                "--file-lobsterin",
+                str(lobsterinpath),
+                "--file-incar-out",
+                str(INCARpath),
+                "--userbasis",
+                "Cd.4d.5s F.2p.2s",
+            ]
+            test = get_parser().parse_args(args)
+            run(test)
+            assert (
+                str(err2.value)
+                == 'please use "--overwrite" if you would like to overwrite existing lobster inputs'
+            )
 
     def test_cli_automatic_analysis_error(self):
-        os.chdir(TestDir / "test_data/NaCl")
-        args1 = [
-            "description",
-            "--cobis",
-        ]
-        test1 = get_parser().parse_args(args1)
-        with pytest.raises(ValueError):  # noqa: PT011
-            run(test1)
+        with pytest.raises(ValueError) as err1:  # noqa: PT012, PT011
+            os.chdir(TestDir / "test_data/NaCl")
+            args1 = [
+                "description",
+                "--cobis",
+            ]
+            test1 = get_parser().parse_args(args1)
 
-        args2 = [
-            "description",
-            "--coops",
-        ]
-        test2 = get_parser().parse_args(args2)
-        with pytest.raises(ValueError):  # noqa: PT011
+            run(test1)
+            assert (
+                str(err1.value)
+                == "Files required for automatic analysis of COBIs (ICOBILIST.lobster and "
+                "COBICAR.lobster) not found in the directory"
+            )
+
+        with pytest.raises(ValueError) as err2:  # noqa: PT012, PT011
+            os.chdir(TestDir / "test_data/NaCl")
+            args2 = [
+                "description",
+                "--coops",
+            ]
+            test2 = get_parser().parse_args(args2)
             run(test2)
+            assert (
+                str(err2.value)
+                == "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and "
+                "COOPCAR.lobster) not found in the directory"
+            )
 
     def test_lobsterin_generation_error_userbasis(self, tmp_path):
         # This is a test for the user-defined basis set.
@@ -390,13 +435,15 @@ class TestCLI:
         assert calc_quality_text == ref_text
         self.assert_is_finite_file(calc_quality_json_path)
 
-    def test_dos_plot(self, tmp_path):
+    def test_dos_plot(self, tmp_path, inject_mocks, clean_plot):
         os.chdir(TestDir / "test_data/K3Sb")
         plot_path = tmp_path / "autoplot.png"
 
         args = [
             "plot-dos",
+            "-addtdos",
             "--spddos",
+            "-sspin",
             "--file-doscar",
             "DOSCAR.LSO.lobster",
             "--sigma",
@@ -404,7 +451,6 @@ class TestCLI:
             "--xlim",
             "-5",
             "0.5",
-            "--hideplot",
             "--saveplot",
             str(plot_path),
         ]
@@ -519,6 +565,20 @@ class TestCLI:
 
     def test_cli_exceptions(self):
         # Calc files missing exception test
+        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+            os.chdir(TestDir)
+            args = [
+                "description",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+            assert (
+                str(err.value)
+                == "Files necessary for automatic analysis of LOBSTER outputs not found in the current directory"
+            )
+
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
             os.chdir(TestDir)
             args = [
