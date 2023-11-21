@@ -384,18 +384,28 @@ class FeaturizeLobsterpy:
         }
 
         for file, default_value in req_files_lobsterpy.items():
-            file_path = dir_name / default_value
-            req_files_lobsterpy[file] = file_path  # type: ignore
-            if not file_path.exists():
-                gz_file_path = Path(zpath(file_path))
-                if gz_file_path.exists():
-                    req_files_lobsterpy[file] = gz_file_path  # type: ignore
-                else:
-                    raise Exception(
-                        "Path provided for Lobster calc directory seems incorrect."
-                        "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
-                        "CHARGE.lobster files needed for automatic analysis using LobsterPy"
-                    )
+            if file == "structure_path":
+                for filename in [default_value, "POSCAR.lobster"]:
+                    poscar_path = dir_name / filename
+                    req_files_lobsterpy[file] = poscar_path  # type: ignore
+                    if not poscar_path.exists():
+                        gz_file_path = Path(zpath(poscar_path))
+                        if gz_file_path.exists():
+                            req_files_lobsterpy[file] = gz_file_path  # type: ignore
+                            break
+            else:
+                file_path = dir_name / default_value
+                req_files_lobsterpy[file] = file_path  # type: ignore
+                if not file_path.exists():
+                    gz_file_path = Path(zpath(file_path))
+                    if gz_file_path.exists():
+                        req_files_lobsterpy[file] = gz_file_path  # type: ignore
+                    else:
+                        raise Exception(
+                            "Path provided for Lobster calc directory seems incorrect."
+                            "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
+                            "CHARGE.lobster files needed for automatic analysis using LobsterPy"
+                        )
 
         cohpcar_path = req_files_lobsterpy.get("cohpcar_path")
         charge_path = req_files_lobsterpy.get("charge_path")
