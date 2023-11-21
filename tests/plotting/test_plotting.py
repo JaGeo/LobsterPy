@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 from plotly.io import read_json
 from pymatgen.electronic_structure.cohp import Cohp
+from pymatgen.electronic_structure.core import Spin
 
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import (
@@ -640,6 +641,16 @@ class TestPlotterExceptions:
                 "in the plot data, which will result in overwriting the existing COHP data."
             )
 
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
+            icohp_plotter = IcohpDistancePlotter(are_coops=True, are_cobis=True)
+
+            _ = icohp_plotter.get_plot()
+
+            assert (
+                str(err.value)
+                == "Plot data should not contain ICOBI and ICOOP data at same time"
+            )
+
 
 class TestPlainDosPlotter:
     def test_nacl_dos(self, nacl_dos):
@@ -736,6 +747,59 @@ class TestPlainDosPlotter:
 
         assert plt_axes.get_xlabel() == "Energies (eV)"
         assert plt_axes.get_ylabel() == "Density of states (states/eV)"
+
+    def test_add_site_orbital_dos(self, nacl_dos, k3sb_dos):
+        # test for all orbitals plot at the site
+        complete_dos_k3sb = k3sb_dos.completedos
+        dp = PlainDosPlotter(summed=True, stack=False, sigma=0.01)
+        dp.add_site_orbital_dos(dos=complete_dos_k3sb, site_index=0, orbital="all")
+
+        plt = dp.get_plot().gcf()
+
+        site = complete_dos_k3sb.structure.sites[0]
+        avail_orbs = list(complete_dos_k3sb.pdos[site])
+
+        for data in plt.axes[0].get_lines()[:-2]:
+            if data.get_label().split(":")[-1].strip() in avail_orbs:
+                dos_obj = complete_dos_k3sb.get_site_orbital_dos(
+                    site=site, orbital=data.get_label().split(":")[-1].strip()
+                )
+                plot_en = data.get_data()[0].tolist()
+                plot_dos = data.get_data()[1].tolist()
+                ref_en = dos_obj.energies.tolist()
+                ref_dos = dos_obj.get_smeared_densities(0.01)
+                ref_dos_add = ref_dos[Spin.up] + ref_dos[Spin.down]
+                np.testing.assert_array_almost_equal(
+                    sorted(plot_en), sorted(ref_en), decimal=4
+                )
+                np.testing.assert_array_almost_equal(
+                    sorted(plot_dos), sorted(ref_dos_add), decimal=4
+                )
+            else:
+                raise Exception("Plot data does not match expected output")
+
+        # test for specific orbital
+        complete_dos_nacl = nacl_dos.completedos
+        dp = PlainDosPlotter(summed=True, stack=False, sigma=0.01)
+        dp.add_site_orbital_dos(dos=complete_dos_nacl, site_index=0, orbital="3s")
+
+        plt = dp.get_plot().gcf()
+
+        site2 = complete_dos_nacl.structure.sites[0]
+
+        for data in plt.axes[0].get_lines()[:-2]:
+            dos_obj = complete_dos_nacl.get_site_orbital_dos(site=site2, orbital="3s")
+            plot_en = data.get_data()[0].tolist()
+            plot_dos = data.get_data()[1].tolist()
+            ref_en = dos_obj.energies.tolist()
+            ref_dos = dos_obj.get_smeared_densities(0.01)
+            ref_dos_add = ref_dos[Spin.up] + ref_dos[Spin.down]
+            np.testing.assert_array_almost_equal(
+                sorted(plot_en), sorted(ref_en), decimal=4
+            )
+            np.testing.assert_array_almost_equal(
+                sorted(plot_dos), sorted(ref_dos_add), decimal=4
+            )
 
     def test_dos_plotter_exceptions(self, nacl_dos):
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
