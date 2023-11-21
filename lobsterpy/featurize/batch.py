@@ -134,12 +134,23 @@ class BatchSummaryFeaturizer:
             "icoxxlist_path": "ICOHPLIST.lobster",
         }
         for file, default_value in req_files.items():
-            file_path = dir_name / default_value
-            req_files[file] = file_path  # type: ignore
-            if not file_path.exists():
-                gz_file_path = Path(zpath(file_path))
-                if gz_file_path.exists():
-                    req_files[file] = gz_file_path  # type: ignore
+            # Check if "POSCAR" exists, and if not, check for "POSCAR.lobster"
+            if file == "structure_path":
+                for filename in [default_value, "POSCAR.lobster"]:
+                    poscar_path = dir_name / filename
+                    req_files[file] = poscar_path  # type: ignore
+                    if not poscar_path.exists():
+                        gz_file_path = Path(zpath(poscar_path))
+                        if gz_file_path.exists():
+                            req_files[file] = gz_file_path  # type: ignore
+                            break
+            else:
+                file_path = dir_name / default_value
+                req_files[file] = file_path  # type: ignore
+                if not file_path.exists():
+                    gz_file_path = Path(zpath(file_path))
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path  # type: ignore
 
         coxxcar_path = req_files.get("coxxcar_path")
         structure_path = req_files.get("structure_path")
@@ -262,12 +273,22 @@ class BatchSummaryFeaturizer:
             "structure_path": "POSCAR",
         }
         for file, default_value in req_files.items():
-            file_path = dir_name / default_value
-            req_files[file] = file_path  # type: ignore
-            if not file_path.exists():
-                gz_file_path = Path(zpath(file_path))
-                if gz_file_path.exists():
-                    req_files[file] = gz_file_path  # type: ignore
+            if file == "structure_path":
+                for filename in [default_value, "POSCAR.lobster"]:
+                    poscar_path = dir_name / filename
+                    req_files[file] = poscar_path  # type: ignore
+                    if not poscar_path.exists():
+                        gz_file_path = Path(zpath(poscar_path))
+                        if gz_file_path.exists():
+                            req_files[file] = gz_file_path  # type: ignore
+                            break
+            else:
+                file_path = dir_name / default_value
+                req_files[file] = file_path  # type: ignore
+                if not file_path.exists():
+                    gz_file_path = Path(zpath(file_path))
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path  # type: ignore
 
         charge_path = req_files.get("charge_path")
         structure_path = req_files.get("structure_path")
@@ -633,11 +654,19 @@ class BatchCoxxFingerprint:
             are_cobis = False
             are_coops = False
 
-        structure_path = dir_name / "POSCAR"
-        if not structure_path.exists():
-            gz_file_path = Path(zpath(structure_path))
-            if gz_file_path.exists():
-                structure_path = gz_file_path
+        for filename in ["POSCAR", "POSCAR.lobster"]:
+            structure_path = dir_name / filename
+            if not structure_path.exists():
+                gz_file_path = Path(zpath(structure_path))
+                if gz_file_path.exists():
+                    structure_path = gz_file_path  # type: ignore
+                    break
+
+        # structure_path = dir_name / "POSCAR"
+        # if not structure_path.exists():
+        #     gz_file_path = Path(zpath(structure_path))
+        #     if gz_file_path.exists():
+        #         structure_path = gz_file_path
 
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(coxxcar_path),
@@ -750,12 +779,22 @@ class BatchStructureGraphs:
         }
 
         for file, default_value in req_files.items():
-            file_path = dir_name / default_value
-            req_files[file] = file_path  # type: ignore
-            if not file_path.exists():
-                gz_file_path = Path(zpath(file_path))
-                if gz_file_path.exists():
-                    req_files[file] = gz_file_path  # type: ignore
+            if file == "structure_path":
+                for filename in [default_value, "POSCAR.lobster"]:
+                    poscar_path = dir_name / filename
+                    req_files[file] = poscar_path  # type: ignore
+                    if not poscar_path.exists():
+                        gz_file_path = Path(zpath(poscar_path))
+                        if gz_file_path.exists():
+                            req_files[file] = gz_file_path  # type: ignore
+                            break
+            else:
+                file_path = dir_name / default_value
+                req_files[file] = file_path  # type: ignore
+                if not file_path.exists():
+                    gz_file_path = Path(zpath(file_path))
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path  # type: ignore
 
         charge_path = str(req_files.get("charge_path"))
         cohpcar_path = str(req_files.get("cohpcar_path"))
@@ -887,12 +926,22 @@ class BatchDosFeaturizer:
             "structure_path": "POSCAR",
         }
         for file, default_value in req_files.items():
-            file_path = dir_name / default_value
-            req_files[file] = file_path  # type: ignore
-            if not file_path.exists():
-                gz_file_path = Path(zpath(file_path))
-                if gz_file_path.exists():
-                    req_files[file] = gz_file_path  # type: ignore
+            if file == "structure_path":
+                for filename in [default_value, "POSCAR.lobster"]:
+                    poscar_path = dir_name / filename
+                    req_files[file] = poscar_path  # type: ignore
+                    if not poscar_path.exists():
+                        gz_file_path = Path(zpath(poscar_path))
+                        if gz_file_path.exists():
+                            req_files[file] = gz_file_path  # type: ignore
+                            break
+            else:
+                file_path = dir_name / default_value
+                req_files[file] = file_path  # type: ignore
+                if not file_path.exists():
+                    gz_file_path = Path(zpath(file_path))
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path  # type: ignore
 
         doscar_path = req_files.get("doscar_path")
         structure_path = req_files.get("structure_path")
@@ -928,12 +977,22 @@ class BatchDosFeaturizer:
             "structure_path": "POSCAR",
         }
         for file, default_value in req_files.items():
-            file_path = dir_name / default_value
-            req_files[file] = file_path  # type: ignore
-            if not file_path.exists():
-                gz_file_path = Path(zpath(file_path))
-                if gz_file_path.exists():
-                    req_files[file] = gz_file_path  # type: ignore
+            if file == "structure_path":
+                for filename in [default_value, "POSCAR.lobster"]:
+                    poscar_path = dir_name / filename
+                    req_files[file] = poscar_path  # type: ignore
+                    if not poscar_path.exists():
+                        gz_file_path = Path(zpath(poscar_path))
+                        if gz_file_path.exists():
+                            req_files[file] = gz_file_path  # type: ignore
+                            break
+            else:
+                file_path = dir_name / default_value
+                req_files[file] = file_path  # type: ignore
+                if not file_path.exists():
+                    gz_file_path = Path(zpath(file_path))
+                    if gz_file_path.exists():
+                        req_files[file] = gz_file_path  # type: ignore
 
         doscar_path = req_files.get("doscar_path")
         structure_path = req_files.get("structure_path")
