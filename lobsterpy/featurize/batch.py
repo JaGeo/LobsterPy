@@ -872,9 +872,6 @@ class BatchDosFeaturizer:
         fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
         (default is summed_pdos)
 
-    Methods:
-        get_df: A pandas dataframe with DOS moment features as columns
-        get_fingerprints_df: A pandas dataframe with DOS fingerprint object as columns
     """
 
     def __init__(
@@ -966,7 +963,7 @@ class BatchDosFeaturizer:
         Featurize DOSCAR.lobster data into fingerprints using FeaturizeDOSCAR.
 
         Returns:
-            A pandas dataframe with DOS finerprint objects
+            A pandas dataframe with DOS fingerprint objects
         """
         dir_name = Path(path_to_lobster_calc)
 
@@ -1017,12 +1014,13 @@ class BatchDosFeaturizer:
 
     def get_df(self) -> pd.DataFrame:
         """
-        Generate a pandas dataframe with moment features.
+        Generate a pandas dataframe with all moment features.
 
-        Moment features are PDOS center, width, skewness, kurtosis and upper band edge.
+        Moment features are PDOS (optional: element dos) center, width, skewness, kurtosis
+        and upper band edge.
 
         Returns:
-            A pandas dataframe
+            A pandas dataframe with moment features
         """
         paths = [
             os.path.join(self.path_to_lobster_calcs, f)

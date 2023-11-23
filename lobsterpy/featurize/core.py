@@ -1216,9 +1216,6 @@ class FeaturizeDoscar:
         path_to_doscar : path to DOSCAR.lobster or DOSCAR.LSO.lobster
         e_range : range of energy relative to fermi for which moment features and features needs to be computed
 
-    Methods:
-        get_df: pandas dataframe
-
     """
 
     def __init__(
