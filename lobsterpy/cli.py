@@ -65,7 +65,9 @@ def get_parser() -> argparse.ArgumentParser:
         default="POSCAR",
         dest="structure",
         type=Path,
-        help='path to structure file. Default is "POSCAR"',
+        help='path to structure file. Default is "POSCAR". '
+        'Can also read "POSCAR.lobster" file or any '
+        'suitable file format supported by pymatgen "Structure.from_file" method.',
     )
 
     potcar_file = argparse.ArgumentParser(add_help=False)
@@ -95,7 +97,7 @@ def get_parser() -> argparse.ArgumentParser:
         default="COHPCAR.lobster",
         dest="cohpcar",
         type=Path,
-        help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument'
+        help='path to COHPCAR.lobster. Default is "COHPCAR.lobster". This argument '
         "can also read COBICARs or COOPCARs. One needs to use appropriate --cobis or "
         "--coops options along with this argument when plotting",
     )
@@ -435,7 +437,7 @@ def get_parser() -> argparse.ArgumentParser:
     # Argument that will help to switch automatic analysis
     analysis_switch = argparse.ArgumentParser(add_help=False)
     analysis_group = analysis_switch.add_argument_group(
-        "Arguments to switches type of files analyzed during automatic analysis"
+        "Arguments to switch type of files analyzed during automatic analysis"
         " (Also indicates file type for 'plot/plot-icohp-distance' action in cli)"
     )
     analysis_group.add_argument(
@@ -549,8 +551,8 @@ def get_parser() -> argparse.ArgumentParser:
             analysis_switch,
         ],
         help=(
-            "Deliver a text description of the COHPs or COBIS or COOP results from Lobster "
-            "and VASP"
+            "Deliver a text description from automatic analysis of COHPs or COBIS or COOP results "
+            "from Lobster run"
         ),
     )
     subparsers.add_parser(
