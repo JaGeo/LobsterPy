@@ -1,5 +1,7 @@
+Getting started
+================
 ```{include} ../../README.md
 ---
-start-line: 2
+start-line: 5
 ---
 ```

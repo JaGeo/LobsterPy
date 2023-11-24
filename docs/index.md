@@ -31,7 +31,8 @@ about/license
 **Date**: {sub-ref}`today`
 
 **Useful links**:
-[Source Repository](https://github.com/JaGeo/LobsterPy) |
+[Github Repository](https://github.com/JaGeo/LobsterPy) |
+[PyPI](https://pypi.org/project/lobsterpy/) |
 [Issues & Ideas](https://github.com/JaGeo/LobsterPy/issues) |
 
 LobsterPy is a package that enables automatic plotting,summaries and extracting features for machine learning studies from LOBSTER outputs. .
