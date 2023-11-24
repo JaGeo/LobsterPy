@@ -76,8 +76,8 @@ nb_execution_timeout = 500
 
 # use type hints
 autodoc_typehints = "description"
-# autoclass_content = "both"
-# autodoc_member_order = "bysource"
+autoclass_content = "class"
+autodoc_member_order = "bysource"
 
 # better napoleon support
 napoleon_use_param = True
@@ -91,10 +91,21 @@ napoleon_use_ivar = True
 #
 html_theme = "sphinx_book_theme"
 
+
+html_theme_options = {
+    "repository_provider": "github",
+    "repository_url": "https://github.com/JaGeo/LobsterPy",
+    "use_repository_button": True,
+    "use_issues_button": True,
+}
+
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+html_css_files = ['custom.css']
 
 # hide sphinx footer
 html_show_sphinx = False
