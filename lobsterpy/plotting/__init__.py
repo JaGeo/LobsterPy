@@ -56,6 +56,14 @@ class PlainCohpPlotter(CohpPlotter):
 
     This allows the styling to be manipulated more easily using matplotlib
     style sheets.
+
+    Attributes:
+        - zero_at_efermi: Shift all populations to have zero
+            energy at the Fermi level. Defaults to True.
+        - are_coops: Bool indicating that populations are COOPs, not COHPs.
+                Defaults to False for COHPs.
+        - are_cobis: Bool indicating that populations are COBIs, not COHPs.
+                Defaults to False for COHPs.
     """
 
     def get_plot(
@@ -243,28 +251,41 @@ class PlainDosPlotter(DosPlotter):
 
     This allows the styling to be manipulated more easily using matplotlib
     style sheets. It also adds additional functionalities to plotter
+
+    Attributes:
+        - zero_at_efermi: Shift all DOS to have zero
+            energy at the Fermi level. Defaults to True.
+        - stack: Bool indicating that plot should be stacked
+            area graph.
+        - sigma: Standard deviation for gaussian smearing.
+        - summed: Will plot summed dos spin populations.
+            Defaults to False.
     """
 
     def __init__(
-        self, zero_at_efermi: bool = True, stack: bool = False, sigma=None, summed=False
+        self,
+        zero_at_efermi: bool = True,
+        stack: bool = False,
+        summed: bool = False,
+        sigma: float | None = None,
     ) -> None:
         """
-        Generate COHP or COOP or COBI plots.
+        Initialize DOS plotter.
 
         :param zero_at_efermi: Whether to shift all Dos to have zero energy at the
             fermi energy. Defaults to True.
         :param stack: Whether to plot the DOS as a stacked area graph
+        :param summed: Whether to plot the summed spins DOS.
         :param sigma: Specify a standard deviation for Gaussian smearing
             the DOS for nicer looking plots. Defaults to None for no smearing.
-        :param summed: Whether to plot the summed DOS
 
         """
         self.zero_at_efermi = zero_at_efermi
         self.stack = stack
         self.sigma = sigma
+        self.summed = summed
         self._norm_val = True
         self._doses = {}  # type: ignore
-        self.summed = summed
 
     def add_dos(self, label: str, dos: LobsterCompleteDos) -> None:
         """
@@ -531,7 +552,16 @@ class PlainDosPlotter(DosPlotter):
 
 
 class InteractiveCohpPlotter(CohpPlotter):
-    """Interactive COHP, COBI or COOP plotter to view all relevant bonds in one figure."""
+    """Interactive COHP, COBI or COOP plotter to view all relevant bonds in one figure.
+
+    Attributes:
+        - zero_at_efermi: Shift all populations to have zero
+            energy at the Fermi level. Defaults to True.
+        - are_coops: Bool indicating that populations are COOPs, not COHPs.
+                Defaults to False for COHPs.
+        - are_cobis: Bool indicating that populations are COBIs, not COHPs.
+                Defaults to False for COHPs.
+    """
 
     COLOR_PALETTE = [
         "#e41a1c",
@@ -1139,11 +1169,11 @@ class IcohpDistancePlotter:
         """
         Plot ICOHPs or ICOBI or ICOOP vs bond lengths.
 
-        :param are_coops: Switch to indicate that these are ICOOPs, not ICOHPs.
-            Defaults to False for ICOHPs.
-        :param are_cobis: Switch to indicate that these are ICOBIs, not ICOHPs/COOPs.
-            Defaults to False for ICOHPs.
-
+        Attributes:
+            - are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
+                    Defaults to False for COHPs.
+            - are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
+                    Defaults to False for COHPs.
         """
         self.are_coops = are_coops
         self.are_cobis = are_cobis
