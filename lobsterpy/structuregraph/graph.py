@@ -63,6 +63,10 @@ class LobsterGraph:
 
         :param path_to_poscar: path to POSCAR (e.g., "POSCAR").
         :param path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster").
+        :param path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster").
+        :param path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster").
+        :param path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster").
+        :param path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster").
 
         """
         if add_additional_data_sg:
