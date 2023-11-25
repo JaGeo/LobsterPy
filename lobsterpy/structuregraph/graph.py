@@ -67,6 +67,11 @@ class LobsterGraph:
         :param path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster").
         :param path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster").
         :param path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster").
+        :param path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
+        :param add_additional_data_sg: if True will add the information from ICOOPLIST.lobster
+            and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond.
+        :param which_bonds: selects which kind of bonds are analyzed. "all" is the default.
+        :param start: start energy for bonding antibonding percent integration.
 
         """
         if add_additional_data_sg:
