@@ -58,7 +58,13 @@ class LobsterGraph:
         cutoff_icohp: float = 0.10,
         start: float | None = None,
     ):
-        """Initialize and return a structure graph object."""
+        """
+        Initialize and return a structure graph object.
+
+        :param path_to_poscar: path to POSCAR (e.g., "POSCAR").
+        :param path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster").
+
+        """
         if add_additional_data_sg:
             self.add_additional_data_sg = add_additional_data_sg
             if path_to_icooplist is not None and path_to_icobilist is not None:
