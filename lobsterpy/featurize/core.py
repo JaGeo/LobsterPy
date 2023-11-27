@@ -8,8 +8,8 @@ from __future__ import annotations
 import gzip
 import json
 import warnings
-from collections import namedtuple
 from pathlib import Path
+from typing import NamedTuple
 
 import numpy as np
 import pandas as pd
@@ -464,9 +464,27 @@ class FeaturizeLobsterpy:
         return data
 
 
-coxx_fingerprint = namedtuple(
-    "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
-)
+class CoxxFingerprint(NamedTuple):
+    """
+    Represents a Coxx fingerprint.
+
+    This named tuple is used to store information related to a Coxx fingerprint, which
+    includes energies, Coxx values, fingerprint type, spin type, number of bins, and bin width.
+
+    :param energies: The energy values associated with the Coxx fingerprint.
+    :param  coxx: The Coxx values corresponding to each energy.
+    :param  fp_type: The type of the Coxx fingerprint.
+    :param  spin_type: The spin type associated with the fingerprint.
+    :param  n_bins: The number of bins used in the Coxx fingerprint.
+    :param  bin_width: The width of each bin in the Coxx fingerprint.
+    """
+
+    energies: np.ndarray
+    coxx: np.ndarray
+    fp_type: str
+    spin_type: str
+    n_bins: int
+    bin_width: float
 
 
 class FeaturizeCOXX:
@@ -645,7 +663,7 @@ class FeaturizeCOXX:
             coxxs = coxx_dict[self.feature_type]
             if len(energies) < n_bins:
                 inds = np.where((energies >= min_e - tol) & (energies <= max_e + tol))
-                fp = coxx_fingerprint(
+                fp = CoxxFingerprint(
                     energies[inds],
                     coxxs[inds],
                     self.feature_type,
@@ -679,7 +697,7 @@ class FeaturizeCOXX:
             else:
                 coxx_rebin_sc = coxx_rebin
 
-            fp = coxx_fingerprint(
+            fp = CoxxFingerprint(
                 np.array([ener]),
                 coxx_rebin_sc,
                 self.feature_type,
@@ -1202,9 +1220,25 @@ class FeaturizeCharges:
         return df
 
 
-dos_fingerprint = namedtuple(
-    "dos_fingerprint", "energies densities type n_bins bin_width"
-)
+class DosFingerprint(NamedTuple):
+    """
+    Represents a Density of States (DOS) fingerprint.
+
+    This named tuple is used to store information related to the Density of States (DOS)
+    in a material. It includes the energies, densities, type, number of bins, and bin width.
+
+    :param energies: The energy values associated with the DOS.
+    :param densities: The corresponding density values for each energy.
+    :param type: The type of DOS fingerprint.
+    :param n_bins: The number of bins used in the fingerprint.
+    :param bin_width: The width of each bin in the DOS fingerprint.
+    """
+
+    energies: np.ndarray
+    densities: np.ndarray
+    type: str
+    n_bins: int
+    bin_width: float
 
 
 class FeaturizeDoscar:
@@ -1353,6 +1387,6 @@ class FeaturizeDoscar:
             min_e=self.e_range[0] if self.e_range is not None else None,
         )._asdict()
 
-        df.loc[ids, "DOS_FP"] = dos_fingerprint(**fp)
+        df.loc[ids, "DOS_FP"] = DosFingerprint(**fp)
 
         return df

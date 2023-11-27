@@ -35,6 +35,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
+    "sphinx_toolbox.more_autodoc.autonamedtuple",
     "sphinxarg.ext",
     "myst_nb",
     "sphinx_design",

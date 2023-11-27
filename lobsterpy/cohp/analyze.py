@@ -67,12 +67,12 @@ class Analysis:
         cutoff_icohp: float = 0.1,
         noise_cutoff: float = 0.1,
         orbital_cutoff: float = 0.05,
-        summed_spins=True,
-        are_cobis=False,
-        are_coops=False,
-        type_charge=None,
-        start=None,
-        orbital_resolved=False,
+        summed_spins: bool = True,
+        are_cobis: bool = False,
+        are_coops: bool = False,
+        type_charge: str | None = None,
+        start: float | None = None,
+        orbital_resolved: bool = False,
     ):
         """
         Automatically analyze bonding information with this class.

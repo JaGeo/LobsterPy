@@ -5,11 +5,11 @@ import pandas as pd
 import pytest
 
 from lobsterpy.featurize.core import (
+    DosFingerprint,
     FeaturizeCharges,
     FeaturizeCOXX,
     FeaturizeDoscar,
     FeaturizeLobsterpy,
-    dos_fingerprint,
 )
 
 CurrentDir = Path(__file__).absolute().parent
@@ -945,4 +945,4 @@ class TestFeaturizeDoscar:
         # Test for the case where e_range is set to None and trying to get fingerprint
         df_fp = feat_dos.get_fingerprint_df()
         assert isinstance(df_fp, pd.DataFrame)
-        assert isinstance(df_fp.loc["K3Sb", "DOS_FP"], dos_fingerprint)
+        assert isinstance(df_fp.loc["K3Sb", "DOS_FP"], DosFingerprint)
