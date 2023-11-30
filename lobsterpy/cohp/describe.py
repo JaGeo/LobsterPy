@@ -574,12 +574,11 @@ class Description:
         return plot
 
     @staticmethod
-    def _coordination_environment_to_text(ce):
+    def _coordination_environment_to_text(ce: str):
         """
         Convert a coordination environment string into a text description of the environment.
 
-        Args:
-            ce (str): output from ChemEnv package (e.g., "O:6")
+        :param ce: output from ChemEnv package (e.g., "O:6")
 
         Returns:
             A text description of coordination environment
@@ -790,8 +789,7 @@ class Description:
         """
         Generate a text description of the LOBSTER calculation quality.
 
-        Args:
-            quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
+        :param quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
         """
         text_des = []
 

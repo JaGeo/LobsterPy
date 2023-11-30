@@ -85,7 +85,7 @@ class BatchSummaryFeaturizer:
         self.e_range = e_range
         self.n_jobs = n_jobs
 
-    def _featurizelobsterpy(self, file_name_or_path) -> pd.DataFrame:
+    def _featurizelobsterpy(self, file_name_or_path: str | Path) -> pd.DataFrame:
         """
         Featurize Lobsterpy condensed bonding analysis data.
 
@@ -114,7 +114,7 @@ class BatchSummaryFeaturizer:
 
         return featurize_lobsterpy.get_df()
 
-    def _featurizecoxx(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _featurizecoxx(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize COHP/COBI/COOPCAR data using FeaturizeCOXX.
 
@@ -257,7 +257,7 @@ class BatchSummaryFeaturizer:
 
         return df
 
-    def _featurizecharges(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _featurizecharges(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize CHARGE.lobster.gz data that using FeaturizeCharges.
 
@@ -508,7 +508,7 @@ class BatchCoxxFingerprint:
         )
 
     @staticmethod
-    def _fp_to_dict(fp) -> dict:
+    def _fp_to_dict(fp: CoxxFingerprint) -> dict:
         """
         Convert a fingerprint obj into a dictionary.
 
@@ -582,7 +582,7 @@ class BatchCoxxFingerprint:
             )
         return np.dot(vec1, vec2) / rescale
 
-    def _fingerprint_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _fingerprint_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Get fingerprint object dataframe via  FeaturizeCOXX.get_coxx_fingerprint_df.
 
@@ -744,7 +744,7 @@ class BatchStructureGraphs:
         self.start = start
         self.n_jobs = n_jobs
 
-    def _get_sg_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _get_sg_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Generate a structure graph with LOBSTER data bonding analysis data.
 
@@ -894,7 +894,7 @@ class BatchDosFeaturizer:
         self.n_bins = n_bins
         self.use_lso_dos = use_lso_dos
 
-    def _get_dos_moments_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _get_dos_moments_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize DOSCAR.lobster data using FeaturizeDOSCAR.
 
@@ -944,7 +944,9 @@ class BatchDosFeaturizer:
 
         return df
 
-    def _get_dos_fingerprints_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _get_dos_fingerprints_df(
+        self, path_to_lobster_calc: str | Path
+    ) -> pd.DataFrame:
         """
         Featurize DOSCAR.lobster data into fingerprints using FeaturizeDOSCAR.
 

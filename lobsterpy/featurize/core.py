@@ -783,7 +783,7 @@ class FeaturizeCOXX:
         e_range: list[float],
         label_list: list[str] | None = None,
         orbital: str | None = None,
-        per_bond=True,
+        per_bond: bool = True,
     ) -> tuple[float, float, float, float, float]:
         """
         Calculate band center,width, skewness, and kurtosis of the COXX.
@@ -1007,7 +1007,7 @@ class FeaturizeCOXX:
         self,
         ids: str | None = None,
         label_list: list[str] | None = None,
-        per_bond=True,
+        per_bond: bool = True,
     ) -> pd.DataFrame:
         """
         Get a pandas dataframe with COXX features.

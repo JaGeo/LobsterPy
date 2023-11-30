@@ -258,7 +258,7 @@ class Analysis:
                 # make a new list
                 self.lse = Lse(self.chemenv.list_coords, self.chemenv.valences)
 
-    def get_information_all_bonds(self, summed_spins=True):
+    def get_information_all_bonds(self, summed_spins: bool = True):
         """
         Gather all information on the bonds within the compound with this method.
 
@@ -385,7 +385,12 @@ class Analysis:
         return label_data
 
     def _get_orbital_resolved_data(
-        self, nameion, iion, labels, bond_resolved_labels, type_pop
+        self,
+        nameion: str,
+        iion: int,
+        labels: list[str],
+        bond_resolved_labels: dict[str, list[str]],
+        type_pop: str,
     ):
         """
         Retrieve orbital-wise analysis data.
@@ -444,7 +449,7 @@ class Analysis:
                         cohp=cohp_summed, start=self.start
                     )
 
-                orb_bonding_dict_data = {}
+                orb_bonding_dict_data = {}  # type: ignore
                 # For each orbital collect the contributions of summed bonding
                 # and antibonding interactions separately
                 for orb in available_orbitals:
@@ -590,7 +595,7 @@ class Analysis:
                                 },
                             }
 
-                orb_bonding_dict_data["relevant_bonds"] = bond_labels
+                orb_bonding_dict_data["relevant_bonds"] = bond_labels  # type: ignore
 
                 orb_resolved_bond_info[bond_resolved_label_key] = orb_bonding_dict_data
 
@@ -694,7 +699,9 @@ class Analysis:
         return orb_plot_data
 
     @staticmethod
-    def _get_strenghts_for_each_bond(pairs, strengths, nameion=None):
+    def _get_strenghts_for_each_bond(
+        pairs: list[list[str]], strengths: list[float], nameion: str | None = None
+    ):
         """
         Return a dictionary of bond strengths.
 
@@ -708,7 +715,7 @@ class Analysis:
 
 
         """
-        dict_strenghts = {}
+        dict_strenghts = {}  # type: ignore
 
         for pair, strength in zip(pairs, strengths):
             if nameion is not None:
@@ -733,7 +740,7 @@ class Analysis:
         return dict_strenghts
 
     @staticmethod
-    def _sort_name(pair, nameion=None):
+    def _sort_name(pair: list[str], nameion: str | None = None):
         """
         Place the cation first in a list of name strings.
 
@@ -758,7 +765,7 @@ class Analysis:
 
     @staticmethod
     def _sort_orbital_atom_pair(
-        atom_pair: list,
+        atom_pair: list[str],
         label: str,
         complete_cohp: CompleteCohp,
         orb_pair: str,
@@ -800,7 +807,9 @@ class Analysis:
 
         return orb_atom_list
 
-    def _get_antibdg_states(self, cohps, labels, nameion=None, limit=0.01):
+    def _get_antibdg_states(
+        self, cohps, labels: list[str], nameion: str | None = None, limit=0.01
+    ):
         """
         Return a dictionary containing information on anti-bonding states.
 
@@ -837,7 +846,9 @@ class Analysis:
 
         return dict_antibd
 
-    def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels, cohps, nameion):
+    def _integrate_antbdstates_below_efermi_for_set_cohps(
+        self, labels: list[str], cohps, nameion: str
+    ):
         """
         Return a dictionary containing information on antibonding states.
 
@@ -902,7 +913,7 @@ class Analysis:
 
         return dict_bd_antibd
 
-    def _integrate_antbdstates_below_efermi(self, cohp, start):
+    def _integrate_antbdstates_below_efermi(self, cohp, start: float | None):
         """
         Integrate the cohp data to compute bonding and anti-bonding contribution below efermi.
 

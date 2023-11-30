@@ -322,7 +322,9 @@ class PlainDosPlotter(DosPlotter):
             "efermi": efermi,
         }
 
-    def add_site_orbital_dos(self, dos: LobsterCompleteDos, orbital, site_index):
+    def add_site_orbital_dos(
+        self, dos: LobsterCompleteDos, orbital: str, site_index: int
+    ):
         """
         Add orbital dos at particular site.
 
@@ -573,7 +575,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         "#999999",
     ]
 
-    def add_cohp(self, label, cohp):
+    def add_cohp(self, label: str, cohp: Cohp):
         """
         Add COHP object to the plotter.
 
@@ -822,7 +824,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                     )
 
     def add_cohps_by_lobster_label(
-        self, analyse: Analysis, label_list: list, suffix: str = ""
+        self, analyse: Analysis, label_list: list[str], suffix: str = ""
     ):
         """
         Add COHPs explicitly specified in label list.
@@ -858,7 +860,9 @@ class InteractiveCohpPlotter(CohpPlotter):
                 }
             )
 
-    def add_cohps_from_plot_data(self, plot_data_dict: dict, suffix: str = ""):
+    def add_cohps_from_plot_data(
+        self, plot_data_dict: dict[str, Cohp], suffix: str = ""
+    ):
         """
         Add all relevant COHPs for specified bond type from lobster lightweight json.gz file.
 
@@ -902,14 +906,14 @@ class InteractiveCohpPlotter(CohpPlotter):
 
     def get_plot(
         self,
-        xlim=None,
-        rangeslider=False,
-        ylim=None,
-        plot_negative=None,
-        integrated=False,
-        invert_axes=True,
-        sigma=None,
-        colors=None,
+        xlim: list[float] | None = None,
+        rangeslider: bool = False,
+        ylim: list[float] | None = None,
+        plot_negative: bool | None = None,
+        integrated: bool = False,
+        invert_axes: bool = True,
+        sigma: float | None = None,
+        colors: list[str] | None = None,
     ):
         """
         Get an interactive plotly figure showing the COHPs.
@@ -963,7 +967,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         palette = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
         pal_iter = cycle(palette)
 
-        traces = {}
+        traces = {}  # type: ignore
         for k, v in self._cohps.items():
             traces.update({k: []})
             for label in v:
@@ -1097,9 +1101,9 @@ class InteractiveCohpPlotter(CohpPlotter):
     @staticmethod
     def _get_plot_label_for_label_resolved(
         structure: Structure,
-        label_list: list,
+        label_list: list[str],
         complete_cohp: CompleteCohp,
-        orb_list: list,
+        orb_list: list[str],
         label_resolved: bool = False,
         orbital_resolved: bool = False,
     ) -> str:
@@ -1176,7 +1180,7 @@ class IcohpDistancePlotter:
         self.are_cobis = are_cobis
         self._icohps = {}  # type: ignore
 
-    def add_icohps(self, label, icohpcollection: IcohpCollection):
+    def add_icohps(self, label: str, icohpcollection: IcohpCollection):
         """
         Add ICOHPs or ICOBIs or ICOOPS for plotting.
 

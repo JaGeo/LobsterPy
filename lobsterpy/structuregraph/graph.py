@@ -52,7 +52,7 @@ class LobsterGraph:
         path_to_cohpcar: str | Path,
         path_to_icohplist: str | Path,
         path_to_madelung: str | Path,
-        add_additional_data_sg=True,
+        add_additional_data_sg: bool = True,
         path_to_icooplist: str | Path | None = None,
         path_to_icobilist: str | Path | None = None,
         which_bonds: str = "all",
@@ -71,7 +71,7 @@ class LobsterGraph:
                     "Please provide path_to_icooplist and path_to_icobilist"
                 )
         else:
-            self.add_additional_data_sg = add_additional_data_sg
+            self.add_additional_data_sg = add_additional_data_sg  # type: ignore
 
         self.path_to_poscar = path_to_poscar
         self.path_to_charge = path_to_charge
