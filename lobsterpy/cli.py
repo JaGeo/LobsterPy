@@ -690,8 +690,7 @@ def _element_basis(string: str):
     """
     Parse element and basis from string.
 
-    Args:
-            string: string to parse
+    :param string: string to parse
 
     Returns:
             element, basis
@@ -706,8 +705,7 @@ def _potcar_symbols(string: str):
     """
     Parse string of potcar symbols and return a list.
 
-    Args:
-        string: string of potcar symbols
+    :param string: string of potcar symbols
 
     Returns:
         list of potcar symbols
@@ -740,8 +738,7 @@ def run(args):
     """
     Run actions based on args.
 
-    Args:
-        args: args for cli
+    :param args: args for cli
 
     """
     if args.action in [
