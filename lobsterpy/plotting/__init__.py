@@ -57,12 +57,11 @@ class PlainCohpPlotter(CohpPlotter):
     This allows the styling to be manipulated more easily using matplotlib
     style sheets.
 
-    Attributes:
-        - zero_at_efermi: Shift all populations to have zero
+    :param zero_at_efermi: Shift all populations to have zero
             energy at the Fermi level. Defaults to True.
-        - are_coops: Bool indicating that populations are COOPs, not COHPs.
+    :param are_coops: Bool indicating that populations are COOPs, not COHPs.
                 Defaults to False for COHPs.
-        - are_cobis: Bool indicating that populations are COBIs, not COHPs.
+    :param are_cobis: Bool indicating that populations are COBIs, not COHPs.
                 Defaults to False for COHPs.
     """
 
@@ -252,13 +251,12 @@ class PlainDosPlotter(DosPlotter):
     This allows the styling to be manipulated more easily using matplotlib
     style sheets. It also adds additional functionalities to plotter
 
-    Attributes:
-        - zero_at_efermi: Shift all DOS to have zero
+    :param zero_at_efermi: Shift all DOS to have zero
             energy at the Fermi level. Defaults to True.
-        - stack: Bool indicating that plot should be stacked
+    :param stack: Bool indicating that plot should be stacked
             area graph.
-        - sigma: Standard deviation for gaussian smearing.
-        - summed: Will plot summed dos spin populations.
+    :param sigma: Standard deviation for gaussian smearing.
+    :param summed: Will plot summed dos spin populations.
             Defaults to False.
     """
 
@@ -280,6 +278,7 @@ class PlainDosPlotter(DosPlotter):
             the DOS for nicer looking plots. Defaults to None for no smearing.
 
         """
+        super().__init__(zero_at_efermi, stack, sigma)
         self.zero_at_efermi = zero_at_efermi
         self.stack = stack
         self.sigma = sigma
@@ -554,12 +553,11 @@ class PlainDosPlotter(DosPlotter):
 class InteractiveCohpPlotter(CohpPlotter):
     """Interactive COHP, COBI or COOP plotter to view all relevant bonds in one figure.
 
-    Attributes:
-        - zero_at_efermi: Shift all populations to have zero
+    :param zero_at_efermi: Shift all populations to have zero
             energy at the Fermi level. Defaults to True.
-        - are_coops: Bool indicating that populations are COOPs, not COHPs.
+    :param are_coops: Bool indicating that populations are COOPs, not COHPs.
                 Defaults to False for COHPs.
-        - are_cobis: Bool indicating that populations are COBIs, not COHPs.
+    :param are_cobis: Bool indicating that populations are COBIs, not COHPs.
                 Defaults to False for COHPs.
     """
 
@@ -1163,18 +1161,17 @@ class InteractiveCohpPlotter(CohpPlotter):
 
 
 class IcohpDistancePlotter:
-    """Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots."""
+    """
+    Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots.
+
+    :param are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
+                    Defaults to False for COHPs.
+    :param are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
+            Defaults to False for COHPs.
+    """
 
     def __init__(self, are_coops: bool = False, are_cobis: bool = False):
-        """
-        Plot ICOHPs or ICOBI or ICOOP vs bond lengths.
-
-        Attributes:
-            - are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
-                    Defaults to False for COHPs.
-            - are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
-                    Defaults to False for COHPs.
-        """
+        """Initialize ICOHPs or ICOBI or ICOOP vs bond lengths plotter."""
         self.are_coops = are_coops
         self.are_cobis = are_cobis
         self._icohps = {}  # type: ignore
