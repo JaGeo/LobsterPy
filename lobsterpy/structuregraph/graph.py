@@ -29,19 +29,20 @@ class LobsterGraph:
     the structure graph objects.
 
     Attributes:
-        - sg: return structure_graph object
-        - path_to_poscar: path to POSCAR (e.g., "POSCAR")
-        - path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster")
-        - path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster")
-        - path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster")
-        - path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster")
-        - path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster")
-        - path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
-        - cutoff_icohp : only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
-        - add_additional_data_sg: if True will add the information from ICOOPLIST.lobster
-            and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond
-        - which_bonds: selects which kind of bonds are analyzed. "all" is the default
-        - start: start energy for bonding antibonding percent integration
+        sg: return structure_graph object
+
+    :param path_to_poscar: path to POSCAR (e.g., "POSCAR").
+    :param path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster").
+    :param path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster").
+    :param path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster").
+    :param path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster").
+    :param path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster").
+    :param path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
+    :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.
+    :param add_additional_data_sg: if True will add the information from ICOOPLIST.lobster
+        and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond.
+    :param which_bonds: selects which kind of bonds are analyzed. "all" is the default.
+    :param start: start energy for bonding antibonding percent integration.
     """
 
     def __init__(
@@ -58,23 +59,7 @@ class LobsterGraph:
         cutoff_icohp: float = 0.10,
         start: float | None = None,
     ):
-        """
-        Initialize and return a structure graph object.
-
-        :param path_to_poscar: path to POSCAR (e.g., "POSCAR").
-        :param path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster").
-        :param path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster").
-        :param path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster").
-        :param path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster").
-        :param path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster").
-        :param path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
-        :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.
-        :param add_additional_data_sg: if True will add the information from ICOOPLIST.lobster
-            and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond.
-        :param which_bonds: selects which kind of bonds are analyzed. "all" is the default.
-        :param start: start energy for bonding antibonding percent integration.
-
-        """
+        """Initialize and return a structure graph object."""
         if add_additional_data_sg:
             self.add_additional_data_sg = add_additional_data_sg
             if path_to_icooplist is not None and path_to_icobilist is not None:
