@@ -21,39 +21,51 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 class Analysis:
     """
-    Class to analyze COHP/COOP/COBI  data from Lobster.
+    Class to automatically analyze COHP/COOP/COBI  populations from Lobster.
+
+    :param are_cobis: bool indicating if file contains COBI/ICOBI data
+    :param are_coops: bool indicating if file contains COOP/ICOOP data
+    :param cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
+        cutoff_icohp*max_icohp limits the number of considered neighbours for evaluating environments.
+    :param path_to_charge: path to `CHARGE.lobster`.
+    :param path_to_cohpcar: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
+    :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
+    :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
+    :param path_to_madelung: path to `MadelungEnergies.lobster`.
+    :param noise_cutoff: Sets the lower limit tolerance for ICOHPs or ICOOPs or ICOBIs considered
+        in analysis.
+    :param orbital_cutoff: Sets the minimum percentage for the orbital contribution considered to be
+        relevant in orbital resolved analysis. (Affects only when orbital_resolved argument is set to True)
+        Set it to 0 to get results of all orbitals in the detected relevant bonds. Default is to 0.05 i.e.
+        only analyzes if orbital contribution is 5 % or more.
+    :param orbital_resolved: bool indicating whether orbital wise analysis is performed
+    :param type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
+            Löwdin charges cannot be selected at the moment.
+    :param which_bonds: Selects kinds of bonds that are analyzed. `cation-anion` is the default.
+        Alternatively, `all` bonds can also be selected. Support to other kinds of bonds will be
+        added soon.
+    :param summed_spins: if True, COHP `Spin.up` and `Spin.down` populations will be summed
+    :param start: sets the lower limit of energy for evaluation of bonding and antibonding
+        percentages below efermi. Defaults to None (i.e., all populations below efermi are included)
 
     Attributes:
-        condensed_bonding_analysis: dict including a summary of the most important bonding properties
-        final_dict_bonds: dict including information on ICOHPs per bond type
-        final_dict_ions: dict including information on environments of cations
-        chemenv: pymatgen.io.lobster.lobsterenv.LobsterNeighbors object
-        lse: LightStructureEnvironment from pymatgen
-        cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
-        cutoff_icohp*max_icohp limits the number of considered environments
-        anion_types: Set of Element objects from pymatgen
-        list_equivalent_sites: list of site indices of sites that indicate which sites are equivalent
-        e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other
-        path_to_charge: str that describes the path to CHARGE.lobster
-        path_to_cohpcar: str that describes the path to COHPCAR.lobster
-        path_to_icohplist: str that describes the path to ICOHPLIST.lobster
-        path_to_poscar: str that describes path to POSCAR
-        path_to_madelung: str that describes path to POSCAR
-        are_cobis : bool indicating if file contains COBI/ICOBI data
-        are_coops : bool indicating if file contains COOP/ICOOP data
-        noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
-        seq_cohps: list of cohps
-        seq_coord_ions: list of co-ordination environment strings for each cation
-        seq_equivalent_sites: seq of inequivalent sites
-        seq_ineq_ions: seq of inequivalent cations/sites in the structure
-        seq_infos_bonds (list): information on cation anion bonds (lists
-        of pymatgen.io.lobster.lobsterenv.ICOHPNeighborsInfo)
-        spg: space group information
-        structure: Structure object
-        type_charge: which charges are considered here
-        orbital_resolved: bool indicating whether analysis is performed
-        orbital wise
-        which_bonds: which bonds will be considered in analysis
+        - condensed_bonding_analysis: dict including a summary of the most important bonding properties
+        - final_dict_bonds: dict including information on ICOHPs per bond type
+        - final_dict_ions: dict including information on environments of cations
+        - chemenv: pymatgen.io.lobster.lobsterenv.LobsterNeighbors object
+        - lse: LightStructureEnvironment from pymatgen
+        - anion_types: Set of Element objects from pymatgen
+        - list_equivalent_sites: list of site indices of sites that indicate which sites are equivalent
+            e.g., [0 1 2 2 2] where site 0, 1, 2 indicate sites that are independent from each other
+        - seq_cohps: list of cohps
+        - seq_coord_ions: list of co-ordination environment strings for each cation
+        - seq_equivalent_sites: seq of inequivalent sites
+        - seq_ineq_ions: seq of inequivalent cations/sites in the structure
+        - seq_infos_bonds (list): information on cation anion bonds (lists
+            of pymatgen.io.lobster.lobsterenv.ICOHPNeighborsInfo)
+        - spg: space group information
+        - structure: Structure object
+
     """
 
     def __init__(
@@ -63,40 +75,44 @@ class Analysis:
         path_to_cohpcar: str | Path,
         path_to_charge: str | Path | None = None,
         path_to_madelung: str | Path | None = None,
-        which_bonds: str = "cation-anion",
+        are_cobis: bool = False,
+        are_coops: bool = False,
         cutoff_icohp: float = 0.1,
         noise_cutoff: float = 0.1,
         orbital_cutoff: float = 0.05,
-        summed_spins: bool = True,
-        are_cobis: bool = False,
-        are_coops: bool = False,
-        type_charge: str | None = None,
-        start: float | None = None,
         orbital_resolved: bool = False,
+        start: float | None = None,
+        summed_spins: bool = True,
+        type_charge: str | None = None,
+        which_bonds: str = "cation-anion",
     ):
         """
-        Automatically analyze bonding information with this class.
+        Initialize automatic bonding analysis.
 
-        Args:
-            path_to_poscar: path to POSCAR (e.g., "POSCAR")
-            path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster")
-            path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster")
-            path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster")
-            path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
-            are_cobis : bool indicating if file contains COBI/ICOBI data
-            are_coops : bool indicating if file contains COOP/ICOOP data
-            noise_cutoff : float that sets the lower limit of icohps or icoops or icobis considered
-            orbital_cutoff : float that sets the minimum percentage for the orbital resolved analysis.
-            (Affects only when orbital_resolved argument is set to True) Set it to 0 to get results
-            of all orbitals in the detected relevant bonds. Default is to 0.05 i.e. only analyzes
-            if orbital contribution is 5 % or more.
-            which_bonds: selects which kind of bonds are analyzed. "cation-anion" is the default
-            cutoff_icohp: only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
-            summed_spins: if true, spins will be summed
-            type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
-            Löwdin charges cannot be selected at the moment.
-            orbital_resolved: bool indicating whether analysis is performed orbital wise
-            start: start energy for integration
+        :param are_cobis: bool indicating if file contains COBI/ICOBI data
+        :param are_coops: bool indicating if file contains COOP/ICOOP data
+        :param cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
+            cutoff_icohp*max_icohp limits the number of considered neighbours for evaluating environments.
+        :param path_to_charge: path to `CHARGE.lobster`.
+        :param path_to_cohpcar: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
+        :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
+        :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
+        :param path_to_madelung: path to `MadelungEnergies.lobster`.
+        :param noise_cutoff: Sets the lower limit tolerance for ICOHPs or ICOOPs or ICOBIs considered
+            in analysis.
+        :param orbital_cutoff: Sets the minimum percentage for the orbital contribution considered to be
+            relevant in orbital resolved analysis. (Affects only when orbital_resolved argument is set to True)
+            Set it to 0 to get results of all orbitals in the detected relevant bonds. Default is to 0.05 i.e.
+            only analyzes if orbital contribution is 5 % or more.
+        :param orbital_resolved: bool indicating whether orbital wise analysis is performed
+        :param type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
+                Löwdin charges cannot be selected at the moment.
+        :param which_bonds: Selects kinds of bonds that are analyzed. `cation-anion` is the default.
+            Alternatively, `all` bonds can also be selected. Support to other kinds of bonds will be
+            added soon.
+        :param summed_spins: if True, COHP `Spin.up` and `Spin.down` populations will be summed
+        :param start: sets the lower limit of energy for evaluation of bonding and antibonding
+            percentages below efermi. Defaults to None (i.e., all populations below efermi are included)
 
         """
         self.start = start
@@ -215,9 +231,8 @@ class Analysis:
                     """
                     Test class when error was raised.
 
-                    Args:
-                        chemenv (LobsterNeighbors): LobsterNeighbors object
-                        valences: list of valences
+                    :param chemenv: LobsterNeighbors object
+                    :param valences: list of valences
 
                     """
                     if valences is None:
@@ -375,12 +390,11 @@ class Analysis:
         """
         Retrieve orbital-wise analysis data.
 
-        Args:
-            nameion: name of symmetrically relevant cation or anion
-            iion: index of symmetrically relevant cation or anion
-            labels: list of bond label names
-            bond_resolved_labels: dict of bond labels from ICOHPLIST resolved for each bond
-            type_pop: population type analyzed. e.g. COHP or COOP or COBI
+        :param nameion: name of symmetrically relevant cation or anion
+        :param iion: index of symmetrically relevant cation or anion
+        :param labels: list of bond label names
+        :param bond_resolved_labels: dict of bond labels from ICOHPLIST resolved for each bond
+        :param type_pop: population type analyzed. e.g. COHP or COOP or COBI
 
         Returns:
             dict consisting of relevant orbitals (contribution > 5 % to overall ICOHP or ICOBI or ICOOP),
@@ -586,8 +600,7 @@ class Analysis:
         """
         Retrieve the maximum bonding and anti-bonding orbital contributions.
 
-        Args:
-            orb_resolved_bond_data: A dictionary with orbital names as keys and corresponding bonding data
+        :param orb_resolved_bond_data: A dictionary with orbital names as keys and corresponding bonding data
 
         Returns:
             dict with orbital data stats the site for relevant orbitals, e.g.
@@ -685,10 +698,9 @@ class Analysis:
         """
         Return a dictionary of bond strengths.
 
-        Args:
-            pairs: list of list including labels for the atoms, e.g., [['O3', 'Cu1'], ['O3', 'Cu1']]
-            strengths (list of float): list that gives the icohp strengths as a float, [-1.86287, -1.86288]
-            nameion: string including the name of the cation in the list, e.g Cu1
+        :param pairs: list of list including labels for the atoms, e.g., [['O3', 'Cu1'], ['O3', 'Cu1']]
+        :param strengths: list that gives the icohp strengths as a float, [-1.86287, -1.86288]
+        :param nameion: string including the name of the cation in the list, e.g Cu1
 
         Returns:
             dict including inormation on icohps for each bond type, e.g.
@@ -725,9 +737,8 @@ class Analysis:
         """
         Place the cation first in a list of name strings.
 
-        Args:
-            pair: ["O","Cu"]
-            nameion: "Cu"
+        :param pair: ["O","Cu"]
+        :param nameion: "Cu"
 
         Returns:
             will return list of str, e.g. ["Cu", "O"]
@@ -755,11 +766,10 @@ class Analysis:
         """
         Place the cation first in a list of name strings and add the associated orbital name alongside the atom name.
 
-        Args:
-            atom_pair: list of atom pair with cation first eg., ["Cl","Na"]
-            label: LOBSTER relevant bond label eg ., "3"
-            complete_cohp: pymatgen CompleteCohp object
-            orb_pair: relevant orbital pair eg., "2px-3s"
+        :param atom_pair: list of atom pair with cation first eg., ["Cl","Na"]
+        :param label: LOBSTER relevant bond label eg ., "3"
+        :param complete_cohp: pymatgen CompleteCohp object
+        :param orb_pair: relevant orbital pair eg., "2px-3s"
 
         Returns:
             will return list of str, e.g. ["Na(2px)", "Cl(3s)"]
@@ -796,11 +806,10 @@ class Analysis:
 
         e.g., similar to: {'Cu-O': True, 'Cu-F': True}
 
-        Args:
-            cohps: list of pymatgen.electronic_structure.cohp.Cohp objects
-            labels: ['2 x Cu-O', '4 x Cu-F']
-            nameion: string of the cation name, e.g. "Cu"
-            limit: limit to detect antibonding states
+        :param cohps: list of pymatgen.electronic_structure.cohp.Cohp objects
+        :param labels: ['2 x Cu-O', '4 x Cu-F']
+        :param nameion: string of the cation name, e.g. "Cu"
+        :param limit: limit to detect antibonding states
 
         Returns:
             dict including in formation on whether antibonding interactions exist,
@@ -840,10 +849,9 @@ class Analysis:
         e.g. output: {'Cu-O': {'integral': 4.24374775705, 'perc': 5.7437713186999995},
         'Cu-F': {'integral': 3.07098300965, 'perc': 4.25800841445}}
 
-        Args:
-            cohps: list of pymatgen.electronic_structure.cohp.Cohp objects
-            labels: ['2 x Cu-O', '4 x Cu-F']
-            nameion: string of the cation name, e.g. "Cu"
+        :param cohps: list of pymatgen.electronic_structure.cohp.Cohp objects
+        :param labels: ['2 x Cu-O', '4 x Cu-F']
+        :param nameion: string of the cation name, e.g. "Cu"
 
         Returns:
             dict including in formation on whether antibonding interactions exist,
@@ -907,9 +915,8 @@ class Analysis:
         If COHPstartEnergy value does not cover entire range of VASP calculations then
         absolute value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.
 
-        Args:
-            cohp: cohp object
-            start: integration start energy in eV , eg start = -15
+        :param cohp: cohp object
+        :param start: integration start energy in eV , eg start = -15
 
         Returns:
             absolute value of antibonding, percentage value of antibonding,
@@ -928,9 +935,8 @@ class Analysis:
             """
             Integrate only bonding interactions of COHPs.
 
-            Args:
-                y: COHP values
-                x: Energy values
+            :param y: COHP values
+            :param x: Energy values
 
             Returns:
                 integrated value of bonding interactions
@@ -946,9 +952,8 @@ class Analysis:
             """
             Integrate only anti-bonding interactions of COHPs.
 
-            Args:
-                y: COHP values
-                x: Energy values
+            :param y: COHP values
+            :param x: Energy values
 
             Returns:
                 integrated value of anti-bonding interactions
@@ -1023,21 +1028,20 @@ class Analysis:
 
     @staticmethod
     def _get_bond_dict(
-        bond_strength_dict,
-        small_antbd_dict,
-        nameion=None,
-        large_antbd_dict=None,
-        type_pop=None,
+        bond_strength_dict: dict,
+        small_antbd_dict: dict,
+        nameion: str | None = None,
+        large_antbd_dict: dict | None = None,
+        type_pop: str | None = None,
     ):
         """
         Return a bond_dict that contains information for each site.
 
-        Args:
-            bond_strength_dict (dict): dict with bond names as key and lists of bond strengths as items
-            small_antbd_dict (dict): dict including if there are antibonding interactions, {'Yb-Sb': False}
-            nameion (str): name of the cation, e.g. Yb
-            large_antbd_dict: will be implemented later
-            type_pop: population type analyzed. eg. COHP
+        :param bond_strength_dict: dict with bond names as key and lists of bond strengths as items
+        :param small_antbd_dict: dict including if there are antibonding interactions, {'Yb-Sb': False}
+        :param nameion: name of the cation, e.g. Yb
+        :param large_antbd_dict: will be implemented later
+        :param type_pop: population type analyzed. eg. COHP
 
         Returns:
             Eg., if type_pop == 'COHP', will return
@@ -1432,20 +1436,19 @@ class Analysis:
         """
         Analyze LOBSTER calculation quality.
 
-        Args:
-            path_to_poscar: path to structure file
-            path_to_lobsterout: path to lobsterout file
-            path_to_lobsterin: path to lobsterin file
-            path_to_potcar: path to VASP potcar file
-            potcar_symbols: list of potcar symbols from postcar file (can be used if no potcar available)
-            path_to_charge: path to CHARGE.lobster file
-            path_to_bandoverlaps: path to bandOverlaps.lobster file
-            path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster file
-            path_to_vasprun: path to vasprun.xml file
-            dos_comparison: will compare DOS from VASP and LOBSTER and return tanimoto index
-            e_range: energy range for DOS comparisons
-            n_bins: number of bins to discretize DOS for comparisons
-            bva_comp: Compares LOBSTER charge signs with Bond valence charge signs
+        :param path_to_poscar: path to structure file
+        :param path_to_lobsterout: path to lobsterout file
+        :param path_to_lobsterin: path to lobsterin file
+        :param path_to_potcar: path to VASP potcar file
+        :param potcar_symbols: list of potcar symbols from postcar file (can be used if no potcar available)
+        :param path_to_charge: path to CHARGE.lobster file
+        :param path_to_bandoverlaps: path to bandOverlaps.lobster file
+        :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster file
+        :param path_to_vasprun: path to vasprun.xml file
+        :param dos_comparison: will compare DOS from VASP and LOBSTER and return tanimoto index
+        :param e_range: energy range for DOS comparisons
+        :param n_bins: number of bins to discretize DOS for comparisons
+        :param bva_comp: Compares LOBSTER charge signs with Bond valence charge signs
 
         Returns:
             A dict of summary of LOBSTER calculation quality by analyzing basis set used,
