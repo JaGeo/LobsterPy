@@ -5,11 +5,16 @@
 
 This is a package that enables automatic plotting and summaries of Lobster outputs. Download LOBSTER from [http://www.cohp.de](http://www.cohp.de).
 
-:::{tip}
-Recently released [LOBSTER 5.0](https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=6) now generates `POSCAR.lobster` for any type of LOBSTER calculation by default (This file has same format as POSCAR from VASP). Thus, LobsterPy in principle now supports usage with **all** DFT codes supported by LOBSTER and is **not** anymore limited to `VASP`. Almost all of the core functionalites implemented could be used. User just needs to use `POSCAR.lobster` for `path_to_poscar` and `-fstruct` argument in python and cli interface, respectively.
+<div style="border: 1px solid #52a5ab; padding: 5px; position: relative;">
+    <div style="background-color: #52a5ab; color: #ffffff; padding: 0px; position: absolute; top: 0; left: 0; right: 0; text-align: center;">
+        <strong>Important</strong>
+    </div>
+<br>
 
-Only functionality limited to VASP is DOS comparisons and basis set analysis in `Analysis.calc_quality_summary` as these rely on typical VASP outputs namely `vasprun.xml` and `POTCARs` respectively.
-:::
+Recently released [LOBSTER 5.0](https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=6) now generates `POSCAR.lobster` for any kind of LOBSTER calculation by default (This file has same format as the POSCAR from VASP). Thus, LobsterPy in principle, now supports usage with **all** DFT codes supported by LOBSTER and is **no** longer limited to `VASP`. Almost all of the core functionalities of LobsterPy could be used. The user must use `POSCAR.lobster` for `path_to_poscar` and `-fstruct` argument in python and cli interface, respectively.
+
+The only functionality limited to VASP is DOS comparisons and basis set analysis in the `calc_quality_summary` method of the `Analysis` class, as it relies on VASP output files, namely `vasprun.xml` and `POTCAR`.
+</div>
 
 Please note that LobsterPy relies on the LOBSTER computation output files. Thus, it will be only able to analyze data that has been computed in the LOBSTER run.
 
