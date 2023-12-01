@@ -3,7 +3,13 @@
 # Getting started
 <img src="https://raw.githubusercontent.com/JaGeo/LobsterPy/main/LobsterPyLogo.png" alt="LobsterPy Logo which consists of a green Python and a red Lobster" width="200"/>
 
-This is a package that enables automatic plotting and summaries of Lobster outputs. You can download Lobster on [http://www.cohp.de](http://www.cohp.de). Currently, only VASP/Lobster computations are supported.
+This is a package that enables automatic plotting and summaries of Lobster outputs. Download LOBSTER from [http://www.cohp.de](http://www.cohp.de).
+
+:::{tip}
+Recently released [LOBSTER 5.0](https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=6) now generates `POSCAR.lobster` for any type of LOBSTER calculation by default (This file has same format as POSCAR from VASP). Thus, LobsterPy in principle now supports usage with **all** DFT codes supported by LOBSTER and is **not** anymore limited to `VASP`. Almost all of the core functionalites implemented could be used. User just needs to use `POSCAR.lobster` for `path_to_poscar` and `-fstruct` argument in python and cli interface, respectively.
+
+Only functionality limited to VASP is DOS comparisons and basis set analysis in `Analysis.calc_quality_summary` as these rely on typical VASP outputs namely `vasprun.xml` and `POTCARs` respectively.
+:::
 
 Please note that LobsterPy relies on the LOBSTER computation output files. Thus, it will be only able to analyze data that has been computed in the LOBSTER run.
 
