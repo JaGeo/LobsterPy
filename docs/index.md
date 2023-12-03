@@ -16,6 +16,7 @@ reference/cli
 ```{toctree}
 :caption: Contributing Guide
 :hidden:
+dev/dev_installation
 dev/contributing
 ```
 
@@ -72,7 +73,7 @@ LOBSTER and Lobsterpy via atomate2.
 
 
 :::{grid-item-card}
-:link: dev/contributing
+:link: dev/dev_installation
 :link-type: doc
 :class-header: bg-light
 **Developer guide**

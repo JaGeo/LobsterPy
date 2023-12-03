@@ -1,4 +1,4 @@
-# Contributing to lobsterpy
+# Contributing to LobsterPy
 
 We would love your input to further extend and improve our code. Contribution of any kind are welcome, for example it can be:
 
