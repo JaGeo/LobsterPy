@@ -70,7 +70,8 @@ It is also possible to start this automatic analysis from a Python script. See "
     You can get further information by using ``lobsterpy --help`` and also by typing ``lobsterpy description --help``,
 ``lobsterpy automatic-plot --help``, ``lobsterpy plot --help``.
 
-See the complete [documentation and tutorials](https://jageo.github.io/LobsterPy/) for more details.
+## Comprehensive documentation
+* Checkout the [documentation and tutorials](https://jageo.github.io/LobsterPy/) for more details.
 
 ## How to cite?
 Please cite our paper: J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, **ChemPlusChem**, [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123).
