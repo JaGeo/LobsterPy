@@ -36,7 +36,7 @@ about/license
 [PyPI](https://pypi.org/project/lobsterpy/) |
 [Issues & Ideas](https://github.com/JaGeo/LobsterPy/issues) |
 
-LobsterPy is a package that enables automatic plotting,summaries and extracting features for machine learning studies from LOBSTER outputs. .
+LobsterPy is a package that enables automatic analysis of LOBTSER outputs to get summarized bonding information and relevant bond plots. Additionally, one can also generate features for machine learning studies from LOBSTER outputs.
 
 ::::{grid} 1 1 2 2
 :class-container: text-center
