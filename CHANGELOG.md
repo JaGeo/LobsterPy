@@ -1,5 +1,5 @@
 # Changelog
-=======
+
 ## v0.3.4
 - fix changelog by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/188
 - Update documentation by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/180
