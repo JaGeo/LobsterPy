@@ -31,5 +31,4 @@ jobs:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _build/
-          enable_jekyll: true
           force_orphan: true
