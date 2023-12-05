@@ -24,13 +24,36 @@ jobs:
       - name: Sphinx build
         run: |
           sphinx-build docs _build
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      - uses: actions/upload-artifact@v3
         with:
-          publish_branch: gh-pages
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: |
-            _build
-            jupyter_execute
-          force_orphan: true
+          name: Upload-docs
+          path: |
+            _build/
+            jupyter_execute/
+
+  deploy:
+    needs: docs
+    runs-on: ubuntu-latest
+  
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+  
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: Upload-docs # Change this to the same name used in the build job
+  
+    - name: Deploy artifacts to branch
+      run: |
+          git checkout gh-pages
+          cp -r _build/ jupyter_execute/ .
+          
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      with:
+        publish_branch: gh-pages
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: _build/
+        force_orphan: true
