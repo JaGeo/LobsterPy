@@ -31,6 +31,6 @@ jobs:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: |
-            _build
-            jupyter_execute
+            _build/
+            jupyter_execute/
           force_orphan: true
