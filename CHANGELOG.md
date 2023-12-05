@@ -1,5 +1,4 @@
 ## v0.3.3
-## What's Changed
 - fixing which_bonds  by @JonasGrandel in https://github.com/JaGeo/LobsterPy/pull/168
 - fix create inputs alias not working; update test for the same by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/171
 - Automatic orbital wise analysis functionality in analyze module by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/132
@@ -13,9 +12,6 @@
 - Update README.md by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/184
 - Increase test coverage by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/185
 - add POSCAR.lobster support in featurizer by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/186
-
-## New Contributors
-- @JonasGrandel made their first contribution in https://github.com/JaGeo/LobsterPy/pull/168
 
 **Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.3.2...v0.3.3
 
