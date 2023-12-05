@@ -10,7 +10,7 @@ from lobsterpy.featurize.batch import (
     BatchStructureGraphs,
     BatchSummaryFeaturizer,
 )
-from lobsterpy.featurize.core import coxx_fingerprint, dos_fingerprint
+from lobsterpy.featurize.core import CoxxFingerprint, DosFingerprint
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -463,7 +463,7 @@ class TestBatchCoxxFingerprint:
         )
         df_fp_cohp = fp_cohp_bonding.fingerprint_df
         for fp in df_fp_cohp["COXX_FP"]:
-            assert isinstance(fp, coxx_fingerprint)
+            assert isinstance(fp, CoxxFingerprint)
             assert fp.fp_type == "bonding"
         df = fp_cohp_bonding.get_similarity_matrix_df()
 
@@ -485,7 +485,7 @@ class TestBatchCoxxFingerprint:
         )
         df_fp_cobi = fp_cobi.fingerprint_df
         for fp in df_fp_cobi["COXX_FP"]:
-            assert isinstance(fp, coxx_fingerprint)
+            assert isinstance(fp, CoxxFingerprint)
             assert fp.fp_type == "antibonding"
 
         df = fp_cobi.get_similarity_matrix_df()
@@ -508,7 +508,7 @@ class TestBatchCoxxFingerprint:
         )
         df_fp_coop = fp_coop.fingerprint_df
         for fp in df_fp_coop["COXX_FP"]:
-            assert isinstance(fp, coxx_fingerprint)
+            assert isinstance(fp, CoxxFingerprint)
             assert fp.fp_type == "bonding"
 
         df = fp_coop.get_similarity_matrix_df()
@@ -590,7 +590,7 @@ class TestBatchDosFeaturizer:
         assert isinstance(df_fp, pd.DataFrame)
 
         for dos_fp in df_fp["DOS_FP"]:
-            assert isinstance(dos_fp, dos_fingerprint)
+            assert isinstance(dos_fp, DosFingerprint)
             assert dos_fp.type == "p"
             assert dos_fp.n_bins == 100
 
@@ -683,7 +683,7 @@ class TestBatchDosFeaturizer:
         assert isinstance(df_fp_lso, pd.DataFrame)
 
         for dos_fp in df_fp_lso["DOS_FP"]:
-            assert isinstance(dos_fp, dos_fingerprint)
+            assert isinstance(dos_fp, DosFingerprint)
             assert dos_fp.type == "summed_pdos"
             assert dos_fp.n_bins == 256
 

@@ -40,17 +40,18 @@ changelog = "https://jageo.github.io/LobsterPy/changelog_link.html"
 
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.14.0"]
-docs = ["Sphinx==4.5.0",
-    "jupyter",
-    "sphinx-argparse",
-    "sphinx-book-theme==0.3.3",
-    "m2r2",
-    "myst-parser",
-    "docutils",
-    "mendeleev==0.14.0",
-    "pymatgen>=2023.9.10",
+dev = ["pre-commit>=2.12.1"]
+tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov"]
+docs = [
+    "sphinx-copybutton==0.5.2",
+    "sphinx>=5,<6",
+    "sphinx_design==0.5.0",
+    "ipython==8.16.1",
+    "myst-nb==0.17.2",
+    "sphinx-book-theme==1.0.1",
     "sphinx-argparse==0.4.0",
-    "typing"]
+    "sphinx-toolbox==3.5.0",
+]
 
 [project.scripts]
 lobsterpy = "lobsterpy.cli:main"

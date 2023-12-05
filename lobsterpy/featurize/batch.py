@@ -9,7 +9,6 @@ import multiprocessing as mp
 import os
 import warnings
 from pathlib import Path
-from typing import NamedTuple
 
 import numpy as np
 import pandas as pd
@@ -17,6 +16,7 @@ from monty.os.path import zpath
 from tqdm.autonotebook import tqdm
 
 from lobsterpy.featurize.core import (
+    CoxxFingerprint,
     FeaturizeCharges,
     FeaturizeCOXX,
     FeaturizeDoscar,
@@ -31,22 +31,18 @@ class BatchSummaryFeaturizer:
     """
     Batch Featurizer sets that generates summary features from lobster data.
 
-    Args:
-        path_to_lobster_calcs: path to root directory consisting of all lobster calc
-        path_to_jsons: path to root directory consisting of all lobster lightweight jsons
-        feature_type: set the feature type for moment features.
-        Possible options are "bonding", "antibonding" or "overall"
-        charge_type : set charge type used for computing ionicity. Possible options are
-        "mulliken", "loewdin or "both"
-        bonds: "all_bonds" or "cation_anion_bonds"
-        orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
-        include_cobi_data : bool stating to include COBICAR.lobster features
-        include_coop_data: bool stating to include COOPCAR.lobster features
-        e_range : range of energy relative to fermi for which moment features needs to be computed
-        n_jobs : parallel processes to run
-
-    Attributes:
-        get_df: A pandas dataframe with summary features
+    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+    :param path_to_jsons: path to root directory consisting of all lobster lightweight jsons
+    :param feature_type: set the feature type for moment features.
+        Possible options are `bonding`, `antibonding` or `overall`
+    :param charge_type: set charge type used for computing ionicity. Possible options are
+        `mulliken`, `loewdin` or `both`.
+    :param bonds: `all_bonds` or `cation_anion_bonds`
+    :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
+    :param include_cobi_data: bool stating to include COBICAR.lobster features
+    :param include_coop_data: bool stating to include COOPCAR.lobster features
+    :param e_range: range of energy relative to fermi for which moment features needs to be computed
+    :param n_jobs: parallel processes to run
     """
 
     def __init__(
@@ -65,20 +61,18 @@ class BatchSummaryFeaturizer:
         """
         Featurize lobster data via multiprocessing for large number of compounds.
 
-        Args:
-            path_to_lobster_calcs: path to root directory consisting of all lobster calc
-            path_to_jsons: path to root directory consisting of all lobster lightweight jsons
-            feature_type: set the feature type for moment features.
-            Possible options are "bonding", "antibonding" or "overall"
-            charge_type : set charge type used for computing ionicity. Possible options are
-            "mulliken", "loewdin or "both"
-            bonds: "all_bonds" or "cation_anion_bonds"
-            orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
-            include_cobi_data : bool stating to include COBICAR.lobster features
-            include_coop_data: bool stating to include COOPCAR.lobster features
-            e_range : range of energy relative to fermi for which moment features needs to be computed
-            n_jobs : parallel processes to run
-
+        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        :param path_to_jsons: path to root directory consisting of all lobster lightweight jsons
+        :param feature_type: set the feature type for moment features.
+            Possible options are `bonding`, `antibonding` or `overall`
+        :param charge_type: set charge type used for computing ionicity. Possible options are
+            `mulliken`, `loewdin` or `both`.
+        :param bonds: `all_bonds` or `cation_anion_bonds`
+        :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
+        :param include_cobi_data: bool stating to include COBICAR.lobster features
+        :param include_coop_data: bool stating to include COOPCAR.lobster features
+        :param e_range: range of energy relative to fermi for which moment features needs to be computed
+        :param n_jobs: parallel processes to run
         """
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.path_to_jsons = path_to_jsons
@@ -91,11 +85,14 @@ class BatchSummaryFeaturizer:
         self.e_range = e_range
         self.n_jobs = n_jobs
 
-    def _featurizelobsterpy(self, file_name_or_path) -> pd.DataFrame:
+    def _featurizelobsterpy(self, file_name_or_path: str | Path) -> pd.DataFrame:
         """
         Featurize Lobsterpy condensed bonding analysis data.
 
-        if lightweight json file exists loads that or invokes LobsterPy Analysis class
+        if lightweight json file exists loads that or invokes LobsterPy Analysis class.
+
+        :param file_name_or_path: path to the LOBSTER calc directory or
+            lightweight condensed bonding analysis json file name.
 
         Returns:
             A pandas dataframe with ICOHP stats like mean, min, max of relevant bonds and
@@ -117,9 +114,11 @@ class BatchSummaryFeaturizer:
 
         return featurize_lobsterpy.get_df()
 
-    def _featurizecoxx(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _featurizecoxx(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize COHP/COBI/COOPCAR data using FeaturizeCOXX.
+
+        :param path_to_lobster_calc: path to root LOBSTER calc directory
 
         Returns:
             A pandas dataframe with COHP summary stats data mainly weighted ICOHP/ICOOP/ICOBI,
@@ -258,9 +257,11 @@ class BatchSummaryFeaturizer:
 
         return df
 
-    def _featurizecharges(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _featurizecharges(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize CHARGE.lobster.gz data that using FeaturizeCharges.
+
+        :param path_to_lobster_calc: path to root LOBSTER calc directory
 
         Returns:
             A pandas dataframe with computed ionicity for the structure
@@ -413,24 +414,21 @@ class BatchCoxxFingerprint:
     """
     BatchFeaturizer to generate COHP/COOP/COBI fingerprints and Tanimoto index similarity matrix.
 
-    Args:
-        path_to_lobster_calcs: path to root directory consisting of all lobster calc
-        feature_type: set the feature type for moment features.
-        Possible options are "bonding", "antibonding" or "overall"
-        label_list: bond labels list for which fingerprints needs to be generated.
-        tanimoto : bool to state to compute tanimoto index between fingerprint objects
-        normalize: bool to state to normalize the fingerprint data
-        n_bins: sets number for bins for fingerprint objects
-        e_range : range of energy relative to fermi for which moment features needs to be computed
-        n_jobs : number of parallel processes to run
-        fingerprint_for: Possible options are 'cohp/cobi/coop'.
+    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+    :param feature_type: set the feature type for moment features.
+        Possible options are `bonding`, `antibonding` or `overall`
+    :param label_list: bond labels list for which fingerprints needs to be generated.
+    :param tanimoto: bool to state to compute tanimoto index between fingerprint objects
+    :param normalize: bool to state to normalize the fingerprint data
+    :param spin_type: can be `summed` or `up` or `down`.
+    :param n_bins: sets number for bins for fingerprint objects
+    :param e_range: range of energy relative to fermi for which moment features needs to be computed
+    :param n_jobs: number of parallel processes to run
+    :param fingerprint_for: Possible options are `cohp` or `cobi` or `coop`.
         Based on this fingerprints will be computed for COHPCAR/COOBICAR/COOPCAR.lobster files
 
     Attributes:
         fingerprint_df: A pandas dataframe with fingerprint objects
-        get_similarity_matrix_df: A symmetric pandas dataframe consisting of
-        similarity index (tanimoto/normalized dot product/dot product)
-        computed between all pairs of compounds
     """
 
     def __init__(
@@ -449,20 +447,18 @@ class BatchCoxxFingerprint:
         """
         Generate COHP/COOP/COBI fingerprints and pair-wise Tanimoto index similarity matrix.
 
-        Args:
-            path_to_lobster_calcs: path to root directory consisting of all lobster calc
-            feature_type: set the feature type for moment features.
-            Possible options are "bonding", "antibonding" or "overall"
-            label_list: bond labels list for which fingerprints needs to be generated.
-            tanimoto : bool to state to compute tanimoto index between fingerprint objects
-            normalize: bool to state to normalize the fingerprint data
-            spin_type: can be summed or up or down.
-            n_bins: sets number for bins for fingerprint objects
-            e_range : range of energy relative to fermi for which moment features needs to be computed
-            n_jobs : number of parallel processes to run
-            fingerprint_for: Possible options are 'cohp/cobi/coop'.
+        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        :param feature_type: set the feature type for moment features.
+            Possible options are `bonding`, `antibonding` or `overall`
+        :param label_list: bond labels list for which fingerprints needs to be generated.
+        :param tanimoto: bool to state to compute tanimoto index between fingerprint objects
+        :param normalize: bool to state to normalize the fingerprint data
+        :param spin_type: can be `summed` or `up` or `down`.
+        :param n_bins: sets number for bins for fingerprint objects
+        :param e_range: range of energy relative to fermi for which moment features needs to be computed
+        :param n_jobs: number of parallel processes to run
+        :param fingerprint_for: Possible options are `cohp` or `cobi` or `coop`.
             Based on this fingerprints will be computed for COHPCAR/COOBICAR/COOPCAR.lobster files
-
         """
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.feature_type = feature_type
@@ -512,12 +508,11 @@ class BatchCoxxFingerprint:
         )
 
     @staticmethod
-    def _fp_to_dict(fp) -> dict:
+    def _fp_to_dict(fp: CoxxFingerprint) -> dict:
         """
         Convert a fingerprint obj into a dictionary.
 
-        Args:
-            fp: The fingerprint to be converted into a dictionary
+        :param fp: The fingerprint to be converted into a dictionary
 
         Returns:
             dict: A dict of the fingerprint Keys=type, Values=np.ndarray(energies, cohp)
@@ -529,8 +524,8 @@ class BatchCoxxFingerprint:
 
     @staticmethod
     def _get_fp_similarity(
-        fp1: NamedTuple,
-        fp2: NamedTuple,
+        fp1: CoxxFingerprint,
+        fp2: CoxxFingerprint,
         col: int = 1,
         pt: int | str = "All",
         normalize: bool = False,
@@ -539,13 +534,12 @@ class BatchCoxxFingerprint:
         """
         Calculate the similarity index (dot product) of two fingerprints.
 
-        Args:
-            fp1 (NamedTuple): The 1st dos fingerprint object
-            fp2 (NamedTuple): The 2nd dos fingerprint object
-            col (int): The item in the fingerprints (0:energies,1: coxxs) to take the dot product of (default is 1)
-            pt (int or str) : The index of the point that the dot product is to be taken (default is All)
-            normalize (bool): If True normalize the scalar product to 1 (default is False)
-            tanimoto (bool): If True will compute Tanimoto index (default is False)
+        :param fp1 The 1st CoxxFingerprint object
+        :param fp2: The 2nd CoxxFingerprint object
+        :param col: The item in the fingerprints (0:energies,1: coxxs) to take the dot product of (default is 1)
+        :param pt: The index of the point that the dot product is to be taken (default is All)
+        :param normalize: If True normalize the scalar product to 1 (default is False)
+        :param tanimoto: If True will compute Tanimoto index (default is False)
 
         Raises:
             ValueError: If both tanimoto and normalize are set to True.
@@ -566,8 +560,8 @@ class BatchCoxxFingerprint:
             vec1 = np.array([pt[col] for pt in fp1_dict.values()]).flatten()
             vec2 = np.array([pt[col] for pt in fp2_dict.values()]).flatten()
         else:
-            vec1 = fp1_dict[fp1[2][pt]][col]
-            vec2 = fp2_dict[fp2[2][pt]][col]
+            vec1 = fp1_dict[fp1[2][pt]][col]  # type: ignore
+            vec2 = fp2_dict[fp2[2][pt]][col]  # type: ignore
 
         if not normalize and tanimoto:
             rescale = (
@@ -588,11 +582,13 @@ class BatchCoxxFingerprint:
             )
         return np.dot(vec1, vec2) / rescale
 
-    def _fingerprint_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _fingerprint_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Get fingerprint object dataframe via  FeaturizeCOXX.get_coxx_fingerprint_df.
 
-        Also helps to generate the data used for fingerprint generation
+        Also helps to generate the data used for fingerprint generation.
+
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory.
 
         Returns:
             A pandas dataframe with COXX fingerprint object
@@ -662,12 +658,6 @@ class BatchCoxxFingerprint:
                     structure_path = gz_file_path  # type: ignore
                     break
 
-        # structure_path = dir_name / "POSCAR"
-        # if not structure_path.exists():
-        #     gz_file_path = Path(zpath(structure_path))
-        #     if gz_file_path.exists():
-        #         structure_path = gz_file_path
-
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(coxxcar_path),
             path_to_icoxxlist=str(icoxxlist_path),
@@ -722,15 +712,11 @@ class BatchStructureGraphs:
     """
     Batch Featurizer that generates structure graphs with lobster data.
 
-    Args:
-        path_to_lobster_calcs: path to root directory consisting of all lobster calc
-        add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
-        which_bonds : selects which kind of bonds are analyzed. "all" is the default
-        start: start energy for bonding antibonding percent integration
-        n_jobs : parallel processes to run
-
-    Attributes:
-        get_df: A pandas dataframe with summary features
+    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+    :param add_additional_data_sg: bool indicating whether to include `icoop` and `icobi` data as edge properties
+    :param which_bonds: selects which kind of bonds are analyzed. "all" is the default
+    :param start: start energy for bonding antibonding percent integration
+    :param n_jobs: parallel processes to run
 
     """
 
@@ -745,12 +731,11 @@ class BatchStructureGraphs:
         """
         Generate structure graphs with LOBSTER data via multiprocessing.
 
-        Args:
-            path_to_lobster_calcs: path to root directory consisting of all lobster calc
-            add_additional_data_sg: bool indicating whether to include icoop and icobi data as edge properties
-            which_bonds : selects which kind of bonds are analyzed. "all" is the default
-            start: start energy for bonding antibonding percent integration
-            n_jobs : parallel processes to run
+        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        :param add_additional_data_sg: bool indicating whether to include `icoop` and `icobi` data as edge properties
+        :param which_bonds: selects which kind of bonds are analyzed. "all" is the default
+        :param start: start energy for bonding antibonding percent integration
+        :param n_jobs: parallel processes to run
 
         """
         self.path_to_lobster_calcs = path_to_lobster_calcs
@@ -759,9 +744,11 @@ class BatchStructureGraphs:
         self.start = start
         self.n_jobs = n_jobs
 
-    def _get_sg_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _get_sg_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Generate a structure graph with LOBSTER data bonding analysis data.
+
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory
 
         Returns:
             A  structure graph with LOBSTER data as edge and node properties in structure graph objects
@@ -860,21 +847,18 @@ class BatchStructureGraphs:
 
 class BatchDosFeaturizer:
     """
-    BatchFeaturizer to generate Lobster DOS moment features and  fingerprints.
+    BatchFeaturizer to generate Lobster DOS moment features and fingerprints.
 
-    Attributes:
-        path_to_lobster_calcs: path to root directory consisting of all lobster calc
-        add_element_dos_moments : add element dos moment features alongside orbital dos
-        normalize: bool to state to normalize the fingerprint data
-        n_bins: sets number for bins for fingerprint objects
-        e_range : range of energy relative to fermi for which moment features needs to be computed
-        n_jobs : number of parallel processes to run
-        fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+    :param add_element_dos_moments: add element dos moment features alongside orbital dos
+    :param normalize: bool to state to normalize the fingerprint data
+    :param n_bins: sets number for bins for fingerprint objects
+    :param e_range: range of energy relative to fermi for which moment features needs to be computed
+    :param n_jobs: number of parallel processes to run
+    :param fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
         (default is summed_pdos)
+    :param use_lso_dos: Will force featurizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster
 
-    Methods:
-        get_df: A pandas dataframe with DOS moment features as columns
-        get_fingerprints_df: A pandas dataframe with DOS fingerprint object as columns
     """
 
     def __init__(
@@ -889,18 +873,17 @@ class BatchDosFeaturizer:
         use_lso_dos: bool = True,
     ):
         """
-        Initialize BatchDosFeaturizer attributes.
+        Initialize BatchDosFeaturizer.
 
-        Args:
-            path_to_lobster_calcs: path to root directory consisting of all lobster calc
-            add_element_dos_moments : add element dos moment features alongside orbital dos
-            normalize: bool to state to normalize the fingerprint data
-            n_bins: sets number for bins for fingerprint objects
-            e_range : range of energy relative to fermi for which moment features needs to be computed
-            n_jobs : number of parallel processes to run
-            fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
+        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
+        :param add_element_dos_moments: add element dos moment features alongside orbital dos
+        :param normalize: bool to state to normalize the fingerprint data
+        :param n_bins: sets number for bins for fingerprint objects
+        :param e_range: range of energy relative to fermi for which moment features needs to be computed
+        :param n_jobs: number of parallel processes to run
+        :param fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`
             (default is summed_pdos)
-            use_lso_dos: Will force feeaturizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster
+        :param use_lso_dos: Will force featurizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster
         """
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.add_element_dos_moments = add_element_dos_moments
@@ -911,7 +894,7 @@ class BatchDosFeaturizer:
         self.n_bins = n_bins
         self.use_lso_dos = use_lso_dos
 
-    def _get_dos_moments_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _get_dos_moments_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize DOSCAR.lobster data using FeaturizeDOSCAR.
 
@@ -961,12 +944,16 @@ class BatchDosFeaturizer:
 
         return df
 
-    def _get_dos_fingerprints_df(self, path_to_lobster_calc) -> pd.DataFrame:
+    def _get_dos_fingerprints_df(
+        self, path_to_lobster_calc: str | Path
+    ) -> pd.DataFrame:
         """
         Featurize DOSCAR.lobster data into fingerprints using FeaturizeDOSCAR.
 
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory.
+
         Returns:
-            A pandas dataframe with DOS finerprint objects
+            A pandas dataframe with DOS fingerprint objects
         """
         dir_name = Path(path_to_lobster_calc)
 
@@ -1017,12 +1004,13 @@ class BatchDosFeaturizer:
 
     def get_df(self) -> pd.DataFrame:
         """
-        Generate a pandas dataframe with moment features.
+        Generate a pandas dataframe with all moment features.
 
-        Moment features are PDOS center, width, skewness, kurtosis and upper band edge.
+        Moment features are PDOS (optional: element dos) center, width, skewness, kurtosis
+        and upper band edge.
 
         Returns:
-            A pandas dataframe
+            A pandas dataframe with moment features
         """
         paths = [
             os.path.join(self.path_to_lobster_calcs, f)
