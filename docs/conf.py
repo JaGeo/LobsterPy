@@ -73,7 +73,7 @@ myst_enable_extensions = [
 ]
 
 nb_execution_timeout = 500
-execution_in_temp=True
+nb_execution_in_temp=True
 
 
 # use type hints
