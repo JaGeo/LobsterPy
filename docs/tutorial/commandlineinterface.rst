@@ -129,13 +129,13 @@ Analyze the lobster outputs with automation
    this command.
 
 .. code:: bash
+
+   lobsterpy description --json description.json
+
+.. code:: bash
    
    The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
    Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, 27.843 percent antibonding interaction below EFermi) bonds.
-   
-::
-
-   lobsterpy description --json description.json
 
 
 Following is the json file produced.
@@ -194,16 +194,15 @@ Following is the json file produced.
    If POTCAR is not available then you need to suppy **--potcar-symbols** along with the command. Other optional files are vasprun.xml if **--doscomp** is switched on.
 
 .. code:: bash
+
+   lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp --calcqualityjson calc_quality_description.json
+
+.. code:: bash
    
    The LOBSTER calculation used minimal basis. The absolute and total charge spilling for the calculation is 0.3 and 5.58 %, respectively. The projected wave function is completely orthonormalized as no
    bandOverlaps.lobster file is generated during the LOBSTER run. The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. The atomic charge signs from Loewdin
    population analysis agree with the bond valence analysis. The Tanimoto index from DOS comparisons in the energy range between -5, 0 eV for s, p, summed orbitals are: 0.9785, 0.9973, 0.9953.
-   
-::
 
-   lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp --calcqualityjson calc_quality_description.json
-   
-   
 -  ``lobsterpy automatic-plot`` command will plot the results
    automatically. It will evaluate all COHPs with ICOHP values down to
    10% of the strongest ICOHP. You can enforce an analysis of all bonds
@@ -215,7 +214,7 @@ Following is the json file produced.
    initial Lobster computation. Below is an example and sample output
    using this command.
 
-::
+.. code:: bash
 
    lobsterpy automatic-plot --title 'Automatic COHP plot' --save-plot COHP.png
    
@@ -225,7 +224,7 @@ You can also plot integrated ICOHP computed by lobster by turning on
 ``--integrated`` flag when executing ``lobsterpy automatic-plot``
 command. Below is an example and sample output using this command.
 
-::
+.. code:: bash
 
    lobsterpy automatic-plot --title 'Automatic ICOHP plot' --integrated --save-plot ICOHP.png
    
@@ -258,14 +257,17 @@ well (–summed, –integrated). You can switch to COBIs or COOPs by using
 –cobis or –coops, respectively. Below is an example output of command to
 plot COHP and COOP for bond 3 and 30.
 
-``lobsterpy plot 3 30 --save-plot COHP_330.png``
+.. code:: bash
 
-``lobsterpy plot 3 30 --coops --save-plot COOP_330.png``
+    lobsterpy plot 3 30 --save-plot COHP_330.png
 
 .. image:: tutorial_assets/COHP_330.png
-    :width: 49 %
+
+.. code:: bash
+
+    lobsterpy plot 3 30 --coops --save-plot COOP_330.png
+
 .. image:: tutorial_assets/COOP_330.png
-    :width: 49 %
 
 
 3. Plotting of DOS
@@ -273,12 +275,20 @@ plot COHP and COOP for bond 3 and 30.
 
 -  ``lobsterpy plot-dos --summedspins`` will plot total and element DOS. Example output plot is shown below.
 
+.. code:: bash
+
+   lobsterpy plot-dos --summedspins
+
 .. image:: tutorial_assets/DOS_example.png
 
 4. Plotting of ICOHPs/ ICOOPs/ICOBIS againsts bond lengths
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  ``lobsterpy plot-icohps-distances`` will plot ICOHPs against bond lengths. Example output plot is shown below.
+
+.. code:: bash
+
+    lobsterpy plot-icohps-distances
 
 .. image:: tutorial_assets/ICOHPs_distance_example.png
 
@@ -292,15 +302,32 @@ either of these commands:
 .. code:: bash
 
    lobsterpy automatic-plot --help
+
+.. code:: bash
+
    lobsterpy automatic-plot-ia --help
-   lobsterpy calc-description -h
+
+.. code:: bash
+
+   lobsterpy calc-description -help
+
+.. code:: bash
+
    lobsterpy create-inputs --help
+
+.. code:: bash
+
    lobsterpy description --help
+
+.. code:: bash
+
    lobsterpy plot-dos --help
-   lobsterpy plot-icohps-distances --help 
+
+.. code:: bash
+
+   lobsterpy plot-icohps-distances --help
+
+.. code:: bash
+
    lobsterpy plot --help
-   
 
-.. code:: ipython3
-
-    os.chdir('..') # Return to parent directory
