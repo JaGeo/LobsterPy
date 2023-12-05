@@ -46,6 +46,7 @@ jobs:
   
     - name: Deploy artifacts to branch
       run: |
+          git branch -a
           git checkout gh-pages
           cp -r _build/ jupyter_execute/ .
           
