@@ -59,6 +59,8 @@ templates_path = ["_templates"]
 exclude_patterns = [
     "test*.py",
     "test",
+    "paper",
+    "paper/*.md",
     "Thumbs.db",
     ".DS_Store",
 ]
