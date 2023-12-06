@@ -5,6 +5,9 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = ["lobsterpy"]
+
 [project]
 name = "lobsterpy"
 description = "Package for automatic bonding analysis with Lobster/VASP"
