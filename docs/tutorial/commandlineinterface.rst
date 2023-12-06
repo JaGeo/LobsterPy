@@ -190,8 +190,8 @@ Following is the json file produced.
 -  ``lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will perform an automated analysis of your lobster calculation quality.
    
 .. note::
-   The LOBSTER calculation directory need to have POTCAR, POSCAR, LOBSTER calculation input and output files to run the **lobsterpy calc-description** command sucessfully. 
-   If POTCAR is not available then you need to suppy **--potcar-symbols** along with the command. Other optional files are vasprun.xml if **--doscomp** is switched on.
+   The LOBSTER calculation directory need to have POTCAR, POSCAR, LOBSTER calculation input and output files to run the **lobsterpy calc-description** command successfully. 
+   If POTCAR is not available then you need to supply **--potcar-symbols** along with the command. Other optional files are vasprun.xml if **--doscomp** is switched on.
 
 .. code:: bash
 
@@ -240,11 +240,11 @@ command. Below is an example and sample output using this command.
    initial Lobster computation. Below is an example and sample output
    using this command. You can also obtain a label resolved plot using
    ``lobsterpy automatic-plot-ia --allbonds --label-resolved`` option
-
-.. raw:: html
-
-   :file: tutorial_assets/CdF2.html
    
+   
+.. raw:: html
+   :file: tutorial_assets/CdF2.html
+
 
 2. Plotting of COHPs/COBIs/COOPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,7 +257,6 @@ well (–summed, –integrated). You can switch to COBIs or COOPs by using
 –cobis or –coops, respectively. Below is an example output of command to
 plot COHP and COOP for bond 3 and 30.
 
-.. code:: bash
 
     lobsterpy plot 3 30 --save-plot COHP_330.png
 
