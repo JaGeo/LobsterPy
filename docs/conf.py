@@ -72,7 +72,7 @@ myst_enable_extensions = [
     "html_image",
 ]
 
-nb_execution_timeout = 500
+nb_execution_timeout = 1000
 
 
 # use type hints
