@@ -6,26 +6,23 @@ Creating input files
 
 .. note::
    
-   Important tags in INCAR of VASP to be paid attention before performing lobster runs are NBANDS, NSW and ISYM. It is absolutely necessary 
-   that VASP static run is performed (no movements of atoms, NSW = 0) before running lobster program. LOBSTER can only deal with VASP WAVECAR 
-   that contain results for the entire mesh or only half of it. 
+   Important tags in INCAR of VASP to pay attention to before performing lobster runs are NBANDS, NSW, and ISYM. A VASP static run must be performed (no movements of atoms, NSW = 0) before running the LOBSTER program. LOBSTER can only deal with VASP WAVECAR that contains results for the entire mesh or only half of it.
    
-   To do this, in the INCAR set ISYM = -1 (entire mesh / symmetry switched off) or ISYM = 0 (half mesh/time-reversal). And to make sure WAVECAR 
-   are written set LWAVE = .TRUE. For pCOHP analyses one needs to have as many bands as there are orbitals in local basis. 
+   To do this, in the INCAR set, `ISYM = -1` (complete mesh/symmetry switched off) or `ISYM = 0` (half mesh/time-reversal). And to make sure WAVECAR is written, set `LWAVE = .TRUE`. For pCOHP analyses, one needs to have as many bands as there are orbitals on a local basis.
    
-   And for pCOHP analyses using LOBSTER, however, you need to manually set NBANDS in the INCAR file.
+   For pCOHP analyses using LOBSTER, however, you need to set NBANDS in the INCAR file manually.
    
 
-With lobsterpy these intricate details are taken care of with single command. We need the standard VASP input files i.e 
-``INCAR, KPOINTS, POTCAR and POSCAR`` in the calculation directory. Once you have these files, one simply needs to run the following command :
+With LobsterPy, these intricate details are handled with a single command. We need the standard VASP input files, i.e. 
+``INCAR, KPOINTS, POTCAR and POSCAR`` in the calculation directory. Once you have these files, one needs to run the following command:
 
 ``lobsterpy create-inputs``
 
-The above command will create set of input files (INCAR and lobsterin) depending on the basis sets that are available in Lobster.
+The above command will create input files (INCAR and lobsterin) depending on the basis sets available in Lobster.
 
-The NBANDS, NSW, ISYM tag will be changed in existing INCAR file and new INCAR files will be written in the existing directory. 
+The NBANDS, NSW, and ISYM tags will be changed in the existing INCAR file, and new INCAR files will be written in the current directory. 
 The newly created INCAR file will be named ``INCAR.lobsterpy`` by default.  
-Simultaneously ``lobsterin.lobsterpy`` files are created that is necessary for lobster run (this is the file that instructs lobster program what computations needed to be performed).
+Simultaneously, ``lobsterin.lobsterpy`` files are created that are necessary for a lobster run (this is the file that instructs the LOBSTER program what computations must be performed).
 
 You can also change the names of output files and path where they are saved using following optional tags:
 
@@ -34,19 +31,19 @@ You can also change the names of output files and path where they are saved usin
 
 For example if ``Cd`` element has two basis sets ``4d 5s`` ``4d 5s 5p``, thus following files are created:
 
-::
+.. code:: bash
 
    INCAR.lobsterpy-0
    INCAR.lobsterpy-1
    lobsterin.lobsterpy-0
    lobsterin.lobsterpy-1
+   
 
 The suffix “-0” & “-1” indicate input files corresponding to smaller and larger basis of ``Cd`` respectively.
 
 .. warning::
      
-     The ‘KPOINTS’ file is not adapted, it is important for user to select appropriate grid density before starting VASP
-     computations. Usually a factor of 50 x reciprocal lattice vectors is sufficient to get reliable bonding analysis results.
+         The ‘KPOINTS’ file is not adapted; the user must select the appropriate grid density before starting VASP computations. Usually, a factor of 50 x reciprocal lattice vectors is sufficient for reliable bonding analysis results.
 
 Running VASP and Lobster program
 --------------------------------
@@ -115,18 +112,15 @@ Lobster job submission script
 Analyze the lobster outputs with automation
 -------------------------------------------
 
-.. code:: ipython3
+.. code:: python
 
     import os
-    os.chdir('Basis_0/') #Navigate to directory containing the files of lobster runs
+    os.chdir('Basis_0/') # Navigate to directory containing the files of lobster runs
 
 1. Automatic analysis and plotting of COHPs/ICOHPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  ``lobsterpy description`` command will perform an automated analysis
-   of COHPs for relevant cation-anion bonds. This command also provides
-   option to save output in json file. Below is an example output of
-   this command.
+-  The ``lobsterpy description`` command will automatically analyze COHPs for relevant cation-anion bonds. This command also   allows saving the output in a JSON file. Below is an example output of this command.
 
 .. code:: bash
 
@@ -187,11 +181,11 @@ Following is the json file produced.
   }
 
 
--  ``lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will perform an automated analysis of your lobster calculation quality.
+-  ``lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will automatically analyze your lobster calculation quality.
    
 .. note::
-   The LOBSTER calculation directory need to have POTCAR, POSCAR, LOBSTER calculation input and output files to run the **lobsterpy calc-description** command sucessfully. 
-   If POTCAR is not available then you need to suppy **--potcar-symbols** along with the command. Other optional files are vasprun.xml if **--doscomp** is switched on.
+   The LOBSTER calculation directory need to have POTCAR, POSCAR, LOBSTER calculation input and output files to run the **lobsterpy calc-description** command successfully. 
+   If POTCAR is not available then you need to supply **--potcar-symbols** along with the command. Other optional files are vasprun.xml if **--doscomp** is switched on.
 
 .. code:: bash
 
@@ -230,32 +224,18 @@ command. Below is an example and sample output using this command.
    
 .. image:: tutorial_assets/ICOHP.png
 
--  ``lobsterpy automatic-plot-ia`` command can be used to obtain a interactive plot of analysis automatically. It will evaluate all COHPs with ICOHP values down to
-   10% of the strongest ICOHP. You can enforce an analysis of all bonds
-   by using ``lobsterpy automatic-plot-ia --allbonds``. Currently, the
-   computed Mulliken charges will be used to determine cations and
-   anions. If no CHARGE.lobster is available, the algorithm will fall
-   back to the BondValence analysis from pymatgen. Please be aware that
-   LobsterPy can only analyze bonds that have been included in the
-   initial Lobster computation. Below is an example and sample output
-   using this command. You can also obtain a label resolved plot using
-   ``lobsterpy automatic-plot-ia --allbonds --label-resolved`` option
-
-.. raw:: html
-
-   :file: tutorial_assets/CdF2.html
+-  ``lobsterpy automatic-plot-ia`` command can be used to obtain a interactive plot of analysis automatically. It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP. You can enforce an analysis of all bonds by using ``lobsterpy automatic-plot-ia --allbonds``. Currently, the computed Mulliken charges will be used to determine cations and anions. If no CHARGE.lobster is available, the algorithm will fall back to the BondValence analysis from pymatgen. Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. You can also obtain a label resolved plot for all bonds using the ``lobsterpy automatic-plot-ia --allbonds --label-resolved`` command. Below is an sample output using ``lobsterpy automatic-plot-ia --label-resolved`` command.
    
+.. raw:: html
+   :file: tutorial_assets/CdF2.html
+
 
 2. Plotting of COHPs/COBIs/COOPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can plot COHPs/COBIs/COOPs from the command line.
 
-``lobsterpy plot 3 30`` will plot COHPs of the first and second bond
-from COHPCAR.lobster. It is possible to sum or integrate the COHPs as
-well (–summed, –integrated). You can switch to COBIs or COOPs by using
-–cobis or –coops, respectively. Below is an example output of command to
-plot COHP and COOP for bond 3 and 30.
+``lobsterpy plot 3 30`` will plot COHPs of the first and second bond from COHPCAR.lobster. It is possible to sum or integrate the COHPs as well (–summed, –integrated). You can switch to COBIs or COOPs by using `--cobis` or `--coops`, respectively. Below is an example output of command to plot COHP and COOP for bond labels 3 and 30.
 
 .. code:: bash
 
