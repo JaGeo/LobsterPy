@@ -8,8 +8,8 @@ from __future__ import annotations
 import gzip
 import json
 import warnings
-from collections import namedtuple
 from pathlib import Path
+from typing import NamedTuple
 
 import numpy as np
 import pandas as pd
@@ -32,15 +32,10 @@ class FeaturizeLobsterpy:
     """
     Class to featurize lobsterpy data.
 
-    Args:
-        path_to_lobster_calc: path to parent directory containing lobster calc outputs
-        path_to_json: path to lobster lightweight json
-        bonds: "all" or "cation-anion" bonds
-        orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
-    Attributes:
-        get_df: returns a pandas dataframe with relevant icohp statistical data as columns from
-        lobsterpy automatic bonding analysis
-
+    :param path_to_lobster_calc: path to parent directory containing lobster calc outputs
+    :param path_to_json: path to lobster lightweight json
+    :param bonds: "all" or "cation-anion" bonds
+    :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
     """
 
     def __init__(
@@ -50,16 +45,7 @@ class FeaturizeLobsterpy:
         orbital_resolved: bool = False,
         bonds: str = "all",
     ):
-        """
-        Extract features from Lobster calculations.
-
-        Args:
-            path_to_lobster_calc: path to parent directory containing lobster calc outputs
-            path_to_json: path to lobster lightweight json
-            orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
-            bonds: "all" or "cation-anion" bonds
-
-        """
+        """Initialize featurizer."""
         self.path_to_json = path_to_json
         self.path_to_lobster_calc = path_to_lobster_calc
         self.orbital_resolved = orbital_resolved
@@ -69,9 +55,11 @@ class FeaturizeLobsterpy:
         """
         Featurize LobsterPy condensed bonding analysis data.
 
+        :param ids: set index name in the pandas dataframe. Default is None.
+            When None, LOBSTER calc directory name is used as index name.
+
         Returns:
             Returns a pandas dataframe with lobsterpy icohp statistics
-
         """
         if self.path_to_json and not self.path_to_lobster_calc:
             # read the lightweight lobster json files using read_lobster_lightweight_json method
@@ -330,8 +318,7 @@ class FeaturizeLobsterpy:
         """
         Read the lightweight JSON.gz files and return a Python dictionary object.
 
-        Args:
-            path_to_json: path to lobsterpy lightweight json file
+        :param path_to_json: path to lobsterpy lightweight json file
 
         Returns:
             Returns a dictionary with lobster summarized bonding analysis data
@@ -364,10 +351,9 @@ class FeaturizeLobsterpy:
         """
         Generate a Python dictionary object using the Analysis class with condensed bonding analysis data.
 
-        Args:
-            path_to_lobster_calc: path to lobsterpy lightweight json file
-            bonds: "all" or "cation-anion" bonds
-            orbital_resolved:  bool indicating whether analysis is performed orbital wise
+        :param path_to_lobster_calc: path to lobsterpy lightweight json file
+        :param bonds: "all" or "cation-anion" bonds
+        :param orbital_resolved:  bool indicating whether analysis is performed orbital wise
 
         Returns:
             Returns a dictionary with lobster summarized bonding analysis data
@@ -464,29 +450,41 @@ class FeaturizeLobsterpy:
         return data
 
 
-coxx_fingerprint = namedtuple(
-    "coxx_fingerprint", "energies coxx fp_type spin_type n_bins bin_width"
-)
+class CoxxFingerprint(NamedTuple):
+    """
+    Represents a Coxx fingerprint.
+
+    This named tuple is used to store information related to a Coxx fingerprint, which
+    includes energies, Coxx values, fingerprint type, spin type, number of bins, and bin width.
+
+    :param energies: The energy values associated with the Coxx fingerprint.
+    :param coxx: The Coxx values corresponding to each energy.
+    :param fp_type: The type of the Coxx fingerprint.
+    :param spin_type: The spin type associated with the fingerprint.
+    :param n_bins: The number of bins used in the Coxx fingerprint.
+    :param bin_width: The width of each bin in the Coxx fingerprint.
+    """
+
+    energies: np.ndarray
+    coxx: np.ndarray
+    fp_type: str
+    spin_type: str
+    n_bins: int
+    bin_width: float
 
 
 class FeaturizeCOXX:
     """
     Class to featurize COHPCAR, COBICAR or COOPCAR data.
 
-    Args:
-        path_to_coxxcar: path to COXXCAR.lobster (e.g., "COXXCAR.lobster")
-        path_to_icoxxlist : path to ICOXXLIST.lobster (e.g., "ICOXXLIST.lobster")
-        path_to_structure : path to structure file (e.g., "POSCAR")
-        feature_type: set the feature type for moment features and fingerprints.
-        Possible options are "bonding", "antibonding" or "overall"
-        are_cobis : bool indicating if file contains COBI/ICOBI data
-        are_coops : bool indicating if file contains COOP/ICOOP data
-        e_range : range of energy relative to fermi for which moment features needs to be computed
-
-    Attributes:
-        get_df: pandas dataframe
-        get_coxx_fingerprint_df: pandas dataframe
-
+    :param path_to_coxxcar: path to COXXCAR.lobster (e.g., `COXXCAR.lobster`)
+    :param path_to_icoxxlist: path to ICOXXLIST.lobster (e.g., `ICOXXLIST.lobster`)
+    :param path_to_structure: path to structure file (e.g., `POSCAR`)
+    :param feature_type: set the feature type for moment features and fingerprints.
+        Possible options are `bonding`, `antibonding` or `overall`.
+    :param are_cobis: bool indicating if file contains COBI/ICOBI data.
+    :param are_coops: bool indicating if file contains COOP/ICOOP data.
+    :param e_range: range of energy relative to fermi for which moment features needs to be computed
     """
 
     def __init__(
@@ -502,15 +500,14 @@ class FeaturizeCOXX:
         """
         Featurize COHPCAR, COBICAR or COOPCAR data.
 
-        Args:
-            path_to_coxxcar: path to COXXCAR.lobster (e.g., "COXXCAR.lobster")
-            path_to_icoxxlist : path to ICOXXLIST.lobster (e.g., "ICOXXLIST.lobster")
-            path_to_structure : path to structure file (e.g., "POSCAR")
-            feature_type: set the feature type for moment features and fingerprints.
-            Possible options are "bonding", "antibonding" or "overall"
-            are_cobis : bool indicating if file contains COBI/ICOBI data
-            are_coops : bool indicating if file contains COOP/ICOOP data
-            e_range : range of energy relative to fermi for which moment features needs to be computed
+        :param path_to_coxxcar: path to COXXCAR.lobster (e.g., `COXXCAR.lobster`)
+        :param path_to_icoxxlist: path to ICOXXLIST.lobster (e.g., `ICOXXLIST.lobster`)
+        :param path_to_structure: path to structure file (e.g., `POSCAR`)
+        :param feature_type: set the feature type for moment features and fingerprints.
+            Possible options are `bonding`, `antibonding` or `overall`.
+        :param are_cobis: bool indicating if file contains COBI/ICOBI data
+        :param are_coops: bool indicating if file contains COOP/ICOOP data
+        :param e_range: range of energy relative to fermi for which moment features needs to be computed
 
         """
         self.path_to_coxxcar = path_to_coxxcar
@@ -547,17 +544,17 @@ class FeaturizeCOXX:
         """
         Generate a COXX fingerprints dataframe.
 
-        Args:
-            ids: sets index of pandas dataframe
-            spin_type: Specify spin type. Can accept '{summed/up/down}'
+        :param ids: set index name in the pandas dataframe. Default is None.
+            When None, LOBSTER calc directory name is used as index name.
+        :param spin_type: Specify spin type. Can accept '{summed/up/down}'
             (default is summed)
-            binning: If true coxxs will be binned
-            n_bins: Number of bins to be used in the fingerprint (default is 256)
-            normalize: If true, normalizes the area under fp to equal to 1 (default is True)
-            label_list: Specify bond labels as a list for which cohp fingerprints are needed
-            orbital: Orbital for which fingerprint needs is to be computed. Cannot be used independently.
+        :param binning: If true coxxs will be binned
+        :param n_bins: Number of bins to be used in the fingerprint (default is 256)
+        :param normalize: If true, normalizes the area under fp to equal to 1 (default is True)
+        :param label_list: Specify bond labels as a list for which cohp fingerprints are needed
+        :param orbital: Orbital for which fingerprint needs is to be computed. Cannot be used independently.
             Always a needs label_list.
-            per_bond: Will scale cohp values by number of bonds i.e. length of label_list arg
+        :param per_bond: Will scale cohp values by number of bonds i.e. length of label_list arg
             (Only affects when label_list is not None)
 
         Raises:
@@ -645,7 +642,7 @@ class FeaturizeCOXX:
             coxxs = coxx_dict[self.feature_type]
             if len(energies) < n_bins:
                 inds = np.where((energies >= min_e - tol) & (energies <= max_e + tol))
-                fp = coxx_fingerprint(
+                fp = CoxxFingerprint(
                     energies[inds],
                     coxxs[inds],
                     self.feature_type,
@@ -679,7 +676,7 @@ class FeaturizeCOXX:
             else:
                 coxx_rebin_sc = coxx_rebin
 
-            fp = coxx_fingerprint(
+            fp = CoxxFingerprint(
                 np.array([ener]),
                 coxx_rebin_sc,
                 self.feature_type,
@@ -786,19 +783,18 @@ class FeaturizeCOXX:
         e_range: list[float],
         label_list: list[str] | None = None,
         orbital: str | None = None,
-        per_bond=True,
+        per_bond: bool = True,
     ) -> tuple[float, float, float, float, float]:
         """
         Calculate band center,width, skewness, and kurtosis of the COXX.
 
-        Args:
-            complete_coxx_obj: CompleteCohp object
-            feature_type: feature type for moment features calculation
-            e_range: range of energy relative to fermi for which moment features needs to be computed
-            label_list: List of bond labels
-            orbital: orbital for which moment features need to be calculated. Cannot be used independently.
+        :param complete_coxx_obj: CompleteCohp object
+        :param feature_type: feature type for moment features calculation
+        :param e_range: range of energy relative to fermi for which moment features needs to be computed
+        :param label_list: List of bond labels
+        :param orbital: orbital for which moment features need to be calculated. Cannot be used independently.
             Always needs a label_list.
-            per_bond: Will scale cohp values by number of bonds i.e. length of label_list arg
+        :param per_bond: Will scale cohp values by number of bonds i.e. length of label_list arg
             (Only affects when label_list is not None)
 
         Returns:
@@ -909,10 +905,9 @@ class FeaturizeCOXX:
         """
         Get the bandwidth, defined as the first moment of the COXX.
 
-        Args:
-            coxx: COXX array
-            energies: energies corresponding  COXX
-            e_range: range of energy to compute coxx center
+        :param coxx: COXX array
+        :param energies: energies corresponding  COXX
+        :param e_range: range of energy to compute coxx center
 
         Returns:
             coxx center in eV
@@ -932,13 +927,12 @@ class FeaturizeCOXX:
         """
         Get the nth moment of COXX.
 
-        Args:
-            n: The order for the moment
-            coxx: COXX array
-            energies: energies array
-            e_range: range of energy to compute nth moment
-            center: Take moments with respect to the COXX center
-            e_range: range of energy to compute nth moment
+        :param n: The order for the moment
+        :param coxx: COXX array
+        :param energies: energies array
+        :param e_range: range of energy to compute nth moment
+        :param center: Take moments with respect to the COXX center
+        :param e_range: range of energy to compute nth moment
 
         Returns:
             COXX nth moment in eV
@@ -980,10 +974,9 @@ class FeaturizeCOXX:
         """
         Get the highest peak position of hilbert transformed COXX.
 
-        Args:
-            coxx: COXX array
-            energies: energies array
-            e_range: range of energy to coxx edge (max peak position)
+        :param coxx: COXX array
+        :param energies: energies array
+        :param e_range: range of energy to coxx edge (max peak position)
 
         Returns:
             COXX edge (max peak position) in eV
@@ -1014,13 +1007,21 @@ class FeaturizeCOXX:
         self,
         ids: str | None = None,
         label_list: list[str] | None = None,
-        per_bond=True,
+        per_bond: bool = True,
     ) -> pd.DataFrame:
         """
         Get a pandas dataframe with COXX features.
 
         Features consist of weighted ICOXX, effective interaction number and
         moment features of COXX in the selected energy range.
+
+        :param ids: set index name in the pandas dataframe. Default is None.
+            When None, LOBSTER calc directory name is used as index name.
+        :param label_list: list of bond labels to be used for generating features from
+            COHPCAR.lobster or COOPCAR.lobster or COBICAR.lobster. Default is None.
+            When None, all bond labels are used.
+        :param per_bond: Defaults to True. When True, features are normalized
+            by total number of bonds in the structure.
 
         Returns:
             Returns a pandas dataframe with cohp/cobi/coop related features as per input file
@@ -1071,14 +1072,10 @@ class FeaturizeCharges:
     """
     Class to compute ionicity from CHARGE.lobster data.
 
-    Args:
-        path_to_structure: path to POSCAR
-        path_to_charge : path to CHARGE.lobster (e.g., "CHARGE.lobster")
-        charge_type : set charge type used for computing ionicity. Possible options are "Mulliken" or "Loewdin"
-
-    Attributes:
-        get_df: pandas dataframe
-
+    :param path_to_structure: path to POSCAR
+    :param path_to_charge: path to CHARGE.lobster (e.g., `CHARGE.lobster`)
+    :param charge_type: set charge type used for computing ionicity.
+        Possible options are `Mulliken` or `Loewdin`
     """
 
     def __init__(
@@ -1090,11 +1087,10 @@ class FeaturizeCharges:
         """
         Compute the Ionicity of the structure from CHARGE.lobster data.
 
-        Args:
-            path_to_structure: path to POSCAR
-            path_to_charge : path to CHARGE.lobster (e.g., "CHARGE.lobster")
-            charge_type : set charge type used for computing ionicity. Possible options are "Mulliken" or "Loewdin"
-
+        :param path_to_structure: path to POSCAR
+        :param path_to_charge: path to CHARGE.lobster (e.g., `CHARGE.lobster`)
+        :param charge_type: set charge type used for computing ionicity.
+            Possible options are `Mulliken` or `Loewdin`
         """
         self.path_to_structure = path_to_structure
         self.path_to_charge = path_to_charge
@@ -1184,6 +1180,9 @@ class FeaturizeCharges:
         """
         Return a pandas dataframe with computed ionicity as columns.
 
+        :param ids: set index name in the pandas dataframe. Default is None.
+            When None, LOBSTER calc directory name is used as index name.
+
         Returns:
             Returns a pandas dataframe with ionicity
 
@@ -1202,23 +1201,36 @@ class FeaturizeCharges:
         return df
 
 
-dos_fingerprint = namedtuple(
-    "dos_fingerprint", "energies densities type n_bins bin_width"
-)
+class DosFingerprint(NamedTuple):
+    """
+    Represents a Density of States (DOS) fingerprint.
+
+    This named tuple is used to store information related to the Density of States (DOS)
+    in a material. It includes the energies, densities, type, number of bins, and bin width.
+
+    :param energies: The energy values associated with the DOS.
+    :param densities: The corresponding density values for each energy.
+    :param type: The type of DOS fingerprint.
+    :param n_bins: The number of bins used in the fingerprint.
+    :param bin_width: The width of each bin in the DOS fingerprint.
+    """
+
+    energies: np.ndarray
+    densities: np.ndarray
+    type: str
+    n_bins: int
+    bin_width: float
 
 
 class FeaturizeDoscar:
     """
     Class to compute DOS moments and fingerprints from DOSCAR.lobster / DOSCAR.LSO.lobster.
 
-    Attributes:
-        path_to_structure: path to POSCAR
-        path_to_doscar : path to DOSCAR.lobster or DOSCAR.LSO.lobster
-        e_range : range of energy relative to fermi for which moment features and features needs to be computed
-
-    Methods:
-        get_df: pandas dataframe
-
+    :param path_to_structure: path to POSCAR
+    :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster
+    :param e_range: range of energy relative to fermi for which moment features and
+        features needs to be computed
+    :param add_element_dos_moments: add element dos moment features alongside orbital dos
     """
 
     def __init__(
@@ -1231,12 +1243,11 @@ class FeaturizeDoscar:
         """
         Featurize DOSCAR.lobster or DOSCAR.LSO.lobster data.
 
-        Args:
-            path_to_structure: path to POSCAR
-            path_to_doscar : path to DOSCAR.lobster or DOSCAR.LSO.lobster
-            e_range : range of energy relative to fermi for which moment features and features needs to be computed
-            add_element_dos_moments : add element dos moment features alongside orbital dos
-
+        :param path_to_structure: path to POSCAR
+        :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster
+        :param e_range: range of energy relative to fermi for which moment features and
+            features needs to be computed
+        :param add_element_dos_moments: add element dos moment features alongside orbital dos
         """
         self.path_to_structure = path_to_structure
         self.path_to_doscar = path_to_doscar
@@ -1249,6 +1260,9 @@ class FeaturizeDoscar:
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """
         Return a pandas dataframe with computed DOS moment features as columns.
+
+        :param ids: set index name in the pandas dataframe. Default is None.
+            When None, LOBSTER calc directory name is used as index name.
 
         Moment features are PDOS center, width, skewness, kurtosis and upper band edge.
 
@@ -1329,14 +1343,14 @@ class FeaturizeDoscar:
         """
         Generate a dataframe consisting of DOS fingerprint (fp).
 
-        Args:
-            ids: set index of pandas dataframe
-            fp_type: Specify fingerprint type to compute, can accept `s/p/d/f/summed_pdos`
+        :param ids: set index name in the pandas dataframe. Default is None.
+            When None, LOBSTER calc directory name is used as index name.
+        :param fp_type: Specify fingerprint type to compute, can accept `s/p/d/f/summed_pdos`
             (default is summed_pdos)
-            binning: If true, the DOS fingerprint is binned using np.linspace and n_bins.
+        :param binning: If true, the DOS fingerprint is binned using np.linspace and n_bins.
             Default is True.
-            n_bins: Number of bins to be used in the fingerprint (default is 256)
-            normalize: If true, normalizes the area under fp to equal to 1. Default is True.
+        :param n_bins: Number of bins to be used in the fingerprint (default is 256)
+        :param normalize: If true, normalizes the area under fp to equal to 1. Default is True.
 
         Returns:
             A pandas dataframe object with DOS fingerprints
@@ -1356,6 +1370,6 @@ class FeaturizeDoscar:
             min_e=self.e_range[0] if self.e_range is not None else None,
         )._asdict()
 
-        df.loc[ids, "DOS_FP"] = dos_fingerprint(**fp)
+        df.loc[ids, "DOS_FP"] = DosFingerprint(**fp)
 
         return df

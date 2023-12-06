@@ -21,8 +21,28 @@ class LobsterGraph:
     """
     Class to generate structure graph objects with bonding data from Lobster.
 
+    Mode of automatic bonding analysis can be `cation-anion` or `all` bonds. The strongest bond is
+    determined based on the ICOHPs. The coordination environments are determined based on
+    `cutoff_icohp * ICOHPs` values. If the path of ICOBILIST (ICOOPLIST) is provided, the ICOBI (ICOOP)
+    values corresponding to relevant bond labels obtained from the ICOHPLIST are also added as edge properties
+    to the structure graph objects. The Mulliken and Loewdin charges are added as node properties to
+    the structure graph objects.
+
     Attributes:
         sg: return structure_graph object
+
+    :param path_to_poscar: path to POSCAR (e.g., "POSCAR").
+    :param path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster").
+    :param path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster").
+    :param path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster").
+    :param path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster").
+    :param path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster").
+    :param path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
+    :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.
+    :param add_additional_data_sg: if True will add the information from ICOOPLIST.lobster
+        and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond.
+    :param which_bonds: selects which kind of bonds are analyzed. "all" is the default.
+    :param start: start energy for bonding antibonding percent integration.
     """
 
     def __init__(
@@ -32,39 +52,14 @@ class LobsterGraph:
         path_to_cohpcar: str | Path,
         path_to_icohplist: str | Path,
         path_to_madelung: str | Path,
-        add_additional_data_sg=True,
+        add_additional_data_sg: bool = True,
         path_to_icooplist: str | Path | None = None,
         path_to_icobilist: str | Path | None = None,
         which_bonds: str = "all",
         cutoff_icohp: float = 0.10,
         start: float | None = None,
     ):
-        """
-        Return a structure graph objects with bonding information from Lobster data.
-
-        Mode of automatic bonding analysis can be “cation-anion” or “all” bonds. The strongest bond is
-        determined based on the ICOHPs. The coordination environments are determined based on
-        cutoff_icohp *ICOHPs values. If the path of ICOBILIST (ICOOPLIST) is provided, the ICOBI (ICOOP)
-        values corresponding to relevant bond labels obtained from the ICOHPLIST are also added as edge properties
-        to the structure graph objects. The Mulliken and Loewdin charges are added as node properties to
-        the structure graph objects.
-
-
-        Args:
-            path_to_poscar: path to POSCAR (e.g., "POSCAR")
-            path_to_charge: path to CHARGE.lobster (e.g., "CHARGE.lobster")
-            path_to_cohpcar: path to COHPCAR.lobster (e.g., "COHPCAR.lobster")
-            path_to_icohplist: path to ICOHPLIST.lobster (e.g., "ICOHPLIST.lobster")
-            path_to_icooplist: path to ICOOPLIST.lobster (e.g., "ICOOPLIST.lobster")
-            path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster")
-            path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
-            cutoff_icohp : only bonds that are stronger than cutoff_icohp*strongest ICOHP will be considered
-            add_additional_data_sg: (bool) if True will add the information from ICOOPLIST.lobster
-            and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond
-            which_bonds: selects which kind of bonds are analyzed. "all" is the default
-            start: start energy for bonding antibonding percent integration
-
-        """
+        """Initialize and return a structure graph object."""
         if add_additional_data_sg:
             self.add_additional_data_sg = add_additional_data_sg
             if path_to_icooplist is not None and path_to_icobilist is not None:
@@ -76,7 +71,7 @@ class LobsterGraph:
                     "Please provide path_to_icooplist and path_to_icobilist"
                 )
         else:
-            self.add_additional_data_sg = add_additional_data_sg
+            self.add_additional_data_sg = add_additional_data_sg  # type: ignore
 
         self.path_to_poscar = path_to_poscar
         self.path_to_charge = path_to_charge

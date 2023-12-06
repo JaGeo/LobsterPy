@@ -21,8 +21,7 @@ class Description:
         """
         Generate a text description for all relevant bonds.
 
-        Args:
-            analysis_object: Analysis object from lobsterpy.analysis
+        :param analysis_object: Analysis object from lobsterpy.analysis
         """
         self.analysis_object = analysis_object
         self.set_description()
@@ -274,11 +273,10 @@ class Description:
         """
         Generate text from orbital-resolved analysis data of the most relevant COHP, COOP, or COBI.
 
-        Args:
-            orbital_resolved_data : dict of orbital data from condensed bonding analysis object
-            ion: name of ion at the site
-            atom_name: name of atomic speice to which ion is bonded
-            type_pop: population type analysed could be "COHP" or "COOP" or "COBI"
+        :param orbital_resolved_data: dict of orbital data from condensed bonding analysis object
+        :param ion: name of ion at the site
+        :param atom_name: name of atomic speice to which ion is bonded
+        :param type_pop: population type analysed could be "COHP" or "COOP" or "COBI"
 
         Returns:
             A python list with text describing the orbital which contributes
@@ -438,28 +436,27 @@ class Description:
 
     def plot_cohps(
         self,
-        save=False,
-        filename=None,
-        ylim=[-4, 2],
-        xlim=None,
-        integrated=False,
-        title="",
-        sigma=None,
-        hide=False,
+        xlim: list[float] | None = None,
+        ylim: list[float] | None = [-4, 2],
+        integrated: bool = False,
+        title: str = "",
+        save: bool = False,
+        filename: str | None = None,
+        sigma: float | None = None,
+        hide: bool = False,
     ):
         """
         Automatically generate plots of the most relevant COHPs, COOPs, or COBIs.
 
-        Args:
-            save (bool): will save the plot to a file
-            filename (str/Path): name of the file to save the plot.
-            ylim (list of float): energy scale that is shown in plot (eV)
-            xlim(list of float): energy range for COHPs in eV
-            integrated (bool): if True, integrated COHPs will be shown
-            sigma: Standard deviation of Gaussian broadening applied to
+        :param save: will save the plot to a file
+        :param filename: name of the file to save the plot.
+        :param ylim: energy scale that is shown in plot (eV)
+        :param xlim: energy range for COHPs in eV
+        :param integrated: if True, integrated COHPs will be shown
+        :param sigma: Standard deviation of Gaussian broadening applied to
             population data. If None, no broadening will be added.
-            title: sets the title of figure generated
-            hide (bool): if True, the plot will not be shown.
+        :param title: sets the title of figure generated
+        :param hide: if True, the plot will not be shown.
 
         Returns:
             A matplotlib object.
@@ -495,9 +492,9 @@ class Description:
             if save:
                 if len(seq_ineq_cations) > 1:
                     if isinstance(filename, str):
-                        filename = Path(filename)
+                        filename = Path(filename)  # type: ignore
                     filename_new = (
-                        filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"
+                        filename.parent / f"{filename.stem}-{iplot}{filename.suffix}"  # type: ignore
                     )
                 else:
                     filename_new = filename
@@ -510,32 +507,31 @@ class Description:
 
     def plot_interactive_cohps(
         self,
-        save_as_html=False,
-        filename=None,
-        ylim=None,
-        xlim=None,
-        integrated=False,
-        title="",
-        sigma=None,
-        label_resolved=False,
-        orbital_resolved=False,
-        hide=False,
+        ylim: list[float] | None = None,
+        xlim: list[float] | None = None,
+        save_as_html: bool = False,
+        filename: str | None = None,
+        integrated: bool = False,
+        title: str = "",
+        sigma: float | None = None,
+        label_resolved: bool = False,
+        orbital_resolved: bool = False,
+        hide: bool = False,
     ):
         """
         Automatically generate interactive plots of the most relevant COHPs, COBIs or COOPs.
 
-        Args:
-            save_as_html (bool): will save the plot to a html file
-            filename (str/Path): name of the file to save the plot.
-            ylim (list of float): energy scale that is shown in plot (eV)
-            xlim (list of float): energy range for COHPs in eV
-            integrated (bool): if True, integrated COHPs will be shown
-            sigma: Standard deviation of Gaussian broadening applied to
+        :param save_as_html: will save the plot to a html file
+        :param filename: name of the file to save the plot.
+        :param ylim: energy scale that is shown in plot (eV)
+        :param xlim: energy range for COHPs in eV
+        :param integrated: if True, integrated COHPs will be shown
+        :param sigma: Standard deviation of Gaussian broadening applied to
             population data. If None, no broadening will be added.
-            label_resolved: if true, relevant cohp curves will be further resolved based on band labels
-            orbital_resolved: if true, relevant orbital interactions in cohp curves will be added to figure
-            title : Title of the interactive plot
-            hide (bool): if True, the plot will not be shown.
+        :param label_resolved: if true, relevant cohp curves will be further resolved based on band labels
+        :param orbital_resolved: if true, relevant orbital interactions in cohp curves will be added to figure
+        :param title: Title of the interactive plot
+        :param hide: if True, the plot will not be shown.
 
         Returns:
             A plotly.graph_objects.Figure object.
@@ -578,12 +574,11 @@ class Description:
         return plot
 
     @staticmethod
-    def _coordination_environment_to_text(ce):
+    def _coordination_environment_to_text(ce: str):
         """
         Convert a coordination environment string into a text description of the environment.
 
-        Args:
-            ce (str): output from ChemEnv package (e.g., "O:6")
+        :param ce: output from ChemEnv package (e.g., "O:6")
 
         Returns:
             A text description of coordination environment
@@ -794,8 +789,7 @@ class Description:
         """
         Generate a text description of the LOBSTER calculation quality.
 
-        Args:
-            quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
+        :param quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
         """
         text_des = []
 
