@@ -1,6 +1,6 @@
 # Developer Installation
 
-Install Lobsterpy from source, by cloning the repository from [github](https://github.com/JaGeo/LobsterPy.git)
+Install LobsterPy from source, by cloning the repository via [github](https://github.com/JaGeo/LobsterPy.git)
 
 ```bash
 git clone https://github.com/JaGeo/LobsterPy.git
@@ -35,7 +35,7 @@ Once installed, you can now use multiple processors to run your tests. For examp
 pytest -n 8
 ```
 
-We rely on pytest-split to run tests in parallel on github workflow, thus it is necessary to update the test-durations files in the repo, incase you add new tests. To generate this file, use
+We rely on pytest-split to run tests in parallel on github workflow, thus it is necessary to update the test-durations files in the repository, incase you add new tests. To generate this file, use
 
 ```bash
 pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./tests/test_data/.pytest-split-durations --store-durations
