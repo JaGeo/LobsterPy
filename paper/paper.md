@@ -45,37 +45,32 @@ featurize and structure graphs utility sub-packages provide a pathway to enginee
 studies. Alongside its Python interface, it also provides an easy-to-use command line interface (CLI) that runs automatic analysis
 of the computations and generates a summary of results and publication-ready figures.
 
-_Lobsterpy_ was used to produce the results in [@ngo2023dft, @morgan2023structures, @naik2023quantumchemical]
+_Lobsterpy_ has been used to produce the results in [@ngo2023dft, @morgan2023structures, @naik2023quantumchemical]
 
 # Statement of need
-Although the idea of "chemical bonding" might seem perplexing from a
-physical standpoint, it has been employed several times to explain
-various chemical phenomena and material properties.[@das2023strong, @ertural2022first,
-@hu2023mechanism] With the recent
-advances in automation frameworks for high-throughput computational
-investigations, bonding analysis for thousands of crystalline materials
-could be performed with few lines of code.[@george2022automated] This
-automation helps reduce the common mistakes inexperienced users make
-while performing bonding analysis. However, it is essential to systematically
-generate inputs and post-process the output files consistently to have
-reliable and reproducible results. Furthermore,
-having data from high-throughput calculations ready to utilize as inputs
-would benefit data-driven material science research. _Lobsterpy_ aims to fulfill
-this missing link.
+Although "bonds" might seem perplexing from a physicist's standpoint, it has been employed several times to explain various
+chemical phenomena and material properties.[@das2023strong, @ertural2022first, @hu2023mechanism] With the recent advances in
+automation frameworks for high-throughput computational investigations, bonding analysis for thousands of crystalline materials
+could be performed with few lines of code.[@george2022automated] This automation helps reduce the common mistakes inexperienced
+users make while performing bonding analysis. However, it is also essential to systematically generate inputs and post-process
+the output files consistently to have reliable and reproducible results. Furthermore, transforming the data from these high-throughput
+bonding analysis calculations into a format suitable for ML studies should benefit data-driven material science research.
+_Lobsterpy_ aims to fulfill this need.
 
 # Features
-- Automatic summarized bonding analysis JSONs and text descriptions based on COHPs (ICOHPs), COBIs (ICOBIs) and COOPs (ICOOPs)
-- JSONs and textual description of LOBSTER calculation quality
-- Static and interactive plots of most relevant COHPs, COBIs and COOPs
-- Generate inputs for bonding analysis calculations
-- Generate features to be used for ML studies
-- Command line interface for automatic bonding analysis and plotting.
-
+- Automatic summarized bonding analysis JSONs and text descriptions based on COHPs (ICOHPs), COBIs (ICOBIs), and COOPs (ICOOPs)
+- Automatic generation of static and interactive plots of the most relevant COHPs, COBIs, and COOPs
+- Customizable plotters for COHPs (ICOHPs), COBIs (ICOBIs), COOPs (ICOOPs) and DOS
+- Benchmarking and extracting LOBSTER calculation quality summary JSONs and text descriptions
+- Create inputs for LOBSTER calculations from VASP files
+- Extract features from LOBSTER calculation files to be used for ML studies
+- Command line interface for automatic bonding analysis and plotting
 
 # Availability
-Lobsterpy can be found on GitHub and is also available from PyPI.
-Detailed software documentation including [implementation details](https://jageo.github.io/LobsterPy/fundamentals/index.html) and [installation instructions](https://jageo.github.io/LobsterPy/installation/index.html) are provided.
-The package also comes with [tutorials](https://jageo.github.io/LobsterPy/tutorial/index.html) illustrating the usage and features.
+LobsterPy can also be found [PyPI](https://pypi.org/project/lobsterpy/). Detailed software documentation,
+including [installation instructions](https://jageo.github.io/LobsterPy/installation/index.html) and
+[implementation details](https://jageo.github.io/LobsterPy/fundamentals/index.html) are provided. The package
+also includes [tutorials](https://jageo.github.io/LobsterPy/tutorial/index.html) illustrating all the functionalities.
 
 # Acknowledgements
 The authors would like to acknowledge the Gauss Centre for Super
@@ -84,6 +79,6 @@ providing generous computing time on the GCS Supercomputer
 SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de)
 (project pn73da) that enabled rigorous testing of this
 package on a diverse set of compounds. We also acknowledge
-the maintainers of pymatgen.
+the maintainers of pymatgen and LOBSTER program developers.
 
 # References
