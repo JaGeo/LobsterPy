@@ -33,17 +33,17 @@ bibliography: paper.bib
 
 ---
 # Summary
-The LOBSTER software helps extract chemical bonding information from materials by post-processing the density functional theory
-computational data by projecting the wave functions onto an atomic orbital basis.  _LobsterPy_ is a Python package that provides
-convenient tools to systematically analyze, describe, and visualize these LOBSTER computations results. Since its first release,
-its capabilities have been extended significantly. Unlike earlier versions which could only automatically analyze Crystal Orbital
-Hamilton Populations (COHPs)[@dronskowski1993crystal], _LobsterPy_ can now also analyze Crystal Orbital Overlap Populations
-(COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal] to extract summarized bonding
-information (includes information on coordination environments, bond strengths, most relevant bonds, bonding and anti-bonding
-contributions). Optionally, users can further extract the most important orbitals contributing to the relevant bonds. Additionally,
-featurize and structure graphs utility sub-packages provide a pathway to engineer features to be used further for machine learning
-studies. Alongside its Python interface, it also provides an easy-to-use command line interface (CLI) that runs automatic analysis
-of the computations and generates a summary of results and publication-ready figures.
+The LOBSTER software aids in extracting chemical bonding information from materials. It does this by projecting the
+density functional theory wave functions onto an atomic orbital basis.  _LobsterPy_ is a Python package
+that provides convenient tools to systematically analyze, describe, and visualize such LOBSTER computations results.
+Since its first release, its capabilities have been extended significantly. Unlike earlier versions which could only
+automatically analyze Crystal Orbital Hamilton Populations (COHPs)[@dronskowski1993crystal], _LobsterPy_ can now also analyze
+Crystal Orbital Overlap Populations (COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal] to
+extract summarized bonding information (includes information on coordination environments, bond strengths, most relevant bonds,
+bonding and anti-bonding contributions). Optionally, users can further extract the most important orbitals contributing to the
+relevant bonds. Additionally, featurize and structure graphs utility sub-packages provide a pathway to engineer features to be
+used further for machine learning (ML) studies. Alongside its Python interface, it also provides an easy-to-use command line
+interface (CLI) that runs automatic analysis of the computations and generates a summary of results and publication-ready figures.
 
 _LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical]
 
