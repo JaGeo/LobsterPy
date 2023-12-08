@@ -1,5 +1,5 @@
 ---
-title: 'LobsterPy: Package to automatically analyze Lobster runs'
+title: 'LobsterPy: Package to automatically analyze LOBSTER runs'
 tags:
   - Python
   - Automation
@@ -34,18 +34,18 @@ bibliography: paper.bib
 ---
 # Summary
 The LOBSTER software helps extract chemical bonding information from materials by post-processing the density functional theory
-computational data by projecting the wave functions onto an atomic orbital basis.  _Lobsterpy_ is a Python package that provides
+computational data by projecting the wave functions onto an atomic orbital basis.  _LobsterPy_ is a Python package that provides
 convenient tools to systematically analyze, describe, and visualize these LOBSTER computations results. Since its first release,
 its capabilities have been extended significantly. Unlike earlier versions which could only automatically analyze Crystal Orbital
-Hamilton Populations (COHPs)[@dronskowski1993crystal], LobsterPy can now also analyze crystal orbital overlap populations
-(COOP)[@hughbanks1983chains] and Crystal orbital bond index (COBI)[@mueller2021crystal] to extract summarized bonding
+Hamilton Populations (COHPs)[@dronskowski1993crystal], _LobsterPy_ can now also analyze Crystal Orbital Overlap Populations
+(COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal] to extract summarized bonding
 information (includes information on coordination environments, bond strengths, most relevant bonds, bonding and anti-bonding
 contributions). Optionally, users can further extract the most important orbitals contributing to the relevant bonds. Additionally,
 featurize and structure graphs utility sub-packages provide a pathway to engineer features to be used further for machine learning
 studies. Alongside its Python interface, it also provides an easy-to-use command line interface (CLI) that runs automatic analysis
 of the computations and generates a summary of results and publication-ready figures.
 
-_Lobsterpy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical]
+_LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical]
 
 # Statement of need
 Although "bonds" might seem perplexing from a physicist's standpoint, it has been employed several times to explain various
@@ -55,7 +55,7 @@ could be performed with few lines of code.[@george2022automated] This automation
 users make while performing bonding analysis. However, it is also essential to systematically generate inputs and post-process
 the output files consistently to have reliable and reproducible results. Furthermore, transforming the data from these high-throughput
 bonding analysis calculations into a format suitable for ML studies should benefit data-driven material science research.
-_Lobsterpy_ aims to fulfill this need.
+_LobsterPy_ aims to fulfill this need.
 
 # Features
 - Automatic summarized bonding analysis JSONs and text descriptions based on COHPs (ICOHPs), COBIs (ICOBIs), and COOPs (ICOOPs)
@@ -67,10 +67,10 @@ _Lobsterpy_ aims to fulfill this need.
 - Command line interface for automatic bonding analysis and plotting
 
 # Availability
-LobsterPy can also be found [PyPI](https://pypi.org/project/lobsterpy/). Detailed software documentation,
+_LobsterPy_ can also be found on [PyPI](https://pypi.org/project/lobsterpy/). Detailed software documentation,
 including [installation instructions](https://jageo.github.io/LobsterPy/installation/index.html) and
 [implementation details](https://jageo.github.io/LobsterPy/fundamentals/index.html) are provided. The package
-also includes [tutorials](https://jageo.github.io/LobsterPy/tutorial/index.html) illustrating all the functionalities.
+also includes [tutorials](https://jageo.github.io/LobsterPy/tutorial/index.html) illustrating all the basic and advanced functionalities.
 
 # Acknowledgements
 The authors would like to acknowledge the Gauss Centre for Super
