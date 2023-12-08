@@ -38,7 +38,7 @@ computational data by projecting the wave functions onto an atomic orbital basis
 convenient tools to systematically analyze, describe, and visualize these LOBSTER computations results. Since its first release,
 its capabilities have been extended significantly. Unlike earlier versions which could only automatically analyze Crystal Orbital
 Hamilton Populations (COHPs)[@dronskowski1993crystal], LobsterPy can now also analyze crystal orbital overlap populations
-(COOP)[@hughbanks1983chains] and Crystal orbital bond index (COBI)[@müller2021crystal] to extract summarized bonding
+(COOP)[@hughbanks1983chains] and Crystal orbital bond index (COBI)[@muller2021crystal] to extract summarized bonding
 information (includes information on coordination environments, bond strengths, most relevant bonds, bonding and anti-bonding
 contributions). Optionally, users can further extract the most important orbitals contributing to the relevant bonds. Additionally,
 featurize and structure graphs utility sub-packages provide a pathway to engineer features to be used further for machine learning
