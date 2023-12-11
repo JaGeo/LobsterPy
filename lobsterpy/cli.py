@@ -658,12 +658,6 @@ def get_parser() -> argparse.ArgumentParser:
         type=int,
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
     )
-    # plot_parser.add_argument(
-    #     "-integr",
-    #     "--integrated",
-    #     action="store_true",
-    #     help="Show integrated cohp/cobi/coop plots.",
-    # )
     plot_grouping = plot_parser.add_mutually_exclusive_group()
     plot_grouping.add_argument(
         "--summed",
