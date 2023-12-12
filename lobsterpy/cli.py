@@ -371,7 +371,8 @@ def get_parser() -> argparse.ArgumentParser:
     # Argument specific to COHPs / COOPs / COBIs plots
     coxx_plotting_args = argparse.ArgumentParser(add_help=False)
     coxx_plotting_args.add_argument(
-        "-integr--integrated",
+        "-integr",
+        "--integrated",
         dest="integrated",
         action="store_true",
         help="Show integrated cohp/cobi/coop plots.",
@@ -646,6 +647,7 @@ def get_parser() -> argparse.ArgumentParser:
             structure_file,
             plotting_parent,
             advanced_plotting_args,
+            coxx_plotting_args,
             analysis_switch,
         ],
         help="Plot specific COHPs/COBIs/COOPs based on bond numbers.",
@@ -655,12 +657,6 @@ def get_parser() -> argparse.ArgumentParser:
         nargs="+",
         type=int,
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
-    )
-    plot_parser.add_argument(
-        "-integr",
-        "--integrated",
-        action="store_true",
-        help="Show integrated cohp/cobi/coop plots.",
     )
     plot_grouping = plot_parser.add_mutually_exclusive_group()
     plot_grouping.add_argument(
