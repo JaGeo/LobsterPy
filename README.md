@@ -3,7 +3,7 @@
 # Getting started
 <img src="https://raw.githubusercontent.com/JaGeo/LobsterPy/main/LobsterPyLogo.png" alt="LobsterPy Logo which consists of a green Python and a red Lobster" width="200"/>
 
-LobsterPy is a package that enables automatic analysis of LOBTSER outputs to get summarized bonding information and relevant bond plots. Additionally, one can also generate features for machine learning studies from LOBSTER outputs. One can download LOBSTER from [http://www.cohp.de](http://www.cohp.de).
+LobsterPy is a package that enables automatic analysis of LOBSTER outputs to get summarized bonding information and relevant bond plots. Additionally, one can also generate features for machine learning studies from LOBSTER outputs. One can download LOBSTER from [http://www.cohp.de](http://www.cohp.de).
 
 <div style="border: 1px solid #52a5ab; padding: 5px; position: relative;">
     <div style="background-color: #52a5ab; color: #ffffff; padding: 0px; position: absolute; top: 0; left: 0; right: 0; text-align: center;">
