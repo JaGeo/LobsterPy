@@ -50,7 +50,7 @@ _LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023str
 bonding analysis workflow task-document generation.
 
 # Statement of need
-Although "bonds" might seem perplexing from a physicist's standpoint, it has been employed several times to explain various
+Although "bonds" might seem perplexing from a physicist's standpoint, it has been employed routinely to explain various
 chemical phenomena and material properties.[@hoffmann1987chemistry; @burdett1995chemical; @das2023strong; @ertural2022first; @hu2023mechanism; @dronskowski2023chemical] With the recent advances in
 automation frameworks for high-throughput computational investigations, bonding analysis for thousands of crystalline materials
 can be performed with few lines of code.[@george2022automated] This automation helps reduce the common mistakes inexperienced
