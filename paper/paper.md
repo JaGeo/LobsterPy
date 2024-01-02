@@ -47,11 +47,11 @@ interface (CLI) that runs automatic analysis of the computations and generates a
 
 _LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical] and also is part of
 [atomate2](https://github.com/materialsproject/atomate2/blob/bd434a695600a37188db73d23e156f3b90e326b0/src/atomate2/lobster/schemas.py)
-bonding analysis workflow task-document generation.
+bonding analysis workflow data generation.
 
 # Statement of need
-Although "bonds" might seem perplexing from a physicist's standpoint, it has been employed routinely to explain various
-chemical phenomena and material properties.[@hoffmann1987chemistry; @burdett1995chemical; @das2023strong; @ertural2022first; @hu2023mechanism; @dronskowski2023chemical] With the recent advances in
+Although notion of "bonds" might seem unusual from a physicist's point of view, Chemists have been employing it routinely to
+explain various chemical phenomena and material properties.[@hoffmann1987chemistry; @burdett1995chemical; @das2023strong; @ertural2022first; @hu2023mechanism; @dronskowski2023chemical] With the recent advances in
 automation frameworks for high-throughput computational investigations, bonding analysis for thousands of crystalline materials
 can be performed with few lines of code.[@george2022automated] This automation helps reduce the common mistakes inexperienced
 users make while performing bonding analysis. However, it is also essential to systematically generate inputs and post-process
