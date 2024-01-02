@@ -33,7 +33,7 @@ bibliography: paper.bib
 
 ---
 # Summary
-The LOBSTER software aids in extracting chemical bonding information from materials. It does this by projecting the
+The LOBSTER software aids in extracting quantum-chemical bonding information from materials. It does this by projecting the
 plane-wave based wave functions from density functional theory (DFT) onto an atomic orbital basis.  _LobsterPy_ is a Python package
 that provides convenient tools to systematically analyze, describe, and visualize such LOBSTER computations results.
 Since its first release, its capabilities have been extended significantly. Unlike earlier versions, which could only
@@ -41,15 +41,17 @@ automatically analyze Crystal Orbital Hamilton Populations (COHPs)[@dronskowski1
 Crystal Orbital Overlap Populations (COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal] to
 extract summarized bonding information (includes information on coordination environments, bond strengths, most relevant bonds,
 bonding, and anti-bonding contributions). Optionally, users can further extract the most important orbitals contributing to the
-relevant bonds. Additionally, bonding-based features for ML studies can be engineered via the sub-packages
+relevant bonds. Additionally, bonding-based features for machine-learning (ML) studies can be engineered via the sub-packages
 "featurize" and "structuregraphs". Alongside its Python interface, it also provides an easy-to-use command line
 interface (CLI) that runs automatic analysis of the computations and generates a summary of results and publication-ready figures.
 
-_LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical].
+_LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical] and also is part of
+[atomate2](https://github.com/materialsproject/atomate2/blob/bd434a695600a37188db73d23e156f3b90e326b0/src/atomate2/lobster/schemas.py)
+bonding analysis workflow task-document generation.
 
 # Statement of need
 Although "bonds" might seem perplexing from a physicist's standpoint, it has been employed several times to explain various
-chemical phenomena and material properties.[@das2023strong; @ertural2022first; @hu2023mechanism] With the recent advances in
+chemical phenomena and material properties.[@hoffmann1987chemistry; @burdett1995chemical; @das2023strong; @ertural2022first; @hu2023mechanism; @dronskowski2023chemical] With the recent advances in
 automation frameworks for high-throughput computational investigations, bonding analysis for thousands of crystalline materials
 can be performed with few lines of code.[@george2022automated] This automation helps reduce the common mistakes inexperienced
 users make while performing bonding analysis. However, it is also essential to systematically generate inputs and post-process
