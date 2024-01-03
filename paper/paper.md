@@ -39,8 +39,8 @@ that provides convenient tools to systematically analyze, describe, and visualiz
 Since its first release, its capabilities have been extended significantly. Unlike earlier versions, which could only
 automatically analyze Crystal Orbital Hamilton Populations (COHPs)[@dronskowski1993crystal], _LobsterPy_ can now also analyze
 Crystal Orbital Overlap Populations (COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal] to
-extract summarized bonding information (includes information on coordination environments, bond strengths, most relevant bonds,
-bonding, and anti-bonding contributions). Optionally, users can further extract the most important orbitals contributing to the
+extract summarized bonding information. The latter includes information on coordination environments, bond strengths, most relevant bonds,
+bonding, and anti-bonding contributions. Optionally, users can further extract the most important orbitals contributing to the
 relevant bonds. Additionally, bonding-based features for machine-learning (ML) studies can be engineered via the sub-packages
 "featurize" and "structuregraphs". Alongside its Python interface, it also provides an easy-to-use command line
 interface (CLI) that runs automatic analysis of the computations and generates a summary of results and publication-ready figures.
@@ -50,7 +50,7 @@ _LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023str
 bonding analysis workflow data generation.
 
 # Statement of need
-Although notion of "bonds" might seem unusual from a physicist's point of view, Chemists have been employing it routinely to
+Although notion of "bonds" might seem unusual from a physicist's point of view, chemists have been employing it routinely to
 explain various chemical phenomena and material properties.[@hoffmann1987chemistry; @burdett1995chemical; @das2023strong; @ertural2022first; @hu2023mechanism; @dronskowski2023chemical] With the recent advances in
 automation frameworks for high-throughput computational investigations, bonding analysis for thousands of crystalline materials
 can be performed with few lines of code.[@george2022automated] This automation helps reduce the common mistakes inexperienced
