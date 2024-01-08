@@ -45,8 +45,8 @@ relevant bonds. Additionally, bonding-based features for machine-learning (ML) s
 "featurize" and "structuregraphs". Alongside its Python interface, it also provides an easy-to-use command line
 interface (CLI) that runs automatic analysis of the computations and generates a summary of results and publication-ready figures.
 
-_LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical] and also is part of
-[@atomate2] bonding analysis workflow as part of data generation.
+_LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical] and is also part of
+[@atomate2] bonding analysis workflow for generating bonding analysis summaries.
 
 # Statement of need
 Although notion of "bonds" might seem unusual from a physicist's point of view, chemists have been employing it routinely to
