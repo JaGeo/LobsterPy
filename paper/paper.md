@@ -46,8 +46,7 @@ relevant bonds. Additionally, bonding-based features for machine-learning (ML) s
 interface (CLI) that runs automatic analysis of the computations and generates a summary of results and publication-ready figures.
 
 _LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical] and also is part of
-[atomate2](https://github.com/materialsproject/atomate2/blob/bd434a695600a37188db73d23e156f3b90e326b0/src/atomate2/lobster/schemas.py)
-bonding analysis workflow data generation.
+[@atomate2] bonding analysis workflow as part of data generation.
 
 # Statement of need
 Although notion of "bonds" might seem unusual from a physicist's point of view, chemists have been employing it routinely to
