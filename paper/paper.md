@@ -79,7 +79,6 @@ computing e.V. (www.gauss-centre.eu) for funding this project by
 providing generous computing time on the GCS Supercomputer
 SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de)
 (project pn73da) that enabled rigorous testing of this
-package on a diverse set of compounds. We also acknowledge
-the maintainers of pymatgen and LOBSTER program developers.
+package on a diverse set of compounds. The authors thank Jonas Grandel for reviewing the docstrings and testing package functionalities and tutorials. The authors would also like to acknowledge the maintainers of pymatgen and LOBSTER program developers.
 
 # References
