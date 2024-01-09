@@ -26,7 +26,7 @@ affiliations:
    index: 1
  - name: Friedrich Schiller University Jena, Institute of Condensed Matter Theory and Solid-State Optics, Jena, 07743, Germany
    index: 2
- - name: Science and Technology Facilities Council, Didcot, Oxfordshire, GB
+ - name: Scientific Computing Department, Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot, 0X11 0QX, UK
    index: 3
 date: August 2023
 bibliography: paper.bib
@@ -34,19 +34,20 @@ bibliography: paper.bib
 ---
 # Summary
 The LOBSTER software aids in extracting quantum-chemical bonding information from materials. It does this by projecting the
-plane-wave based wave functions from density functional theory (DFT) onto an atomic orbital basis.  _LobsterPy_ is a Python package
-that provides convenient tools to systematically analyze, describe, and visualize such LOBSTER computations results.
-Since its first release, its capabilities have been extended significantly. Unlike earlier versions, which could only
-automatically analyze Crystal Orbital Hamilton Populations (COHPs)[@dronskowski1993crystal], _LobsterPy_ can now also analyze
-Crystal Orbital Overlap Populations (COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal] to
-extract summarized bonding information. The latter includes information on coordination environments, bond strengths, most relevant bonds,
-bonding, and anti-bonding contributions. Optionally, users can further extract the most important orbitals contributing to the
-relevant bonds. Additionally, bonding-based features for machine-learning (ML) studies can be engineered via the sub-packages
-"featurize" and "structuregraphs". Alongside its Python interface, it also provides an easy-to-use command line
-interface (CLI) that runs automatic analysis of the computations and generates a summary of results and publication-ready figures.
+plane-wave based wave functions from density functional theory (DFT) onto an atomic orbital basis. [LobsterEnv](https://github.com/materialsproject/pymatgen/blob/master/pymatgen/io/lobster/lobsterenv.py),
+which is implemented in pymatgen[[@ong2013python] by some of the authors of this package, facilitates the use of quantum-chemical bonding
+information obtained from LOBSTER to identify neighbors and coordination environments. _LobsterPy_ is a Python package that offers a set of convenient tools
+to analyze further and summarize the LobsterEnv outputs in the form of JSONs that are easy to interpret and process. These tools enable the
+estimation of (anti) bonding contributions, generation of textual descriptions, and visualization of LOBSTER computation results.  Since its first release, both _LobsterPy_ and _LobsterEnv_ capabilities
+have been extended significantly. Unlike earlier versions, which could only automatically analyze Crystal Orbital Hamilton Populations (COHPs)[@dronskowski1993crystal],
+both can now also analyze Crystal Orbital Overlap Populations (COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal].
+Extracting the information about the most important orbitals contributing to the bonds is optional, and users can enable it as needed.
+Additionally, bonding-based features for machine-learning (ML) studies can be engineered via the sub-packages "featurize" and "structuregraphs".
+Alongside its Python interface, it also provides an easy-to-use command line interface (CLI) that runs automatic analysis of the
+computations and generates a summary of results and publication-ready figures.
 
 _LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical] and is also part of
-[@atomate2] bonding analysis workflow for generating bonding analysis summaries.
+[@atomate2] bonding analysis workflow for generating bonding analysis data in a format compatible with the Materials Project[@materialsproject] API.
 
 # Statement of need
 Although notion of "bonds" might seem unusual from a physicist's point of view, chemists have been employing it routinely to
@@ -71,7 +72,8 @@ _LobsterPy_ aims to fulfill this need.
 _LobsterPy_ can also be found on [PyPI](https://pypi.org/project/lobsterpy/). Detailed software documentation,
 including [installation instructions](https://jageo.github.io/LobsterPy/installation/index.html) and
 [implementation details](https://jageo.github.io/LobsterPy/fundamentals/index.html) are provided. The package
-also includes [tutorials](https://jageo.github.io/LobsterPy/tutorial/index.html) illustrating all the basic and advanced functionalities.
+also includes [tutorials](https://jageo.github.io/LobsterPy/tutorial/index.html) illustrating all the basic and
+advanced functionalities.
 
 # Acknowledgements
 The authors would like to acknowledge the Gauss Centre for Super
@@ -79,6 +81,7 @@ computing e.V. (www.gauss-centre.eu) for funding this project by
 providing generous computing time on the GCS Supercomputer
 SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de)
 (project pn73da) that enabled rigorous testing of this
-package on a diverse set of compounds. The authors thank Jonas Grandel for reviewing the docstrings and testing package functionalities and tutorials. The authors would also like to acknowledge the maintainers of pymatgen and LOBSTER program developers.
+package on a diverse set of compounds. The authors thank Jonas Grandel for reviewing the docstrings and testing package functionalities
+and tutorials. The authors would also like to acknowledge the maintainers of pymatgen and LOBSTER program developers.
 
 # References
