@@ -33,11 +33,11 @@ bibliography: paper.bib
 
 ---
 # Summary
-The LOBSTER software aids in extracting quantum-chemical bonding information from materials. It does this by projecting the
+The LOBSTER software aids in extracting quantum-chemical bonding information from materials by projecting the
 plane-wave based wave functions from density functional theory (DFT) onto an atomic orbital basis. [LobsterEnv](https://github.com/materialsproject/pymatgen/blob/master/pymatgen/io/lobster/lobsterenv.py),
 which is implemented in pymatgen[@ong2013python] by some of the authors of this package, facilitates the use of quantum-chemical bonding
-information obtained from LOBSTER to identify neighbors and coordination environments. _LobsterPy_ is a Python package that offers a set of convenient tools
-to analyze further and summarize the LobsterEnv outputs in the form of JSONs that are easy to interpret and process. These tools enable the
+information obtained from LOBSTER calculations to identify neighbors and coordination environments. _LobsterPy_ is a Python package that offers a set of convenient tools
+to further analyze and summarize the LobsterEnv outputs in the form of JSONs that are easy to interpret and process. These tools enable the
 estimation of (anti) bonding contributions, generation of textual descriptions, and visualization of LOBSTER computation results.  Since its first release, both _LobsterPy_ and _LobsterEnv_ capabilities
 have been extended significantly. Unlike earlier versions, which could only automatically analyze Crystal Orbital Hamilton Populations (COHPs)[@dronskowski1993crystal],
 both can now also analyze Crystal Orbital Overlap Populations (COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal].
@@ -50,8 +50,8 @@ _LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023str
 [@atomate2] bonding analysis workflow for generating bonding analysis data in a format compatible with the Materials Project[@materialsproject] API.
 
 # Statement of need
-Although notion of "bonds" might seem unusual from a physicist's point of view, chemists have been employing it routinely to
-explain various chemical phenomena and material properties.[@hoffmann1987chemistry; @burdett1995chemical; @das2023strong; @ertural2022first; @hu2023mechanism; @dronskowski2023chemical] With the recent advances in
+Although the notion of "bonds" might seem unusual from a physicist's point of view, chemists have been employing it routinely to
+explain various chemical phenomena and materials properties.[@hoffmann1987chemistry; @burdett1995chemical; @das2023strong; @ertural2022first; @hu2023mechanism; @dronskowski2023chemical] With the recent advances in
 automation frameworks for high-throughput computational investigations, bonding analysis for thousands of crystalline materials
 can be performed with few lines of code.[@george2022automated] This automation helps reduce the common mistakes inexperienced
 users make while performing bonding analysis. However, it is also essential to systematically generate inputs and post-process
