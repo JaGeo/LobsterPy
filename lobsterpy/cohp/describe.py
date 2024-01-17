@@ -114,11 +114,10 @@ class Description:
                             )
                             orb_info.extend(text_orbital)
 
-                bonds = (
-                    ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
-                    if len(bond_info) > 1
-                    else bond_info[0]
-                )
+                if len(bond_info) > 1:
+                    bonds = ",".join(bond_info[0:-1]) + ", and " + bond_info[-1]
+                else:
+                    bonds = bond_info[0] if bond_info else 0
 
                 if len(orb_info) > 1:
                     orb_bonds = "".join(orb_info).replace(".In", ". In")
