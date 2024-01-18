@@ -155,9 +155,7 @@ class TestDescribe:
         with tempfile.TemporaryDirectory() as tmp4:
             filename_test = str(Path(tmp4) / "test.pdf")
             describe_csh_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
-            filename_test_1 = Path(tmp4) / "test-0.pdf"
-            assert not Path(filename_test).exists()
-            assert Path(filename_test_1).exists()
+            assert Path(filename_test).exists()
 
     def test_write_description(
         self,
@@ -253,10 +251,9 @@ class TestDescribe:
             "percent antibonding interaction below EFermi) bonds.",
         ]
         assert describe_csh_all.text == [
-            "The compound CsH has 2 symmetry-independent atoms(s) with relevant bonds: Cs1, H2.",
+            "The compound CsH has 1 symmetry-independent atoms(s) with relevant bonds: Cs1.",
             "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 "
             "percent antibonding interaction below EFermi) bonds.",
-            "H2 has a 0 coordination environment. It has 0 bonds.",
         ]
         assert describe_batio3_orb.text == [
             "The compound BaTiO3 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Ti2.",
