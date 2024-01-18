@@ -238,7 +238,7 @@ class Analysis:
                     if valences is None:
                         self.coordination_environments = []
                         for coord in chemenv:
-                            if coord != []:
+                            if len(coord) > 0:
                                 self.coordination_environments.append(
                                     [{"ce_symbol": str(len(coord))}]
                                 )
@@ -250,7 +250,7 @@ class Analysis:
                         self.coordination_environments = []
 
                         for val, coord in zip(valences, chemenv):
-                            if val >= 0.0 and coord != []:
+                            if val >= 0.0 and len(coord) > 0:
                                 self.coordination_environments.append(
                                     [{"ce_symbol": str(len(coord))}]
                                 )
