@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.3.5
+* Fix header by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/189
+* WIP[fix interactive plots] by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/190
+* Update docs.yml by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/191
+* Update docs.yml by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/192
+* Update docs.yml by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/194
+* Update conf.py by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/195
+* Update tutorial.ipynb by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/196
+* Update tutorial.ipynb by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/197
+* Update tutorial.ipynb by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/198
+* Update tutorial.ipynb by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/199
+* Update conf.py by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/200
+* Fix blank interactive plots by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/201
+* Fix typos and grammatical errors by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/202
+* Minor documentation fixes by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/206
+* address doc review comments by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/208
+* Bump mendeleev from 0.14.0 to 0.15.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/211
+* Bump myst-nb from 0.17.2 to 1.0.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/204
+* Bump ipython from 8.16.1 to 8.19.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/209
+* Bump sphinx-book-theme from 1.0.1 to 1.1.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/210
+* Fix doc by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/213
+* Remove redundant ipython from doc dependencies by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/216
+* Fix: text generation error when no bonds are detected at site in cation-anion analysis by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/217
+
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.3.4...v0.3.5
+
+
 ## v0.3.4
 - fix changelog by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/188
 - Update documentation by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/180
