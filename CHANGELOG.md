@@ -1,4 +1,7 @@
 # Changelog
+## v0.3.6
+* JOSS paper by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/203
+
 
 ## v0.3.5
 * Fix header by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/189
