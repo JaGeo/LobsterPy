@@ -46,7 +46,7 @@ Additionally, bonding-based features for machine-learning (ML) studies can be en
 Alongside its Python interface, it also provides an easy-to-use command line interface (CLI) that runs automatic analysis of the
 computations and generates a summary of results and publication-ready figures.
 
-_LobsterPy_ has been used to produce the results in [@ngo2023dft; @morgan2023structures; @naik2023quantumchemical] and is also part of
+_LobsterPy_ has been used to produce the results in [@ngo2023dft; @chen2024insights; @naik2023quantumchemical] and is also part of
 [@atomate2] bonding analysis workflow for generating bonding analysis data in a format compatible with the Materials Project[@materialsproject] API.
 
 # Statement of need
