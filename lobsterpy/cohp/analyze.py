@@ -1605,7 +1605,7 @@ class Analysis:
 
             dos_lobster = doscar_lobster.completedos
 
-            vasprun = Vasprun(path_to_vasprun)
+            vasprun = Vasprun(path_to_vasprun, parse_potcar_file=False)
             dos_vasp = vasprun.complete_dos
 
             quality_dict["dos_comparisons"] = {}  # type: ignore
