@@ -384,9 +384,9 @@ class TestCalcQualityDescribeWarnings:
                 bva_comp=False,
             )
         assert "Consider using DOSCAR.LSO.lobster" in str(w[0].message)
-        assert "Minimum energy range requested" in str(w[2].message)
-        assert "Maximum energy range requested" in str(w[3].message)
-        assert "Input DOS files have very few points" in str(w[4].message)
+        assert "Minimum energy range requested" in str(w[1].message)
+        assert "Maximum energy range requested" in str(w[2].message)
+        assert "Input DOS files have very few points" in str(w[3].message)
 
         calc_des = Description.get_calc_quality_description(calc_quality_warnings)
 
