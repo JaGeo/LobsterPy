@@ -16,8 +16,8 @@ reference/cli
 ```{toctree}
 :caption: Contributing Guide
 :hidden:
-dev/dev_installation
 dev/contributing
+dev/dev_installation
 ```
 
 ```{toctree}

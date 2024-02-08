@@ -73,6 +73,10 @@ It is also possible to start this automatic analysis from a Python script. See "
 ## Comprehensive documentation
 * Checkout the [documentation and tutorials](https://jageo.github.io/LobsterPy/) for more details.
 
+## Contributing
+A short guide to contributing to lobsterpy can be found [here](https://jageo.github.io/LobsterPy/dev/contributing.html).
+Additional information for developers can be found [here](https://jageo.github.io/LobsterPy/dev/dev_installation.html).
+
 ## How to cite?
 Please cite our paper: J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, **ChemPlusChem**, [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123).
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://www.cohp.de), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
