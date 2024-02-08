@@ -74,7 +74,7 @@ It is also possible to start this automatic analysis from a Python script. See "
 * Checkout the [documentation and tutorials](https://jageo.github.io/LobsterPy/) for more details.
 
 ## Contributing
-A short guide to contributing to lobsterpy can be found [here](https://jageo.github.io/LobsterPy/dev/contributing.html)
+A short guide to contributing to lobsterpy can be found [here](https://jageo.github.io/LobsterPy/dev/contributing.html).
 Additional information for developers can be found [here](https://jageo.github.io/LobsterPy/dev/dev_installation.html).
 
 ## How to cite?
