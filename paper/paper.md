@@ -69,7 +69,7 @@ _LobsterPy_ aims to fulfill this need.
 - Perform automatic bonding analysis and plotting via inherent command line interface app.
 
 # Similar and Related software
-Lobsterpy can be seen to be similar to sumo [@Ganose2018], as both provide python toolkits to analyze and visualize data from the calculations,
+LobsterPy can be seen to be similar in spirit to sumo [@Ganose2018], as both provide Python tools to analyze and visualize data related to the electronic structure that are based on ab initio calculations,
 albeit both serve different purposes.
 Other software packages that enable visualizing results specifically from LOBSTER software are wxDragon[@wxdragon] and [@abipy].
 LobsterPy differs from these two packages by providing further analysis of the calculations, interpretable text summary and featurizers for ML studies besides plotting the data.
