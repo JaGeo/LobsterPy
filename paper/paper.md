@@ -33,7 +33,7 @@ bibliography: paper.bib
 
 ---
 # Summary
-The LOBSTER software aids in extracting quantum-chemical bonding information from materials by projecting the
+The LOBSTER[@deringer2011crystal;@maintz2013analytic;@maintz2016lobster;@nelson2020lobster] software aids in extracting quantum-chemical bonding information from materials by projecting the
 plane-wave based wave functions from density functional theory (DFT) onto an atomic orbital basis. [LobsterEnv](https://github.com/materialsproject/pymatgen/blob/master/pymatgen/io/lobster/lobsterenv.py),
 a module implemented in pymatgen[@ong2013python] by some of the authors of this package, facilitates the use of quantum-chemical bonding
 information obtained from LOBSTER calculations to identify neighbors and coordination environments. _LobsterPy_ is a Python package that offers a set of convenient tools
@@ -67,6 +67,12 @@ _LobsterPy_ aims to fulfill this need.
 - Create inputs for LOBSTER calculations from VASP files
 - Extract features from LOBSTER calculation files to be used for ML studies
 - Perform automatic bonding analysis and plotting via inherent command line interface app.
+
+# Similar and Related software
+Lobsterpy can be seen to be similar to sumo [@Ganose2018], as both provide python toolkits to analyze and visualize data from the calculations,
+albeit both serve different purposes.
+Other software packages that enable visualizing results specifically from LOBSTER software are wxDragon[@wxdragon] and [@abipy].
+LobsterPy differs from these two packages by providing further analysis of the calculations, interpretable text summary and featurizers for ML studies besides plotting the data.
 
 # Availability
 _LobsterPy_ can also be found on [PyPI](https://pypi.org/project/lobsterpy/). Detailed software documentation,
