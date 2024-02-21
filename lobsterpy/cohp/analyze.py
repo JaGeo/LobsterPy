@@ -172,11 +172,12 @@ class Analysis:
         if self.which_bonds == "cation-anion":
             try:
                 self.chemenv = LobsterNeighbors(
-                    filename_ICOHP=self.path_to_icohplist,
+                    filename_icohp=self.path_to_icohplist,
                     structure=Structure.from_file(self.path_to_poscar),
                     additional_condition=1,
-                    perc_strength_ICOHP=self.cutoff_icohp,
-                    filename_CHARGE=self.path_to_charge,
+                    perc_strength_icohp=self.cutoff_icohp,
+                    filename_charge=self.path_to_charge,
+                    valences=None,
                     valences_from_charges=True,
                     adapt_extremum_to_add_cond=True,
                     are_cobis=self.are_cobis,
@@ -197,11 +198,11 @@ class Analysis:
         elif self.which_bonds == "all":
             # raise ValueError("only cation anion bonds implemented so far")
             self.chemenv = LobsterNeighbors(
-                filename_ICOHP=self.path_to_icohplist,
+                filename_icohp=self.path_to_icohplist,
                 structure=Structure.from_file(self.path_to_poscar),
                 additional_condition=0,
-                perc_strength_ICOHP=self.cutoff_icohp,
-                filename_CHARGE=self.path_to_charge,
+                perc_strength_icohp=self.cutoff_icohp,
+                filename_charge=self.path_to_charge,
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,
                 are_cobis=self.are_cobis,
@@ -301,8 +302,8 @@ class Analysis:
                     for anion in self.anion_types:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
-                            self.path_to_cohpcar,
-                            [ice],
+                            path_to_cohpcar=self.path_to_cohpcar,
+                            isites=[ice],
                             summed_spin_channels=summed_spins,
                             per_bond=False,
                             only_bonds_to=[str(anion)],
@@ -341,8 +342,8 @@ class Analysis:
                     for element in self.elements:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
-                            self.path_to_cohpcar,
-                            [ice],
+                            path_to_cohpcar=self.path_to_cohpcar,
+                            isites=[ice],
                             onlycation_isites=False,
                             summed_spin_channels=summed_spins,
                             per_bond=False,
