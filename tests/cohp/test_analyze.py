@@ -1323,6 +1323,22 @@ class TestAnalyse:
         ]
         assert analyse_nacl_nan.condensed_bonding_analysis["type_charges"] == "Mulliken"
 
+    def test_all_attributes_nacl_pymatgen_objs(
+        self,
+        analyse_nacl_comp_range_orb,
+        analyse_nacl_comp_range_orb_with_objs,
+        analyse_k3sb_all,
+        analyse_k3sb_all_objs,
+    ):
+        assert (
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis
+            == analyse_nacl_comp_range_orb_with_objs.condensed_bonding_analysis
+        )
+        assert (
+            analyse_k3sb_all.condensed_bonding_analysis
+            == analyse_k3sb_all_objs.condensed_bonding_analysis
+        )
+
     def test_icohp_sum_nacl(self, analyse_nacl_comp_range):
         assert abs(
             float(
