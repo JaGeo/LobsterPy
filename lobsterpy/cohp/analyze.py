@@ -114,7 +114,7 @@ class Analysis:
         :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
         :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
         :param path_to_madelung: path to `MadelungEnergies.lobster`.
-        :param charge_obj: pymatgen lobster.io.charge object
+        :param charge_obj: pymatgen lobster.io.charge object (Optional)
         :param completecohp_obj: pymatgen.electronic_structure.cohp.CompleteCohp object
         :param icohplist_obj: pymatgen lobster.io.Icohplist object
         :param madelung_obj: pymatgen lobster.io.MadelungEnergies object
@@ -136,11 +136,17 @@ class Analysis:
 
         """
         self.start = start
-        self.path_to_poscar = path_to_poscar
-        self.path_to_icohplist = path_to_icohplist
-        self.icohplist_obj = icohplist_obj
-        self.path_to_cohpcar = path_to_cohpcar
         self.completecohp_obj = completecohp_obj
+        self.icohplist_obj = icohplist_obj
+        # checks to ensure LobsterEnv inputs are not duplicated in case users provide both path and obj
+        if self.completecohp_obj is not None and self.icohplist_obj is not None:
+            self.path_to_poscar = None
+            self.path_to_cohpcar = None
+            self.path_to_icohplist = None
+        else:
+            self.path_to_poscar = path_to_poscar
+            self.path_to_icohplist = path_to_icohplist
+            self.path_to_cohpcar = path_to_cohpcar
         self.which_bonds = which_bonds
         self.cutoff_icohp = cutoff_icohp
         self.orbital_cutoff = orbital_cutoff
