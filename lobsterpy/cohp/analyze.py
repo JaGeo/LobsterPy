@@ -13,7 +13,15 @@ from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Lobsterin, Lobsterout
+from pymatgen.io.lobster import (
+    Bandoverlaps,
+    Charge,
+    Doscar,
+    Icohplist,
+    Lobsterin,
+    Lobsterout,
+    MadelungEnergies,
+)
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
@@ -27,11 +35,15 @@ class Analysis:
     :param are_coops: bool indicating if file contains COOP/ICOOP data
     :param cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
         cutoff_icohp*max_icohp limits the number of considered neighbours for evaluating environments.
-    :param path_to_charge: path to `CHARGE.lobster`.
     :param path_to_cohpcar: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
+    :param path_to_charge: path to `CHARGE.lobster`.
     :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
     :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
     :param path_to_madelung: path to `MadelungEnergies.lobster`.
+    :param charge_obj: pymatgen lobster.io.charge object
+    :param completecohp_obj: pymatgen.electronic_structure.cohp.CompleteCohp object
+    :param icohplist_obj: pymatgen lobster.io.Icohplist object
+    :param madelung_obj: pymatgen lobster.io.MadelungEnergies object
     :param noise_cutoff: Sets the lower limit tolerance for ICOHPs or ICOOPs or ICOBIs considered
         in analysis.
     :param orbital_cutoff: Sets the minimum percentage for the orbital contribution considered to be
@@ -70,11 +82,15 @@ class Analysis:
 
     def __init__(
         self,
-        path_to_poscar: str | Path,
-        path_to_icohplist: str | Path,
-        path_to_cohpcar: str | Path,
+        path_to_poscar: str | Path | None,
+        path_to_icohplist: str | Path | None,
+        path_to_cohpcar: str | Path | None,
         path_to_charge: str | Path | None = None,
         path_to_madelung: str | Path | None = None,
+        icohplist_obj: Icohplist | None = None,
+        completecohp_obj: CompleteCohp | None = None,
+        charge_obj: Charge | None = None,
+        madelung_obj: MadelungEnergies | None = None,
         are_cobis: bool = False,
         are_coops: bool = False,
         cutoff_icohp: float = 0.1,
@@ -93,11 +109,15 @@ class Analysis:
         :param are_coops: bool indicating if file contains COOP/ICOOP data
         :param cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
             cutoff_icohp*max_icohp limits the number of considered neighbours for evaluating environments.
-        :param path_to_charge: path to `CHARGE.lobster`.
         :param path_to_cohpcar: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
+        :param path_to_charge: path to `CHARGE.lobster`.
         :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
         :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
         :param path_to_madelung: path to `MadelungEnergies.lobster`.
+        :param charge_obj: pymatgen lobster.io.charge object
+        :param completecohp_obj: pymatgen.electronic_structure.cohp.CompleteCohp object
+        :param icohplist_obj: pymatgen lobster.io.Icohplist object
+        :param madelung_obj: pymatgen lobster.io.MadelungEnergies object
         :param noise_cutoff: Sets the lower limit tolerance for ICOHPs or ICOOPs or ICOBIs considered
             in analysis.
         :param orbital_cutoff: Sets the minimum percentage for the orbital contribution considered to be
@@ -118,12 +138,16 @@ class Analysis:
         self.start = start
         self.path_to_poscar = path_to_poscar
         self.path_to_icohplist = path_to_icohplist
+        self.icohplist_obj = icohplist_obj
         self.path_to_cohpcar = path_to_cohpcar
+        self.completecohp_obj = completecohp_obj
         self.which_bonds = which_bonds
         self.cutoff_icohp = cutoff_icohp
         self.orbital_cutoff = orbital_cutoff
         self.path_to_charge = path_to_charge
+        self.charge_obj = charge_obj
         self.path_to_madelung = path_to_madelung
+        self.madelung_obj = madelung_obj
         self.are_cobis = are_cobis
         self.are_coops = are_coops
         self.noise_cutoff = noise_cutoff
@@ -132,7 +156,7 @@ class Analysis:
         self.orbital_resolved = orbital_resolved
 
         # This determines how cations and anions
-        if path_to_charge is None:
+        if path_to_charge is None and charge_obj is None:
             self.type_charge = "Valences"
         else:
             if type_charge is None:
@@ -161,7 +185,11 @@ class Analysis:
             None
 
         """
-        self.structure = Structure.from_file(self.path_to_poscar)
+        self.structure = (
+            Structure.from_file(self.path_to_poscar)
+            if self.path_to_poscar
+            else self.completecohp_obj.structure
+        )
         sga = SpacegroupAnalyzer(structure=self.structure)
         symmetry_dataset = sga.get_symmetry_dataset()
         equivalent_sites = symmetry_dataset["equivalent_atoms"]
@@ -173,10 +201,12 @@ class Analysis:
             try:
                 self.chemenv = LobsterNeighbors(
                     filename_icohp=self.path_to_icohplist,
-                    structure=Structure.from_file(self.path_to_poscar),
+                    obj_icohp=self.icohplist_obj,
+                    structure=self.structure,
                     additional_condition=1,
                     perc_strength_icohp=self.cutoff_icohp,
                     filename_charge=self.path_to_charge,
+                    obj_charge=self.charge_obj,
                     valences=None,
                     valences_from_charges=True,
                     adapt_extremum_to_add_cond=True,
@@ -199,10 +229,12 @@ class Analysis:
             # raise ValueError("only cation anion bonds implemented so far")
             self.chemenv = LobsterNeighbors(
                 filename_icohp=self.path_to_icohplist,
-                structure=Structure.from_file(self.path_to_poscar),
+                obj_icohp=self.icohplist_obj,
+                structure=self.structure,
                 additional_condition=0,
                 perc_strength_icohp=self.cutoff_icohp,
                 filename_charge=self.path_to_charge,
+                obj_charge=self.charge_obj,
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,
                 are_cobis=self.are_cobis,
@@ -303,6 +335,7 @@ class Analysis:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             path_to_cohpcar=self.path_to_cohpcar,
+                            obj_cohpcar=self.completecohp_obj,
                             isites=[ice],
                             summed_spin_channels=summed_spins,
                             per_bond=False,
@@ -343,6 +376,7 @@ class Analysis:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             path_to_cohpcar=self.path_to_cohpcar,
+                            obj_cohpcar=self.completecohp_obj,
                             isites=[ice],
                             onlycation_isites=False,
                             summed_spin_channels=summed_spins,
@@ -1309,7 +1343,7 @@ class Analysis:
                     "relevant_bonds": bond_infos[3],
                 }
 
-        if self.path_to_madelung is None:
+        if self.path_to_madelung is None and self.madelung_obj is None:
             if self.which_bonds == "cation-anion":
                 # This sets the dictionary including the most important information on the compound
                 self.condensed_bonding_analysis = {
@@ -1330,13 +1364,17 @@ class Analysis:
                     "type_charges": self.type_charge,
                 }
         else:
-            from pymatgen.io.lobster import MadelungEnergies
-
-            madelung = MadelungEnergies(self.path_to_madelung)
+            madelung = (
+                MadelungEnergies(self.path_to_madelung)
+                if self.path_to_madelung
+                else self.madelung_obj
+            )
             if self.type_charge == "Mulliken":
-                madelung_energy = madelung.madelungenergies_Mulliken
+                madelung_energy = madelung.madelungenergies_mulliken
             elif self.type_charge == "Löwdin":
-                madelung_energy = madelung.madelungenergies_Loewdin
+                madelung_energy = madelung.madelungenergies_loewdin
+            else:
+                madelung_energy = None
             # This sets the dictionary including the most important information on the compound
             if self.which_bonds == "cation-anion":
                 self.condensed_bonding_analysis = {
