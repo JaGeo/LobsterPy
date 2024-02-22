@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 import pytest
-from pymatgen.io.lobster import Doscar, Icohplist
+from pymatgen.electronic_structure.cohp import CompleteCohp
+from pymatgen.io.lobster import Charge, Doscar, Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
@@ -45,6 +46,35 @@ def analyse_nacl_comp_range_orb():
         path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
+        which_bonds="cation-anion",
+        cutoff_icohp=0.1,
+        orbital_cutoff=0.10,
+        orbital_resolved=True,
+    )
+
+
+@pytest.fixture()
+def analyse_nacl_comp_range_orb_with_objs():
+    charge_obj = Charge(
+        filename=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz"
+    )
+    completecohp_obj = CompleteCohp.from_file(
+        filename=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
+        fmt="LOBSTER",
+        structure_file=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+    )
+    icohplist_obj = Icohplist(
+        filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz"
+    )
+
+    return Analysis(
+        path_to_poscar=None,
+        path_to_cohpcar=None,
+        path_to_charge=None,
+        path_to_icohplist=None,
+        completecohp_obj=completecohp_obj,
+        icohplist_obj=icohplist_obj,
+        charge_obj=charge_obj,
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
         orbital_cutoff=0.10,
@@ -312,6 +342,28 @@ def analyse_k3sb_all():
         path_to_cohpcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
+        which_bonds="all",
+        cutoff_icohp=0.1,
+    )
+
+
+@pytest.fixture()
+def analyse_k3sb_all_objs():
+    charge_obj = Charge(filename=TestDir / "test_data/K3Sb/CHARGE.lobster.gz")
+    completecohp_obj = CompleteCohp.from_file(
+        filename=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
+        fmt="LOBSTER",
+        structure_file=TestDir / "test_data/K3Sb/POSCAR.gz",
+    )
+    icohplist_obj = Icohplist(filename=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz")
+    return Analysis(
+        path_to_poscar=None,
+        path_to_cohpcar=None,
+        path_to_icohplist=None,
+        path_to_charge=None,
+        completecohp_obj=completecohp_obj,
+        charge_obj=charge_obj,
+        icohplist_obj=icohplist_obj,
         which_bonds="all",
         cutoff_icohp=0.1,
     )
