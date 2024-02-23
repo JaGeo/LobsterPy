@@ -534,7 +534,7 @@ class BatchCoxxFingerprint:
         """
         Calculate the similarity index (dot product) of two fingerprints.
 
-        :param fp1: The 1st CoxxFingerprint object
+        :param fp1 The 1st CoxxFingerprint object
         :param fp2: The 2nd CoxxFingerprint object
         :param col: The item in the fingerprints (0:energies,1: coxxs) to take the dot product of (default is 1)
         :param pt: The index of the point that the dot product is to be taken (default is All)
