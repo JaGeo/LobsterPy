@@ -198,7 +198,7 @@ def get_parser() -> argparse.ArgumentParser:
         dest="overwrite",
         default=False,
         action="store_true",
-        help="overwrites already created INCARs an lobsterins with the give name.",
+        help="overwrites already created INCARs and lobsterins with the give name.",
     )
     # TODO: Add some output arguments: options to supply your own basis
     # General matplotlib plotting arguments common to all kinds of plots
