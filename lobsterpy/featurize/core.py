@@ -63,9 +63,7 @@ class FeaturizeLobsterpy:
         """
         if self.path_to_json and not self.path_to_lobster_calc:
             # read the lightweight lobster json files using read_lobster_lightweight_json method
-            data = FeaturizeLobsterpy.read_lobster_lightweight_json(
-                path_to_json=self.path_to_json
-            )
+            data = FeaturizeLobsterpy.read_lobster_lightweight_json(path_to_json=self.path_to_json)
             if not ids:
                 ids = Path(self.path_to_json).name.split(".")[0]
 
@@ -81,9 +79,7 @@ class FeaturizeLobsterpy:
                 ids = Path(self.path_to_lobster_calc).name
 
         else:
-            raise ValueError(
-                "Please provide either path to lightweight lobster jsons or path to lobster calc"
-            )
+            raise ValueError("Please provide either path to lightweight lobster jsons or path to lobster calc")
         # define a pandas dataframe
         df = pd.DataFrame(index=[ids])
 
@@ -115,10 +111,7 @@ class FeaturizeLobsterpy:
             or not data[bond_type]["lobsterpy_data"]
             or not data[bond_type]["lobsterpy_data"]["sites"]
         ):
-            raise Exception(
-                f"No {self.bonds} bonds detected for {ids} structure. "
-                "Please switch to `all` bonds mode"
-            )
+            raise Exception(f"No {self.bonds} bonds detected for {ids} structure. Please switch to `all` bonds mode")
 
         if data[bond_type]["lobsterpy_data"]:
             for site_data in data[bond_type]["lobsterpy_data"]["sites"].values():
@@ -131,61 +124,35 @@ class FeaturizeLobsterpy:
                         if self.orbital_resolved:
                             if (
                                 bond_data["orbital_data"]["orbital_summary_stats"]
-                                and "max_bonding_contribution"
-                                in bond_data["orbital_data"]["orbital_summary_stats"]
+                                and "max_bonding_contribution" in bond_data["orbital_data"]["orbital_summary_stats"]
                             ):
-                                for orb_pair in bond_data["orbital_data"][
-                                    "orbital_summary_stats"
-                                ]["max_bonding_contribution"]:
-                                    icohp_mean_orb_bndg.append(
-                                        bond_data["orbital_data"][orb_pair][
-                                            "ICOHP_mean"
-                                        ]
-                                    )
-                                    icohp_sum_orb_bndg.append(
-                                        bond_data["orbital_data"][orb_pair]["ICOHP_sum"]
-                                    )
+                                for orb_pair in bond_data["orbital_data"]["orbital_summary_stats"][
+                                    "max_bonding_contribution"
+                                ]:
+                                    icohp_mean_orb_bndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_mean"])
+                                    icohp_sum_orb_bndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_sum"])
                                     bond_orb.append(
-                                        bond_data["orbital_data"][orb_pair][
-                                            "orb_contribution_perc_bonding"
-                                        ]
+                                        bond_data["orbital_data"][orb_pair]["orb_contribution_perc_bonding"]
                                     )
                             if (
                                 bond_data["orbital_data"]["orbital_summary_stats"]
-                                and "max_antibonding_contribution"
-                                in bond_data["orbital_data"]["orbital_summary_stats"]
+                                and "max_antibonding_contribution" in bond_data["orbital_data"]["orbital_summary_stats"]
                             ):
-                                for orb_pair in bond_data["orbital_data"][
-                                    "orbital_summary_stats"
-                                ]["max_antibonding_contribution"]:
-                                    icohp_mean_orb_antibndg.append(
-                                        bond_data["orbital_data"][orb_pair][
-                                            "ICOHP_mean"
-                                        ]
-                                    )
-                                    icohp_sum_orb_antibndg.append(
-                                        bond_data["orbital_data"][orb_pair]["ICOHP_sum"]
-                                    )
+                                for orb_pair in bond_data["orbital_data"]["orbital_summary_stats"][
+                                    "max_antibonding_contribution"
+                                ]:
+                                    icohp_mean_orb_antibndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_mean"])
+                                    icohp_sum_orb_antibndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_sum"])
                                     antibond_orb.append(
-                                        bond_data["orbital_data"][orb_pair][
-                                            "orb_contribution_perc_antibonding"
-                                        ]
+                                        bond_data["orbital_data"][orb_pair]["orb_contribution_perc_antibonding"]
                                     )
 
         # add ICOHP stats data (mean, min, max, standard deviation) as columns to the dataframe
 
-        df.loc[ids, "Icohp_mean_avg"] = (
-            0 if len(icohp_mean) == 0 else np.mean(icohp_mean)
-        )
-        df.loc[ids, "Icohp_mean_max"] = (
-            0 if len(icohp_mean) == 0 else np.max(icohp_mean)
-        )
-        df.loc[ids, "Icohp_mean_min"] = (
-            0 if len(icohp_mean) == 0 else np.min(icohp_mean)
-        )
-        df.loc[ids, "Icohp_mean_std"] = (
-            0 if len(icohp_mean) == 0 else np.std(icohp_mean)
-        )
+        df.loc[ids, "Icohp_mean_avg"] = 0 if len(icohp_mean) == 0 else np.mean(icohp_mean)
+        df.loc[ids, "Icohp_mean_max"] = 0 if len(icohp_mean) == 0 else np.max(icohp_mean)
+        df.loc[ids, "Icohp_mean_min"] = 0 if len(icohp_mean) == 0 else np.min(icohp_mean)
+        df.loc[ids, "Icohp_mean_std"] = 0 if len(icohp_mean) == 0 else np.std(icohp_mean)
 
         df.loc[ids, "Icohp_sum_avg"] = 0 if len(icohp_sum) == 0 else np.mean(icohp_sum)
         df.loc[ids, "Icohp_sum_max"] = 0 if len(icohp_sum) == 0 else np.max(icohp_sum)
@@ -197,115 +164,61 @@ class FeaturizeLobsterpy:
         df.loc[ids, "bonding_perc_min"] = 0 if len(bond) == 0 else np.min(bond)
         df.loc[ids, "bonding_perc_std"] = 0 if len(bond) == 0 else np.std(bond)
 
-        df.loc[ids, "antibonding_perc_avg"] = (
-            0 if len(antibond) == 0 else np.mean(antibond)
-        )
-        df.loc[ids, "antibonding_perc_min"] = (
-            0 if len(antibond) == 0 else np.min(antibond)
-        )
-        df.loc[ids, "antibonding_perc_max"] = (
-            0 if len(antibond) == 0 else np.max(antibond)
-        )
-        df.loc[ids, "antibonding_perc_std"] = (
-            0 if len(antibond) == 0 else np.std(antibond)
-        )
+        df.loc[ids, "antibonding_perc_avg"] = 0 if len(antibond) == 0 else np.mean(antibond)
+        df.loc[ids, "antibonding_perc_min"] = 0 if len(antibond) == 0 else np.min(antibond)
+        df.loc[ids, "antibonding_perc_max"] = 0 if len(antibond) == 0 else np.max(antibond)
+        df.loc[ids, "antibonding_perc_std"] = 0 if len(antibond) == 0 else np.std(antibond)
 
         if self.orbital_resolved:
             # bonding orbital
             df.loc[ids, "Icohp_bndg_orb_mean_avg"] = (
                 0 if len(icohp_mean_orb_bndg) == 0 else np.mean(icohp_mean_orb_bndg)
             )
-            df.loc[ids, "Icohp_bndg_orb_mean_max"] = (
-                0 if len(icohp_mean_orb_bndg) == 0 else np.max(icohp_mean_orb_bndg)
-            )
-            df.loc[ids, "Icohp_bndg_orb_mean_min"] = (
-                0 if len(icohp_mean_orb_bndg) == 0 else np.min(icohp_mean_orb_bndg)
-            )
-            df.loc[ids, "Icohp_bndg_orb_mean_std"] = (
-                0 if len(icohp_mean_orb_bndg) == 0 else np.std(icohp_mean_orb_bndg)
-            )
+            df.loc[ids, "Icohp_bndg_orb_mean_max"] = 0 if len(icohp_mean_orb_bndg) == 0 else np.max(icohp_mean_orb_bndg)
+            df.loc[ids, "Icohp_bndg_orb_mean_min"] = 0 if len(icohp_mean_orb_bndg) == 0 else np.min(icohp_mean_orb_bndg)
+            df.loc[ids, "Icohp_bndg_orb_mean_std"] = 0 if len(icohp_mean_orb_bndg) == 0 else np.std(icohp_mean_orb_bndg)
 
-            df.loc[ids, "Icohp_bndg_orb_sum_avg"] = (
-                0 if len(icohp_sum_orb_bndg) == 0 else np.mean(icohp_sum_orb_bndg)
-            )
-            df.loc[ids, "Icohp_bndg_orb_sum_max"] = (
-                0 if len(icohp_sum_orb_bndg) == 0 else np.max(icohp_sum_orb_bndg)
-            )
-            df.loc[ids, "Icohp_bndg_orb_sum_min"] = (
-                0 if len(icohp_sum_orb_bndg) == 0 else np.min(icohp_sum_orb_bndg)
-            )
-            df.loc[ids, "Icohp_bndg_orb_sum_std"] = (
-                0 if len(icohp_sum_orb_bndg) == 0 else np.std(icohp_sum_orb_bndg)
-            )
+            df.loc[ids, "Icohp_bndg_orb_sum_avg"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.mean(icohp_sum_orb_bndg)
+            df.loc[ids, "Icohp_bndg_orb_sum_max"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.max(icohp_sum_orb_bndg)
+            df.loc[ids, "Icohp_bndg_orb_sum_min"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.min(icohp_sum_orb_bndg)
+            df.loc[ids, "Icohp_bndg_orb_sum_std"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.std(icohp_sum_orb_bndg)
 
-            df.loc[ids, "bonding_orb_perc_avg"] = (
-                0 if len(bond_orb) == 0 else np.mean(bond_orb)
-            )
-            df.loc[ids, "bonding_orb_perc_max"] = (
-                0 if len(bond_orb) == 0 else np.max(bond_orb)
-            )
-            df.loc[ids, "bonding_orb_perc_min"] = (
-                0 if len(bond_orb) == 0 else np.min(bond_orb)
-            )
-            df.loc[ids, "bonding_orb_perc_std"] = (
-                0 if len(bond_orb) == 0 else np.std(bond_orb)
-            )
+            df.loc[ids, "bonding_orb_perc_avg"] = 0 if len(bond_orb) == 0 else np.mean(bond_orb)
+            df.loc[ids, "bonding_orb_perc_max"] = 0 if len(bond_orb) == 0 else np.max(bond_orb)
+            df.loc[ids, "bonding_orb_perc_min"] = 0 if len(bond_orb) == 0 else np.min(bond_orb)
+            df.loc[ids, "bonding_orb_perc_std"] = 0 if len(bond_orb) == 0 else np.std(bond_orb)
 
             # anti-bonding orbital
             df.loc[ids, "Icohp_antibndg_orb_mean_avg"] = (
-                0
-                if len(icohp_mean_orb_antibndg) == 0
-                else np.mean(icohp_mean_orb_antibndg)
+                0 if len(icohp_mean_orb_antibndg) == 0 else np.mean(icohp_mean_orb_antibndg)
             )
             df.loc[ids, "Icohp_antibndg_orb_mean_max"] = (
-                0
-                if len(icohp_mean_orb_antibndg) == 0
-                else np.max(icohp_mean_orb_antibndg)
+                0 if len(icohp_mean_orb_antibndg) == 0 else np.max(icohp_mean_orb_antibndg)
             )
             df.loc[ids, "Icohp_antibndg_orb_mean_min"] = (
-                0
-                if len(icohp_mean_orb_antibndg) == 0
-                else np.min(icohp_mean_orb_antibndg)
+                0 if len(icohp_mean_orb_antibndg) == 0 else np.min(icohp_mean_orb_antibndg)
             )
             df.loc[ids, "Icohp_antibndg_orb_mean_std"] = (
-                0
-                if len(icohp_mean_orb_antibndg) == 0
-                else np.std(icohp_mean_orb_antibndg)
+                0 if len(icohp_mean_orb_antibndg) == 0 else np.std(icohp_mean_orb_antibndg)
             )
 
             df.loc[ids, "Icohp_antibndg_orb_sum_avg"] = (
-                0
-                if len(icohp_sum_orb_antibndg) == 0
-                else np.mean(icohp_sum_orb_antibndg)
+                0 if len(icohp_sum_orb_antibndg) == 0 else np.mean(icohp_sum_orb_antibndg)
             )
             df.loc[ids, "Icohp_antibndg_orb_sum_max"] = (
-                0
-                if len(icohp_sum_orb_antibndg) == 0
-                else np.max(icohp_sum_orb_antibndg)
+                0 if len(icohp_sum_orb_antibndg) == 0 else np.max(icohp_sum_orb_antibndg)
             )
             df.loc[ids, "Icohp_antibndg_orb_sum_min"] = (
-                0
-                if len(icohp_sum_orb_antibndg) == 0
-                else np.min(icohp_sum_orb_antibndg)
+                0 if len(icohp_sum_orb_antibndg) == 0 else np.min(icohp_sum_orb_antibndg)
             )
             df.loc[ids, "Icohp_antibndg_orb_sum_std"] = (
-                0
-                if len(icohp_sum_orb_antibndg) == 0
-                else np.std(icohp_sum_orb_antibndg)
+                0 if len(icohp_sum_orb_antibndg) == 0 else np.std(icohp_sum_orb_antibndg)
             )
 
-            df.loc[ids, "antibonding_orb_perc_avg"] = (
-                0 if len(antibond_orb) == 0 else np.mean(antibond_orb)
-            )
-            df.loc[ids, "antibonding_orb_perc_max"] = (
-                0 if len(antibond_orb) == 0 else np.max(antibond_orb)
-            )
-            df.loc[ids, "antibonding_orb_perc_min"] = (
-                0 if len(antibond_orb) == 0 else np.min(antibond_orb)
-            )
-            df.loc[ids, "antibonding_orb_perc_std"] = (
-                0 if len(antibond_orb) == 0 else np.std(antibond_orb)
-            )
+            df.loc[ids, "antibonding_orb_perc_avg"] = 0 if len(antibond_orb) == 0 else np.mean(antibond_orb)
+            df.loc[ids, "antibonding_orb_perc_max"] = 0 if len(antibond_orb) == 0 else np.max(antibond_orb)
+            df.loc[ids, "antibonding_orb_perc_min"] = 0 if len(antibond_orb) == 0 else np.min(antibond_orb)
+            df.loc[ids, "antibonding_orb_perc_std"] = 0 if len(antibond_orb) == 0 else np.std(antibond_orb)
 
         # add madelung energies for the structure
         df.loc[ids, "Madelung_Mull"] = data["madelung_energies"]["Mulliken"]
@@ -335,9 +248,7 @@ class FeaturizeLobsterpy:
                     if (key == "cation_anion_bonds" or key == "all_bonds") and (
                         "sites" in item[key]["lobsterpy_data"]["sites"]
                     ):
-                        item[key]["lobsterpy_data"]["sites"] = item[key][
-                            "lobsterpy_data"
-                        ]["sites"]["sites"]
+                        item[key]["lobsterpy_data"]["sites"] = item[key]["lobsterpy_data"]["sites"]["sites"]
                 except KeyError:
                     pass
             lobster_data.update(item)
@@ -345,9 +256,7 @@ class FeaturizeLobsterpy:
         return lobster_data
 
     @staticmethod
-    def get_lobsterpy_cba_dict(
-        path_to_lobster_calc: str | Path, bonds: str, orbital_resolved: bool
-    ) -> dict:
+    def get_lobsterpy_cba_dict(path_to_lobster_calc: str | Path, bonds: str, orbital_resolved: bool) -> dict:
         """
         Generate a Python dictionary object using the Analysis class with condensed bonding analysis data.
 
@@ -582,9 +491,7 @@ class FeaturizeCOXX:
         if label_list is not None:
             divisor = len(label_list) if per_bond else 1
         if label_list is not None and orbital is None:
-            coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_list(
-                label_list, divisor=divisor
-            ).get_cohp()
+            coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_list(label_list, divisor=divisor).get_cohp()
         elif label_list and orbital:
             coxxcar_obj = coxxcar_obj.get_summed_cohp_by_label_and_orbital_list(
                 label_list=label_list,
@@ -600,35 +507,23 @@ class FeaturizeCOXX:
             if Spin.down in coxxcar_obj:
                 coxx_all = coxxcar_obj[Spin.down]
             else:
-                raise ValueError(
-                    "LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`"
-                )
+                raise ValueError("LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`")
         elif spin_type == "summed":
             if Spin.down in coxxcar_obj:
                 coxx_all = coxxcar_obj[Spin.up] + coxxcar_obj[Spin.down]
             else:
                 coxx_all = coxxcar_obj[Spin.up]
         else:
-            raise Exception(
-                "Check the spin_type argument.Possible options are summed/up/down"
-            )
+            raise Exception("Check the spin_type argument.Possible options are summed/up/down")
 
         coxx_dict = {}
         tol = 1e-6
         if not self.are_cobis and not self.are_coops:
-            coxx_dict["bonding"] = np.array(
-                [scohp if scohp <= tol else 0 for scohp in coxx_all]
-            )
-            coxx_dict["antibonding"] = np.array(
-                [scohp if scohp >= tol else 0 for scohp in coxx_all]
-            )
+            coxx_dict["bonding"] = np.array([scohp if scohp <= tol else 0 for scohp in coxx_all])
+            coxx_dict["antibonding"] = np.array([scohp if scohp >= tol else 0 for scohp in coxx_all])
         else:
-            coxx_dict["antibonding"] = np.array(
-                [scohp if scohp <= tol else 0 for scohp in coxx_all]
-            )
-            coxx_dict["bonding"] = np.array(
-                [scohp if scohp >= tol else 0 for scohp in coxx_all]
-            )
+            coxx_dict["antibonding"] = np.array([scohp if scohp <= tol else 0 for scohp in coxx_all])
+            coxx_dict["bonding"] = np.array([scohp if scohp >= tol else 0 for scohp in coxx_all])
 
         coxx_dict["overall"] = coxx_all
 
@@ -718,20 +613,14 @@ class FeaturizeCOXX:
         """
         list_labels = list(self.icoxxlist.icohplist.keys())
         # Compute sum of icohps
-        icoxx_total = self.icoxxlist.icohpcollection.get_summed_icohp_by_label_list(
-            list_labels
-        )
+        icoxx_total = self.icoxxlist.icohpcollection.get_summed_icohp_by_label_list(list_labels)
 
         summed_weighted_coxx = []
 
         for lab in list_labels:
-            for cohp in self.completecoxx.get_cohp_by_label(
-                f"{lab}", summed_spin_channels=True
-            ).cohp.values():
+            for cohp in self.completecoxx.get_cohp_by_label(f"{lab}", summed_spin_channels=True).cohp.values():
                 coxx = cohp
-            icoxx = self.icoxxlist.icohpcollection.get_icohp_by_label(
-                lab, summed_spin_channels=True
-            )
+            icoxx = self.icoxxlist.icohpcollection.get_icohp_by_label(lab, summed_spin_channels=True)
             # calculate the weights based on icohp contri to total icohp of the structure
             try:
                 weight = icoxx / icoxx_total
@@ -748,9 +637,7 @@ class FeaturizeCOXX:
 
         w_icoxx = trapezoid(coxx_bf, en_bf)
 
-        ein = (icoxx_total / w_icoxx) * (
-            2 / self.completecoxx.structure.num_sites
-        )  # calc effective interaction number
+        ein = (icoxx_total / w_icoxx) * (2 / self.completecoxx.structure.num_sites)  # calc effective interaction number
 
         # percent bonding-anitbonding
         tol = 1e-6
@@ -758,9 +645,7 @@ class FeaturizeCOXX:
             bonding_indices = coxx_bf <= tol
             antibonding_indices = coxx_bf >= tol
             bnd = abs(trapezoid(en_bf[bonding_indices], coxx_bf[bonding_indices]))
-            antibnd = abs(
-                trapezoid(en_bf[antibonding_indices], coxx_bf[antibonding_indices])
-            )
+            antibnd = abs(trapezoid(en_bf[antibonding_indices], coxx_bf[antibonding_indices]))
             per_bnd = (bnd / (bnd + antibnd)) * 100
             per_antibnd = (antibnd / (bnd + antibnd)) * 100
 
@@ -768,9 +653,7 @@ class FeaturizeCOXX:
             bonding_indices = coxx_bf >= tol
             antibonding_indices = coxx_bf <= tol
             bnd = abs(trapezoid(coxx_bf[bonding_indices], en_bf[bonding_indices]))
-            antibnd = abs(
-                trapezoid(coxx_bf[antibonding_indices], en_bf[antibonding_indices])
-            )
+            antibnd = abs(trapezoid(coxx_bf[antibonding_indices], en_bf[antibonding_indices]))
             per_bnd = (bnd / (bnd + antibnd)) * 100
             per_antibnd = (antibnd / (bnd + antibnd)) * 100
 
@@ -804,9 +687,7 @@ class FeaturizeCOXX:
             divisor = len(label_list) if per_bond else 1
 
         if label_list and orbital is None:
-            coxxcar = complete_coxx_obj.get_summed_cohp_by_label_list(
-                label_list, divisor=divisor
-            ).get_cohp()
+            coxxcar = complete_coxx_obj.get_summed_cohp_by_label_list(label_list, divisor=divisor).get_cohp()
         elif label_list and orbital:
             coxxcar = complete_coxx_obj.get_summed_cohp_by_label_and_orbital_list(
                 label_list=label_list,
@@ -817,30 +698,18 @@ class FeaturizeCOXX:
         else:
             coxxcar = complete_coxx_obj.get_cohp()
 
-        coxx_all = (
-            coxxcar[Spin.up] + coxxcar[Spin.down]
-            if Spin.down in coxxcar
-            else coxxcar[Spin.up]
-        )
+        coxx_all = coxxcar[Spin.up] + coxxcar[Spin.down] if Spin.down in coxxcar else coxxcar[Spin.up]
         energies = complete_coxx_obj.energies - complete_coxx_obj.efermi
 
         coxx_dict = {}
         tol = 1e-6
         if not complete_coxx_obj.are_cobis and not complete_coxx_obj.are_coops:
-            coxx_dict["bonding"] = np.array(
-                [scohp if scohp <= tol else 0 for scohp in coxx_all]
-            )
-            coxx_dict["antibonding"] = np.array(
-                [scohp if scohp >= tol else 0 for scohp in coxx_all]
-            )
+            coxx_dict["bonding"] = np.array([scohp if scohp <= tol else 0 for scohp in coxx_all])
+            coxx_dict["antibonding"] = np.array([scohp if scohp >= tol else 0 for scohp in coxx_all])
             coxx_dict["overall"] = coxx_all
         else:
-            coxx_dict["antibonding"] = np.array(
-                [scohp if scohp <= tol else 0 for scohp in coxx_all]
-            )
-            coxx_dict["bonding"] = np.array(
-                [scohp if scohp >= tol else 0 for scohp in coxx_all]
-            )
+            coxx_dict["antibonding"] = np.array([scohp if scohp <= tol else 0 for scohp in coxx_all])
+            coxx_dict["bonding"] = np.array([scohp if scohp >= tol else 0 for scohp in coxx_all])
             coxx_dict["overall"] = coxx_all
 
         try:
@@ -867,9 +736,7 @@ class FeaturizeCOXX:
                 coxx=coxx_dict[feature_type],
                 energies=energies,
                 e_range=e_range,
-            ) ** (
-                3 / 2
-            )
+            ) ** (3 / 2)
 
             coxx_kurt = (
                 FeaturizeCOXX.get_n_moment(
@@ -886,9 +753,7 @@ class FeaturizeCOXX:
                 )
                 ** 2
             )
-            coxx_edge = FeaturizeCOXX.get_cohp_edge(
-                coxx=coxx_dict[feature_type], energies=energies, e_range=e_range
-            )
+            coxx_edge = FeaturizeCOXX.get_cohp_edge(coxx=coxx_dict[feature_type], energies=energies, e_range=e_range)
         except KeyError:
             raise ValueError(
                 "Please recheck feature type requested argument. Possible options are bonding/antibonding/overall"
@@ -912,9 +777,7 @@ class FeaturizeCOXX:
         Returns:
             coxx center in eV
         """
-        return FeaturizeCOXX.get_n_moment(
-            n=1, coxx=coxx, energies=energies, e_range=e_range, center=False
-        )
+        return FeaturizeCOXX.get_n_moment(n=1, coxx=coxx, energies=energies, e_range=e_range, center=False)
 
     @staticmethod
     def get_n_moment(
@@ -956,9 +819,7 @@ class FeaturizeCOXX:
         energies = energies[mask]
 
         if center:
-            coxx_center = FeaturizeCOXX.get_coxx_center(
-                coxx=coxx, energies=energies, e_range=[min_e, max_e]
-            )
+            coxx_center = FeaturizeCOXX.get_coxx_center(coxx=coxx, energies=energies, e_range=[min_e, max_e])
             p = energies - coxx_center
         else:
             p = energies
@@ -1111,10 +972,7 @@ class FeaturizeCharges:
         structure = Structure.from_file(self.path_to_structure)
 
         if self.charge_type.lower() not in ["mulliken", "loewdin"]:
-            raise ValueError(
-                "Please check the requested charge_type. "
-                "Possible options are `Mulliken` or `Loewdin`"
-            )
+            raise ValueError("Please check the requested charge_type. Possible options are `Mulliken` or `Loewdin`")
 
         ch_veff = []
         tol = 1e-6
@@ -1122,10 +980,7 @@ class FeaturizeCharges:
             if (
                 j > tol
                 and not structure.species[i].is_transition_metal
-                and (
-                    not structure.species[i].is_actinoid
-                    and not structure.species[i].is_lanthanoid
-                )
+                and (not structure.species[i].is_actinoid and not structure.species[i].is_lanthanoid)
             ):
                 valence_elec = element(structure.species[i].value)
                 try:
@@ -1137,17 +992,10 @@ class FeaturizeCharges:
             elif (
                 j < tol
                 and not structure.species[i].is_transition_metal
-                and (
-                    not structure.species[i].is_actinoid
-                    and not structure.species[i].is_lanthanoid
-                )
+                and (not structure.species[i].is_actinoid and not structure.species[i].is_lanthanoid)
             ):
                 valence_elec = element(structure.species[i].value)
-                val = (
-                    j / (valence_elec.nvalence() - 8)
-                    if valence_elec.nvalence() != 8
-                    else 0
-                )
+                val = j / (valence_elec.nvalence() - 8) if valence_elec.nvalence() != 8 else 0
                 ch_veff.append(val)
 
             elif j > tol and (
@@ -1252,9 +1100,7 @@ class FeaturizeDoscar:
         self.path_to_structure = path_to_structure
         self.path_to_doscar = path_to_doscar
         self.e_range = e_range
-        self.dos = Doscar(
-            doscar=self.path_to_doscar, structure_file=self.path_to_structure
-        ).completedos
+        self.dos = Doscar(doscar=self.path_to_doscar, structure_file=self.path_to_structure).completedos
         self.add_element_dos_moments = add_element_dos_moments
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
@@ -1298,36 +1144,24 @@ class FeaturizeDoscar:
                 for el in elements_list:
                     if orbital in self.dos.get_element_spd_dos(el=el.name):
                         df.loc[ids, f"{el.name}_{orbital.name}_band_center"] = round(
-                            self.dos.get_band_center(
-                                band=orbital, elements=[el], erange=self.e_range
-                            ),
+                            self.dos.get_band_center(band=orbital, elements=[el], erange=self.e_range),
                             4,
                         )
                         df.loc[ids, f"{el.name}_{orbital.name}_band_width"] = round(
-                            self.dos.get_band_width(
-                                band=orbital, elements=[el], erange=self.e_range
-                            ),
+                            self.dos.get_band_width(band=orbital, elements=[el], erange=self.e_range),
                             4,
                         )
                         df.loc[ids, f"{el.name}_{orbital.name}_band_skew"] = round(
-                            self.dos.get_band_skewness(
-                                band=orbital, elements=[el], erange=self.e_range
-                            ),
+                            self.dos.get_band_skewness(band=orbital, elements=[el], erange=self.e_range),
                             4,
                         )
                         df.loc[ids, f"{el.name}_{orbital.name}_band_kurtosis"] = round(
-                            self.dos.get_band_kurtosis(
-                                band=orbital, elements=[el], erange=self.e_range
-                            ),
+                            self.dos.get_band_kurtosis(band=orbital, elements=[el], erange=self.e_range),
                             4,
                         )
-                        df.loc[ids, f"{el.name}_{orbital.name}_band_upperband_edge"] = (
-                            round(
-                                self.dos.get_upper_band_edge(
-                                    band=orbital, elements=[el], erange=self.e_range
-                                ),
-                                4,
-                            )
+                        df.loc[ids, f"{el.name}_{orbital.name}_band_upperband_edge"] = round(
+                            self.dos.get_upper_band_edge(band=orbital, elements=[el], erange=self.e_range),
+                            4,
                         )
 
         return df

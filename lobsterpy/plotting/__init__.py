@@ -103,9 +103,7 @@ class PlainCohpPlotter(CohpPlotter):
         elif self.are_cobis and not self.are_coops:
             cohp_label = "COBI"
         elif self.are_cobis and self.are_coops:
-            raise ValueError(
-                "Plot data should not contain COBI and COOP data at same time"
-            )
+            raise ValueError("Plot data should not contain COBI and COOP data at same time")
         else:
             cohp_label = "COHP" + " (eV)"
 
@@ -130,11 +128,7 @@ class PlainCohpPlotter(CohpPlotter):
         keys = self._cohps.keys()
         for i, key in enumerate(keys):
             energies = self._cohps[key]["energies"]
-            populations = (
-                self._cohps[key]["COHP"]
-                if not integrated
-                else self._cohps[key]["ICOHP"]
-            )
+            populations = self._cohps[key]["COHP"] if not integrated else self._cohps[key]["ICOHP"]
             for spin in [Spin.up, Spin.down]:
                 if spin in populations:
                     if invert_axes:
@@ -230,10 +224,7 @@ class PlainCohpPlotter(CohpPlotter):
 
         spacing = np.mean(np.diff(energies))
         if not np.allclose(np.diff(energies), spacing, atol=1e-5):
-            raise ValueError(
-                "Energy grid is not regular, cannot broaden with "
-                "discrete convolution."
-            )
+            raise ValueError("Energy grid is not regular, cannot broaden with discrete convolution.")
 
         # Obtain symmetric mesh for broadening kernel, centered on zero
         kernel_x = np.arange(0, cutoff * sigma + 0.5 * spacing, spacing)
@@ -301,18 +292,14 @@ class PlainDosPlotter(DosPlotter):
             if self.sigma:
                 smeared_densities = dos.get_smeared_densities(self.sigma)
                 if Spin.down in smeared_densities:
-                    added_densities = (
-                        smeared_densities[Spin.up] + smeared_densities[Spin.down]
-                    )
+                    added_densities = smeared_densities[Spin.up] + smeared_densities[Spin.down]
                     densities = {Spin.up: added_densities}
                 else:
                     densities = smeared_densities
             else:
                 densities = {Spin.up: dos.get_densities()}
         else:
-            densities = (
-                dos.get_smeared_densities(self.sigma) if self.sigma else dos.densities
-            )
+            densities = dos.get_smeared_densities(self.sigma) if self.sigma else dos.densities
 
         efermi = dos.efermi
 
@@ -322,9 +309,7 @@ class PlainDosPlotter(DosPlotter):
             "efermi": efermi,
         }
 
-    def add_site_orbital_dos(
-        self, dos: LobsterCompleteDos, orbital: str, site_index: int
-    ):
+    def add_site_orbital_dos(self, dos: LobsterCompleteDos, orbital: str, site_index: int):
         """
         Add orbital dos at particular site.
 
@@ -339,10 +324,7 @@ class PlainDosPlotter(DosPlotter):
         avail_orbs = list(dos.pdos[site])
         if orbital not in avail_orbs and orbital != "all":
             str_orbs = ", ".join(avail_orbs)
-            raise ValueError(
-                f"Requested orbital is not available for this site, "
-                f"available orbitals are {str_orbs}"
-            )
+            raise ValueError(f"Requested orbital is not available for this site, available orbitals are {str_orbs}")
 
         if orbital == "all":
             for orb in avail_orbs:
@@ -353,21 +335,14 @@ class PlainDosPlotter(DosPlotter):
                     if self.sigma:
                         smeared_densities = dos_obj.get_smeared_densities(self.sigma)
                         if Spin.down in smeared_densities:
-                            added_densities = (
-                                smeared_densities[Spin.up]
-                                + smeared_densities[Spin.down]
-                            )
+                            added_densities = smeared_densities[Spin.up] + smeared_densities[Spin.down]
                             densities = {Spin.up: added_densities}
                         else:
                             densities = smeared_densities
                     else:
                         densities = {Spin.up: dos_obj.get_densities()}
                 else:
-                    densities = (
-                        dos_obj.get_smeared_densities(self.sigma)
-                        if self.sigma
-                        else dos_obj.densities
-                    )
+                    densities = dos_obj.get_smeared_densities(self.sigma) if self.sigma else dos_obj.densities
 
                 efermi = dos_obj.efermi
 
@@ -385,20 +360,14 @@ class PlainDosPlotter(DosPlotter):
                 if self.sigma:
                     smeared_densities = dos_obj.get_smeared_densities(self.sigma)
                     if Spin.down in smeared_densities:
-                        added_densities = (
-                            smeared_densities[Spin.up] + smeared_densities[Spin.down]
-                        )
+                        added_densities = smeared_densities[Spin.up] + smeared_densities[Spin.down]
                         densities = {Spin.up: added_densities}
                     else:
                         densities = smeared_densities
                 else:
                     densities = {Spin.up: dos_obj.get_densities()}
             else:
-                densities = (
-                    dos_obj.get_smeared_densities(self.sigma)
-                    if self.sigma
-                    else dos_obj.densities
-                )
+                densities = dos_obj.get_smeared_densities(self.sigma) if self.sigma else dos_obj.densities
 
             efermi = dos_obj.efermi
 
@@ -520,17 +489,11 @@ class PlainDosPlotter(DosPlotter):
         if self.zero_at_efermi:
             xlim = ax.get_xlim()
             ylim = ax.get_ylim()
-            (
-                ax.plot(xlim, [0, 0], "k--", linewidth=2)
-                if invert_axes
-                else ax.plot([0, 0], ylim, "k--", linewidth=2)
-            )
+            (ax.plot(xlim, [0, 0], "k--", linewidth=2) if invert_axes else ax.plot([0, 0], ylim, "k--", linewidth=2))
 
         if invert_axes:
             ax.set_ylabel("Energies (eV)")
-            ax.set_xlabel(
-                f"Density of states (states/eV{'/Å³' if self._norm_val else ''})"
-            )
+            ax.set_xlabel(f"Density of states (states/eV{'/Å³' if self._norm_val else ''})")
             ax.axvline(x=0, color="k", linestyle="--", linewidth=2)
         else:
             ax.set_xlabel("Energies (eV)")
@@ -544,9 +507,7 @@ class PlainDosPlotter(DosPlotter):
         handles, labels = ax.get_legend_handles_labels()
         label_dict = dict(zip(labels, handles))
         ax.legend(label_dict.values(), label_dict.keys())
-        legend_text = (
-            ax.get_legend().get_texts()
-        )  # all the text.Text instance in the legend
+        legend_text = ax.get_legend().get_texts()  # all the text.Text instance in the legend
         plt.setp(legend_text, fontsize=30)
         plt.tight_layout()
         _ = ax.legend()
@@ -640,12 +601,8 @@ class InteractiveCohpPlotter(CohpPlotter):
             )
             # get summed cohps from the relevant bond label at the site
             cohp = complete_cohp.get_summed_cohp_by_label_list(label_list=labels)
-            energies = (
-                cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
-            )
-            drop_down_key = plot_legend = (
-                label_with_count + suffix
-            )  # label for the dropdown menu
+            energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+            drop_down_key = plot_legend = label_with_count + suffix  # label for the dropdown menu
             self._cohps["All"].update(
                 {
                     plot_legend: {
@@ -677,14 +634,8 @@ class InteractiveCohpPlotter(CohpPlotter):
                 # Get cohp data for each relevant bond label at the site
                 for label in labels:
                     cohp = complete_cohp.get_cohp_by_label(label)
-                    energies = (
-                        cohp.energies - cohp.efermi
-                        if self.zero_at_efermi
-                        else cohp.energies
-                    )
-                    drop_down_key = (
-                        label_with_count + suffix
-                    )  # label for the dropdown menu
+                    energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
+                    drop_down_key = label_with_count + suffix  # label for the dropdown menu
                     plot_legend = self._get_plot_label_for_label_resolved(
                         structure=analyse.structure,
                         label_list=[label],
@@ -727,17 +678,11 @@ class InteractiveCohpPlotter(CohpPlotter):
                 # get cohp data for each orbital and associated bond labels iteratively
                 for orb, val in key_val.items():
                     for lab in val:
-                        cohp_orb = (
-                            complete_cohp.get_summed_cohp_by_label_and_orbital_list(
-                                label_list=[lab], orbital_list=[orb]
-                            )
+                        cohp_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
+                            label_list=[lab], orbital_list=[orb]
                         )
 
-                        energies = (
-                            cohp_orb.energies - cohp_orb.efermi
-                            if self.zero_at_efermi
-                            else cohp_orb.energies
-                        )
+                        energies = cohp_orb.energies - cohp_orb.efermi if self.zero_at_efermi else cohp_orb.energies
                         # plot legends will contain species and orbital along with relevant bond label
                         plot_legend = self._get_plot_label_for_label_resolved(
                             structure=analyse.structure,
@@ -785,11 +730,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                         label_list=val, orbital_list=[orb] * len(val)
                     )
 
-                    energies = (
-                        cohp_orb.energies - cohp_orb.efermi
-                        if self.zero_at_efermi
-                        else cohp_orb.energies
-                    )
+                    energies = cohp_orb.energies - cohp_orb.efermi if self.zero_at_efermi else cohp_orb.energies
                     # plot legends will contain species and orbital along with number of bonds at the site
                     plot_legend = self._get_plot_label_for_label_resolved(
                         structure=analyse.structure,
@@ -825,9 +766,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                         }
                     )
 
-    def add_cohps_by_lobster_label(
-        self, analyse: Analysis, label_list: list[str], suffix: str = ""
-    ):
+    def add_cohps_by_lobster_label(self, analyse: Analysis, label_list: list[str], suffix: str = ""):
         """
         Add COHPs explicitly specified in label list.
 
@@ -847,9 +786,7 @@ class InteractiveCohpPlotter(CohpPlotter):
             atom2 = complete_cohp.bonds[label]["sites"][1].species_string
             sorted_label = sorted([atom1, atom2])
             cohp = complete_cohp.get_cohp_by_label(label)
-            energies = (
-                cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
-            )
+            energies = cohp.energies - cohp.efermi if self.zero_at_efermi else cohp.energies
             key = sorted_label[0] + "-" + sorted_label[1] + ": " + label + suffix
             self._cohps["All"].update(
                 {
@@ -862,9 +799,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 }
             )
 
-    def add_cohps_from_plot_data(
-        self, plot_data_dict: dict[str, Cohp], suffix: str = ""
-    ):
+    def add_cohps_from_plot_data(self, plot_data_dict: dict[str, Cohp], suffix: str = ""):
         """
         Add all relevant COHPs for specified bond type from lobster lightweight json.gz file.
 
@@ -891,9 +826,7 @@ class InteractiveCohpPlotter(CohpPlotter):
             self._cohps["All"] = {}
 
         for bond_key, cohps in plot_data_dict.items():
-            energies = (
-                cohps.energies - cohps.efermi if self.zero_at_efermi else cohps.energies
-            )
+            energies = cohps.energies - cohps.efermi if self.zero_at_efermi else cohps.energies
             key = bond_key + suffix
             self._cohps["All"].update(
                 {
@@ -946,9 +879,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         elif self.are_cobis and not self.are_coops:
             cohp_label = "COBI"
         elif self.are_cobis and self.are_coops:
-            raise ValueError(
-                "Plot data should not contain COBI and COOP data at same time"
-            )
+            raise ValueError("Plot data should not contain COBI and COOP data at same time")
         else:
             cohp_label = "COHP" + " (eV)"
 
@@ -961,9 +892,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         if plot_negative:
             cohp_label = "\u2212" + cohp_label
 
-        energy_label = (
-            "$E - E_f \\text{ (eV)}$" if self.zero_at_efermi else "$E \\text{ (eV)}$"
-        )
+        energy_label = "$E - E_f \\text{ (eV)}$" if self.zero_at_efermi else "$E \\text{ (eV)}$"
 
         # Setting up repeating color scheme (same as for matplotlib plots in .mplstyle)
         palette = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
@@ -977,11 +906,7 @@ class InteractiveCohpPlotter(CohpPlotter):
                 band_color = next(pal_iter)
                 for spin in [Spin.up, Spin.down]:
                     if spin in population_key:
-                        population = (
-                            [-i for i in population_key[spin]]
-                            if plot_negative
-                            else population_key[spin]
-                        )
+                        population = [-i for i in population_key[spin]] if plot_negative else population_key[spin]
                         if invert_axes:
                             x = population
                             y = v[label]["energies"]
@@ -1002,9 +927,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         energy_axis = (
             go.layout.YAxis(title=energy_label)
             if invert_axes
-            else go.layout.XAxis(
-                title=energy_label, rangeslider={"visible": rangeslider}
-            )
+            else go.layout.XAxis(title=energy_label, rangeslider={"visible": rangeslider})
         )
         energy_axis.update(ld.energy_axis_style_dict)
         cohp_axis = (
@@ -1082,9 +1005,7 @@ class InteractiveCohpPlotter(CohpPlotter):
         return fig
 
     @staticmethod
-    def _insert_number_of_bonds_in_label(
-        label: str, character: str, number_of_bonds: int
-    ) -> str:
+    def _insert_number_of_bonds_in_label(label: str, character: str, number_of_bonds: int) -> str:
         """
         Add number of bonds to bond label.
 
@@ -1139,29 +1060,21 @@ class InteractiveCohpPlotter(CohpPlotter):
         elif not label_resolved and orbital_resolved:
             orb_atom_pairs = []
             orb_pair = orb_list[0].split("-")
-            for site, site_orb in zip(
-                complete_cohp.bonds[label_list[0]]["sites"], orb_pair
-            ):
+            for site, site_orb in zip(complete_cohp.bonds[label_list[0]]["sites"], orb_pair):
                 atom_orb = f"{site.species_string} ({site_orb})"
                 orb_atom_pairs.append(atom_orb)
             orb_atom_pairs_str = "-".join(orb_atom_pairs)
             bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
-            plot_label = (
-                f"{len(label_list)}x {orb_atom_pairs_str} ({bond_length} \u00c5)"
-            )
+            plot_label = f"{len(label_list)}x {orb_atom_pairs_str} ({bond_length} \u00c5)"
         else:
             orb_atom_pairs = []
             orb_pair = orb_list[0].split("-")
-            for site, site_orb in zip(
-                complete_cohp.bonds[label_list[0]]["sites"], orb_pair
-            ):
+            for site, site_orb in zip(complete_cohp.bonds[label_list[0]]["sites"], orb_pair):
                 atom_orb = f"{site.species_string}{structure.sites.index(site) + 1!s} ({site_orb})"
                 orb_atom_pairs.append(atom_orb)
             orb_atom_pairs_str = "-".join(orb_atom_pairs)
             bond_length = round(complete_cohp.bonds[label_list[0]]["length"], 2)
-            plot_label = (
-                f"{label_list[0]}:  {orb_atom_pairs_str} ({bond_length} \u00c5)"
-            )
+            plot_label = f"{label_list[0]}:  {orb_atom_pairs_str} ({bond_length} \u00c5)"
 
         return plot_label
 
@@ -1241,9 +1154,7 @@ class IcohpDistancePlotter:
         elif self.are_cobis and not self.are_coops:
             cohp_label = "ICOBI"
         elif self.are_cobis and self.are_coops:
-            raise ValueError(
-                "Plot data should not contain ICOBI and ICOOP data at same time"
-            )
+            raise ValueError("Plot data should not contain ICOBI and ICOOP data at same time")
         else:
             cohp_label = "ICOHP (eV)"
 

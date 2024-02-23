@@ -19,8 +19,7 @@ TestDir = CurrentDir / "../"
 class TestBatchSummaryFeaturizer:
     def test_summary_featurize_with_json(self):
         summary_featurize_with_json = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             bonds="all",
             path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
             feature_type="antibonding",
@@ -73,8 +72,7 @@ class TestBatchSummaryFeaturizer:
 
     def test_summary_featurize_with_no_bonds(self):
         summary_featurize = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/No_bonds_cases",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/No_bonds_cases",
             bonds="all",
             path_to_jsons=None,
             feature_type="antibonding",
@@ -128,8 +126,7 @@ class TestBatchSummaryFeaturizer:
 
     def test_summary_featurize_orbitalwise(self):
         summary_featurize_without_json = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             bonds="all",
             include_cobi_data=False,
             include_coop_data=False,
@@ -206,8 +203,7 @@ class TestBatchSummaryFeaturizer:
 
     def test_summary_featurize_without_json(self):
         summary_featurize_without_json = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             bonds="all",
             include_cobi_data=False,
             include_coop_data=False,
@@ -259,8 +255,7 @@ class TestBatchSummaryFeaturizer:
 
     def test_summary_featurize_with_json_overall(self):
         summary_featurize_with_json_overall = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             bonds="all",
             path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
             feature_type="overall",
@@ -332,8 +327,7 @@ class TestBatchSummaryFeaturizer:
 
     def test_summary_featurize_with_json_bonding(self):
         summary_featurize_with_json_bonding = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             bonds="all",
             path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
             feature_type="bonding",
@@ -383,8 +377,7 @@ class TestBatchSummaryFeaturizer:
 
     def test_summary_featurize_with_json_antibonding(self):
         summary_featurize_with_json_antibonding = BatchSummaryFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             bonds="cation-anion",
             path_to_jsons=TestDir / "test_data/Featurizer_test_data/JSONS",
             feature_type="antibonding",
@@ -436,8 +429,7 @@ class TestBatchSummaryFeaturizer:
 class TestBatchCoxxFingerprint:
     def test_fp_cohp_overall(self):
         fp_cohp_overall = BatchCoxxFingerprint(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
             feature_type="overall",
             normalize=True,
@@ -453,8 +445,7 @@ class TestBatchCoxxFingerprint:
 
     def test_fp_cohp_bonding(self):
         fp_cohp_bonding = BatchCoxxFingerprint(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
             feature_type="bonding",
             normalize=False,
@@ -474,8 +465,7 @@ class TestBatchCoxxFingerprint:
 
     def test_fp_cobi(self):
         fp_cobi = BatchCoxxFingerprint(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
             feature_type="antibonding",
             normalize=True,
@@ -497,8 +487,7 @@ class TestBatchCoxxFingerprint:
 
     def test_fp_coop(self):
         fp_coop = BatchCoxxFingerprint(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             e_range=[-15, 0],
             feature_type="bonding",
             normalize=True,
@@ -522,8 +511,7 @@ class TestBatchCoxxFingerprint:
 class TestBatchStructureGraphs:
     def test_batch_structure_graphs_all_bonds(self):
         batch_sg = BatchStructureGraphs(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             which_bonds="all",
             n_jobs=3,
         )
@@ -537,8 +525,7 @@ class TestBatchStructureGraphs:
 
     def test_batch_structure_graphs_cation_anion_bonds(self):
         batch_sg = BatchStructureGraphs(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             which_bonds="cation-anion",
             n_jobs=3,
         )
@@ -554,8 +541,7 @@ class TestBatchStructureGraphs:
 class TestBatchDosFeaturizer:
     def test_batch_dos_featurizer_non_lso(self):
         batch_dos = BatchDosFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             use_lso_dos=False,
             e_range=[-5, 0],
             fingerprint_type="p",
@@ -596,8 +582,7 @@ class TestBatchDosFeaturizer:
 
     def test_batch_dos_featurizer_lso(self):
         batch_dos_lso = BatchDosFeaturizer(
-            path_to_lobster_calcs=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs",
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             add_element_dos_moments=True,
             use_lso_dos=True,
             e_range=[-5, 0],
@@ -692,8 +677,7 @@ class TestExceptions:
     def test_batch_summary_featurizer_exception(self):
         with pytest.raises(Exception) as err1:  # noqa: PT012, PT011
             self.summary_featurize_with_json_ex = BatchSummaryFeaturizer(
-                path_to_lobster_calcs=TestDir
-                / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/1/",
+                path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/1/",
                 bonds="all",
                 feature_type="antibonding",
                 include_cobi_data=True,
@@ -703,15 +687,11 @@ class TestExceptions:
 
             _ = self.summary_featurize_with_json_ex.get_df()
 
-        assert (
-            str(err1.value)
-            == "COBICAR.lobster or ICOBILIST.lobster file not found in mp-2176"
-        )
+        assert str(err1.value) == "COBICAR.lobster or ICOBILIST.lobster file not found in mp-2176"
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
             self.summary_featurize_with_json_ex2 = BatchSummaryFeaturizer(
-                path_to_lobster_calcs=TestDir
-                / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/2/",
+                path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/2/",
                 bonds="all",
                 feature_type="antibonding",
                 include_cobi_data=True,
@@ -721,31 +701,21 @@ class TestExceptions:
 
             _ = self.summary_featurize_with_json_ex2.get_df()
 
-        assert (
-            str(err2.value)
-            == "COOPCAR.lobster or ICOOPLIST.lobster file not found in mp-1000"
-        )
+        assert str(err2.value) == "COOPCAR.lobster or ICOOPLIST.lobster file not found in mp-1000"
 
         # COXX exception
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
-            self.raise_coxx_exception = BatchSummaryFeaturizer(
-                path_to_lobster_calcs=TestDir / "test_data/JSONS/"
-            )
+            self.raise_coxx_exception = BatchSummaryFeaturizer(path_to_lobster_calcs=TestDir / "test_data/JSONS/")
 
             _ = self.raise_coxx_exception._featurizecoxx(
                 path_to_lobster_calc=self.raise_coxx_exception.path_to_lobster_calcs
             )
 
-        assert (
-            str(err3.value)
-            == "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file not found in JSONS"
-        )
+        assert str(err3.value) == "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file not found in JSONS"
 
         # Charges exception
         with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
-            self.raise_ch_exception = BatchSummaryFeaturizer(
-                path_to_lobster_calcs=TestDir / "test_data/JSONS/"
-            )
+            self.raise_ch_exception = BatchSummaryFeaturizer(path_to_lobster_calcs=TestDir / "test_data/JSONS/")
 
             _ = self.raise_ch_exception._featurizecharges(
                 path_to_lobster_calc=self.raise_ch_exception.path_to_lobster_calcs
@@ -756,8 +726,7 @@ class TestExceptions:
         # Fingerprint similarity exception
         with pytest.raises(Exception) as err8:  # noqa: PT012, PT011
             fp_cohp_bonding = BatchCoxxFingerprint(
-                path_to_lobster_calcs=TestDir
-                / "test_data/Featurizer_test_data/Lobster_calcs",
+                path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
                 e_range=[-15, 0],
                 feature_type="bonding",
                 normalize=True,
@@ -775,7 +744,6 @@ class TestExceptions:
             )
 
         assert (
-            str(err8.value)
-            == "Cannot compute similarity index. Please set either normalize=True or "
+            str(err8.value) == "Cannot compute similarity index. Please set either normalize=True or "
             "tanimoto=True or both to False."
         )

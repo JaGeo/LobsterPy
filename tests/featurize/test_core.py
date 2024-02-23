@@ -53,22 +53,12 @@ class TestFeaturizeLobsterpy:
         assert df.index[0] == "mp-1249"
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-1249", "Icohp_mean_avg"] == pytest.approx(
-            -1.020000, abs=1e-05
-        )
-        assert df.loc["mp-1249", "Icohp_mean_max"] == pytest.approx(
-            -1.020000, abs=1e-05
-        )
-        assert df.loc["mp-1249", "Icohp_mean_min"] == pytest.approx(
-            -1.020000, abs=1e-05
-        )
+        assert df.loc["mp-1249", "Icohp_mean_avg"] == pytest.approx(-1.020000, abs=1e-05)
+        assert df.loc["mp-1249", "Icohp_mean_max"] == pytest.approx(-1.020000, abs=1e-05)
+        assert df.loc["mp-1249", "Icohp_mean_min"] == pytest.approx(-1.020000, abs=1e-05)
         assert df.loc["mp-1249", "Icohp_mean_std"] == pytest.approx(0.000000, abs=1e-05)
-        assert df.loc["mp-1249", "Madelung_Mull"] == pytest.approx(
-            -52.000000, abs=1e-05
-        )
-        assert df.loc["mp-1249", "bonding_perc_avg"] == pytest.approx(
-            0.978985, abs=1e-05
-        )
+        assert df.loc["mp-1249", "Madelung_Mull"] == pytest.approx(-52.000000, abs=1e-05)
+        assert df.loc["mp-1249", "bonding_perc_avg"] == pytest.approx(0.978985, abs=1e-05)
 
     def test_featurize_mp1249_json_ca(self):
         featurize_mp1249_json_ca = FeaturizeLobsterpy(
@@ -147,9 +137,7 @@ class TestFeaturizeLobsterpy:
         assert df.loc["mp-1958", "Icohp_sum_min"] == pytest.approx(-2.96000, abs=1e-05)
         assert df.loc["mp-1958", "Icohp_sum_std"] == pytest.approx(0.000000, abs=1e-05)
         assert df.loc["mp-1958", "Madelung_Loew"] == pytest.approx(-16.68000, abs=1e-05)
-        assert df.loc["mp-1958", "antibonding_perc_avg"] == pytest.approx(
-            0.14528, abs=1e-05
-        )
+        assert df.loc["mp-1958", "antibonding_perc_avg"] == pytest.approx(0.14528, abs=1e-05)
 
     def test_featurize_mp14652_json(self):
         featurize_mp14652_json = FeaturizeLobsterpy(
@@ -187,32 +175,17 @@ class TestFeaturizeLobsterpy:
         assert df.index[0] == "mp-14652"
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-14652", "Icohp_mean_std"] == pytest.approx(
-            2.335070, abs=1e-05
-        )
-        assert df.loc["mp-14652", "bonding_perc_max"] == pytest.approx(
-            0.889620, abs=1e-05
-        )
-        assert df.loc["mp-14652", "bonding_perc_min"] == pytest.approx(
-            0.873420, abs=1e-05
-        )
-        assert df.loc["mp-14652", "bonding_perc_std"] == pytest.approx(
-            0.006339, abs=1e-05
-        )
-        assert df.loc["mp-14652", "antibonding_perc_min"] == pytest.approx(
-            0.110380, abs=1e-05
-        )
-        assert df.loc["mp-14652", "antibonding_perc_max"] == pytest.approx(
-            0.126580, abs=1e-05
-        )
-        assert df.loc["mp-14652", "antibonding_perc_std"] == pytest.approx(
-            0.006339, abs=1e-05
-        )
+        assert df.loc["mp-14652", "Icohp_mean_std"] == pytest.approx(2.335070, abs=1e-05)
+        assert df.loc["mp-14652", "bonding_perc_max"] == pytest.approx(0.889620, abs=1e-05)
+        assert df.loc["mp-14652", "bonding_perc_min"] == pytest.approx(0.873420, abs=1e-05)
+        assert df.loc["mp-14652", "bonding_perc_std"] == pytest.approx(0.006339, abs=1e-05)
+        assert df.loc["mp-14652", "antibonding_perc_min"] == pytest.approx(0.110380, abs=1e-05)
+        assert df.loc["mp-14652", "antibonding_perc_max"] == pytest.approx(0.126580, abs=1e-05)
+        assert df.loc["mp-14652", "antibonding_perc_std"] == pytest.approx(0.006339, abs=1e-05)
 
     def test_featurize_mp463(self):
         featurize_mp463 = FeaturizeLobsterpy(
-            path_to_lobster_calc=TestDir
-            / "test_data/Featurizer_test_data/Lobster_calcs/mp-463",
+            path_to_lobster_calc=TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-463",
             bonds="all",
             orbital_resolved=True,
         )
@@ -266,33 +239,18 @@ class TestFeaturizeLobsterpy:
         assert sorted(df.columns) == sorted(expected_cols)
 
         # Here test now only orbital wise analysis column values
-        assert df.loc["mp-463", "Icohp_bndg_orb_mean_avg"] == pytest.approx(
-            -0.181250, abs=1e-05
-        )
-        assert df.loc["mp-463", "Icohp_bndg_orb_sum_max"] == pytest.approx(
-            -1.430000, abs=1e-05
-        )
-        assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(
-            0.370000, abs=1e-05
-        )
-        assert df.loc["mp-463", "Icohp_antibndg_orb_mean_std"] == pytest.approx(
-            0.062050, abs=1e-05
-        )
-        assert df.loc["mp-463", "Icohp_antibndg_orb_sum_avg"] == pytest.approx(
-            -1.445000, abs=1e-05
-        )
-        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(
-            0.230000, abs=1e-05
-        )
-        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(
-            0.015000, abs=1e-05
-        )
+        assert df.loc["mp-463", "Icohp_bndg_orb_mean_avg"] == pytest.approx(-0.181250, abs=1e-05)
+        assert df.loc["mp-463", "Icohp_bndg_orb_sum_max"] == pytest.approx(-1.430000, abs=1e-05)
+        assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.370000, abs=1e-05)
+        assert df.loc["mp-463", "Icohp_antibndg_orb_mean_std"] == pytest.approx(0.062050, abs=1e-05)
+        assert df.loc["mp-463", "Icohp_antibndg_orb_sum_avg"] == pytest.approx(-1.445000, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.230000, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.015000, abs=1e-05)
 
     # Tests for new jsons from atomate2
     def test_featurize_mp66_json(self):
         featurize_mp66_json = FeaturizeLobsterpy(
-            path_to_json=TestDir
-            / "test_data/Featurizer_test_data/New_JSONS/mp-66.json.gz",
+            path_to_json=TestDir / "test_data/Featurizer_test_data/New_JSONS/mp-66.json.gz",
             bonds="all",
         )
         df = featurize_mp66_json.get_df(ids="mp-66")
@@ -338,8 +296,7 @@ class TestFeaturizeLobsterpy:
 
     def test_featurize_mp7000_json(self):
         featurize_mp7000_json = FeaturizeLobsterpy(
-            path_to_json=TestDir
-            / "test_data/Featurizer_test_data/New_JSONS/mp-7000.json.gz",
+            path_to_json=TestDir / "test_data/Featurizer_test_data/New_JSONS/mp-7000.json.gz",
             bonds="cation-anion",
         )
         df = featurize_mp7000_json.get_df(ids="mp-7000")
@@ -383,9 +340,7 @@ class TestFeaturizeLobsterpy:
         assert df.loc["mp-7000", "Madelung_Loew"] == pytest.approx(-99.01, abs=1e-05)
 
     def test_featurize_csh_madelung(self):
-        featurize_csh_madelung = FeaturizeLobsterpy(
-            path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="all"
-        )
+        featurize_csh_madelung = FeaturizeLobsterpy(path_to_lobster_calc=TestDir / "test_data/CsH/", bonds="all")
         df = featurize_csh_madelung.get_df()
 
         assert np.isnan(df.loc["CsH", "Madelung_Mull"])
@@ -700,16 +655,11 @@ class TestFeaturizeCharges:
 class TestExceptions:
     def test_lobsterpy_featurize_exception(self):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
-            self.featurize_mp1249_json = FeaturizeLobsterpy(
-                path_to_json=None, path_to_lobster_calc=None, bonds="all"
-            )
+            self.featurize_mp1249_json = FeaturizeLobsterpy(path_to_json=None, path_to_lobster_calc=None, bonds="all")
 
             _ = self.featurize_mp1249_json.get_df()
 
-        assert (
-            str(err.value)
-            == "Please provide either path to lightweight lobster jsons or path to lobster calc"
-        )
+        assert str(err.value) == "Please provide either path to lightweight lobster jsons or path to lobster calc"
 
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_mp1249_json = FeaturizeLobsterpy(
@@ -719,8 +669,7 @@ class TestExceptions:
             _ = self.featurize_mp1249_json.get_df()
 
         assert (
-            str(err.value)
-            == "Path provided for Lobster calc directory seems incorrect."
+            str(err.value) == "Path provided for Lobster calc directory seems incorrect."
             "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
             "CHARGE.lobster files needed for automatic analysis using LobsterPy"
         )
@@ -732,10 +681,7 @@ class TestExceptions:
 
             _ = self.featurize_csh_cation_anion.get_df()
 
-        assert (
-            str(err.value)
-            == "No cation-anion bonds detected for CsH structure. Please switch to `all` bonds mode"
-        )
+        assert str(err.value) == "No cation-anion bonds detected for CsH structure. Please switch to `all` bonds mode"
 
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_c_cation_anion = FeaturizeLobsterpy(
@@ -744,10 +690,7 @@ class TestExceptions:
 
             _ = self.featurize_c_cation_anion.get_df()
 
-        assert (
-            str(err.value)
-            == "No cation-anion bonds detected for C structure. Please switch to `all` bonds mode"
-        )
+        assert str(err.value) == "No cation-anion bonds detected for C structure. Please switch to `all` bonds mode"
 
     def test_featurize_charges(self):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
@@ -759,10 +702,7 @@ class TestExceptions:
 
             _ = self.featurize_cdf_charge.get_df()
 
-        assert (
-            str(err.value)
-            == "Please check the requested charge_type. Possible options are `Mulliken` or `Loewdin`"
-        )
+        assert str(err.value) == "Please check the requested charge_type. Possible options are `Mulliken` or `Loewdin`"
 
     def test_featurize_coxx(self):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
@@ -792,10 +732,7 @@ class TestExceptions:
 
             _ = self.featurize_coxx.get_coxx_fingerprint_df(spin_type="-1")
 
-        assert (
-            str(err2.value)
-            == "Check the spin_type argument.Possible options are summed/up/down"
-        )
+        assert str(err2.value) == "Check the spin_type argument.Possible options are summed/up/down"
 
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
             self.featurize_coxx = FeaturizeCOXX(
@@ -810,10 +747,7 @@ class TestExceptions:
 
             _ = self.featurize_coxx.get_coxx_fingerprint_df()
 
-        assert (
-            str(err3.value)
-            == "You cannot have info about COOPs and COBIs in the same file."
-        )
+        assert str(err3.value) == "You cannot have info about COOPs and COBIs in the same file."
 
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_nacl_coxx = FeaturizeCOXX(
@@ -842,10 +776,7 @@ class TestExceptions:
 
             _ = self.featurize_nacl_coxx.get_coxx_fingerprint_df(spin_type="down")
 
-        assert (
-            str(err.value)
-            == "LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`"
-        )
+        assert str(err.value) == "LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`"
 
 
 class TestFeaturizeDoscar:
@@ -867,17 +798,13 @@ class TestFeaturizeDoscar:
         assert df.loc["NaCl", "s_band_width"] == pytest.approx(0.3207, abs=1e-05)
         assert df.loc["NaCl", "s_band_skew"] == pytest.approx(1.1887, abs=1e-05)
         assert df.loc["NaCl", "s_band_kurtosis"] == pytest.approx(4.0563, abs=1e-05)
-        assert df.loc["NaCl", "s_band_upperband_edge"] == pytest.approx(
-            -1.3941, abs=1e-05
-        )
+        assert df.loc["NaCl", "s_band_upperband_edge"] == pytest.approx(-1.3941, abs=1e-05)
 
         assert df.loc["NaCl", "p_band_center"] == pytest.approx(-0.7484, abs=1e-05)
         assert df.loc["NaCl", "p_band_width"] == pytest.approx(0.4815, abs=1e-05)
         assert df.loc["NaCl", "p_band_skew"] == pytest.approx(-0.5047, abs=1e-05)
         assert df.loc["NaCl", "p_band_kurtosis"] == pytest.approx(1.8789, abs=1e-05)
-        assert df.loc["NaCl", "p_band_upperband_edge"] == pytest.approx(
-            -0.2343, abs=1e-05
-        )
+        assert df.loc["NaCl", "p_band_upperband_edge"] == pytest.approx(-0.2343, abs=1e-05)
 
     def test_featurize_k3sb_dos(self):
         feat_dos = FeaturizeDoscar(
@@ -896,17 +823,13 @@ class TestFeaturizeDoscar:
         assert df.loc["K3Sb", "s_band_width"] == pytest.approx(15.5141, abs=1e-05)
         assert df.loc["K3Sb", "s_band_skew"] == pytest.approx(-0.1718, abs=1e-05)
         assert df.loc["K3Sb", "s_band_kurtosis"] == pytest.approx(1.1523, abs=1e-05)
-        assert df.loc["K3Sb", "s_band_upperband_edge"] == pytest.approx(
-            -31.5650, abs=1e-05
-        )
+        assert df.loc["K3Sb", "s_band_upperband_edge"] == pytest.approx(-31.5650, abs=1e-05)
 
         assert df.loc["K3Sb", "p_band_center"] == pytest.approx(-10.7245, abs=1e-05)
         assert df.loc["K3Sb", "p_band_width"] == pytest.approx(6.4334, abs=1e-05)
         assert df.loc["K3Sb", "p_band_skew"] == pytest.approx(1.1553, abs=1e-05)
         assert df.loc["K3Sb", "p_band_kurtosis"] == pytest.approx(2.5024, abs=1e-05)
-        assert df.loc["K3Sb", "p_band_upperband_edge"] == pytest.approx(
-            -14.0357, abs=1e-05
-        )
+        assert df.loc["K3Sb", "p_band_upperband_edge"] == pytest.approx(-14.0357, abs=1e-05)
 
         # Test Element orbital moment features
 
@@ -914,33 +837,25 @@ class TestFeaturizeDoscar:
         assert df.loc["K3Sb", "K_s_band_width"] == pytest.approx(16.3903, abs=1e-05)
         assert df.loc["K3Sb", "K_s_band_skew"] == pytest.approx(0.0309, abs=1e-05)
         assert df.loc["K3Sb", "K_s_band_kurtosis"] == pytest.approx(1.0352, abs=1e-05)
-        assert df.loc["K3Sb", "K_s_band_upperband_edge"] == pytest.approx(
-            -31.5650, abs=1e-05
-        )
+        assert df.loc["K3Sb", "K_s_band_upperband_edge"] == pytest.approx(-31.5650, abs=1e-05)
 
         assert df.loc["K3Sb", "Sb_s_band_center"] == pytest.approx(-5.9795, abs=1e-05)
         assert df.loc["K3Sb", "Sb_s_band_width"] == pytest.approx(3.0357, abs=1e-05)
         assert df.loc["K3Sb", "Sb_s_band_skew"] == pytest.approx(1.9959, abs=1e-05)
         assert df.loc["K3Sb", "Sb_s_band_kurtosis"] == pytest.approx(8.4750, abs=1e-05)
-        assert df.loc["K3Sb", "Sb_s_band_upperband_edge"] == pytest.approx(
-            -6.9954, abs=1e-05
-        )
+        assert df.loc["K3Sb", "Sb_s_band_upperband_edge"] == pytest.approx(-6.9954, abs=1e-05)
 
         assert df.loc["K3Sb", "K_p_band_center"] == pytest.approx(-14.3425, abs=1e-05)
         assert df.loc["K3Sb", "K_p_band_width"] == pytest.approx(1.1348, abs=1e-05)
         assert df.loc["K3Sb", "K_p_band_skew"] == pytest.approx(10.7021, abs=1e-05)
         assert df.loc["K3Sb", "K_p_band_kurtosis"] == pytest.approx(147.5038, abs=1e-05)
-        assert df.loc["K3Sb", "K_p_band_upperband_edge"] == pytest.approx(
-            -14.0357, abs=1e-05
-        )
+        assert df.loc["K3Sb", "K_p_band_upperband_edge"] == pytest.approx(-14.0357, abs=1e-05)
 
         assert df.loc["K3Sb", "Sb_p_band_center"] == pytest.approx(0.1300, abs=1e-05)
         assert df.loc["K3Sb", "Sb_p_band_width"] == pytest.approx(2.1458, abs=1e-05)
         assert df.loc["K3Sb", "Sb_p_band_skew"] == pytest.approx(-6.1882, abs=1e-05)
         assert df.loc["K3Sb", "Sb_p_band_kurtosis"] == pytest.approx(84.5825, abs=1e-05)
-        assert df.loc["K3Sb", "Sb_p_band_upperband_edge"] == pytest.approx(
-            -0.0775, abs=1e-05
-        )
+        assert df.loc["K3Sb", "Sb_p_band_upperband_edge"] == pytest.approx(-0.0775, abs=1e-05)
 
         # Test for the case where e_range is set to None and trying to get fingerprint
         df_fp = feat_dos.get_fingerprint_df()
