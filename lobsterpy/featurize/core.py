@@ -1321,13 +1321,13 @@ class FeaturizeDoscar:
                             ),
                             4,
                         )
-                        df.loc[
-                            ids, f"{el.name}_{orbital.name}_band_upperband_edge"
-                        ] = round(
-                            self.dos.get_upper_band_edge(
-                                band=orbital, elements=[el], erange=self.e_range
-                            ),
-                            4,
+                        df.loc[ids, f"{el.name}_{orbital.name}_band_upperband_edge"] = (
+                            round(
+                                self.dos.get_upper_band_edge(
+                                    band=orbital, elements=[el], erange=self.e_range
+                                ),
+                                4,
+                            )
                         )
 
         return df

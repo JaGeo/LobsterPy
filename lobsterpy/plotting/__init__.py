@@ -520,8 +520,10 @@ class PlainDosPlotter(DosPlotter):
         if self.zero_at_efermi:
             xlim = ax.get_xlim()
             ylim = ax.get_ylim()
-            ax.plot(xlim, [0, 0], "k--", linewidth=2) if invert_axes else ax.plot(
-                [0, 0], ylim, "k--", linewidth=2
+            (
+                ax.plot(xlim, [0, 0], "k--", linewidth=2)
+                if invert_axes
+                else ax.plot([0, 0], ylim, "k--", linewidth=2)
             )
 
         if invert_axes:

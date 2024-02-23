@@ -359,9 +359,12 @@ class BatchSummaryFeaturizer:
             ]
 
         row = []
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
-            total=len(file_name_or_path), desc="Generating LobsterPy summary stats"
-        ) as pbar:
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(
+                total=len(file_name_or_path), desc="Generating LobsterPy summary stats"
+            ) as pbar,
+        ):
             for _, result in enumerate(
                 pool.imap_unordered(
                     self._featurizelobsterpy, file_name_or_path, chunksize=1
@@ -382,9 +385,12 @@ class BatchSummaryFeaturizer:
         ]
 
         row = []
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
-            total=len(paths), desc="Generating COHP/COOP/COBI summary stats"
-        ) as pbar:
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(
+                total=len(paths), desc="Generating COHP/COOP/COBI summary stats"
+            ) as pbar,
+        ):
             for _, result in enumerate(
                 pool.imap_unordered(self._featurizecoxx, paths, chunksize=1)
             ):
@@ -395,9 +401,10 @@ class BatchSummaryFeaturizer:
         df_coxx.sort_index(inplace=True)  # noqa: PD002
 
         row = []
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
-            total=len(paths), desc="Generating charge based features"
-        ) as pbar:
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(total=len(paths), desc="Generating charge based features") as pbar,
+        ):
             for _, result in enumerate(
                 pool.imap_unordered(self._featurizecharges, paths, chunksize=1)
             ):
@@ -692,10 +699,13 @@ class BatchCoxxFingerprint:
         ]
 
         row = []
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
-            total=len(paths),
-            desc=f"Generating {self.fingerprint_for.upper()} fingerprints",
-        ) as pbar:
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(
+                total=len(paths),
+                desc=f"Generating {self.fingerprint_for.upper()} fingerprints",
+            ) as pbar,
+        ):
             for _, result in enumerate(
                 pool.imap_unordered(self._fingerprint_df, paths, chunksize=1)
             ):
@@ -830,9 +840,10 @@ class BatchStructureGraphs:
             and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
         ]
         row = []
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
-            total=len(paths), desc="Generating Structure Graphs"
-        ) as pbar:
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(total=len(paths), desc="Generating Structure Graphs") as pbar,
+        ):
             for _, result in enumerate(
                 pool.imap_unordered(self._get_sg_df, paths, chunksize=1)
             ):
@@ -903,9 +914,9 @@ class BatchDosFeaturizer:
         """
         dir_name = Path(path_to_lobster_calc)
         req_files = {
-            "doscar_path": "DOSCAR.LSO.lobster"
-            if self.use_lso_dos
-            else "DOSCAR.lobster",
+            "doscar_path": (
+                "DOSCAR.LSO.lobster" if self.use_lso_dos else "DOSCAR.lobster"
+            ),
             "structure_path": "POSCAR",
         }
         for file, default_value in req_files.items():
@@ -958,9 +969,9 @@ class BatchDosFeaturizer:
         dir_name = Path(path_to_lobster_calc)
 
         req_files = {
-            "doscar_path": "DOSCAR.LSO.lobster"
-            if self.use_lso_dos
-            else "DOSCAR.lobster",
+            "doscar_path": (
+                "DOSCAR.LSO.lobster" if self.use_lso_dos else "DOSCAR.lobster"
+            ),
             "structure_path": "POSCAR",
         }
         for file, default_value in req_files.items():
@@ -1020,9 +1031,10 @@ class BatchDosFeaturizer:
             and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
         ]
         row = []
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
-            total=len(paths), desc="Generating PDOS moment features"
-        ) as pbar:
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(total=len(paths), desc="Generating PDOS moment features") as pbar,
+        ):
             for _, result in enumerate(
                 pool.imap_unordered(self._get_dos_moments_df, paths, chunksize=1)
             ):
@@ -1049,9 +1061,10 @@ class BatchDosFeaturizer:
             and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
         ]
         row = []
-        with mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool, tqdm(
-            total=len(paths), desc="Generating DOS fingerprints"
-        ) as pbar:
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(total=len(paths), desc="Generating DOS fingerprints") as pbar,
+        ):
             for _, result in enumerate(
                 pool.imap_unordered(self._get_dos_fingerprints_df, paths, chunksize=1)
             ):

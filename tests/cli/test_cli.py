@@ -683,9 +683,10 @@ class TestCLI:
         for file in os.listdir():
             if file.endswith(".gz"):
                 uncompressed_file_path = file.split(".gz")[0]  # Remove '.gz' extension
-                with gzip.open(file, "rb") as f_in, open(
-                    uncompressed_file_path, "wb"
-                ) as f_out:
+                with (
+                    gzip.open(file, "rb") as f_in,
+                    open(uncompressed_file_path, "wb") as f_out,
+                ):
                     shutil.copyfileobj(f_in, f_out)
                     # Delete the source gzipped file
                     os.remove(file)

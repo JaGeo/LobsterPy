@@ -660,9 +660,9 @@ class Analysis:
                 ]
                 max_antibndg_contri_dict = {}
                 for inx in max_antibndg_contri_inxs:
-                    max_antibndg_contri_dict[
-                        orb_pairs_antibndg[inx]
-                    ] = orb_contri_antibndg[inx]
+                    max_antibndg_contri_dict[orb_pairs_antibndg[inx]] = (
+                        orb_contri_antibndg[inx]
+                    )
                 orbital_summary_stats["orbital_summary_stats"][
                     "max_antibonding_contribution"
                 ] = max_antibndg_contri_dict
@@ -1205,9 +1205,9 @@ class Analysis:
                                         and (namecation + str(ication + 1) + ":")
                                         in ion_atom_pair_orb
                                     ):
-                                        icohp_data[
-                                            "orbital_data"
-                                        ] = orb_resolved_bond_info[ion_atom_pair_orb]
+                                        icohp_data["orbital_data"] = (
+                                            orb_resolved_bond_info[ion_atom_pair_orb]
+                                        )
 
                                         orb_data_stats = self._get_bond_resolved_data_stats(
                                             orb_resolved_bond_data=orb_resolved_bond_info[
@@ -1286,9 +1286,9 @@ class Analysis:
                                         and (nameion + str(iion + 1) + ":")
                                         in ion_atom_pair_orb
                                     ):
-                                        icohp_data[
-                                            "orbital_data"
-                                        ] = orb_resolved_bond_info[ion_atom_pair_orb]
+                                        icohp_data["orbital_data"] = (
+                                            orb_resolved_bond_info[ion_atom_pair_orb]
+                                        )
 
                                         orb_data_stats = self._get_bond_resolved_data_stats(
                                             orb_resolved_bond_data=orb_resolved_bond_info[
