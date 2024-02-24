@@ -140,14 +140,10 @@ class Analysis:
             elif type_charge == "Mulliken":
                 self.type_charge = "Mulliken"
             elif type_charge == "Löwdin":
-                raise ValueError(
-                    "Only Mulliken charges can be used here at the moment. Implementation will follow."
-                )
+                raise ValueError("Only Mulliken charges can be used here at the moment. Implementation will follow.")
             else:
                 self.type_charge = "Valences"
-                print(
-                    "type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences"
-                )
+                print("type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences")
 
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
@@ -186,8 +182,7 @@ class Analysis:
             except ValueError as err:
                 if (
                     str(err) == "min() arg is an empty sequence"
-                    or str(err)
-                    == "All valences are equal to 0, additional_conditions 1, 3, 5 and 6 will not work"
+                    or str(err) == "All valences are equal to 0, additional_conditions 1, 3, 5 and 6 will not work"
                 ):
                     raise ValueError(
                         "Consider switching to an analysis of all bonds and not only cation-anion bonds."
@@ -215,13 +210,9 @@ class Analysis:
         # determine cations and anions
         try:
             if self.which_bonds == "cation-anion":
-                self.lse = self.chemenv.get_light_structure_environment(
-                    only_cation_environments=True
-                )
+                self.lse = self.chemenv.get_light_structure_environment(only_cation_environments=True)
             elif self.which_bonds == "all":
-                self.lse = self.chemenv.get_light_structure_environment(
-                    only_cation_environments=False
-                )
+                self.lse = self.chemenv.get_light_structure_environment(only_cation_environments=False)
         except ValueError:
 
             class Lse:
@@ -239,25 +230,17 @@ class Analysis:
                         self.coordination_environments = []
                         for coord in chemenv:
                             if len(coord) > 0:
-                                self.coordination_environments.append(
-                                    [{"ce_symbol": str(len(coord))}]
-                                )
+                                self.coordination_environments.append([{"ce_symbol": str(len(coord))}])
                             else:
-                                self.coordination_environments.append(
-                                    [{"ce_symbol": None}]
-                                )
+                                self.coordination_environments.append([{"ce_symbol": None}])
                     else:
                         self.coordination_environments = []
 
                         for val, coord in zip(valences, chemenv):
                             if val >= 0.0 and len(coord) > 0:
-                                self.coordination_environments.append(
-                                    [{"ce_symbol": str(len(coord))}]
-                                )
+                                self.coordination_environments.append([{"ce_symbol": str(len(coord))}])
                             else:
-                                self.coordination_environments.append(
-                                    [{"ce_symbol": None}]
-                                )
+                                self.coordination_environments.append([{"ce_symbol": None}])
 
             if self.which_bonds == "all":
                 self.lse = Lse(self.chemenv.list_coords)
@@ -290,9 +273,7 @@ class Analysis:
                     self.seq_ineq_ions.append(ice)
 
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
-                    self.seq_infos_bonds.append(
-                        self.chemenv.get_info_icohps_to_neighbors([ice])
-                    )
+                    self.seq_infos_bonds.append(self.chemenv.get_info_icohps_to_neighbors([ice]))
 
                     aniontype_labels = []
                     aniontype_cohps = []
@@ -331,9 +312,7 @@ class Analysis:
                 if ice in self.seq_equivalent_sites and ce[0]["ce_symbol"] is not None:
                     self.seq_ineq_ions.append(ice)
                     self.seq_coord_ions.append(ce[0]["ce_symbol"])
-                    self.seq_infos_bonds.append(
-                        self.chemenv.get_info_icohps_to_neighbors([ice])
-                    )
+                    self.seq_infos_bonds.append(self.chemenv.get_info_icohps_to_neighbors([ice]))
 
                     type_labels = []
                     type_cohps = []
@@ -383,9 +362,7 @@ class Analysis:
         for indx, atom_pairs in enumerate(bonds):
             searched_atom_pairs = set(atom_pairs)
             for search_item in searched_atom_pairs:
-                indices = [
-                    i for i, pair in enumerate(atom_pairs) if pair == search_item
-                ]
+                indices = [i for i, pair in enumerate(atom_pairs) if pair == search_item]
                 filtered_bond_label_list = [labels[indx][i] for i in indices]
                 label_data.update({search_item: filtered_bond_label_list})
 
@@ -415,13 +392,9 @@ class Analysis:
         orb_resolved_bond_info = {}
         for label in labels:
             if label is not None:
-                bond_resolved_label_key = (
-                    nameion + str(iion + 1) + ":" + label.split("x")[-1]
-                )
+                bond_resolved_label_key = nameion + str(iion + 1) + ":" + label.split("x")[-1]
                 bond_labels = bond_resolved_labels[bond_resolved_label_key]
-                available_orbitals = list(
-                    self.chemenv.completecohp.orb_res_cohp[bond_labels[0]].keys()
-                )
+                available_orbitals = list(self.chemenv.completecohp.orb_res_cohp[bond_labels[0]].keys())
                 # initialize empty list to store orb paris for bonding,
                 # antibonding integrals and  percentages
                 bndg_orb_pair_list = []
@@ -434,27 +407,21 @@ class Analysis:
                 antibndg_orb_icohp_list = []
 
                 # get total summed cohps using label list
-                cohp_summed = self.chemenv.completecohp.get_summed_cohp_by_label_list(
-                    label_list=bond_labels
-                )
+                cohp_summed = self.chemenv.completecohp.get_summed_cohp_by_label_list(label_list=bond_labels)
                 if type_pop.lower() == "cohp":
                     (
                         antibndg_tot,
                         per_anti_tot,
                         bndg_tot,
                         per_bndg_tot,
-                    ) = self._integrate_antbdstates_below_efermi(
-                        cohp=cohp_summed, start=self.start
-                    )
+                    ) = self._integrate_antbdstates_below_efermi(cohp=cohp_summed, start=self.start)
                 else:
                     (
                         bndg_tot,
                         per_bndg_tot,
                         antibndg_tot,
                         per_anti_tot,
-                    ) = self._integrate_antbdstates_below_efermi(
-                        cohp=cohp_summed, start=self.start
-                    )
+                    ) = self._integrate_antbdstates_below_efermi(cohp=cohp_summed, start=self.start)
 
                 orb_bonding_dict_data = {}  # type: ignore
                 # For each orbital collect the contributions of summed bonding
@@ -470,18 +437,14 @@ class Analysis:
                             per_anti_orb,
                             bndg_orb,
                             per_bndg_orb,
-                        ) = self._integrate_antbdstates_below_efermi(
-                            cohp=cohp_summed_orb, start=self.start
-                        )
+                        ) = self._integrate_antbdstates_below_efermi(cohp=cohp_summed_orb, start=self.start)
                     else:
                         (
                             bndg_orb,
                             per_bndg_orb,
                             antibndg_orb,
                             per_anti_orb,
-                        ) = self._integrate_antbdstates_below_efermi(
-                            cohp=cohp_summed_orb, start=self.start
-                        )
+                        ) = self._integrate_antbdstates_below_efermi(cohp=cohp_summed_orb, start=self.start)
 
                     # replace nan values with zero (tackle numerical integration issues)
                     bndg_orb = bndg_orb if not np.isnan(bndg_orb) else 0
@@ -492,10 +455,8 @@ class Analysis:
                     if bndg_tot > 0:
                         orb_icohps_bndg = []
                         for bond_label in bond_labels:
-                            orb_icohp_bn = (
-                                self.chemenv.Icohpcollection.get_icohp_by_label(
-                                    label=bond_label, orbitals=orb
-                                )
+                            orb_icohp_bn = self.chemenv.Icohpcollection.get_icohp_by_label(
+                                label=bond_label, orbitals=orb
                             )
                             orb_icohps_bndg.append(orb_icohp_bn)
                         bndg_orb_pair_list.append(orb)
@@ -512,10 +473,8 @@ class Analysis:
                     if antibndg_tot > 0:
                         orb_icohps_anti = []
                         for bond_label in bond_labels:
-                            orb_icohp_an = (
-                                self.chemenv.Icohpcollection.get_icohp_by_label(
-                                    label=bond_label, orbitals=orb
-                                )
+                            orb_icohp_an = self.chemenv.Icohpcollection.get_icohp_by_label(
+                                label=bond_label, orbitals=orb
                             )
                             orb_icohps_anti.append(orb_icohp_an)
 
@@ -526,9 +485,7 @@ class Analysis:
 
                 # Populate the dictionary with relevant orbitals for bonding interactions
                 for inx, bndg_orb_pair in enumerate(bndg_orb_pair_list):
-                    bndg_contri_perc = round(
-                        bndg_orb_integral_list[inx] / sum(bndg_orb_integral_list), 2
-                    )
+                    bndg_contri_perc = round(bndg_orb_integral_list[inx] / sum(bndg_orb_integral_list), 2)
                     # filter out very small bonding interactions (<self.orbital_cutoff)
                     if bndg_contri_perc > self.orbital_cutoff:
                         if bndg_orb_pair in orb_bonding_dict_data:
@@ -543,15 +500,10 @@ class Analysis:
                             )
                         else:
                             orb_bonding_dict_data[bndg_orb_pair] = {
-                                f"I{type_pop}_mean": round(
-                                    np.mean(bndg_orb_icohp_list[inx]), 4
-                                ),
-                                f"I{type_pop}_sum": round(
-                                    np.sum(bndg_orb_icohp_list[inx]), 4
-                                ),
+                                f"I{type_pop}_mean": round(np.mean(bndg_orb_icohp_list[inx]), 4),
+                                f"I{type_pop}_sum": round(np.sum(bndg_orb_icohp_list[inx]), 4),
                                 "orb_contribution_perc_bonding": round(
-                                    bndg_orb_integral_list[inx]
-                                    / sum(bndg_orb_integral_list),
+                                    bndg_orb_integral_list[inx] / sum(bndg_orb_integral_list),
                                     2,
                                 ),
                                 "bonding": {
@@ -563,8 +515,7 @@ class Analysis:
                 # Populate the dictionary with relevant orbitals for antibonding interactions
                 for inx, antibndg_orb_pair in enumerate(antibndg_orb_pair_list):
                     antibndg_contri_perc = round(
-                        antibndg_orb_integral_list[inx]
-                        / sum(antibndg_orb_integral_list),
+                        antibndg_orb_integral_list[inx] / sum(antibndg_orb_integral_list),
                         2,
                     )
                     # filter out very small antibonding interactions (<self.orbital_cutoff)
@@ -573,8 +524,7 @@ class Analysis:
                             orb_bonding_dict_data[antibndg_orb_pair].update(
                                 {
                                     "orb_contribution_perc_antibonding": round(
-                                        antibndg_orb_integral_list[inx]
-                                        / sum(antibndg_orb_integral_list),
+                                        antibndg_orb_integral_list[inx] / sum(antibndg_orb_integral_list),
                                         2,
                                     ),
                                     "antibonding": {
@@ -585,15 +535,10 @@ class Analysis:
                             )
                         else:
                             orb_bonding_dict_data[antibndg_orb_pair] = {
-                                f"I{type_pop}_mean": round(
-                                    np.mean(antibndg_orb_icohp_list[inx]), 4
-                                ),
-                                f"I{type_pop}_sum": round(
-                                    np.sum(antibndg_orb_icohp_list[inx]), 4
-                                ),
+                                f"I{type_pop}_mean": round(np.mean(antibndg_orb_icohp_list[inx]), 4),
+                                f"I{type_pop}_sum": round(np.sum(antibndg_orb_icohp_list[inx]), 4),
                                 "orb_contribution_perc_antibonding": round(
-                                    antibndg_orb_integral_list[inx]
-                                    / sum(antibndg_orb_integral_list),
+                                    antibndg_orb_integral_list[inx] / sum(antibndg_orb_integral_list),
                                     2,
                                 ),
                                 "antibonding": {
@@ -634,23 +579,17 @@ class Analysis:
 
                 if "orb_contribution_perc_antibonding" in data:
                     orb_pairs_antibndg.append(orb_pair)
-                    orb_contri_antibndg.append(
-                        data["orb_contribution_perc_antibonding"]
-                    )
+                    orb_contri_antibndg.append(data["orb_contribution_perc_antibonding"])
 
             if orb_contri_bndg:
                 max_orb_contri_bndg = max(orb_contri_bndg)
                 max_orb_contri_bndg_inxs = [
-                    inx
-                    for inx, orb_contri in enumerate(orb_contri_bndg)
-                    if orb_contri == max_orb_contri_bndg
+                    inx for inx, orb_contri in enumerate(orb_contri_bndg) if orb_contri == max_orb_contri_bndg
                 ]
                 max_orb_contri_bndg_dict = {}
                 for inx in max_orb_contri_bndg_inxs:
                     max_orb_contri_bndg_dict[orb_pairs_bndg[inx]] = orb_contri_bndg[inx]
-                orbital_summary_stats["orbital_summary_stats"][
-                    "max_bonding_contribution"
-                ] = max_orb_contri_bndg_dict
+                orbital_summary_stats["orbital_summary_stats"]["max_bonding_contribution"] = max_orb_contri_bndg_dict
             if orb_contri_antibndg:
                 max_orb_contri_antibndg = max(orb_contri_antibndg)
                 max_antibndg_contri_inxs = [
@@ -660,9 +599,7 @@ class Analysis:
                 ]
                 max_antibndg_contri_dict = {}
                 for inx in max_antibndg_contri_inxs:
-                    max_antibndg_contri_dict[
-                        orb_pairs_antibndg[inx]
-                    ] = orb_contri_antibndg[inx]
+                    max_antibndg_contri_dict[orb_pairs_antibndg[inx]] = orb_contri_antibndg[inx]
                 orbital_summary_stats["orbital_summary_stats"][
                     "max_antibonding_contribution"
                 ] = max_antibndg_contri_dict
@@ -681,9 +618,7 @@ class Analysis:
         site_bond_labels = self.get_site_bond_resolved_labels()
         orb_plot_data = {atom_pair: {} for atom_pair in site_bond_labels}
         if self.orbital_resolved:
-            for site_index, cba_data in self.condensed_bonding_analysis[
-                "sites"
-            ].items():
+            for site_index, cba_data in self.condensed_bonding_analysis["sites"].items():
                 for atom in cba_data["bonds"]:
                     for orb_pair in cba_data["bonds"][atom]["orbital_data"]:
                         if orb_pair not in ("orbital_summary_stats", "relevant_bonds"):
@@ -698,17 +633,12 @@ class Analysis:
                             label_list = site_bond_labels[key]
                             orb_plot_data[key].update({orb_pair: label_list})
         else:
-            print(
-                "Please set orbital_resolved to True when instantiating Analysis object, "
-                "to get this data"
-            )
+            print("Please set orbital_resolved to True when instantiating Analysis object, to get this data")
 
         return orb_plot_data
 
     @staticmethod
-    def _get_strenghts_for_each_bond(
-        pairs: list[list[str]], strengths: list[float], nameion: str | None = None
-    ):
+    def _get_strenghts_for_each_bond(pairs: list[list[str]], strengths: list[float], nameion: str | None = None):
         """
         Return a dictionary of bond strengths.
 
@@ -792,12 +722,8 @@ class Analysis:
         orb_atom = {}  # type: ignore
         orb_pair_list = orb_pair.split("-")
         # get orbital associated to the atom and store in a dict
-        for _inx, (site, site_orb) in enumerate(
-            zip(complete_cohp.bonds[label]["sites"], orb_pair_list)
-        ):
-            if (
-                site.species_string in orb_atom
-            ):  # check necessary for bonds between same atoms
+        for _inx, (site, site_orb) in enumerate(zip(complete_cohp.bonds[label]["sites"], orb_pair_list)):
+            if site.species_string in orb_atom:  # check necessary for bonds between same atoms
                 orb_atom[site.species_string].append(site_orb)
             else:
                 orb_atom[site.species_string] = [site_orb]
@@ -814,9 +740,7 @@ class Analysis:
 
         return orb_atom_list
 
-    def _get_antibdg_states(
-        self, cohps, labels: list[str], nameion: str | None = None, limit=0.01
-    ):
+    def _get_antibdg_states(self, cohps, labels: list[str], nameion: str | None = None, limit=0.01):
         """
         Return a dictionary containing information on anti-bonding states.
 
@@ -853,9 +777,7 @@ class Analysis:
 
         return dict_antibd
 
-    def _integrate_antbdstates_below_efermi_for_set_cohps(
-        self, labels: list[str], cohps, nameion: str
-    ):
+    def _integrate_antbdstates_below_efermi_for_set_cohps(self, labels: list[str], cohps, nameion: str):
         """
         Return a dictionary containing information on antibonding states.
 
@@ -984,11 +906,7 @@ class Analysis:
 
         # will integrate spin.up and spin.down only below efermi
         energies_corrected = cohp.energies - cohp.efermi
-        summedcohp = (
-            cohp.cohp[Spin.up] + cohp.cohp[Spin.down]
-            if Spin.down in cohp.cohp
-            else cohp.cohp[Spin.up]
-        )
+        summedcohp = cohp.cohp[Spin.up] + cohp.cohp[Spin.down] if Spin.down in cohp.cohp else cohp.cohp[Spin.up]
 
         cohp_bf = []
         en_bf = []
@@ -1164,60 +1082,42 @@ class Analysis:
                 # pairs, strengths, nameion
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, namecation)
-                dict_antibonding = (
-                    self._integrate_antbdstates_below_efermi_for_set_cohps(
-                        labels, cohps, nameion=namecation
-                    )
+                dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(
+                    labels, cohps, nameion=namecation
                 )
-                bond_dict = self._get_bond_dict(
-                    mean_icohps, antbdg, namecation, type_pop=type_pop
-                )
+                bond_dict = self._get_bond_dict(mean_icohps, antbdg, namecation, type_pop=type_pop)
                 bond_resolved_labels = self.get_site_bond_resolved_labels()
 
                 for cation_name, icohp_data in bond_dict.items():
                     for atom_pair, bonding_data in dict_antibonding.items():
-                        if (
-                            namecation == atom_pair.split("-")[0]
-                            and cation_name == atom_pair.split("-")[1]
-                        ):
+                        if namecation == atom_pair.split("-")[0] and cation_name == atom_pair.split("-")[1]:
                             icohp_data["bonding"] = bonding_data["bonding"]
                             icohp_data["antibonding"] = bonding_data["antibonding"]
                             if self.orbital_resolved:
                                 # get orb resolved data to be added
-                                orb_resolved_bond_info = (
-                                    self._get_orbital_resolved_data(
-                                        nameion=namecation,
-                                        iion=ication,
-                                        labels=labels,
-                                        bond_resolved_labels=bond_resolved_labels,
-                                        type_pop=type_pop,
-                                    )
+                                orb_resolved_bond_info = self._get_orbital_resolved_data(
+                                    nameion=namecation,
+                                    iion=ication,
+                                    labels=labels,
+                                    bond_resolved_labels=bond_resolved_labels,
+                                    type_pop=type_pop,
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
                                 for ion_atom_pair_orb in orb_resolved_bond_info:
-                                    orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
-                                        -1
-                                    ]
+                                    orb_data_atom_pair = ion_atom_pair_orb.split(": ")[-1]
                                     atom_pair_here = atom_pair.split("-")
                                     atom_pair_here.sort()
                                     if (
                                         orb_data_atom_pair == "-".join(atom_pair_here)
-                                        and (namecation + str(ication + 1) + ":")
-                                        in ion_atom_pair_orb
+                                        and (namecation + str(ication + 1) + ":") in ion_atom_pair_orb
                                     ):
-                                        icohp_data[
-                                            "orbital_data"
-                                        ] = orb_resolved_bond_info[ion_atom_pair_orb]
+                                        icohp_data["orbital_data"] = orb_resolved_bond_info[ion_atom_pair_orb]
 
                                         orb_data_stats = self._get_bond_resolved_data_stats(
-                                            orb_resolved_bond_data=orb_resolved_bond_info[
-                                                ion_atom_pair_orb
-                                            ],
+                                            orb_resolved_bond_data=orb_resolved_bond_info[ion_atom_pair_orb],
                                         )
 
-                                        icohp_data["orbital_data"].update(
-                                            orb_data_stats
-                                        )
+                                        icohp_data["orbital_data"].update(orb_data_stats)
 
                 site_dict[ication] = {
                     "env": ce,
@@ -1244,61 +1144,41 @@ class Analysis:
                 # will collect if there are antibonding states present
                 antbdg = self._get_antibdg_states(cohps, labels, nameion=None)
 
-                dict_antibonding = (
-                    self._integrate_antbdstates_below_efermi_for_set_cohps(
-                        labels, cohps, nameion
-                    )
-                )
+                dict_antibonding = self._integrate_antbdstates_below_efermi_for_set_cohps(labels, cohps, nameion)
 
-                bond_dict = self._get_bond_dict(
-                    mean_icohps, antbdg, nameion=nameion, type_pop=type_pop
-                )
+                bond_dict = self._get_bond_dict(mean_icohps, antbdg, nameion=nameion, type_pop=type_pop)
                 bond_resolved_labels = self.get_site_bond_resolved_labels()
 
                 for cation_name, icohp_data in bond_dict.items():
                     for atom_pair, bonding_data in dict_antibonding.items():
-                        if (
-                            nameion == atom_pair.split("-")[0]
-                            and cation_name == atom_pair.split("-")[1]
-                        ):
+                        if nameion == atom_pair.split("-")[0] and cation_name == atom_pair.split("-")[1]:
                             icohp_data["bonding"] = bonding_data["bonding"]
                             icohp_data["antibonding"] = bonding_data["antibonding"]
                             if self.orbital_resolved:
                                 # get orb resolved data to be added
-                                orb_resolved_bond_info = (
-                                    self._get_orbital_resolved_data(
-                                        nameion=nameion,
-                                        iion=iion,
-                                        labels=labels,
-                                        bond_resolved_labels=bond_resolved_labels,
-                                        type_pop=type_pop,
-                                    )
+                                orb_resolved_bond_info = self._get_orbital_resolved_data(
+                                    nameion=nameion,
+                                    iion=iion,
+                                    labels=labels,
+                                    bond_resolved_labels=bond_resolved_labels,
+                                    type_pop=type_pop,
                                 )
                                 # match the dict key in bond_dict and get corresponding orbital data
                                 for ion_atom_pair_orb in orb_resolved_bond_info:
-                                    orb_data_atom_pair = ion_atom_pair_orb.split(": ")[
-                                        -1
-                                    ]
+                                    orb_data_atom_pair = ion_atom_pair_orb.split(": ")[-1]
                                     atom_pair_here = atom_pair.split("-")
                                     atom_pair_here.sort()
                                     if (
                                         orb_data_atom_pair == "-".join(atom_pair_here)
-                                        and (nameion + str(iion + 1) + ":")
-                                        in ion_atom_pair_orb
+                                        and (nameion + str(iion + 1) + ":") in ion_atom_pair_orb
                                     ):
-                                        icohp_data[
-                                            "orbital_data"
-                                        ] = orb_resolved_bond_info[ion_atom_pair_orb]
+                                        icohp_data["orbital_data"] = orb_resolved_bond_info[ion_atom_pair_orb]
 
                                         orb_data_stats = self._get_bond_resolved_data_stats(
-                                            orb_resolved_bond_data=orb_resolved_bond_info[
-                                                ion_atom_pair_orb
-                                            ],
+                                            orb_resolved_bond_data=orb_resolved_bond_info[ion_atom_pair_orb],
                                         )
 
-                                        icohp_data["orbital_data"].update(
-                                            orb_data_stats
-                                        )
+                                        icohp_data["orbital_data"].update(orb_data_stats)
 
                 site_dict[iion] = {
                     "env": ce,
@@ -1377,9 +1257,7 @@ class Analysis:
             None
 
         """
-        relevant_ion_ids = [
-            isite for isite in self.list_equivalent_sites if isite in self.seq_ineq_ions
-        ]
+        relevant_ion_ids = [isite for isite in self.list_equivalent_sites if isite in self.seq_ineq_ions]
         # set population type
         type_pop = self._get_pop_type()
 
@@ -1398,38 +1276,28 @@ class Analysis:
                         "has_antbdg": properties["has_antibdg_states_below_Efermi"],
                     }
                 else:
-                    final_dict_bonds[label]["number_of_bonds"] += int(
-                        properties["number_of_bonds"]
-                    )
-                    final_dict_bonds[label][f"I{type_pop}_sum"] += float(
-                        properties[f"I{type_pop}_sum"]
-                    )
+                    final_dict_bonds[label]["number_of_bonds"] += int(properties["number_of_bonds"])
+                    final_dict_bonds[label][f"I{type_pop}_sum"] += float(properties[f"I{type_pop}_sum"])
                     final_dict_bonds[label]["has_antbdg"] = (
-                        final_dict_bonds[label]["has_antbdg"]
-                        or properties["has_antibdg_states_below_Efermi"]
+                        final_dict_bonds[label]["has_antbdg"] or properties["has_antibdg_states_below_Efermi"]
                     )
         self.final_dict_bonds = {}
         for key, item in final_dict_bonds.items():
             self.final_dict_bonds[key] = {}
-            self.final_dict_bonds[key][f"I{type_pop}_mean"] = item[
-                f"I{type_pop}_sum"
-            ] / (item["number_of_bonds"])
+            self.final_dict_bonds[key][f"I{type_pop}_mean"] = item[f"I{type_pop}_sum"] / (item["number_of_bonds"])
             self.final_dict_bonds[key]["has_antbdg"] = item["has_antbdg"]
 
         # rework, add all environments!
         final_dict_ions = {}
         for key in relevant_ion_ids:
-            if (
-                self.condensed_bonding_analysis["sites"][key]["ion"]
-                not in final_dict_ions
-            ):
-                final_dict_ions[
-                    self.condensed_bonding_analysis["sites"][key]["ion"]
-                ] = [self.condensed_bonding_analysis["sites"][key]["env"]]
+            if self.condensed_bonding_analysis["sites"][key]["ion"] not in final_dict_ions:
+                final_dict_ions[self.condensed_bonding_analysis["sites"][key]["ion"]] = [
+                    self.condensed_bonding_analysis["sites"][key]["env"]
+                ]
             else:
-                final_dict_ions[
-                    self.condensed_bonding_analysis["sites"][key]["ion"]
-                ].append(self.condensed_bonding_analysis["sites"][key]["env"])
+                final_dict_ions[self.condensed_bonding_analysis["sites"][key]["ion"]].append(
+                    self.condensed_bonding_analysis["sites"][key]["env"]
+                )
 
         self.final_dict_ions = {}
         for key, item in final_dict_ions.items():
@@ -1481,16 +1349,11 @@ class Analysis:
         elif not path_to_potcar and potcar_symbols:
             potcar_names = potcar_symbols
         else:
-            raise ValueError(
-                "Please provide either path_to_potcar or list of "
-                "potcar_symbols used for the calculations"
-            )
+            raise ValueError("Please provide either path_to_potcar or list of potcar_symbols used for the calculations")
 
         struct = Structure.from_file(path_to_poscar)
 
-        ref_bases = Lobsterin.get_all_possible_basis_functions(
-            structure=struct, potcar_symbols=potcar_names
-        )
+        ref_bases = Lobsterin.get_all_possible_basis_functions(structure=struct, potcar_symbols=potcar_names)
 
         lobs_in = Lobsterin.from_file(path_to_lobsterin)
         calc_basis = []
@@ -1536,9 +1399,7 @@ class Analysis:
                         limit_maxDeviation=0.1
                     ),
                     "max_deviation": round(max(band_overlaps.max_deviation), 4),
-                    "percent_kpoints_abv_limit": round(
-                        (len(dev_val) / total_kpoints) * 100, 4
-                    ),
+                    "percent_kpoints_abv_limit": round((len(dev_val) / total_kpoints) * 100, 4),
                 }
 
             else:
@@ -1595,8 +1456,7 @@ class Analysis:
         if dos_comparison:
             if "LSO" not in str(path_to_doscar).split("."):
                 warnings.warn(
-                    "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have "
-                    "negative DOS values"
+                    "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values"
                 )
             doscar_lobster = Doscar(
                 doscar=path_to_doscar,
@@ -1611,9 +1471,7 @@ class Analysis:
             quality_dict["dos_comparisons"] = {}  # type: ignore
 
             for orb in dos_lobster.get_spd_dos():
-                if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(
-                    dos_lobster.energies
-                ):
+                if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(dos_lobster.energies):
                     min_e = e_range[0]
                 else:
                     warnings.warn(
@@ -1622,9 +1480,7 @@ class Analysis:
                     )
                     min_e = -5
 
-                if e_range[-1] <= max(dos_vasp.energies) and e_range[-1] <= max(
-                    dos_lobster.energies
-                ):
+                if e_range[-1] <= max(dos_vasp.energies) and e_range[-1] <= max(dos_lobster.energies):
                     max_e = e_range[-1]
                 else:
                     warnings.warn(
@@ -1633,10 +1489,7 @@ class Analysis:
                     )
                     max_e = 0
 
-                if (
-                    np.diff(dos_vasp.energies)[0] >= 0.1
-                    or np.diff(dos_lobster.energies)[0] >= 0.1
-                ):
+                if np.diff(dos_vasp.energies)[0] >= 0.1 or np.diff(dos_lobster.energies)[0] >= 0.1:
                     warnings.warn(
                         "Input DOS files have very few points in the energy interval and thus "
                         "comparisons will not be reliable. Please rerun the calculations with "
@@ -1663,14 +1516,10 @@ class Analysis:
                 )
 
                 tani_orb = round(
-                    dos_vasp.get_dos_fp_similarity(
-                        fp_lobster_orb, fp_vasp_orb, tanimoto=True
-                    ),
+                    dos_vasp.get_dos_fp_similarity(fp_lobster_orb, fp_vasp_orb, tanimoto=True),
                     4,
                 )
-                quality_dict["dos_comparisons"][
-                    f"tanimoto_orb_{orb.name}"
-                ] = tani_orb  # type: ignore
+                quality_dict["dos_comparisons"][f"tanimoto_orb_{orb.name}"] = tani_orb  # type: ignore
 
             fp_lobster = dos_lobster.get_dos_fp(
                 min_e=min_e,
@@ -1687,9 +1536,7 @@ class Analysis:
                 type="summed_pdos",
             )
 
-            tanimoto_summed = round(
-                dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4
-            )
+            tanimoto_summed = round(dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4)
             quality_dict["dos_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
             quality_dict["dos_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
             quality_dict["dos_comparisons"]["n_bins"] = n_bins  # type: ignore
