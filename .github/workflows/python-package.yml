@@ -74,7 +74,12 @@ jobs:
           run: |
             coverage combine coverage*/.coverage*
             coverage report --show-missing
-
+        - name: Upload coverage reports to Codecov
+          uses: codecov/codecov-action@v4.0.1
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            slug: JaGeo/LobsterPy
+    
   docs:
     runs-on: ubuntu-latest
 
