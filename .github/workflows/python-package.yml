@@ -79,7 +79,7 @@ jobs:
           with:
             token: ${{ secrets.CODECOV_TOKEN }}
             slug: JaGeo/LobsterPy
-    
+            
   docs:
     runs-on: ubuntu-latest
 
