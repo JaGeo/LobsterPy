@@ -76,7 +76,7 @@ class BatchSummaryFeaturizer:
         :param n_jobs: parallel processes to run
         """
         # Check for valid charge_type parameter TODO add tests
-        allowed_charge_types = ["mulliken", "loewdin" or "both"]
+        allowed_charge_types = ["mulliken", "loewdin", "both"]
         if charge_type not in allowed_charge_types:
             raise ValueError(f"Parameter charge_type set to {charge_type} but must be in {allowed_charge_types}.")
 
@@ -144,7 +144,7 @@ class BatchSummaryFeaturizer:
             e_range=self.e_range,
         )
 
-        df_cohp = coxx.get_summarized_coxx_df()
+        df = coxx.get_summarized_coxx_df()
         del coxx
 
         if self.include_cobi_data:
@@ -162,6 +162,7 @@ class BatchSummaryFeaturizer:
             )
 
             df_cobi = coxx.get_summarized_coxx_df()
+            df = pd.concat([df, df_cobi], axis=1)
             del coxx
 
         if self.include_coop_data:
@@ -179,17 +180,8 @@ class BatchSummaryFeaturizer:
             )
 
             df_coop = coxx.get_summarized_coxx_df()
+            df = pd.concat([df, df_coop], axis=1)
             del coxx
-
-        # TODO: any arguments against concatenating directly above?
-        if self.include_cobi_data and self.include_coop_data:
-            df = pd.concat([df_cohp, df_cobi, df_coop], axis=1)
-        elif self.include_cobi_data and not self.include_coop_data:
-            df = pd.concat([df_cohp, df_cobi], axis=1)
-        elif not self.include_cobi_data and self.include_coop_data:
-            df = pd.concat([df_cohp, df_coop], axis=1)
-        else:
-            df = df_cohp
 
         return df
 

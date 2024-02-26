@@ -60,7 +60,6 @@ def get_file_paths(
                     missing_files.append(file)
 
     if missing_files:
-        # TODO more specific error?
         raise Exception(f"Files {missing_files} not found in {lobster_path.name}.")
 
     return file_paths
