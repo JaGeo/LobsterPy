@@ -39,6 +39,7 @@ class LobsterGraph:
     :param path_to_icobilist: path to ICOBILIST.lobster (e.g., "ICOBILIST.lobster").
     :param path_to_madelung: path to MadelungEnergies.lobster (e.g., "MadelungEnergies.lobster")
     :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.
+    :param noise_cutoff: if provided hardcodes the lower limit of icohps considered.
     :param add_additional_data_sg: if True will add the information from ICOOPLIST.lobster
         and ICOBILIST.lobster based on ICOHPLIST.lobster relevant bond.
     :param which_bonds: selects which kind of bonds are analyzed. "all" is the default.
@@ -57,6 +58,7 @@ class LobsterGraph:
         path_to_icobilist: str | Path | None = None,
         which_bonds: str = "all",
         cutoff_icohp: float = 0.10,
+        noise_cutoff: float = 0.1,
         start: float | None = None,
     ):
         """Initialize and return a structure graph object."""
@@ -79,6 +81,7 @@ class LobsterGraph:
         self.path_to_madelung = path_to_madelung
         self.which_bonds = which_bonds
         self.cutoff_icohp = cutoff_icohp
+        self.noise_cutoff = noise_cutoff
 
         if self.which_bonds == "all":
             self.additional_condition = 0
@@ -115,6 +118,7 @@ class LobsterGraph:
                 id_blist_sg2="ICOOP",
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,
+                noise_cutoff=self.noise_cutoff,
             )
 
         else:
@@ -128,6 +132,7 @@ class LobsterGraph:
                 add_additional_data_sg=self.add_additional_data_sg,
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,
+                noise_cutoff=self.noise_cutoff,
             )
 
         # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)

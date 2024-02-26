@@ -690,6 +690,8 @@ class BatchStructureGraphs:
     :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
     :param add_additional_data_sg: bool indicating whether to include `icoop` and `icobi` data as edge properties
     :param which_bonds: selects which kind of bonds are analyzed. "all" is the default
+    :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.
+    :param noise_cutoff: if provided hardcodes the lower limit of icohps considered.
     :param start: start energy for bonding antibonding percent integration
     :param n_jobs: parallel processes to run
 
@@ -700,6 +702,8 @@ class BatchStructureGraphs:
         path_to_lobster_calcs: str | Path,
         add_additional_data_sg: bool = True,
         which_bonds: str = "all",
+        cutoff_icohp: float = 0.10,
+        noise_cutoff: float = 0.1,
         start: float | None = None,
         n_jobs: int = 4,
     ):
@@ -709,6 +713,8 @@ class BatchStructureGraphs:
         :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
         :param add_additional_data_sg: bool indicating whether to include `icoop` and `icobi` data as edge properties
         :param which_bonds: selects which kind of bonds are analyzed. "all" is the default
+        :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.
+        :param noise_cutoff: if provided hardcodes the lower limit of icohps considered.
         :param start: start energy for bonding antibonding percent integration
         :param n_jobs: parallel processes to run
 
@@ -716,6 +722,8 @@ class BatchStructureGraphs:
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.add_additional_data_sg = add_additional_data_sg
         self.which_bonds = which_bonds
+        self.cutff_icohp = cutoff_icohp
+        self.noise_cutoff = noise_cutoff
         self.start = start
         self.n_jobs = n_jobs
 
@@ -776,6 +784,8 @@ class BatchStructureGraphs:
             path_to_icobilist=icobilist_path,
             path_to_madelung=madelung_path,
             which_bonds=self.which_bonds,
+            cutoff_icohp=self.cutff_icohp,
+            noise_cutoff=self.noise_cutoff,
             start=self.start,
         )
 
