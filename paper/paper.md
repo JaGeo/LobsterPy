@@ -26,28 +26,28 @@ affiliations:
    index: 1
  - name: Friedrich Schiller University Jena, Institute of Condensed Matter Theory and Solid-State Optics, Jena, 07743, Germany
    index: 2
- - name: Scientific Computing Department, Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot, 0X11 0QX, UK
+ - name: Scientific Computing Department, Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot, OX11 0QX, UK
    index: 3
 date: August 2023
 bibliography: paper.bib
 
 ---
 # Summary
-The LOBSTER[@deringer2011crystal;@maintz2013analytic;@maintz2016lobster;@nelson2020lobster] software aids in extracting quantum-chemical bonding information from materials by projecting the
+The LOBSTER [@deringer2011crystal;@maintz2013analytic;@maintz2016lobster;@nelson2020lobster] software aids in extracting quantum-chemical bonding information from materials by projecting the
 plane-wave based wave functions from density functional theory (DFT) onto an atomic orbital basis. [LobsterEnv](https://github.com/materialsproject/pymatgen/blob/master/pymatgen/io/lobster/lobsterenv.py),
-a module implemented in pymatgen[@ong2013python] by some of the authors of this package, facilitates the use of quantum-chemical bonding
+a module implemented in pymatgen [@ong2013python] by some of the authors of this package, facilitates the use of quantum-chemical bonding
 information obtained from LOBSTER calculations to identify neighbors and coordination environments. _LobsterPy_ is a Python package that offers a set of convenient tools
 to further analyze and summarize the LobsterEnv outputs in the form of JSONs that are easy to interpret and process. These tools enable the
 estimation of (anti) bonding contributions, generation of textual descriptions, and visualization of LOBSTER computation results.  Since its first release, both _LobsterPy_ and _LobsterEnv_ capabilities
-have been extended significantly. Unlike earlier versions, which could only automatically analyze Crystal Orbital Hamilton Populations (COHPs)[@dronskowski1993crystal],
-both can now also analyze Crystal Orbital Overlap Populations (COOP)[@hughbanks1983chains] and Crystal Orbital Bond Index (COBI)[@mueller2021crystal].
+have been extended significantly. Unlike earlier versions, which could only automatically analyze Crystal Orbital Hamilton Populations (COHPs) [@dronskowski1993crystal],
+both can now also analyze Crystal Orbital Overlap Populations (COOP) [@hughbanks1983chains] and Crystal Orbital Bond Index (COBI) [@mueller2021crystal].
 Extracting the information about the most important orbitals contributing to the bonds is optional, and users can enable it as needed.
 Additionally, bonding-based features for machine-learning (ML) studies can be engineered via the sub-packages "featurize" and "structuregraphs".
 Alongside its Python interface, it also provides an easy-to-use command line interface (CLI) that runs automatic analysis of the
 computations and generates a summary of results and publication-ready figures.
 
-_LobsterPy_ has been used to produce the results in [@ngo2023dft; @chen2024insights; @naik2023quantumchemical] and is also part of
-[@atomate2] bonding analysis workflow for generating bonding analysis data in a format compatible with the Materials Project[@materialsproject] API.
+_LobsterPy_ has been used to produce the results in @ngo2023dft, @chen2024insights, @naik2023quantumchemical, and it is also part of
+@atomate2 bonding analysis workflow for generating bonding analysis data in a format compatible with the Materials Project [@materialsproject] API.
 
 # Statement of need
 Although the notion of "bonds" might seem unusual from a physicist's point of view, chemists have been employing it routinely to
@@ -69,7 +69,7 @@ _LobsterPy_ aims to fulfill this need.
 - Perform automatic bonding analysis and plotting via inherent command line interface app.
 
 # Similar and Related Software
-LobsterPy can be seen to be similar in spirit to sumo [@Ganose2018], as both provide Python tools to analyze and visualize data related to the electronic structure that are based on ab initio calculations. Other software packages that enable visualizing results specifically from the LOBSTER software are wxDragon[@wxdragon] and [@abipy]. LobsterPy differs from these two packages by providing further analysis of the calculations, interpretable text summaries, and featurizers for ML studies besides plotting the data.
+LobsterPy can be seen to be similar in spirit to sumo [@Ganose2018], as both provide Python tools to analyze and visualize data related to the electronic structure that are based on ab initio calculations. Other software packages that enable visualizing results specifically from the LOBSTER software are wxDragon [@wxdragon] and @abipy. LobsterPy differs from these two packages by providing further analysis of the calculations, interpretable text summaries, and featurizers for ML studies besides plotting the data.
 
 # Availability
 _LobsterPy_ can also be found on [PyPI](https://pypi.org/project/lobsterpy/). Detailed software documentation,
