@@ -12,7 +12,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from monty.os.path import zpath
 from tqdm.autonotebook import tqdm
 
 from lobsterpy.featurize.core import (
@@ -23,6 +22,8 @@ from lobsterpy.featurize.core import (
     FeaturizeLobsterpy,
 )
 from lobsterpy.structuregraph.graph import LobsterGraph
+
+from . import get_file_paths
 
 warnings.filterwarnings("ignore")
 
@@ -125,118 +126,57 @@ class BatchSummaryFeaturizer:
             Effective interaction number and moment features (center, width, skewness and kurtosis)
 
         """
-        dir_name = Path(path_to_lobster_calc)
+        file_paths = get_file_paths(
+            path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cohpcar", "icohplist"]
+        )
+        structure_path = file_paths.get("poscar")
 
-        req_files = {
-            "structure_path": "POSCAR",
-            "coxxcar_path": "COHPCAR.lobster",
-            "icoxxlist_path": "ICOHPLIST.lobster",
-        }
-        for file, default_value in req_files.items():
-            # Check if "POSCAR" exists, and if not, check for "POSCAR.lobster"
-            if file == "structure_path":
-                for filename in [default_value, "POSCAR.lobster"]:
-                    poscar_path = dir_name / filename
-                    req_files[file] = poscar_path  # type: ignore
-                    if not poscar_path.exists():
-                        gz_file_path = Path(zpath(poscar_path))
-                        if gz_file_path.exists():
-                            req_files[file] = gz_file_path  # type: ignore
-                            break
-            else:
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+        coxx = FeaturizeCOXX(
+            path_to_coxxcar=str(file_paths.get("cohpcar")),
+            path_to_icoxxlist=str(file_paths.get("icohp_list")),
+            path_to_structure=str(structure_path),
+            feature_type=self.feature_type,
+            e_range=self.e_range,
+        )
 
-        coxxcar_path = req_files.get("coxxcar_path")
-        structure_path = req_files.get("structure_path")
-        icoxxlist_path = req_files.get("icoxxlist_path")
+        df_cohp = coxx.get_summarized_coxx_df()
+        del coxx
 
-        if (
-            coxxcar_path.exists()  # type: ignore
-            and structure_path.exists()  # type: ignore
-            and icoxxlist_path.exists()  # type: ignore
-        ):
+        if self.include_cobi_data:
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["cobicar", "icobilist"]
+            )
+
             coxx = FeaturizeCOXX(
-                path_to_coxxcar=str(coxxcar_path),
-                path_to_icoxxlist=str(icoxxlist_path),
+                path_to_coxxcar=str(file_paths.get("cobicar")),
+                path_to_icoxxlist=str(file_paths.get("icobilist")),
                 path_to_structure=str(structure_path),
                 feature_type=self.feature_type,
                 e_range=self.e_range,
+                are_cobis=True,
             )
 
-            df_cohp = coxx.get_summarized_coxx_df()
+            df_cobi = coxx.get_summarized_coxx_df()
             del coxx
-        else:
-            raise Exception(f"COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file not found in {dir_name.name}")
-
-        if self.include_cobi_data:
-            req_files = {
-                "coxxcar_path": "COBICAR.lobster",
-                "icoxxlist_path": "ICOBILIST.lobster",
-            }
-            for file, default_value in req_files.items():
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
-
-            coxxcar_path = req_files.get("coxxcar_path")
-            icoxxlist_path = req_files.get("icoxxlist_path")
-
-            if coxxcar_path.exists() and icoxxlist_path.exists():  # type: ignore
-                coxx = FeaturizeCOXX(
-                    path_to_coxxcar=str(coxxcar_path),
-                    path_to_icoxxlist=str(icoxxlist_path),
-                    path_to_structure=str(structure_path),
-                    feature_type=self.feature_type,
-                    e_range=self.e_range,
-                    are_cobis=True,
-                )
-
-                df_cobi = coxx.get_summarized_coxx_df()
-                del coxx
-
-            else:
-                raise Exception(f"COBICAR.lobster or ICOBILIST.lobster file not found in {dir_name.name}")
 
         if self.include_coop_data:
-            req_files = {
-                "coxxcar_path": "COOPCAR.lobster",
-                "icoxxlist_path": "ICOOPLIST.lobster",
-            }
-            for file, default_value in req_files.items():
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["coopcar", "icooplist"]
+            )
 
-            coxxcar_path = req_files.get("coxxcar_path")
-            icoxxlist_path = req_files.get("icoxxlist_path")
+            coxx = FeaturizeCOXX(
+                path_to_coxxcar=str(file_paths.get("coopcar")),
+                path_to_icoxxlist=str(file_paths.get("icooplist")),
+                path_to_structure=str(structure_path),
+                feature_type=self.feature_type,
+                e_range=self.e_range,
+                are_coops=True,
+            )
 
-            if coxxcar_path.exists() and icoxxlist_path.exists():  # type: ignore
-                coxx = FeaturizeCOXX(
-                    path_to_coxxcar=str(coxxcar_path),
-                    path_to_icoxxlist=str(icoxxlist_path),
-                    path_to_structure=str(structure_path),
-                    feature_type=self.feature_type,
-                    e_range=self.e_range,
-                    are_coops=True,
-                )
+            df_coop = coxx.get_summarized_coxx_df()
+            del coxx
 
-                df_coop = coxx.get_summarized_coxx_df()
-                del coxx
-
-            else:
-                raise Exception(f"COOPCAR.lobster or ICOOPLIST.lobster file not found in {dir_name.name}")
-
+        # TODO: any arguments against concatenating directly above?
         if self.include_cobi_data and self.include_coop_data:
             df = pd.concat([df_cohp, df_cobi, df_coop], axis=1)
         elif self.include_cobi_data and not self.include_coop_data:
@@ -258,66 +198,38 @@ class BatchSummaryFeaturizer:
             A pandas dataframe with computed ionicity for the structure
 
         """
-        dir_name = Path(path_to_lobster_calc)
+        file_paths = get_file_paths(path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "charge"])
 
-        req_files = {
-            "charge_path": "CHARGE.lobster",
-            "structure_path": "POSCAR",
-        }
-        for file, default_value in req_files.items():
-            if file == "structure_path":
-                for filename in [default_value, "POSCAR.lobster"]:
-                    poscar_path = dir_name / filename
-                    req_files[file] = poscar_path  # type: ignore
-                    if not poscar_path.exists():
-                        gz_file_path = Path(zpath(poscar_path))
-                        if gz_file_path.exists():
-                            req_files[file] = gz_file_path  # type: ignore
-                            break
-            else:
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+        if self.charge_type == "mulliken":
+            charge_mull = FeaturizeCharges(
+                path_to_charge=str(file_paths.get("charge")),
+                path_to_structure=str(file_paths.get("poscar")),
+                charge_type="mulliken",
+            )
+            df = charge_mull.get_df()
+        elif self.charge_type == "loewdin":
+            charge_loew = FeaturizeCharges(
+                path_to_charge=str(file_paths.get("charge")),
+                path_to_structure=str(file_paths.get("poscar")),
+                charge_type="loewdin",
+            )
+            df = charge_loew.get_df()
+        elif self.charge_type == "both":  # TODO okay to replace with else? generally parameter checking in init maybe?
+            charge_mull = FeaturizeCharges(
+                path_to_charge=str(file_paths.get("charge")),
+                path_to_structure=str(file_paths.get("poscar")),
+                charge_type="mulliken",
+            )
+            df_mull = charge_mull.get_df()
 
-        charge_path = req_files.get("charge_path")
-        structure_path = req_files.get("structure_path")
+            charge_loew = FeaturizeCharges(
+                path_to_charge=str(file_paths.get("charge")),
+                path_to_structure=str(file_paths.get("poscar")),
+                charge_type="loewdin",
+            )
+            df_loew = charge_loew.get_df()
 
-        if charge_path.exists() and structure_path.exists():  # type: ignore
-            if self.charge_type == "mulliken":
-                charge_mull = FeaturizeCharges(
-                    path_to_charge=str(charge_path),
-                    path_to_structure=str(structure_path),
-                    charge_type="mulliken",
-                )
-                df = charge_mull.get_df()
-            elif self.charge_type == "loewdin":
-                charge_loew = FeaturizeCharges(
-                    path_to_charge=str(charge_path),
-                    path_to_structure=str(structure_path),
-                    charge_type="loewdin",
-                )
-                df = charge_loew.get_df()
-            elif self.charge_type == "both":
-                charge_mull = FeaturizeCharges(
-                    path_to_charge=str(charge_path),
-                    path_to_structure=str(structure_path),
-                    charge_type="mulliken",
-                )
-                df_mull = charge_mull.get_df()
-
-                charge_loew = FeaturizeCharges(
-                    path_to_charge=str(charge_path),
-                    path_to_structure=str(structure_path),
-                    charge_type="loewdin",
-                )
-                df_loew = charge_loew.get_df()
-
-                df = pd.concat([df_mull, df_loew], axis=1)
-        else:
-            raise Exception(f"CHARGE.lobster or POSCAR not found in {dir_name.name}")
+            df = pd.concat([df_mull, df_loew], axis=1)
 
         return df
 
@@ -568,74 +480,40 @@ class BatchCoxxFingerprint:
             A pandas dataframe with COXX fingerprint object
 
         """
-        dir_name = Path(path_to_lobster_calc)
-
         if self.fingerprint_for.upper() == "COBI":
-            req_files = {
-                "coxxcar_path": "COBICAR.lobster",
-                "icoxxlist_path": "ICOBILIST.lobster",
-            }
-            for file, default_value in req_files.items():
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cobicar", "icobilist"]
+            )
 
-            coxxcar_path = req_files.get("coxxcar_path")
-            icoxxlist_path = req_files.get("icoxxlist_path")
+            coxxcar_path = file_paths.get("cobicar")
+            icoxxlist_path = file_paths.get("icobilist")
             are_cobis = True
             are_coops = False
 
         elif self.fingerprint_for.upper() == "COOP":
-            req_files = {
-                "coxxcar_path": "COOPCAR.lobster",
-                "icoxxlist_path": "ICOOPLIST.lobster",
-            }
-            for file, default_value in req_files.items():
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "coopcar", "icooplist"]
+            )
 
-            coxxcar_path = req_files.get("coxxcar_path")
-            icoxxlist_path = req_files.get("icoxxlist_path")
+            coxxcar_path = file_paths.get("coopcar")
+            icoxxlist_path = file_paths.get("icooplist")
             are_cobis = False
             are_coops = True
 
         else:
-            req_files = {
-                "coxxcar_path": "COHPCAR.lobster",
-                "icoxxlist_path": "ICOHPLIST.lobster",
-            }
-            for file, default_value in req_files.items():
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cohpcar", "icohplist"]
+            )
 
-            coxxcar_path = req_files.get("coxxcar_path")
-            icoxxlist_path = req_files.get("icoxxlist_path")
+            coxxcar_path = file_paths.get("cohpcar")
+            icoxxlist_path = file_paths.get("icohplist")
             are_cobis = False
             are_coops = False
-
-        for filename in ["POSCAR", "POSCAR.lobster"]:
-            structure_path = dir_name / filename
-            if not structure_path.exists():
-                gz_file_path = Path(zpath(structure_path))
-                if gz_file_path.exists():
-                    structure_path = gz_file_path  # type: ignore
-                    break
 
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(coxxcar_path),
             path_to_icoxxlist=str(icoxxlist_path),
-            path_to_structure=str(structure_path),
+            path_to_structure=str(file_paths.get("poscar")),
             feature_type=self.feature_type,
             e_range=self.e_range,
             are_coops=are_coops,
@@ -729,52 +607,20 @@ class BatchStructureGraphs:
             A  structure graph with LOBSTER data as edge and node properties in structure graph objects
         """
         dir_name = Path(path_to_lobster_calc)
-
-        req_files = {
-            "charge_path": "CHARGE.lobster",
-            "cohpcar_path": "COHPCAR.lobster",
-            "icohplist_path": "ICOHPLIST.lobster",
-            "icooplist_path": "ICOOPLIST.lobster",
-            "icobilist_path": "ICOBILIST.lobster",
-            "madelung_path": "MadelungEnergies.lobster",
-            "structure_path": "POSCAR",
-        }
-
-        for file, default_value in req_files.items():
-            if file == "structure_path":
-                for filename in [default_value, "POSCAR.lobster"]:
-                    poscar_path = dir_name / filename
-                    req_files[file] = poscar_path  # type: ignore
-                    if not poscar_path.exists():
-                        gz_file_path = Path(zpath(poscar_path))
-                        if gz_file_path.exists():
-                            req_files[file] = gz_file_path  # type: ignore
-                            break
-            else:
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
-
-        charge_path = str(req_files.get("charge_path"))
-        cohpcar_path = str(req_files.get("cohpcar_path"))
-        icohplist_path = str(req_files.get("icohplist_path"))
-        icooplist_path = str(req_files.get("icooplist_path"))
-        icobilist_path = str(req_files.get("icobilist_path"))
-        madelung_path = str(req_files.get("madelung_path"))
-        structure_path = str(req_files.get("structure_path"))
+        file_paths = get_file_paths(
+            path_to_lobster_calc=path_to_lobster_calc,
+            requested_files=["charge", "cohpcar", "icohplist", "icooplist", "icohplist", "madelung", "poscar"],
+        )
 
         graph = LobsterGraph(
-            path_to_poscar=structure_path,
-            path_to_charge=charge_path,
-            path_to_cohpcar=cohpcar_path,
-            path_to_icohplist=icohplist_path,
+            path_to_poscar=str(file_paths.get("poscar")),
+            path_to_charge=str(file_paths.get("charge")),
+            path_to_cohpcar=str(file_paths.get("cohpcar")),
+            path_to_icohplist=str(file_paths.get("icohplist")),
             add_additional_data_sg=self.add_additional_data_sg,
-            path_to_icooplist=icooplist_path,
-            path_to_icobilist=icobilist_path,
-            path_to_madelung=madelung_path,
+            path_to_icooplist=str(file_paths.get("icooplist")),
+            path_to_icobilist=str(file_paths.get("icobilist")),
+            path_to_madelung=str(file_paths.get("madelung")),
             which_bonds=self.which_bonds,
             start=self.start,
         )
@@ -875,44 +721,20 @@ class BatchDosFeaturizer:
         Returns:
             A pandas dataframe with computed PDOS moment features
         """
-        dir_name = Path(path_to_lobster_calc)
-        req_files = {
-            "doscar_path": ("DOSCAR.LSO.lobster" if self.use_lso_dos else "DOSCAR.lobster"),
-            "structure_path": "POSCAR",
-        }
-        for file, default_value in req_files.items():
-            if file == "structure_path":
-                for filename in [default_value, "POSCAR.lobster"]:
-                    poscar_path = dir_name / filename
-                    req_files[file] = poscar_path  # type: ignore
-                    if not poscar_path.exists():
-                        gz_file_path = Path(zpath(poscar_path))
-                        if gz_file_path.exists():
-                            req_files[file] = gz_file_path  # type: ignore
-                            break
-            else:
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+        file_paths = get_file_paths(
+            path_to_lobster_calc=path_to_lobster_calc,
+            requested_files=["poscar", "doscar"],
+            use_lso_dos=self.use_lso_dos,
+        )
 
-        doscar_path = req_files.get("doscar_path")
-        structure_path = req_files.get("structure_path")
+        featurize_dos = FeaturizeDoscar(
+            path_to_doscar=str(file_paths.get("doscar")),
+            path_to_structure=str(file_paths.get("poscar")),
+            add_element_dos_moments=self.add_element_dos_moments,
+            e_range=self.e_range,
+        )
 
-        if doscar_path.exists() and structure_path.exists():  # type: ignore
-            featurize_dos = FeaturizeDoscar(
-                path_to_doscar=str(doscar_path),
-                path_to_structure=str(structure_path),
-                add_element_dos_moments=self.add_element_dos_moments,
-                e_range=self.e_range,
-            )
-            df = featurize_dos.get_df()
-        else:
-            raise Exception(f"DOSCAR.lobster or DOSCAR.LSO.lobster or POSCAR not found in {dir_name.name}")
-
-        return df
+        return featurize_dos.get_df()
 
     def _get_dos_fingerprints_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
@@ -923,48 +745,23 @@ class BatchDosFeaturizer:
         Returns:
             A pandas dataframe with DOS fingerprint objects
         """
-        dir_name = Path(path_to_lobster_calc)
+        file_paths = get_file_paths(
+            path_to_lobster_calc=path_to_lobster_calc,
+            requested_files=["poscar", "doscar"],
+            use_lso_dos=self.use_lso_dos,
+        )
 
-        req_files = {
-            "doscar_path": ("DOSCAR.LSO.lobster" if self.use_lso_dos else "DOSCAR.lobster"),
-            "structure_path": "POSCAR",
-        }
-        for file, default_value in req_files.items():
-            if file == "structure_path":
-                for filename in [default_value, "POSCAR.lobster"]:
-                    poscar_path = dir_name / filename
-                    req_files[file] = poscar_path  # type: ignore
-                    if not poscar_path.exists():
-                        gz_file_path = Path(zpath(poscar_path))
-                        if gz_file_path.exists():
-                            req_files[file] = gz_file_path  # type: ignore
-                            break
-            else:
-                file_path = dir_name / default_value
-                req_files[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files[file] = gz_file_path  # type: ignore
+        featurize_dos = FeaturizeDoscar(
+            path_to_doscar=str(file_paths.get("doscar")),
+            path_to_structure=str(file_paths.get("poscar")),
+            e_range=self.e_range,
+        )
 
-        doscar_path = req_files.get("doscar_path")
-        structure_path = req_files.get("structure_path")
-
-        if doscar_path.exists() and structure_path.exists():  # type: ignore
-            featurize_dos = FeaturizeDoscar(
-                path_to_doscar=str(doscar_path),
-                path_to_structure=str(structure_path),
-                e_range=self.e_range,
-            )
-            df = featurize_dos.get_fingerprint_df(
-                fp_type=self.fingerprint_type,
-                normalize=self.normalize,
-                n_bins=self.n_bins,
-            )
-        else:
-            raise Exception(f"DOSCAR.lobster or DOSCAR.LSO.lobster or POSCAR not found in {dir_name.name}")
-
-        return df
+        return featurize_dos.get_fingerprint_df(
+            fp_type=self.fingerprint_type,
+            normalize=self.normalize,
+            n_bins=self.n_bins,
+        )
 
     def get_df(self) -> pd.DataFrame:
         """
