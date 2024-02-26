@@ -1556,7 +1556,7 @@ class Analysis:
                 dos_lobster = lobster_completedos_obj
             else:
                 raise ValueError(
-                    "Dos comparison is requested, so please provide either path_to_doscar or" " lobster_completedos_obj"
+                    "Dos comparison is requested, so please provide either path_to_doscar or lobster_completedos_obj"
                 )
 
             if path_to_vasprun:
@@ -1565,7 +1565,7 @@ class Analysis:
                 vasprun = vasprun_obj
             else:
                 raise ValueError(
-                    "Dos comparison is requested, so please provide either path to vasprun.xml or" " vasprun_obj"
+                    "Dos comparison is requested, so please provide either path to vasprun.xml or vasprun_obj"
                 )
             dos_vasp = vasprun.complete_dos
 
