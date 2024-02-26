@@ -675,6 +675,22 @@ class TestBatchDosFeaturizer:
 
 class TestExceptions:
     def test_batch_summary_featurizer_exception(self):
+        with pytest.raises(ValueError) as err0:  # noqa: PT012, PT011
+            self.summary_featurize_with_json_ex = BatchSummaryFeaturizer(
+                path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/1/",
+                bonds="all",
+                feature_type="nonbonding",
+                include_cobi_data=True,
+                include_coop_data=True,
+                e_range=[-15, 0],
+            )
+
+            _ = self.summary_featurize_with_json_ex.get_df()
+
+        assert str(err0.value) == (
+            "Parameter feature_type set to nonbonding but must be in ['bonding', 'antibonding', 'overall']."
+        )
+
         with pytest.raises(Exception) as err1:  # noqa: PT012, PT011
             self.summary_featurize_with_json_ex = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/1/",
@@ -687,7 +703,7 @@ class TestExceptions:
 
             _ = self.summary_featurize_with_json_ex.get_df()
 
-        assert str(err1.value) == "COBICAR.lobster or ICOBILIST.lobster file not found in mp-2176"
+        assert str(err1.value) == "Files ['COBICAR.lobster', 'ICOBILIST.lobster'] not found in mp-2176."
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
             self.summary_featurize_with_json_ex2 = BatchSummaryFeaturizer(
@@ -701,7 +717,7 @@ class TestExceptions:
 
             _ = self.summary_featurize_with_json_ex2.get_df()
 
-        assert str(err2.value) == "COOPCAR.lobster or ICOOPLIST.lobster file not found in mp-1000"
+        assert str(err2.value) == "Files ['COOPCAR.lobster', 'ICOOPLIST.lobster'] not found in mp-1000."
 
         # COXX exception
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
@@ -711,7 +727,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_coxx_exception.path_to_lobster_calcs
             )
 
-        assert str(err3.value) == "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file not found in JSONS"
+        assert str(err3.value) == "Files ['POSCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster'] not found in JSONS."
 
         # Charges exception
         with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
@@ -721,7 +737,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_ch_exception.path_to_lobster_calcs
             )
 
-        assert str(err4.value) == "CHARGE.lobster or POSCAR not found in JSONS"
+        assert str(err4.value) == "Files ['POSCAR', 'CHARGE.lobster'] not found in JSONS."
 
         # Fingerprint similarity exception
         with pytest.raises(Exception) as err8:  # noqa: PT012, PT011
