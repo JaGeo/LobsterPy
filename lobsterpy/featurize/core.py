@@ -14,7 +14,6 @@ from typing import NamedTuple
 import numpy as np
 import pandas as pd
 from mendeleev import element
-from monty.os.path import zpath
 from numpy import ndarray
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
@@ -24,6 +23,8 @@ from scipy.integrate import trapezoid
 from scipy.signal import hilbert
 
 from lobsterpy.cohp.analyze import Analysis
+
+from . import get_file_paths
 
 warnings.filterwarnings("ignore")
 
@@ -268,54 +269,19 @@ class FeaturizeLobsterpy:
             Returns a dictionary with lobster summarized bonding analysis data
 
         """
-        dir_name = Path(str(path_to_lobster_calc))
-
-        # check if files are compressed (.gz) and update file paths
-        req_files_lobsterpy = {
-            "structure_path": "POSCAR",
-            "cohpcar_path": "COHPCAR.lobster",
-            "icohplist_path": "ICOHPLIST.lobster",
-            "charge_path": "CHARGE.lobster",
-        }
-
-        for file, default_value in req_files_lobsterpy.items():
-            if file == "structure_path":
-                for filename in [default_value, "POSCAR.lobster"]:
-                    poscar_path = dir_name / filename
-                    req_files_lobsterpy[file] = poscar_path  # type: ignore
-                    if not poscar_path.exists():
-                        gz_file_path = Path(zpath(poscar_path))
-                        if gz_file_path.exists():
-                            req_files_lobsterpy[file] = gz_file_path  # type: ignore
-                            break
-            else:
-                file_path = dir_name / default_value
-                req_files_lobsterpy[file] = file_path  # type: ignore
-                if not file_path.exists():
-                    gz_file_path = Path(zpath(file_path))
-                    if gz_file_path.exists():
-                        req_files_lobsterpy[file] = gz_file_path  # type: ignore
-                    else:
-                        raise Exception(
-                            "Path provided for Lobster calc directory seems incorrect."
-                            "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
-                            "CHARGE.lobster files needed for automatic analysis using LobsterPy"
-                        )
-
-        cohpcar_path = req_files_lobsterpy.get("cohpcar_path")
-        charge_path = req_files_lobsterpy.get("charge_path")
-        structure_path = req_files_lobsterpy.get("structure_path")
-        icohplist_path = req_files_lobsterpy.get("icohplist_path")
+        file_paths = get_file_paths(
+            path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cohpcar", "icohplist", "charge"]
+        )
 
         which_bonds = bonds.replace("-", "_")
         bond_type = f"{which_bonds}_bonds"
 
         try:
             analyse = Analysis(
-                path_to_poscar=str(structure_path),
-                path_to_icohplist=str(icohplist_path),
-                path_to_cohpcar=str(cohpcar_path),
-                path_to_charge=str(charge_path),
+                path_to_poscar=str(file_paths.get("poscar")),
+                path_to_icohplist=str(file_paths.get("icohplist")),
+                path_to_cohpcar=str(file_paths.get("cohpcar")),
+                path_to_charge=str(file_paths.get("charge")),
                 summed_spins=False,  # we will always use spin polarization here
                 cutoff_icohp=0.10,
                 which_bonds=which_bonds,
@@ -326,15 +292,9 @@ class FeaturizeLobsterpy:
         except ValueError:
             data = {bond_type: {"lobsterpy_data": {}}}
 
-        madelung_energies_path = dir_name / "MadelungEnergies.lobster"
-        # check if .gz file exists and update Madelung Energies path
-        if not madelung_energies_path.exists():
-            gz_file_path = Path(zpath(madelung_energies_path))
-            if gz_file_path.exists():
-                madelung_energies_path = gz_file_path
-
-        if madelung_energies_path.exists():
-            madelung_obj = MadelungEnergies(filename=str(madelung_energies_path))
+        try:
+            madelung_path = get_file_paths(path_to_lobster_calc=path_to_lobster_calc, requested_files=["madelung"])
+            madelung_obj = MadelungEnergies(filename=str(madelung_path.get("madelung")))
 
             madelung_energies = {
                 "Mulliken": madelung_obj.madelungenergies_Mulliken,
@@ -342,8 +302,7 @@ class FeaturizeLobsterpy:
                 "Ewald_splitting": madelung_obj.ewald_splitting,
             }
             data["madelung_energies"] = madelung_energies
-
-        else:
+        except Exception:
             warnings.warn(
                 "MadelungEnergies.lobster file not found in Lobster calc directory provided"
                 " Will set Madelung Energies for crystal structure values to NaN"
@@ -972,7 +931,7 @@ class FeaturizeCharges:
         structure = Structure.from_file(self.path_to_structure)
 
         if self.charge_type.lower() not in ["mulliken", "loewdin"]:
-            raise ValueError("Please check the requested charge_type. Possible options are `Mulliken` or `Loewdin`")
+            raise ValueError("Please check the requested charge_type. Possible options are `mulliken` or `loewdin`")
 
         ch_veff = []
         tol = 1e-6

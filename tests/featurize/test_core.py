@@ -669,9 +669,8 @@ class TestExceptions:
             _ = self.featurize_mp1249_json.get_df()
 
         assert (
-            str(err.value) == "Path provided for Lobster calc directory seems incorrect."
-            "It does not contain COHPCAR.lobster, ICOHPLIST.lobster, POSCAR and "
-            "CHARGE.lobster files needed for automatic analysis using LobsterPy"
+            str(err.value) == "Files ['POSCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster', 'CHARGE.lobster'] "
+            "not found in ..."
         )
 
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
@@ -702,7 +701,7 @@ class TestExceptions:
 
             _ = self.featurize_cdf_charge.get_df()
 
-        assert str(err.value) == "Please check the requested charge_type. Possible options are `Mulliken` or `Loewdin`"
+        assert str(err.value) == "Please check the requested charge_type. Possible options are `mulliken` or `loewdin`"
 
     def test_featurize_coxx(self):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
