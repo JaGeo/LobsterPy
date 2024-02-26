@@ -687,7 +687,7 @@ class TestExceptions:
 
             _ = self.summary_featurize_with_json_ex.get_df()
 
-        assert str(err1.value) == "COBICAR.lobster or ICOBILIST.lobster file not found in mp-2176"
+        assert str(err1.value) == "Files ['COBICAR.lobster', 'ICOBILIST.lobster'] not found in mp-2176."
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
             self.summary_featurize_with_json_ex2 = BatchSummaryFeaturizer(
@@ -701,7 +701,7 @@ class TestExceptions:
 
             _ = self.summary_featurize_with_json_ex2.get_df()
 
-        assert str(err2.value) == "COOPCAR.lobster or ICOOPLIST.lobster file not found in mp-1000"
+        assert str(err2.value) == "Files ['COOPCAR.lobster', 'ICOOPLIST.lobster'] not found in mp-1000."
 
         # COXX exception
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
@@ -711,7 +711,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_coxx_exception.path_to_lobster_calcs
             )
 
-        assert str(err3.value) == "COHPCAR.lobster or POSCAR or ICOHPLIST.lobster file not found in JSONS"
+        assert str(err3.value) == "Files ['POSCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster'] not found in JSONS."
 
         # Charges exception
         with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
@@ -721,7 +721,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_ch_exception.path_to_lobster_calcs
             )
 
-        assert str(err4.value) == "CHARGE.lobster or POSCAR not found in JSONS"
+        assert str(err4.value) == "Files ['POSCAR', 'CHARGE.lobster'] not found in JSONS."
 
         # Fingerprint similarity exception
         with pytest.raises(Exception) as err8:  # noqa: PT012, PT011

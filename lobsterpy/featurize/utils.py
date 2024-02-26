@@ -47,7 +47,7 @@ def get_file_paths(
             try:
                 file_paths[file] = get_structure_path(lobster_path=lobster_path)
             except Exception:
-                missing_files.append("poscar")
+                missing_files.append(default_values["poscar"])
         else:
             file_path = lobster_path / file_str
             if file_path.exists():
@@ -57,7 +57,7 @@ def get_file_paths(
                 if gz_file_path.exists():
                     file_paths[file] = gz_file_path
                 else:
-                    missing_files.append(file)
+                    missing_files.append(default_values[file])
 
     if missing_files:
         raise Exception(f"Files {missing_files} not found in {lobster_path.name}.")
