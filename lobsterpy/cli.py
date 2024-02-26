@@ -529,7 +529,10 @@ def get_parser() -> argparse.ArgumentParser:
             user_basis_arg,
             output_parent,
         ],
-        help="Create inputs for lobster computation. It works only with PBE POTCARs.",
+        help="Create inputs for lobster computation. It works only with PBE POTCARs. "
+        "As currently only pbeVASPfit2015 basis in LOBSTER includes additional orbitals relevant for "
+        "the solid state materials. Please check our publication https://doi.org/10.1002/cplu.202200123 "
+        "and LOBSTER program manual for more information.",
     )
     subparsers.add_parser(
         "description",
