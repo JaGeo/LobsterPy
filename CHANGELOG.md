@@ -1,4 +1,23 @@
 # Changelog
+## v0.3.8
+* Add Contributing guide to Readme by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/224
+* address review comments > LOBSTER citation, similar packages by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/226
+* add missing , by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/227
+* Bump sphinx-book-theme from 1.1.0 to 1.1.2 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/230
+* tutorial: replace os with pathlib.Path by @berquist in https://github.com/JaGeo/LobsterPy/pull/231
+* Review 2 suggestion by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/234
+* [WIP] Accomodate LobsterEnv breaking changes by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/232
+* Configuration consolidation by @berquist in https://github.com/JaGeo/LobsterPy/pull/235
+* Add coverage report by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/238
+* Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/239
+* Add precommit badge by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/240
+* Analysis extend + adapt to latest changes in LobterEnv by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/233
+* Add explanation to cli help by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/244
+* File path handling in featurizer module by @kaueltzen in https://github.com/JaGeo/LobsterPy/pull/242
+* Add cutoff args to batch structure graphs featurizer by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/245
+* [JOSS] Paper nitpicks by @RMeli in https://github.com/JaGeo/LobsterPy/pull/247
+* Update readme and paper.md by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/246
+
 ## v0.3.7
 * Set python version stricter limit and accommodate recent pymatgen changes by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/222
 
