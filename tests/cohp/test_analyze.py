@@ -898,6 +898,50 @@ class TestAnalyse:
 
 
 class TestAnalyseCalcQuality:
+    def test_calc_quality_summary_with_objs(self):
+        charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
+        bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        vasprun_obj = Vasprun(
+            filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
+        )
+        doscar = Doscar(
+            doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+            structure_file=None,
+            structure=structure_obj,
+        )
+        lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
+        lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
+
+        calc_des_with_objs = Analysis.get_lobster_calc_quality_summary(
+            structure_obj=structure_obj,
+            lobster_completedos_obj=doscar.completedos,
+            charge_obj=charge_obj,
+            bandoverlaps_obj=bandoverlaps_obj,
+            vasprun_obj=vasprun_obj,
+            lobsterin_obj=lobsterin_obj,
+            lobsterout_obj=lobsterout_obj,
+            dos_comparison=True,
+            bva_comp=True,
+            n_bins=256,
+        )
+
+        calc_des_with_paths = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=TestDir / "test_data" / "K3Sb" / "POSCAR.gz",
+            potcar_symbols=["K_sv", "Sb"],
+            path_to_charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
+            path_to_doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+            path_to_vasprun=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz",
+            path_to_bandoverlaps=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz",
+            path_to_lobsterout=TestDir / "test_data" / "K3Sb" / "lobsterout.gz",
+            path_to_lobsterin=TestDir / "test_data" / "K3Sb" / "lobsterin.gz",
+            dos_comparison=True,
+            bva_comp=True,
+            n_bins=256,
+        )
+
+        assert calc_des_with_objs == calc_des_with_paths
+
     def test_calc_quality_summary_exceptions(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
         bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
