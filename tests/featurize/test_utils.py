@@ -17,9 +17,11 @@ def test_get_structure_path(tmp_path):
     Tests that in case of both LOBSTER and VASP structure files present, the VASP
     file is read.
     """
-    with gzip.open(TestDir / "test_data/test_structure_path_handling/POSCAR.gz", "rb") as zipped_poscar:
-        with open(tmp_path / "POSCAR", "wb") as unzipped_poscar:
-            shutil.copyfileobj(zipped_poscar, unzipped_poscar)
+    with (
+        gzip.open(TestDir / "test_data/test_structure_path_handling/POSCAR.gz", "rb") as zipped_poscar,
+        open(tmp_path / "POSCAR", "wb") as unzipped_poscar,
+    ):
+        shutil.copyfileobj(zipped_poscar, unzipped_poscar)
 
     poscar_path_unzipped = get_structure_path(lobster_path=tmp_path)
     assert isinstance(poscar_path_unzipped, Path)
@@ -44,9 +46,11 @@ def test_get_file_paths(tmp_path):
         assert isinstance(value, Path)
 
     for file in ["COHPCAR.lobster", "ICOHPLIST.lobster"]:
-        with gzip.open(TestDir / f"test_data/BaTaO2N1/{file}.gz", "rb") as zipped_file:
-            with open(tmp_path / file, "wb") as unzipped_file:
-                shutil.copyfileobj(zipped_file, unzipped_file)
+        with (
+            gzip.open(TestDir / f"test_data/BaTaO2N1/{file}.gz", "rb") as zipped_file,
+            open(tmp_path / file, "wb") as unzipped_file,
+        ):
+            shutil.copyfileobj(zipped_file, unzipped_file)
 
     file_paths_unzipped = get_file_paths(path_to_lobster_calc=tmp_path, requested_files=["cohpcar", "icohplist"])
     for key, value in file_paths_unzipped.items():
