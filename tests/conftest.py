@@ -701,23 +701,17 @@ def lobsterpy_plot_data():
 
 @pytest.fixture()
 def icohplist_nacl():
-    return Icohplist(
-        filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz"
-    )
+    return Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz")
 
 
 @pytest.fixture()
 def icooplist_nacl():
-    return Icohplist(
-        filename=TestDir / "test_data/NaCl_comp_range/ICOOPLIST.lobster.gz"
-    )
+    return Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOOPLIST.lobster.gz")
 
 
 @pytest.fixture()
 def icobilist_nacl():
-    return Icohplist(
-        filename=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz"
-    )
+    return Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz")
 
 
 @pytest.fixture()

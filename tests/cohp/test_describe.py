@@ -113,9 +113,7 @@ class TestDescribe:
         for key, items in results_dict.items():
             assert Description._coordination_environment_to_text(key) == items
 
-    def test_plot(
-        self, describe_nacl, describe_nacl_spin, describe_nacl_all, describe_csh_all
-    ):
+    def test_plot(self, describe_nacl, describe_nacl_spin, describe_nacl_all, describe_csh_all):
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmp0:
@@ -125,16 +123,12 @@ class TestDescribe:
 
         with tempfile.TemporaryDirectory() as tmp1:
             filename_test = Path(tmp1) / "test.pdf"
-            describe_nacl_spin.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            describe_nacl_spin.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             assert Path(filename_test).exists()
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = Path(tmp2) / "test.pdf"
-            describe_nacl_all.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            describe_nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             assert not Path(filename_test).exists()
@@ -143,9 +137,7 @@ class TestDescribe:
 
         with tempfile.TemporaryDirectory() as tmp2:
             filename_test = str(Path(tmp2) / "test.pdf")
-            describe_nacl_all.plot_cohps(
-                save=True, filename=filename_test, xlim=[-4, 4]
-            )
+            describe_nacl_all.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
             filename_test_1 = Path(tmp2) / "test-0.pdf"
             filename_test_2 = Path(tmp2) / "test-1.pdf"
             assert not Path(filename_test).exists()
@@ -336,9 +328,7 @@ class TestCalcQualityDescribe:
             bva_comp=True,
         )
 
-        calc_quality_k3sb_des = Description.get_calc_quality_description(
-            calc_quality_K3Sb
-        )
+        calc_quality_k3sb_des = Description.get_calc_quality_description(calc_quality_K3Sb)
         assert calc_quality_k3sb_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
@@ -351,9 +341,7 @@ class TestCalcQualityDescribe:
             " summed orbitals are: 0.8532, 0.9481, 0.9275.",
         ]
 
-        calc_quality_csh_des = Description.get_calc_quality_description(
-            calc_quality_CsH
-        )
+        calc_quality_csh_des = Description.get_calc_quality_description(calc_quality_CsH)
         assert calc_quality_csh_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
@@ -427,9 +415,7 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        assert "Consider rerunning the calc with the minimum basis" in str(
-            w3[0].message
-        )
+        assert "Consider rerunning the calc with the minimum basis" in str(w3[0].message)
 
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 

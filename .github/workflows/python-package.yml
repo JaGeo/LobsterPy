@@ -43,12 +43,6 @@ jobs:
         python -m pip install flake8 pytest pytest-mock pytest-split pytest-cov pytestify
         python -m pip install types-setuptools
         pip install .[featurizer]
-#    - name: Lint with flake8
-#      run: |
-#        # stop the build if there are Python syntax errors or undefined names
-#        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-#        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-#        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest and coverage
       # run this locally to update tests durations
       # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./tests/test_data/.pytest-split-durations --store-durations
@@ -80,6 +74,11 @@ jobs:
           run: |
             coverage combine coverage*/.coverage*
             coverage report --show-missing
+        - name: Upload coverage reports to Codecov
+          uses: codecov/codecov-action@v4.0.1
+          with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            slug: JaGeo/LobsterPy
 
   docs:
     runs-on: ubuntu-latest

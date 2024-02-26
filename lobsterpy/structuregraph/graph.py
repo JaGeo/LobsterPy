@@ -67,8 +67,7 @@ class LobsterGraph:
                 self.path_to_icobilist = path_to_icobilist
             else:
                 raise ValueError(
-                    "add_additional_data_sg is set to True."
-                    "Please provide path_to_icooplist and path_to_icobilist"
+                    "add_additional_data_sg is set to True.Please provide path_to_icooplist and path_to_icobilist"
                 )
         else:
             self.add_additional_data_sg = add_additional_data_sg  # type: ignore
@@ -132,9 +131,7 @@ class LobsterGraph:
             )
 
         # Adds Mulliken and Löwdin charges as site properties to structure object (node properties)
-        decorated_structure = Charge(self.path_to_charge).get_structure_with_charges(
-            self.path_to_poscar
-        )
+        decorated_structure = Charge(self.path_to_charge).get_structure_with_charges(self.path_to_poscar)
 
         # Create the structure graph object decorated with site and edge properties based on ICOHP/ICOBI/ICOOP data
         lobster_env = chemenvlobster.get_bonded_structure(
@@ -162,20 +159,12 @@ class LobsterGraph:
                 if cba_data["ion"] == node_data["specie"]:
                     node_data["properties"].update({"env": cba_data["env"]})
 
-        for (
-            edge_prop
-        ) in lobster_env.graph.edges.data():  # Iterate over structure graph edges
+        for edge_prop in lobster_env.graph.edges.data():  # Iterate over structure graph edges
             _ab, ab_p, _b, b_p = analyze._integrate_antbdstates_below_efermi(
-                cohp=analyze.chemenv.completecohp.get_cohp_by_label(
-                    edge_prop[2]["bond_label"]
-                ),
+                cohp=analyze.chemenv.completecohp.get_cohp_by_label(edge_prop[2]["bond_label"]),
                 start=self.start,
             )  # Compute bonding- antibonding percentages for each bond in structure graph object
-            edge_prop[2][
-                "ICOHP_bonding_perc"
-            ] = b_p  # Store bonding percentage in edge of graph object
-            edge_prop[2][
-                "ICOHP_antibonding_perc"
-            ] = ab_p  # Store anti-bonding percentage in edge graph object
+            edge_prop[2]["ICOHP_bonding_perc"] = b_p  # Store bonding percentage in edge of graph object
+            edge_prop[2]["ICOHP_antibonding_perc"] = ab_p  # Store anti-bonding percentage in edge graph object
 
         return lobster_env

@@ -32,9 +32,7 @@ def main() -> None:
 
 def get_parser() -> argparse.ArgumentParser:
     """Construct argumentparser with subcommands and sections."""
-    parser = argparse.ArgumentParser(
-        description="Analyze and plot results from Lobster runs."
-    )
+    parser = argparse.ArgumentParser(description="Analyze and plot results from Lobster runs.")
 
     # Arguments that are needed by different actions, but not always
 
@@ -129,9 +127,7 @@ def get_parser() -> argparse.ArgumentParser:
     calc_quality_description_file_parent = argparse.ArgumentParser(add_help=False)
 
     # Input args for specifically needed for calculation quality description
-    calc_quality_description_file_group = (
-        calc_quality_description_file_parent.add_argument_group("")
-    )
+    calc_quality_description_file_group = calc_quality_description_file_parent.add_argument_group("")
     calc_quality_description_file_group.add_argument(
         "-fvasprun",
         "--file-vasprun",
@@ -198,7 +194,7 @@ def get_parser() -> argparse.ArgumentParser:
         dest="overwrite",
         default=False,
         action="store_true",
-        help="overwrites already created INCARs an lobsterins with the give name.",
+        help="overwrites already created INCARs and lobsterins with the give name.",
     )
     # TODO: Add some output arguments: options to supply your own basis
     # General matplotlib plotting arguments common to all kinds of plots
@@ -380,17 +376,14 @@ def get_parser() -> argparse.ArgumentParser:
     # Arguments specific to lobsterpy.cohp.analyze.Analysis and
     # lobsterpy.cohp.describe.Description class
     auto_parent = argparse.ArgumentParser(add_help=False)
-    auto_group = auto_parent.add_argument_group(
-        "Adjustable automatic analysis parameters"
-    )
+    auto_group = auto_parent.add_argument_group("Adjustable automatic analysis parameters")
     auto_group.add_argument(
         "-allb",
         "--allbonds",
         "--all-bonds",
         action="store_true",
         default=False,
-        help="Consider all bonds during the automatic analysis,"
-        " not only cation-anion bonds (default) ",
+        help="Consider all bonds during the automatic analysis, not only cation-anion bonds (default) ",
     )
     auto_group.add_argument(
         "--cutofficohp",
@@ -413,8 +406,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--noisecutoff",
         type=float,
         default=None,
-        help="Sets the lower limit of icohps or icoops or icobis considered in"
-        " automatic analysis",
+        help="Sets the lower limit of icohps or icoops or icobis considered in automatic analysis",
     )
     auto_group.add_argument(
         "-orbresol",
@@ -457,9 +449,7 @@ def get_parser() -> argparse.ArgumentParser:
     )
     # Specific to interactive plotter args
     interactive_plotter_args = argparse.ArgumentParser(add_help=False)
-    interactive_plotter_group = interactive_plotter_args.add_argument_group(
-        "Options specific to interactive plotter"
-    )
+    interactive_plotter_group = interactive_plotter_args.add_argument_group("Options specific to interactive plotter")
     interactive_plotter_group.add_argument(
         "-labresol",
         "--labelresolved",
@@ -551,10 +541,7 @@ def get_parser() -> argparse.ArgumentParser:
             auto_parent,
             analysis_switch,
         ],
-        help=(
-            "Deliver a text description from automatic analysis of COHPs or COBIS or COOP results "
-            "from Lobster run"
-        ),
+        help=("Deliver a text description from automatic analysis of COHPs or COBIS or COOP results from Lobster run"),
     )
     subparsers.add_parser(
         "description-quality",
@@ -617,9 +604,7 @@ def get_parser() -> argparse.ArgumentParser:
             interactive_plotter_args,
             analysis_switch,
         ],
-        help=(
-            "Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."
-        ),
+        help=("Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."),
     )
     subparsers.add_parser(
         "plot-dos",
@@ -855,9 +840,7 @@ def run(args):
         if args.fontsize:
             style_kwargs.update({"font.size": args.fontsize})
 
-        style_list = get_style_list(
-            no_base_style=args.no_base_style, styles=args.style, **style_kwargs
-        )
+        style_list = get_style_list(no_base_style=args.no_base_style, styles=args.style, **style_kwargs)
         matplotlib.style.use(style_list)
 
         if args.sigma:
@@ -912,9 +895,7 @@ def run(args):
 
         struture_filename = args.structure.parent / "POSCAR"
         if not struture_filename.exists():
-            struture_filename = struture_filename.with_name(
-                zpath(struture_filename.name)
-            )
+            struture_filename = struture_filename.with_name(zpath(struture_filename.name))
 
         completecohp = CompleteCohp.from_file(
             fmt="LOBSTER",
@@ -932,9 +913,7 @@ def run(args):
             for label in args.bond_numbers:
                 if str(label) not in completecohp.bonds:
                     raise IndexError(
-                        "The provided bond label "
-                        + str(label)
-                        + " is not available in ICO**LIST.lobster.\n "
+                        "The provided bond label " + str(label) + " is not available in ICO**LIST.lobster.\n "
                         "Allowed options are in this list: \n"
                         + str([int(listi) for listi in list(completecohp.bonds.keys())])
                     )
@@ -952,9 +931,7 @@ def run(args):
                 for ilabel, label in enumerate(args.bond_numbers):
                     orbitals = args.orbitalwise[ilabel]
 
-                    availableorbitals = list(
-                        completecohp.orb_res_cohp[str(label)].keys()
-                    )
+                    availableorbitals = list(completecohp.orb_res_cohp[str(label)].keys())
                     orbitaloptions = [*availableorbitals, "all"]
 
                     if orbitals not in orbitaloptions:
@@ -969,29 +946,21 @@ def run(args):
                     if orbitals != "all":
                         cp.add_cohp(
                             str(label) + ": " + orbitals,
-                            completecohp.get_orbital_resolved_cohp(
-                                label=str(label), orbitals=orbitals
-                            ),
+                            completecohp.get_orbital_resolved_cohp(label=str(label), orbitals=orbitals),
                         )
                     else:
                         for orbitals in availableorbitals:
                             cp.add_cohp(
                                 str(label) + ": " + orbitals,
-                                completecohp.get_orbital_resolved_cohp(
-                                    label=str(label), orbitals=orbitals
-                                ),
+                                completecohp.get_orbital_resolved_cohp(label=str(label), orbitals=orbitals),
                             )
         else:
             cp.add_cohp(
                 str(args.bond_numbers),
-                completecohp.get_summed_cohp_by_label_list(
-                    label_list=[str(label) for label in args.bond_numbers]
-                ),
+                completecohp.get_summed_cohp_by_label_list(label_list=[str(label) for label in args.bond_numbers]),
             )
 
-        plt = cp.get_plot(
-            integrated=args.integrated, xlim=args.xlim, ylim=args.ylim, sigma=sigma
-        )
+        plt = cp.get_plot(integrated=args.integrated, xlim=args.xlim, ylim=args.ylim, sigma=sigma)
 
         ax = plt.gca()
         ax.set_title(args.title)
@@ -1049,9 +1018,7 @@ def run(args):
                 lobsterin_path = Path(str(args.lobsterinout) + "-" + str(ibasis))
                 incar_path = Path(str(args.incarout) + "-" + str(ibasis))
 
-                if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
-                    args.overwrite
-                ):
+                if (not lobsterin_path.is_file() and not incar_path.is_file()) or (args.overwrite):
                     lobsterinput.write_lobsterin(lobsterin_path)
                     lobsterinput.write_INCAR(
                         incar_input=args.incar,
@@ -1060,9 +1027,7 @@ def run(args):
                         isym=0,
                     )
                 else:
-                    raise ValueError(
-                        'please use "--overwrite" if you would like to overwrite existing lobster inputs'
-                    )
+                    raise ValueError('please use "--overwrite" if you would like to overwrite existing lobster inputs')
         else:
             # convert list userbasis to dict
             userbasis = {}
@@ -1080,9 +1045,7 @@ def run(args):
             lobsterin_path = Path(str(args.lobsterinout) + "-" + str(0))
             incar_path = Path(str(args.incarout) + "-" + str(0))
 
-            if (not lobsterin_path.is_file() and not incar_path.is_file()) or (
-                args.overwrite
-            ):
+            if (not lobsterin_path.is_file() and not incar_path.is_file()) or (args.overwrite):
                 lobsterinput.write_lobsterin(lobsterin_path)
                 lobsterinput.write_INCAR(
                     incar_input=args.incar,
@@ -1091,9 +1054,7 @@ def run(args):
                     isym=0,
                 )
             else:
-                raise ValueError(
-                    'please use "--overwrite" if you would like to overwrite existing lobster inputs'
-                )
+                raise ValueError('please use "--overwrite" if you would like to overwrite existing lobster inputs')
 
     if args.action in ["description-quality"]:
         # Check for .gz files exist for default values and update accordingly
@@ -1139,9 +1100,7 @@ def run(args):
                     if gz_file_path.exists():
                         setattr(args, arg_name, gz_file_path)
                     else:
-                        raise ValueError(
-                            "BVA charge requested but CHARGE.lobster file not found."
-                        )
+                        raise ValueError("BVA charge requested but CHARGE.lobster file not found.")
 
         dos_comparison = args.doscomp
 
@@ -1158,9 +1117,7 @@ def run(args):
                     if gz_file_path.exists():
                         setattr(args, arg_name, gz_file_path)
                     else:
-                        raise ValueError(
-                            "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
-                        )
+                        raise ValueError("DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found.")
         potcar_file_path = args.potcar
 
         quality_dict = Analysis.get_lobster_calc_quality_summary(
@@ -1199,10 +1156,7 @@ def run(args):
                 if gz_file_path.exists():
                     setattr(args, arg_name, gz_file_path)
                 else:
-                    raise ValueError(
-                        f"{file_path.name} necessary for plotting DOS not found in "
-                        f"the current directory."
-                    )
+                    raise ValueError(f"{file_path.name} necessary for plotting DOS not found in the current directory.")
 
         from pymatgen.io.lobster import Doscar
 
@@ -1228,20 +1182,14 @@ def run(args):
             if len(args.site) > len(args.orbital):
                 for site in args.site:
                     for orbital in args.orbital:
-                        dos_plotter.add_site_orbital_dos(
-                            site_index=site, orbital=orbital, dos=lobs_dos
-                        )
+                        dos_plotter.add_site_orbital_dos(site_index=site, orbital=orbital, dos=lobs_dos)
             elif len(args.orbital) > len(args.site):
                 for orbital in args.orbital:
                     for site in args.site:
-                        dos_plotter.add_site_orbital_dos(
-                            site_index=site, orbital=orbital, dos=lobs_dos
-                        )
+                        dos_plotter.add_site_orbital_dos(site_index=site, orbital=orbital, dos=lobs_dos)
             else:
                 for site, orbital in zip(args.site, args.orbital):
-                    dos_plotter.add_site_orbital_dos(
-                        site_index=site, orbital=orbital, dos=lobs_dos
-                    )
+                    dos_plotter.add_site_orbital_dos(site_index=site, orbital=orbital, dos=lobs_dos)
         elif (
             args.site is None
             and not args.orbital
@@ -1253,12 +1201,8 @@ def run(args):
             dos_plotter.add_dos(dos=lobs_dos, label="Total DOS")
             dos_plotter.add_dos_dict(dos_dict=lobs_dos.get_element_dos())
 
-        elif (args.site is None or not args.orbital) and (
-            not args.element and not args.spddos and not args.elementdos
-        ):
-            raise ValueError(
-                "Please set both args i.e site and orbital to generate the plot"
-            )
+        elif (args.site is None or not args.orbital) and (not args.element and not args.spddos and not args.elementdos):
+            raise ValueError("Please set both args i.e site and orbital to generate the plot")
 
         plt = dos_plotter.get_plot(
             xlim=args.xlim,

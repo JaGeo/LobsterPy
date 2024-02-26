@@ -87,9 +87,7 @@ class TestCLI:
             for key, ref_value in ref_plot_attributes.items():
                 if key == "xydata":
                     for line, ref_line in zip(plot_attributes[key], ref_value):
-                        assert np.array(np.array(line)) == pytest.approx(
-                            np.array(ref_line)
-                        )
+                        assert np.array(np.array(line)) == pytest.approx(np.array(ref_line))
                 else:
                     assert plot_attributes[key] == pytest.approx(ref_value)
 
@@ -272,10 +270,7 @@ class TestCLI:
             ]
             test = get_parser().parse_args(args)
             run(test)
-            assert (
-                str(err.value)
-                == 'please use "--overwrite" if you would like to overwrite existing lobster inputs'
-            )
+            assert str(err.value) == 'please use "--overwrite" if you would like to overwrite existing lobster inputs'
 
         with pytest.raises(ValueError) as err2:  # noqa: PT012, PT011
             args = [
@@ -289,10 +284,7 @@ class TestCLI:
             ]
             test = get_parser().parse_args(args)
             run(test)
-            assert (
-                str(err2.value)
-                == 'please use "--overwrite" if you would like to overwrite existing lobster inputs'
-            )
+            assert str(err2.value) == 'please use "--overwrite" if you would like to overwrite existing lobster inputs'
 
     def test_cli_automatic_analysis_error(self):
         with pytest.raises(ValueError) as err1:  # noqa: PT012, PT011
@@ -305,8 +297,7 @@ class TestCLI:
 
             run(test1)
             assert (
-                str(err1.value)
-                == "Files required for automatic analysis of COBIs (ICOBILIST.lobster and "
+                str(err1.value) == "Files required for automatic analysis of COBIs (ICOBILIST.lobster and "
                 "COBICAR.lobster) not found in the directory"
             )
 
@@ -319,8 +310,7 @@ class TestCLI:
             test2 = get_parser().parse_args(args2)
             run(test2)
             assert (
-                str(err2.value)
-                == "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and "
+                str(err2.value) == "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and "
                 "COOPCAR.lobster) not found in the directory"
             )
 
@@ -604,10 +594,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert (
-                str(err.value)
-                == "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
-            )
+            assert str(err.value) == "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
 
         # BVA comparison exceptions test
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
@@ -622,10 +609,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert (
-                str(err.value)
-                == "BVA charge requested but CHARGE.lobster file not found."
-            )
+            assert str(err.value) == "BVA charge requested but CHARGE.lobster file not found."
 
         # Create-inputs exceptions test
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
@@ -651,10 +635,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert (
-                str(err.value)
-                == "DOSCAR.lobster necessary for plotting DOS not found in the current directory."
-            )
+            assert str(err.value) == "DOSCAR.lobster necessary for plotting DOS not found in the current directory."
 
         with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/K3Sb")
@@ -669,10 +650,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert (
-                str(err.value)
-                == "Please set both args i.e site and orbital to generate the plot"
-            )
+            assert str(err.value) == "Please set both args i.e site and orbital to generate the plot"
 
     def test_nongz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files
@@ -683,9 +661,10 @@ class TestCLI:
         for file in os.listdir():
             if file.endswith(".gz"):
                 uncompressed_file_path = file.split(".gz")[0]  # Remove '.gz' extension
-                with gzip.open(file, "rb") as f_in, open(
-                    uncompressed_file_path, "wb"
-                ) as f_out:
+                with (
+                    gzip.open(file, "rb") as f_in,
+                    open(uncompressed_file_path, "wb") as f_out,
+                ):
                     shutil.copyfileobj(f_in, f_out)
                     # Delete the source gzipped file
                     os.remove(file)
@@ -750,9 +729,7 @@ class TestCLI:
                 json_data[" ".join(args)] = {"stdout": stdout.getvalue()}
 
                 fig = plt.gcf()
-                json_data[" ".join(args)].update(
-                    {"plot": self.get_plot_attributes(fig)}
-                )
+                json_data[" ".join(args)].update({"plot": self.get_plot_attributes(fig)})
 
         with open(ref_data_file, "w") as fd:
             json.dump(json_data, fd, indent=4, sort_keys=True)
