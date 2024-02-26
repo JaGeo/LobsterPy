@@ -85,6 +85,7 @@ providing generous computing time on the GCS Supercomputer
 SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de)
 (project pn73da) that enabled rigorous testing of this
 package on a diverse set of compounds. The authors thank Jonas Grandel for reviewing the docstrings and testing package functionalities
-and tutorials. The authors would also like to acknowledge the maintainers of pymatgen and LOBSTER program developers.
+and tutorials. The authors would also like to acknowledge the maintainers of pymatgen and LOBSTER program developers. The authors also greatly appreciate contributions made by the reviewers [Eric Berquist](https://github.com/berquist) and [Sarath Menon](https://github.com/srmnitc) 
+that helped make this code more user and developer-friendly.
 
 # References
