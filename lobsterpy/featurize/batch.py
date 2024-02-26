@@ -75,10 +75,18 @@ class BatchSummaryFeaturizer:
         :param e_range: range of energy relative to fermi for which moment features needs to be computed
         :param n_jobs: parallel processes to run
         """
-        # Check for valid charge_type parameter TODO add tests
-        allowed_charge_types = ["mulliken", "loewdin", "both"]
-        if charge_type not in allowed_charge_types:
-            raise ValueError(f"Parameter charge_type set to {charge_type} but must be in {allowed_charge_types}.")
+        # Check for valid parameters of string type TODO add tests
+        allowed_str_inputs = {
+            "charge_type": ["mulliken", "loewdin", "both"],
+            "bonds": ["all_bonds", "cation_anion_bonds"],
+            "feature_type": ["bonding", "antibonding", "overall"],
+        }
+        for param, param_string in zip([charge_type, bonds, feature_type], ["charge_type", "bonds", "feature_type"]):
+            if param not in allowed_str_inputs[param_string]:
+                raise ValueError(
+                    f"Parameter {param_string} set to {param} but must be in "
+                    f"{list(allowed_str_inputs[param_string])}."
+                )
 
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.path_to_jsons = path_to_jsons
