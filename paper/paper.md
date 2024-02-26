@@ -26,7 +26,7 @@ affiliations:
    index: 1
  - name: Friedrich Schiller University Jena, Institute of Condensed Matter Theory and Solid-State Optics, Jena, 07743, Germany
    index: 2
- - name: Scientific Computing Department, Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot, OX11 OQX, UK
+ - name: Scientific Computing Department, Science and Technology Facilities Council, Rutherford Appleton Laboratory, Didcot, OX11 0QX, UK
    index: 3
 date: August 2023
 bibliography: paper.bib
