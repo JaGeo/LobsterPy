@@ -75,6 +75,11 @@ class BatchSummaryFeaturizer:
         :param e_range: range of energy relative to fermi for which moment features needs to be computed
         :param n_jobs: parallel processes to run
         """
+        # Check for valid charge_type parameter TODO add tests
+        allowed_charge_types = ["mulliken", "loewdin" or "both"]
+        if charge_type not in allowed_charge_types:
+            raise ValueError(f"Parameter charge_type set to {charge_type} but must be in {allowed_charge_types}.")
+
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.path_to_jsons = path_to_jsons
         self.feature_type = feature_type
@@ -214,7 +219,7 @@ class BatchSummaryFeaturizer:
                 charge_type="loewdin",
             )
             df = charge_loew.get_df()
-        elif self.charge_type == "both":  # TODO okay to replace with else? generally parameter checking in init maybe?
+        else:
             charge_mull = FeaturizeCharges(
                 path_to_charge=str(file_paths.get("charge")),
                 path_to_structure=str(file_paths.get("poscar")),

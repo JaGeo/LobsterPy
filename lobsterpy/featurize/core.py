@@ -289,7 +289,7 @@ class FeaturizeLobsterpy:
             )
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
-        except ValueError:  # TODO was that meant originally to check for valid file paths?
+        except ValueError:
             data = {bond_type: {"lobsterpy_data": {}}}
 
         try:

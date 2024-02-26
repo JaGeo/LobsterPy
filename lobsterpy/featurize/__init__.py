@@ -9,7 +9,9 @@ from pathlib import Path
 from monty.os.path import zpath
 
 
-def get_file_paths(path_to_lobster_calc: str | Path = "", requested_files: list = [], use_lso_dos: bool = True) -> dict:
+def get_file_paths(
+    path_to_lobster_calc: str | Path = "", requested_files: list[str] = [], use_lso_dos: bool = True
+) -> dict:
     """
     Get file paths for LobsterPy featurizations, raise Exception if not all of requested paths exist.
 
@@ -40,9 +42,12 @@ def get_file_paths(path_to_lobster_calc: str | Path = "", requested_files: list 
 
     for file in requested_files:
         file_str = default_values.get(file)
-        file_str = file_str if isinstance(file_str, str) else ""
+        file_str = file_str if isinstance(file_str, str) else file
         if file == "poscar":
-            file_paths[file] = get_structure_path(lobster_path=lobster_path)
+            try:
+                file_paths[file] = get_structure_path(lobster_path=lobster_path)
+            except Exception:
+                missing_files.append("poscar")
         else:
             file_path = lobster_path / file_str
             if file_path.exists():
@@ -79,5 +84,4 @@ def get_structure_path(lobster_path: Path) -> Path:
         if gz_file_path.exists():
             return gz_file_path
 
-    # TODO or return something?
-    raise Exception(f"No structure file found in {lobster_path.name}")
+    raise Exception
