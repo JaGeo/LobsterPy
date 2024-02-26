@@ -22,7 +22,7 @@ authors:
     orcid: 0000-0001-8907-0336
     affiliation: "1, 2"
 affiliations:
- - name: Federal Institute for Materials Research and Testing, Department Materials Chemistry, Berlin, 12205, Germany
+ - name: Federal Institute for Materials Research and Testing, Materials Chemistry Department, Berlin, 12205, Germany
    index: 1
  - name: Friedrich Schiller University Jena, Institute of Condensed Matter Theory and Solid-State Optics, Jena, 07743, Germany
    index: 2
