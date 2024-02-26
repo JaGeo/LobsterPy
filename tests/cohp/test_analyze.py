@@ -5,6 +5,9 @@ import sys
 from pathlib import Path
 
 import pytest
+from pymatgen.core import Structure
+from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Lobsterin, Lobsterout
+from pymatgen.io.vasp import Vasprun
 
 from lobsterpy.cohp.analyze import Analysis
 
@@ -824,6 +827,19 @@ class TestAnalyse:
         ]
         assert analyse_nacl_nan.condensed_bonding_analysis["type_charges"] == "Mulliken"
 
+    def test_all_attributes_nacl_pymatgen_objs(
+        self,
+        analyse_nacl_comp_range_orb,
+        analyse_nacl_comp_range_orb_with_objs,
+        analyse_k3sb_all,
+        analyse_k3sb_all_objs,
+    ):
+        assert (
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis
+            == analyse_nacl_comp_range_orb_with_objs.condensed_bonding_analysis
+        )
+        assert analyse_k3sb_all.condensed_bonding_analysis == analyse_k3sb_all_objs.condensed_bonding_analysis
+
     def test_icohp_sum_nacl(self, analyse_nacl_comp_range):
         assert abs(
             float(analyse_nacl_comp_range.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["ICOHP_sum"])
@@ -878,4 +894,159 @@ class TestAnalyse:
         assert (
             str(err.value) == "Consider switching to an analysis of all bonds and not only cation-anion bonds. "
             "It looks like no cations are detected."
+        )
+
+
+class TestAnalyseCalcQuality:
+    def test_calc_quality_summary_with_objs(self):
+        charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
+        bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        vasprun_obj = Vasprun(
+            filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
+        )
+        doscar = Doscar(
+            doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+            structure_file=None,
+            structure=structure_obj,
+        )
+        lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
+        lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
+
+        calc_des_with_objs = Analysis.get_lobster_calc_quality_summary(
+            structure_obj=structure_obj,
+            lobster_completedos_obj=doscar.completedos,
+            charge_obj=charge_obj,
+            bandoverlaps_obj=bandoverlaps_obj,
+            vasprun_obj=vasprun_obj,
+            lobsterin_obj=lobsterin_obj,
+            lobsterout_obj=lobsterout_obj,
+            dos_comparison=True,
+            bva_comp=True,
+            n_bins=256,
+        )
+
+        calc_des_with_paths = Analysis.get_lobster_calc_quality_summary(
+            path_to_poscar=TestDir / "test_data" / "K3Sb" / "POSCAR.gz",
+            potcar_symbols=["K_sv", "Sb"],
+            path_to_charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
+            path_to_doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+            path_to_vasprun=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz",
+            path_to_bandoverlaps=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz",
+            path_to_lobsterout=TestDir / "test_data" / "K3Sb" / "lobsterout.gz",
+            path_to_lobsterin=TestDir / "test_data" / "K3Sb" / "lobsterin.gz",
+            dos_comparison=True,
+            bva_comp=True,
+            n_bins=256,
+        )
+
+        assert calc_des_with_objs == calc_des_with_paths
+
+    def test_calc_quality_summary_exceptions(self):
+        charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
+        bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        vasprun_obj = Vasprun(
+            filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
+        )
+        doscar = Doscar(
+            doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+            structure_file=None,
+            structure=structure_obj,
+        )
+        lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
+        lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
+
+        with pytest.raises(ValueError) as err_poscar:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                path_to_poscar=None,
+                structure_obj=None,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+            )
+
+        assert str(err_poscar.value) == "Please provide path_to_poscar or structure_obj"
+
+        with pytest.raises(ValueError) as err_potcar:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                path_to_poscar=None,
+                path_to_potcar=None,
+                potcar_symbols=None,
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=None,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+            )
+
+        assert (
+            str(err_potcar.value) == "Please provide either path_to_potcar or list of "
+            "potcar_symbols or path to vasprun.xml or vasprun object. "
+            "Crucial to identify basis used for projections"
+        )
+
+        with pytest.raises(ValueError) as err_lobsterout:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=None,
+            )
+
+        assert str(err_lobsterout.value) == "Please provide path_to_lobsterout or lobsterout_obj"
+
+        with pytest.raises(ValueError) as err_lobsterin:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=None,
+                lobsterout_obj=lobsterout_obj,
+            )
+
+        assert str(err_lobsterin.value) == "Please provide path_to_lobsterin or lobsterin_obj"
+
+        with pytest.raises(Exception) as err_charge:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=None,
+                path_to_charge=None,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+                bva_comp=True,
+            )
+
+        assert str(err_charge.value) == "BVA comparison is requested, thus please provide path_to_charge or charge_obj"
+
+        with pytest.raises(ValueError) as err_doscar:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=None,
+                charge_obj=charge_obj,
+                potcar_symbols=["K_sv", "Sb"],
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=None,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+                bva_comp=True,
+                dos_comparison=True,
+            )
+
+        assert (
+            str(err_doscar.value)
+            == "Dos comparison is requested, so please provide either path_to_doscar or lobster_completedos_obj"
         )

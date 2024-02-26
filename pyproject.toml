@@ -28,7 +28,7 @@ classifiers = [
 ]
 requires-python = ">=3.9,<3.12"
 dependencies = [
-     "pymatgen>=2023.9.10, <2024.2.8",
+     "pymatgen>=2024.2.23",
      "numpy",
      "typing",
 ]
