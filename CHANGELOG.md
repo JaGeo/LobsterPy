@@ -6,7 +6,7 @@
 * Bump sphinx-book-theme from 1.1.0 to 1.1.2 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/230
 * tutorial: replace os with pathlib.Path by @berquist in https://github.com/JaGeo/LobsterPy/pull/231
 * Review 2 suggestion by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/234
-* [WIP] Accomodate LobsterEnv breaking changes by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/232
+* Accommodate LobsterEnv breaking changes by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/232
 * Configuration consolidation by @berquist in https://github.com/JaGeo/LobsterPy/pull/235
 * Add coverage report by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/238
 * Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/239
