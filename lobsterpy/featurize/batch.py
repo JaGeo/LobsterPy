@@ -146,7 +146,7 @@ class BatchSummaryFeaturizer:
 
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(file_paths.get("cohpcar")),
-            path_to_icoxxlist=str(file_paths.get("icohp_list")),
+            path_to_icoxxlist=str(file_paths.get("icohplist")),
             path_to_structure=str(structure_path),
             feature_type=self.feature_type,
             e_range=self.e_range,
@@ -614,7 +614,7 @@ class BatchStructureGraphs:
         dir_name = Path(path_to_lobster_calc)
         file_paths = get_file_paths(
             path_to_lobster_calc=path_to_lobster_calc,
-            requested_files=["charge", "cohpcar", "icohplist", "icooplist", "icohplist", "madelung", "poscar"],
+            requested_files=["charge", "cohpcar", "icohplist", "icooplist", "icobilist", "madelung", "poscar"],
         )
 
         graph = LobsterGraph(
