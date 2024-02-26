@@ -62,7 +62,7 @@ It is also possible to start this automatic analysis from a Python script. See "
 
 * **Other command line tools**:
 
-    ``lobsterpy create-inputs`` will create standard inputs based on existing POSCAR, POTCAR, INCAR files. It will allow to test for different basis sets that are available in Lobster. Currently only available for PBE_54 POTCARs.  As currently only pbeVASPfit2015 basis in LOBSTER includes additional orbitals relevant for the solid state materials. Please
+    ``lobsterpy create-inputs`` will create standard inputs based on existing POSCAR, POTCAR, and INCAR files. It will allow testing for different basis sets that are available in Lobster. This feature is currently only available for PBE_54 POTCARs, as only the pbeVASPfit2015 basis in LOBSTER includes additional orbitals relevant to solid-state materials. Please
                         check out our publication https://doi.org/10.1002/cplu.202200123 and LOBSTER program manual for more information
 
 
