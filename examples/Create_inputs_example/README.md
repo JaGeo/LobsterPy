@@ -1,0 +1,1 @@
+Open terminal and simply run `lobsterpy create-inputs` this should generate INCAR.lobsterpy-* and lobsterin.lobsterpy-*which could be used for VASP and lobster runs
