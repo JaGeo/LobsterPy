@@ -103,11 +103,11 @@ class LobsterGraph:
         if self.add_additional_data_sg:
             chemenvlobster = LobsterNeighbors(
                 are_coops=False,
-                filename_ICOHP=self.path_to_icohplist,
-                perc_strength_ICOHP=self.cutoff_icohp,
+                filename_icohp=self.path_to_icohplist,
+                perc_strength_icohp=self.cutoff_icohp,
                 structure=Structure.from_file(self.path_to_poscar),
                 additional_condition=self.additional_condition,
-                filename_CHARGE=self.path_to_charge,
+                filename_charge=self.path_to_charge,
                 add_additional_data_sg=self.add_additional_data_sg,
                 filename_blist_sg1=self.path_to_icobilist,
                 id_blist_sg1="ICOBI",
@@ -120,11 +120,11 @@ class LobsterGraph:
         else:
             chemenvlobster = LobsterNeighbors(
                 are_coops=False,
-                filename_ICOHP=self.path_to_icohplist,
-                perc_strength_ICOHP=self.cutoff_icohp,
+                filename_icohp=self.path_to_icohplist,
+                perc_strength_icohp=self.cutoff_icohp,
                 structure=Structure.from_file(self.path_to_poscar),
                 additional_condition=self.additional_condition,
-                filename_CHARGE=self.path_to_charge,
+                filename_charge=self.path_to_charge,
                 add_additional_data_sg=self.add_additional_data_sg,
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,

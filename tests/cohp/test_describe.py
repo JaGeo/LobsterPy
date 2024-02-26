@@ -381,6 +381,8 @@ class TestCalcQualityDescribeWarnings:
         assert calc_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 2.255 and 12.72 %, respectively.",
+            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
+            "generated during the LOBSTER run.",
             "The Tanimoto index from DOS comparisons in the energy range between -5, 0 eV for s, p, summed orbitals "
             "are: 0.4057, 0.2831, 0.2762.",
         ]
@@ -402,6 +404,8 @@ class TestCalcQualityDescribeWarnings:
         assert calc_des2 == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 0.98 and 8.93 %, respectively.",
+            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
+            "generated during the LOBSTER run.",
             "Oxidation states from BVA analyzer cannot be determined. Thus BVA charge comparison is not conducted.",
         ]
 
@@ -424,6 +428,8 @@ class TestCalcQualityDescribeWarnings:
             "Choosing a larger basis set is only recommended if you see a significant improvement of "
             "the charge spilling.",
             "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
+            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is generated "
+            "during the LOBSTER run.",
             "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
             "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",
         ]
