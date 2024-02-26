@@ -931,7 +931,7 @@ class FeaturizeCharges:
         structure = Structure.from_file(self.path_to_structure)
 
         if self.charge_type.lower() not in ["mulliken", "loewdin"]:
-            raise ValueError("Please check the requested charge_type. Possible options are `Mulliken` or `Loewdin`")
+            raise ValueError("Please check the requested charge_type. Possible options are `mulliken` or `loewdin`")
 
         ch_veff = []
         tol = 1e-6
