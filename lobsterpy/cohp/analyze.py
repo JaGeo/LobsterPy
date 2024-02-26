@@ -13,6 +13,7 @@ from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
+from pymatgen.electronic_structure.dos import LobsterCompleteDos
 from pymatgen.io.lobster import (
     Bandoverlaps,
     Charge,
@@ -1482,15 +1483,22 @@ class Analysis:
 
     @staticmethod
     def get_lobster_calc_quality_summary(
-        path_to_poscar: str,
-        path_to_lobsterout: str,
-        path_to_lobsterin: str,
+        path_to_poscar: str | None = None,
+        path_to_lobsterout: str | None = None,
+        path_to_lobsterin: str | None = None,
         path_to_potcar: str | None = None,
         potcar_symbols: list | None = None,
         path_to_charge: str | None = None,
         path_to_bandoverlaps: str | None = None,
         path_to_doscar: str | None = None,
         path_to_vasprun: str | None = None,
+        structure_obj: Structure | None = None,
+        lobsterin_obj: Lobsterin | None = None,
+        lobsterout_obj: Lobsterout | None = None,
+        charge_obj: Charge | None = None,
+        bandoverlaps_obj: Bandoverlaps | None = None,
+        lobster_completedos_obj: LobsterCompleteDos | None = None,
+        vasprun_obj: Vasprun | None = None,
         dos_comparison: bool = False,
         e_range: list = [-5, 0],
         n_bins: int | None = None,
@@ -1508,6 +1516,13 @@ class Analysis:
         :param path_to_bandoverlaps: path to bandOverlaps.lobster file
         :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster file
         :param path_to_vasprun: path to vasprun.xml file
+        :param structure_obj: pymatgen pymatgen.core.structure.Structure object
+        :param lobsterin_obj: pymatgen.lobster.io.Lobsterin object
+        :param lobsterout_obj: pymatgen lobster.io.Lobsterout object
+        :param charge_obj: pymatgen lobster.io.Charge object
+        :param bandoverlaps_obj: pymatgen lobster.io.BandOverlaps object
+        :param lobster_completedos_obj: pymatgen.electronic_structure.dos.LobsterCompleteDos object
+        :param vasprun_obj: pymatgen vasp.io.Vasprun object
         :param dos_comparison: will compare DOS from VASP and LOBSTER and return tanimoto index
         :param e_range: energy range for DOS comparisons
         :param n_bins: number of bins to discretize DOS for comparisons
@@ -1521,23 +1536,54 @@ class Analysis:
         """
         quality_dict = {}
 
-        if path_to_potcar and not potcar_symbols:
+        if (
+            path_to_potcar
+            and not potcar_symbols
+            and not path_to_vasprun
+            and not vasprun_obj
+        ):
             potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=path_to_potcar)
-        elif not path_to_potcar and potcar_symbols:
+        elif (
+            not path_to_potcar
+            and not path_to_vasprun
+            and not vasprun_obj
+            and potcar_symbols
+        ):
             potcar_names = potcar_symbols
+        elif path_to_vasprun and not vasprun_obj:
+            vasprun = Vasprun(
+                path_to_vasprun, parse_potcar_file=False, parse_eigen=False
+            )
+            potcar_names = [potcar.split(" ")[1] for potcar in vasprun.potcar_symbols]
+        elif vasprun_obj and not path_to_vasprun:
+            potcar_names = [
+                potcar.split(" ")[1] for potcar in vasprun_obj.potcar_symbols
+            ]
         else:
             raise ValueError(
                 "Please provide either path_to_potcar or list of "
-                "potcar_symbols used for the calculations"
+                "potcar_symbols or path to vasprun.xml or vasprun object. "
+                "Crucial to identify basis used for projections"
             )
 
-        struct = Structure.from_file(path_to_poscar)
+        if path_to_poscar:
+            struct = Structure.from_file(path_to_poscar)
+        elif structure_obj:
+            struct = structure_obj
+        else:
+            raise ValueError("Please provide path_to_poscar or structure_obj")
 
         ref_bases = Lobsterin.get_all_possible_basis_functions(
             structure=struct, potcar_symbols=potcar_names
         )
 
-        lobs_in = Lobsterin.from_file(path_to_lobsterin)
+        if path_to_lobsterin:
+            lobs_in = Lobsterin.from_file(path_to_lobsterin)
+        elif lobsterin_obj:
+            lobs_in = lobsterin_obj
+        else:
+            raise ValueError("Please provide path_to_lobsterin or lobsterin_obj")
+
         calc_basis = []
         for basis in lobs_in["basisfunctions"]:
             basis_sep = basis.split()[1:]
@@ -1554,39 +1600,23 @@ class Analysis:
                 "the charge spilling and material has non-zero band gap."
             )
 
-        lob_out = Lobsterout(path_to_lobsterout)
+        if path_to_lobsterout:
+            lob_out = Lobsterout(path_to_lobsterout)
+        elif lobsterout_obj:
+            lob_out = lobsterout_obj
+        else:
+            raise ValueError("Please provide path_to_lobsterout or lobsterout_obj")
 
         quality_dict["charge_spilling"] = {
             "abs_charge_spilling": round((sum(lob_out.charge_spilling) / 2) * 100, 4),
             "abs_total_spilling": round((sum(lob_out.total_spilling) / 2) * 100, 4),
         }  # type: ignore
 
-        if path_to_bandoverlaps is not None:
+        if path_to_bandoverlaps is not None and not bandoverlaps_obj:
             if Path(path_to_bandoverlaps).exists():  # type: ignore
                 band_overlaps = Bandoverlaps(filename=path_to_bandoverlaps)
-                for line in lob_out.warning_lines:
-                    if "k-points could not be orthonormalized" in line:
-                        total_kpoints = int(line.split(" ")[2])
-
-                # store actual number of devations above pymatgen default limit of 0.1
-                dev_val = []
-                for dev in band_overlaps.max_deviation:
-                    if dev > 0.1:
-                        dev_val.append(dev)
-
-                quality_dict["band_overlaps_analysis"] = {  # type: ignore
-                    "file_exists": True,
-                    "limit_maxDeviation": 0.1,
-                    "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
-                        limit_maxDeviation=0.1
-                    ),
-                    "max_deviation": round(max(band_overlaps.max_deviation), 4),
-                    "percent_kpoints_abv_limit": round(
-                        (len(dev_val) / total_kpoints) * 100, 4
-                    ),
-                }
-
             else:
+                band_overlaps = None
                 quality_dict["band_overlaps_analysis"] = {  # type: ignore
                     "file_exists": False,
                     "limit_maxDeviation": None,
@@ -1594,13 +1624,45 @@ class Analysis:
                     "max_deviation": None,
                     "percent_kpoints_abv_limit": None,
                 }
+        elif bandoverlaps_obj:
+            band_overlaps = bandoverlaps_obj
+
+        if band_overlaps is not None:
+            for line in lob_out.warning_lines:
+                if "k-points could not be orthonormalized" in line:
+                    total_kpoints = int(line.split(" ")[2])
+
+            # store actual number of devations above pymatgen default limit of 0.1
+            dev_val = []
+            for dev in band_overlaps.max_deviation:
+                if dev > 0.1:
+                    dev_val.append(dev)
+
+            quality_dict["band_overlaps_analysis"] = {  # type: ignore
+                "file_exists": True,
+                "limit_maxDeviation": 0.1,
+                "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
+                    limit_maxDeviation=0.1
+                ),
+                "max_deviation": round(max(band_overlaps.max_deviation), 4),
+                "percent_kpoints_abv_limit": round(
+                    (len(dev_val) / total_kpoints) * 100, 4
+                ),
+            }
 
         if bva_comp:
             try:
                 bond_valence = BVAnalyzer()
 
                 bva_oxi = []
-                lobs_charge = Charge(filename=path_to_charge)
+                if path_to_charge:
+                    lobs_charge = Charge(filename=path_to_charge)
+                elif charge_obj:
+                    lobs_charge = charge_obj
+                else:
+                    raise ValueError(
+                        "BVA comparison is requested, thus please provide path_to_charge or charge_obj"
+                    )
                 for i in bond_valence.get_valences(structure=struct):
                     if i >= 0:
                         bva_oxi.append("POS")
@@ -1643,14 +1705,33 @@ class Analysis:
                     "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have "
                     "negative DOS values"
                 )
-            doscar_lobster = Doscar(
-                doscar=path_to_doscar,
-                structure_file=path_to_poscar,
-            )
+            if path_to_doscar:
+                doscar_lobster = Doscar(
+                    doscar=path_to_doscar,
+                    structure_file=path_to_poscar,
+                    structure=structure_obj,
+                )
 
-            dos_lobster = doscar_lobster.completedos
+                dos_lobster = doscar_lobster.completedos
+            elif lobster_completedos_obj:
+                dos_lobster = lobster_completedos_obj
+            else:
+                raise ValueError(
+                    "Dos comparison is requested, so please provide either path_to_doscar or"
+                    " lobster_completedos_obj"
+                )
 
-            vasprun = Vasprun(path_to_vasprun, parse_potcar_file=False)
+            if path_to_vasprun:
+                vasprun = Vasprun(
+                    path_to_vasprun, parse_potcar_file=False, parse_eigen=False
+                )
+            elif vasprun_obj:
+                vasprun = vasprun_obj
+            else:
+                raise ValueError(
+                    "Dos comparison is requested, so please provide either path to vasprun.xml or"
+                    " vasprun_obj"
+                )
             dos_vasp = vasprun.complete_dos
 
             quality_dict["dos_comparisons"] = {}  # type: ignore
