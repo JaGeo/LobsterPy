@@ -68,7 +68,7 @@ class BatchSummaryFeaturizer:
             Possible options are `bonding`, `antibonding` or `overall`
         :param charge_type: set charge type used for computing ionicity. Possible options are
             `mulliken`, `loewdin` or `both`.
-        :param bonds: `all_bonds` or `cation_anion_bonds`
+        :param bonds: `all` or `cation-anion` bonds
         :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
         :param include_cobi_data: bool stating to include COBICAR.lobster features
         :param include_coop_data: bool stating to include COOPCAR.lobster features
@@ -78,7 +78,7 @@ class BatchSummaryFeaturizer:
         # Check for valid parameters of string type TODO add tests
         allowed_str_inputs = {
             "charge_type": ["mulliken", "loewdin", "both"],
-            "bonds": ["all_bonds", "cation_anion_bonds"],
+            "bonds": ["all", "cation-anion"],
             "feature_type": ["bonding", "antibonding", "overall"],
         }
         for param, param_string in zip([charge_type, bonds, feature_type], ["charge_type", "bonds", "feature_type"]):
