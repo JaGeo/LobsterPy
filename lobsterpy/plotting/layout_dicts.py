@@ -21,6 +21,7 @@ layout_dict = {
     "paper_bgcolor": "rgba(0,0,0,0)",
     "plot_bgcolor": "rgba(0,0,0,0)",
 }
+
 """
     General layout of Plotly figure.
 
@@ -32,6 +33,7 @@ layout_dict = {
     :param str paper_bgcolor: background color.
     :param str plot_bgcolor: plot background color.
 """
+
 cohp_axis_style_dict = {
     "titlefont": {"size": 20},
     "tickfont": {"size": 16},
@@ -46,6 +48,7 @@ cohp_axis_style_dict = {
     "linewidth": 2,
     "linecolor": "black",
 }
+
 """
     COXX axis style.
 
@@ -62,6 +65,7 @@ cohp_axis_style_dict = {
     :param float linewidth: width of axis line.
     :param str linecolor: color of axis line.
 """
+
 energy_axis_style_dict = {
     "titlefont": {"size": 20},
     "tickfont": {"size": 16},
@@ -76,6 +80,7 @@ energy_axis_style_dict = {
     "linewidth": 2,
     "linecolor": "black",
 }
+
 """
     Energy axis style.
 
@@ -92,11 +97,13 @@ energy_axis_style_dict = {
     :param float linewidth: width of axis line.
     :param str linecolor: color of axis line.
 """
+
 spin_up_trace_style_dict = {
     "line": {"width": 3},
     "mode": "lines",
     "visible": "legendonly",
 }
+
 """
     Line style for Spin.up traces.
 
@@ -110,6 +117,7 @@ spin_down_trace_style_dict = {
     "mode": "lines",
     "visible": "legendonly",
 }
+
 """
     Line style for Spin.down traces.
 
@@ -117,11 +125,13 @@ spin_down_trace_style_dict = {
     :param str mode: Plotly mode.
     :param str visible: Trace visibility.
 """
+
 legend_style_dict = {
     "bordercolor": "black",
     "borderwidth": 2,
     "traceorder": "normal",
 }
+
 """
     Legend style.
 
