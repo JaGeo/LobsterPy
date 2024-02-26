@@ -55,17 +55,13 @@ def analyse_nacl_comp_range_orb():
 
 @pytest.fixture()
 def analyse_nacl_comp_range_orb_with_objs():
-    charge_obj = Charge(
-        filename=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz"
-    )
+    charge_obj = Charge(filename=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz")
     completecohp_obj = CompleteCohp.from_file(
         filename=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
         fmt="LOBSTER",
         structure_file=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
     )
-    icohplist_obj = Icohplist(
-        filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz"
-    )
+    icohplist_obj = Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz")
 
     return Analysis(
         path_to_poscar=None,

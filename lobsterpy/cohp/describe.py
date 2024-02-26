@@ -240,8 +240,7 @@ class Description:
 
         if (
             "madelung_energy" in self.analysis_object.condensed_bonding_analysis
-            and self.analysis_object.condensed_bonding_analysis["madelung_energy"]
-            is not None
+            and self.analysis_object.condensed_bonding_analysis["madelung_energy"] is not None
         ):
             self.text.append(
                 "The Madelung energy of this crystal structure per unit cell is: "

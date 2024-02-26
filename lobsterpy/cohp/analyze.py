@@ -189,9 +189,7 @@ class Analysis:
 
         """
         self.structure = (
-            Structure.from_file(self.path_to_poscar)
-            if self.path_to_poscar
-            else self.completecohp_obj.structure
+            Structure.from_file(self.path_to_poscar) if self.path_to_poscar else self.completecohp_obj.structure
         )
         sga = SpacegroupAnalyzer(structure=self.structure)
         symmetry_dataset = sga.get_symmetry_dataset()
@@ -1251,11 +1249,7 @@ class Analysis:
                     "type_charges": self.type_charge,
                 }
         else:
-            madelung = (
-                MadelungEnergies(self.path_to_madelung)
-                if self.path_to_madelung
-                else self.madelung_obj
-            )
+            madelung = MadelungEnergies(self.path_to_madelung) if self.path_to_madelung else self.madelung_obj
             if self.type_charge == "Mulliken":
                 madelung_energy = madelung.madelungenergies_mulliken
             elif self.type_charge == "Löwdin":
@@ -1404,29 +1398,15 @@ class Analysis:
         """
         quality_dict = {}
 
-        if (
-            path_to_potcar
-            and not potcar_symbols
-            and not path_to_vasprun
-            and not vasprun_obj
-        ):
+        if path_to_potcar and not potcar_symbols and not path_to_vasprun and not vasprun_obj:
             potcar_names = Lobsterin._get_potcar_symbols(POTCAR_input=path_to_potcar)
-        elif (
-            not path_to_potcar
-            and not path_to_vasprun
-            and not vasprun_obj
-            and potcar_symbols
-        ):
+        elif not path_to_potcar and not path_to_vasprun and not vasprun_obj and potcar_symbols:
             potcar_names = potcar_symbols
         elif path_to_vasprun and not vasprun_obj:
-            vasprun = Vasprun(
-                path_to_vasprun, parse_potcar_file=False, parse_eigen=False
-            )
+            vasprun = Vasprun(path_to_vasprun, parse_potcar_file=False, parse_eigen=False)
             potcar_names = [potcar.split(" ")[1] for potcar in vasprun.potcar_symbols]
         elif vasprun_obj and not path_to_vasprun:
-            potcar_names = [
-                potcar.split(" ")[1] for potcar in vasprun_obj.potcar_symbols
-            ]
+            potcar_names = [potcar.split(" ")[1] for potcar in vasprun_obj.potcar_symbols]
         else:
             raise ValueError(
                 "Please provide either path_to_potcar or list of "
@@ -1507,13 +1487,9 @@ class Analysis:
             quality_dict["band_overlaps_analysis"] = {  # type: ignore
                 "file_exists": True,
                 "limit_maxDeviation": 0.1,
-                "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(
-                    limit_maxDeviation=0.1
-                ),
+                "has_good_quality_maxDeviation": band_overlaps.has_good_quality_maxDeviation(limit_maxDeviation=0.1),
                 "max_deviation": round(max(band_overlaps.max_deviation), 4),
-                "percent_kpoints_abv_limit": round(
-                    (len(dev_val) / total_kpoints) * 100, 4
-                ),
+                "percent_kpoints_abv_limit": round((len(dev_val) / total_kpoints) * 100, 4),
             }
 
         if bva_comp:
@@ -1526,9 +1502,7 @@ class Analysis:
                 elif charge_obj:
                     lobs_charge = charge_obj
                 else:
-                    raise ValueError(
-                        "BVA comparison is requested, thus please provide path_to_charge or charge_obj"
-                    )
+                    raise ValueError("BVA comparison is requested, thus please provide path_to_charge or charge_obj")
                 for i in bond_valence.get_valences(structure=struct):
                     if i >= 0:
                         bva_oxi.append("POS")
@@ -1582,20 +1556,16 @@ class Analysis:
                 dos_lobster = lobster_completedos_obj
             else:
                 raise ValueError(
-                    "Dos comparison is requested, so please provide either path_to_doscar or"
-                    " lobster_completedos_obj"
+                    "Dos comparison is requested, so please provide either path_to_doscar or" " lobster_completedos_obj"
                 )
 
             if path_to_vasprun:
-                vasprun = Vasprun(
-                    path_to_vasprun, parse_potcar_file=False, parse_eigen=False
-                )
+                vasprun = Vasprun(path_to_vasprun, parse_potcar_file=False, parse_eigen=False)
             elif vasprun_obj:
                 vasprun = vasprun_obj
             else:
                 raise ValueError(
-                    "Dos comparison is requested, so please provide either path to vasprun.xml or"
-                    " vasprun_obj"
+                    "Dos comparison is requested, so please provide either path to vasprun.xml or" " vasprun_obj"
                 )
             dos_vasp = vasprun.complete_dos
 
