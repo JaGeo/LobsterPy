@@ -5,6 +5,9 @@ import sys
 from pathlib import Path
 
 import pytest
+from pymatgen.core import Structure
+from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Lobsterin, Lobsterout
+from pymatgen.io.vasp import Vasprun
 
 from lobsterpy.cohp.analyze import Analysis
 
@@ -891,4 +894,114 @@ class TestAnalyse:
         assert (
             str(err.value) == "Consider switching to an analysis of all bonds and not only cation-anion bonds. "
             "It looks like no cations are detected."
+        )
+
+
+class TestAnalyseCalcQuality:
+    def test_calc_quality_summary_exceptions(self):
+        charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
+        bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        vasprun_obj = Vasprun(
+            filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
+        )
+        doscar = Doscar(
+            doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+            structure_file=None,
+            structure=structure_obj,
+        )
+        lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
+        lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
+
+        with pytest.raises(ValueError) as err_poscar:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                path_to_poscar=None,
+                structure_obj=None,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+            )
+
+        assert str(err_poscar.value) == "Please provide path_to_poscar or structure_obj"
+
+        with pytest.raises(ValueError) as err_potcar:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                path_to_poscar=None,
+                path_to_potcar=None,
+                potcar_symbols=None,
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=None,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+            )
+
+        assert (
+            str(err_potcar.value) == "Please provide either path_to_potcar or list of "
+            "potcar_symbols or path to vasprun.xml or vasprun object. "
+            "Crucial to identify basis used for projections"
+        )
+
+        with pytest.raises(ValueError) as err_lobsterout:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=None,
+            )
+
+        assert str(err_lobsterout.value) == "Please provide path_to_lobsterout or lobsterout_obj"
+
+        with pytest.raises(ValueError) as err_lobsterin:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=None,
+                lobsterout_obj=lobsterout_obj,
+            )
+
+        assert str(err_lobsterin.value) == "Please provide path_to_lobsterin or lobsterin_obj"
+
+        with pytest.raises(Exception) as err_charge:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=doscar.completedos,
+                charge_obj=None,
+                path_to_charge=None,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+                bva_comp=True,
+            )
+
+        assert str(err_charge.value) == "BVA comparison is requested, thus please provide path_to_charge or charge_obj"
+
+        with pytest.raises(ValueError) as err_doscar:  # noqa: PT011
+            self.calc_des = Analysis.get_lobster_calc_quality_summary(
+                structure_obj=structure_obj,
+                lobster_completedos_obj=None,
+                charge_obj=charge_obj,
+                bandoverlaps_obj=bandoverlaps_obj,
+                vasprun_obj=vasprun_obj,
+                lobsterin_obj=lobsterin_obj,
+                lobsterout_obj=lobsterout_obj,
+                bva_comp=True,
+                dos_comparison=True,
+            )
+
+        assert (
+            str(err_doscar.value)
+            == "Dos comparison is requested, so please provide either path_to_doscar or lobster_completedos_obj"
         )

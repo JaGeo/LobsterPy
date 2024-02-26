@@ -1459,19 +1459,11 @@ class Analysis:
         }  # type: ignore
 
         if path_to_bandoverlaps is not None and not bandoverlaps_obj:
-            if Path(path_to_bandoverlaps).exists():  # type: ignore
-                band_overlaps = Bandoverlaps(filename=path_to_bandoverlaps)
-            else:
-                band_overlaps = None
-                quality_dict["band_overlaps_analysis"] = {  # type: ignore
-                    "file_exists": False,
-                    "limit_maxDeviation": None,
-                    "has_good_quality_maxDeviation": True,
-                    "max_deviation": None,
-                    "percent_kpoints_abv_limit": None,
-                }
-        elif bandoverlaps_obj:
+            band_overlaps = Bandoverlaps(filename=path_to_bandoverlaps) if Path(path_to_bandoverlaps).exists() else None
+        elif path_to_bandoverlaps is None and bandoverlaps_obj:
             band_overlaps = bandoverlaps_obj
+        else:
+            band_overlaps = None
 
         if band_overlaps is not None:
             for line in lob_out.warning_lines:
@@ -1492,17 +1484,26 @@ class Analysis:
                 "percent_kpoints_abv_limit": round((len(dev_val) / total_kpoints) * 100, 4),
             }
 
+        else:
+            quality_dict["band_overlaps_analysis"] = {  # type: ignore
+                "file_exists": False,
+                "limit_maxDeviation": None,
+                "has_good_quality_maxDeviation": True,
+                "max_deviation": None,
+                "percent_kpoints_abv_limit": None,
+            }
+
         if bva_comp:
             try:
                 bond_valence = BVAnalyzer()
 
                 bva_oxi = []
-                if path_to_charge:
+                if path_to_charge and not charge_obj:
                     lobs_charge = Charge(filename=path_to_charge)
-                elif charge_obj:
+                elif not path_to_charge and charge_obj:
                     lobs_charge = charge_obj
                 else:
-                    raise ValueError("BVA comparison is requested, thus please provide path_to_charge or charge_obj")
+                    raise Exception("BVA comparison is requested, thus please provide path_to_charge or charge_obj")
                 for i in bond_valence.get_valences(structure=struct):
                     if i >= 0:
                         bva_oxi.append("POS")
@@ -1533,6 +1534,7 @@ class Analysis:
                     quality_dict["charge_comparisons"]["bva_loewdin_agree"] = True  # type: ignore
                 else:
                     quality_dict["charge_comparisons"]["bva_loewdin_agree"] = False  # type: ignore
+
             except ValueError:
                 quality_dict["charge_comparisons"] = {}  # type: ignore
                 warnings.warn(
