@@ -675,6 +675,22 @@ class TestBatchDosFeaturizer:
 
 class TestExceptions:
     def test_batch_summary_featurizer_exception(self):
+        with pytest.raises(ValueError) as err0:  # noqa: PT012, PT011
+            self.summary_featurize_with_json_ex = BatchSummaryFeaturizer(
+                path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/1/",
+                bonds="all",
+                feature_type="nonbonding",
+                include_cobi_data=True,
+                include_coop_data=True,
+                e_range=[-15, 0],
+            )
+
+            _ = self.summary_featurize_with_json_ex.get_df()
+
+        assert str(err0.value) == (
+            "Parameter feature_type set to nonbonding but must be in ['bonding', 'antibonding', 'overall']."
+        )
+
         with pytest.raises(Exception) as err1:  # noqa: PT012, PT011
             self.summary_featurize_with_json_ex = BatchSummaryFeaturizer(
                 path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs_exceptions/1/",

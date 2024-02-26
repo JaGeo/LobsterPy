@@ -75,7 +75,7 @@ class BatchSummaryFeaturizer:
         :param e_range: range of energy relative to fermi for which moment features needs to be computed
         :param n_jobs: parallel processes to run
         """
-        # Check for valid parameters of string type TODO add tests
+        # Check for valid parameters of string type
         allowed_str_inputs = {
             "charge_type": ["mulliken", "loewdin", "both"],
             "bonds": ["all", "cation-anion"],
