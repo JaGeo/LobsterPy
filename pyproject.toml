@@ -40,7 +40,7 @@ dependencies = [
 homepage = "https://jageo.github.io/LobsterPy/"
 repository = "https://github.com/JaGeo/LobsterPy"
 documentation = "https://jageo.github.io/LobsterPy/"
-changelog = "https://jageo.github.io/LobsterPy/changelog_link.html"
+changelog = "https://jageo.github.io/LobsterPy/about/changelog.html"
 
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.15.0"]
