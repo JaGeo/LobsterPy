@@ -1,36 +1,50 @@
-cff-version: 1.2.0
-title: >-
-  Automated Bonding Analysis with Crystal Orbital
-  Hamilton Populations
-message: >-
-  We would like to ask you to cite this article if
-  you use our software
+cff-version: "1.2.0"
 authors:
-  - given-names: Janine
-    family-names: George
-    email: janine.george@bam.de
-    orcid: 'https://orcid.org/0000-0001-8907-0336'
-    affiliation: >-
-      Federal Institute for Materials Research and
-      Testing, Germany & Friedrich Schiller
-      University Jena
-  - given-names: Guido
-    family-names: Petretto
-  - given-names: 'Aakash '
-    family-names: Naik
-  - given-names: Marco
-    family-names: Esters
-  - given-names: Adam J.
-    family-names: Jackson
-  - given-names: Ryky
-    family-names: Nelson
-  - given-names: Richard
-    family-names: Dronskowski
-  - given-names: Gian-Marco
-    family-names: Rignanese
-  - given-names: Geoffroy
-    family-names: Hautier
-doi: 10.1002/cplu.202200123
-url: https://github.com/JaGeo/LobsterPy
-journal: ChemPlusChem
-year: 2022
+- family-names: Naik
+  given-names: Aakash Ashok
+  orcid: "https://orcid.org/0000-0002-6071-6786"
+- family-names: Ueltzen
+  given-names: Katharina
+  orcid: "https://orcid.org/0009-0003-2967-1182"
+- family-names: Ertural
+  given-names: Christina
+  orcid: "https://orcid.org/0000-0002-7696-5824"
+- family-names: Jackson
+  given-names: Adam J.
+  orcid: "https://orcid.org/0000-0001-5272-6530"
+- family-names: George
+  given-names: Janine
+  orcid: "https://orcid.org/0000-0001-8907-0336"
+doi: 10.5281/zenodo.10713348
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Naik
+    given-names: Aakash Ashok
+    orcid: "https://orcid.org/0000-0002-6071-6786"
+  - family-names: Ueltzen
+    given-names: Katharina
+    orcid: "https://orcid.org/0009-0003-2967-1182"
+  - family-names: Ertural
+    given-names: Christina
+    orcid: "https://orcid.org/0000-0002-7696-5824"
+  - family-names: Jackson
+    given-names: Adam J.
+    orcid: "https://orcid.org/0000-0001-5272-6530"
+  - family-names: George
+    given-names: Janine
+    orcid: "https://orcid.org/0000-0001-8907-0336"
+  date-published: 2024-02-27
+  doi: 10.21105/joss.06286
+  issn: 2475-9066
+  issue: 94
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 6286
+  title: "LobsterPy: A package to automatically analyze LOBSTER runs"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.06286"
+  volume: 9
+title: "LobsterPy: A package to automatically analyze LOBSTER runs"
