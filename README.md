@@ -79,8 +79,8 @@ A short guide to contributing to LobsterPy can be found [here](https://jageo.git
 Additional information for developers can be found [here](https://jageo.github.io/LobsterPy/dev/dev_installation.html).
 
 ## How to cite?
-Please cite our paper: A. A. Naik, K. Ueltzen, C. Ertural, A. J. Jackson, J. George, *Journal of Open Source Software* **2024**, *9*, 6286. [https://joss.theoj.org/papers/10.21105/joss.06286](https://joss.theoj.org/papers/10.21105/joss.06286). 
-Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster]([https://www.cohp.de](https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=1)), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
+Please cite our paper: A. A. Naik, K. Ueltzen, C. Ertural, A. J. Jackson, J. George, *Journal of Open Source Software* **2024**, *9*, 6286. [https://joss.theoj.org/papers/10.21105/joss.06286](https://joss.theoj.org/papers/10.21105/joss.06286).
+Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=1), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
 You can find more information on the methodology of the automatic analysis in J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, *ChemPlusChem* **2022**, *87*, e202200123. [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123).
 
