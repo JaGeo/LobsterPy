@@ -458,16 +458,6 @@ def get_parser() -> argparse.ArgumentParser:
         help="Create automatic interactive plots with all relevant bond labels. "
         "If not set, plots consist of summed cohps.",
     )
-    interactive_plotter_group.add_argument(
-        "-orbplot",
-        "--orbitalplot",
-        "--orbital-plot",
-        action="store_true",
-        help="Generate automatic interactive (I)COHP or (I)COBI or (I)COOP plots with all relevant orbitals"
-        "(Works only when '--orbitalresolved' arg is set : i.e Orbital resolved analysis is switched on). "
-        "If used along with  '--labelresolved' arg, the plots are label resolved."
-        "Otherwise, the plots consist of summed orbital-resolved cohps.",
-    )
 
     # Args specific to calc quality description dict and texts
     calc_quality_args = argparse.ArgumentParser(add_help=False)
@@ -876,7 +866,7 @@ def run(args):
             sigma=sigma,
             hide=args.hideplot,
             label_resolved=args.labelresolved,
-            orbital_resolved=args.orbitalplot,
+            orbital_resolved=args.orbitalresolved,
         )
 
     if args.action == "plot":
