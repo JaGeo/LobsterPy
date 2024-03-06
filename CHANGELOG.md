@@ -1,4 +1,12 @@
 # Changelog
+
+## v0.3.9
+* Add JOSS badge by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/248
+* Add note about dummy potcar to example file by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/249
+* Fix link to changelog by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/250
+* Fix citation and readme by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/251
+* remove redundant orbplot arg and fix a typo by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/253
+
 ## v0.3.8
 * Add Contributing guide to Readme by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/224
 * address review comments > LOBSTER citation, similar packages by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/226
