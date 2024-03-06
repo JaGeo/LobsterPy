@@ -1373,7 +1373,7 @@ class Analysis:
         :param path_to_lobsterout: path to lobsterout file
         :param path_to_lobsterin: path to lobsterin file
         :param path_to_potcar: path to VASP potcar file
-        :param potcar_symbols: list of potcar symbols from postcar file (can be used if no potcar available)
+        :param potcar_symbols: list of potcar symbols from potcar file (can be used if no potcar available)
         :param path_to_charge: path to CHARGE.lobster file
         :param path_to_bandoverlaps: path to bandOverlaps.lobster file
         :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster file
