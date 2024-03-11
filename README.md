@@ -91,4 +91,4 @@ We have now also included the automatic analysis into a fully automatic workflow
 
 
 ## Acknowledgements
-The development of the program has been supported by a computing time grant. We gratefully acknowledge the Gauss Centre for Supercomputing e.V.(www.gauss-centre.eu) for funding this project by providing computing time on the GCS Supercomputer SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de) (project pn73da).
+The development of the program has been supported by a computing time grant. We gratefully acknowledge the Gauss Centre for Supercomputing e.V. (www.gauss-centre.eu) for funding this project by providing computing time on the GCS Supercomputer SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de) (project pn73da).
