@@ -286,7 +286,7 @@ class TestCLI:
             assert str(err2.value) == 'please use "--overwrite" if you would like to overwrite existing lobster inputs'
 
     def test_cli_automatic_analysis_error(self):
-        with pytest.raises(ValueError) as err1:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err1:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/NaCl")
             args1 = [
                 "description",
@@ -295,12 +295,9 @@ class TestCLI:
             test1 = get_parser().parse_args(args1)
 
             run(test1)
-            assert (
-                str(err1.value) == "Files required for automatic analysis of COBIs (ICOBILIST.lobster and "
-                "COBICAR.lobster) not found in the directory"
-            )
+            assert str(err1.value) == "Files ['ICOBILIST.lobster'] not found in ."
 
-        with pytest.raises(ValueError) as err2:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/NaCl")
             args2 = [
                 "description",
@@ -308,10 +305,7 @@ class TestCLI:
             ]
             test2 = get_parser().parse_args(args2)
             run(test2)
-            assert (
-                str(err2.value) == "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and "
-                "COOPCAR.lobster) not found in the directory"
-            )
+            assert str(err2.value) == "Files ['ICOOPLIST.lobster'] not found in ."
 
     def test_lobsterin_generation_error_userbasis(self, tmp_path):
         # This is a test for the user-defined basis set.
@@ -554,7 +548,7 @@ class TestCLI:
 
     def test_cli_exceptions(self):
         # Calc files missing exception test
-        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err1:  # noqa: PT012, PT011
             os.chdir(TestDir)
             args = [
                 "description",
@@ -562,13 +556,12 @@ class TestCLI:
 
             test = get_parser().parse_args(args)
             run(test)
+        assert (
+            str(err1.value)
+            == "Files ['POSCAR', 'CHARGE.lobster', 'ICOHPLIST.lobster', 'COHPCAR.lobster'] not found in tests."
+        )
 
-            assert (
-                str(err.value)
-                == "Files necessary for automatic analysis of LOBSTER outputs not found in the current directory"
-            )
-
-        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
             os.chdir(TestDir)
             args = [
                 "description-quality",
@@ -577,13 +570,10 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert (
-                str(err.value)
-                == "Mandatory files necessary for LOBSTER calc quality not found in the current directory."
-            )
-
+        assert str(err2.value) == "Files ['POSCAR', 'lobsterin', 'lobsterout'] not found in tests."
+        #
         # doscar comparison exceptions test
-        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/NaCl")
             args = [
                 "description-quality",
@@ -593,39 +583,9 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert str(err.value) == "DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found."
+        assert str(err3.value) == "Files ['DOSCAR.LSO.lobster', 'vasprun.xml'] not found in NaCl."
 
-        # BVA comparison exceptions test
-        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
-            os.chdir(TestDir / "test_data/NaCl")
-            args = [
-                "description-quality",
-                "--bvacomp",
-                "--file-charge",
-                "../CHARGE.lobster",
-            ]
-
-            test = get_parser().parse_args(args)
-            run(test)
-
-            assert str(err.value) == "BVA charge requested but CHARGE.lobster file not found."
-
-        # Create-inputs exceptions test
-        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
-            os.chdir(TestDir / "test_data/CsH")
-            args = [
-                "create-inputs",
-            ]
-
-            test = get_parser().parse_args(args)
-            run(test)
-
-            assert (
-                str(err.value)
-                == "Files necessary for creating puts for LOBSTER calcs not found in the current directory."
-            )
-
-        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/CsH")
             args = [
                 "plot-dos",
@@ -634,9 +594,24 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert str(err.value) == "DOSCAR.lobster necessary for plotting DOS not found in the current directory."
+        assert str(err4.value) == "Files ['DOSCAR.LSO.lobster'] not found in CsH."
 
-        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+        # Create-inputs exceptions test
+        with pytest.raises(ValueError) as err5:  # noqa: PT012, PT011
+            os.chdir(TestDir / "test_data/CsH")
+            args = [
+                "create-inputs",
+            ]
+
+            test = get_parser().parse_args(args)
+            run(test)
+
+        assert (
+            str(err5.value)
+            == "Files necessary for creating inputs for LOBSTER calcs not found in the current directory."
+        )
+
+        with pytest.raises(ValueError) as err6:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/K3Sb")
             args = [
                 "plot-dos",
@@ -649,7 +624,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-            assert str(err.value) == "Please set both args i.e site and orbital to generate the plot"
+        assert str(err6.value) == "Please set both args i.e site and orbital to generate the plot"
 
     def test_nongz_file_cli(self, tmp_path, inject_mocks, clean_plot):
         # test description from gz input files

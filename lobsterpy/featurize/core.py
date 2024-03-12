@@ -270,7 +270,7 @@ class FeaturizeLobsterpy:
 
         """
         file_paths = get_file_paths(
-            path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cohpcar", "icohplist", "charge"]
+            path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "cohpcar", "icohplist", "charge"]
         )
 
         which_bonds = bonds.replace("-", "_")
@@ -278,7 +278,7 @@ class FeaturizeLobsterpy:
 
         try:
             analyse = Analysis(
-                path_to_poscar=str(file_paths.get("poscar")),
+                path_to_poscar=str(file_paths.get("structure")),
                 path_to_icohplist=str(file_paths.get("icohplist")),
                 path_to_cohpcar=str(file_paths.get("cohpcar")),
                 path_to_charge=str(file_paths.get("charge")),

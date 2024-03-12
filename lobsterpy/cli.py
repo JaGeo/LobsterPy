@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from math import log, sqrt
 from pathlib import Path
 
@@ -16,6 +17,7 @@ from pymatgen.io.lobster import Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
     IcohpDistancePlotter,
     PlainCohpPlotter,
@@ -738,61 +740,28 @@ def run(args):
         "plot-automatic",
         "plot-automatic-ia",
     ]:
-        # Check for .gz files exist for default values and update accordingly
-        default_files = {
-            "structure": "POSCAR",
-            "charge": "CHARGE.lobster",
-            "icohplist": "ICOHPLIST.lobster",
-            "cohpcar": "COHPCAR.lobster",
-        }
-
-        for arg_name in default_files:
-            file_path = getattr(args, arg_name)
-            if not file_path.exists():
-                gz_file_path = file_path.with_name(zpath(file_path.name))
-                if gz_file_path.exists():
-                    setattr(args, arg_name, gz_file_path)
-                else:
-                    raise ValueError(
-                        "Files necessary for automatic analysis of LOBSTER outputs "
-                        "not found in the current directory"
-                    )
+        req_files = get_file_paths(
+            path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "charge", "icohplist", "cohpcar"]
+        )
 
         if args.coops:
-            default_files_coops = {
-                "icohplist": "ICOOPLIST.lobster",
-                "cohpcar": "COOPCAR.lobster",
-            }
-            for arg_name, file_name in default_files_coops.items():
-                setattr(args, arg_name, Path(file_name))
-                file_path = getattr(args, arg_name)
-                if not file_path.exists():
-                    gz_file_path = file_path.with_name(zpath(file_path.name))
-                    if gz_file_path.exists():
-                        setattr(args, arg_name, gz_file_path)
-                    else:
-                        raise ValueError(
-                            "Files required for automatic analysis of COOPs (ICOOPLIST.lobster and"
-                            " COOPCAR.lobster) not found in the directory"
-                        )
+            req_files_coops = get_file_paths(
+                path_to_lobster_calc=Path(os.getcwd()), requested_files=["icooplist", "coopcar"]
+            )
+
+            req_files["icohplist"] = req_files_coops["icooplist"]
+            req_files["cohpcar"] = req_files_coops["coopcar"]
 
         if args.cobis:
-            default_files_cobis = {
-                "icohplist": "ICOBILIST.lobster",
-                "cohpcar": "COBICAR.lobster",
-            }
-            for arg_name, file_name in default_files_cobis.items():
-                setattr(args, arg_name, Path(file_name))
-                file_path = getattr(args, arg_name)
-                if not file_path.exists():
-                    gz_file_path = file_path.with_name(zpath(file_path.name))
-                    if gz_file_path.exists():
-                        setattr(args, arg_name, gz_file_path)
-                    else:
-                        raise ValueError(
-                            "Files required for automatic analysis of COBIs (ICOBILIST.lobster and"
-                            " COBICAR.lobster) not found in the directory"
-                        )
+            req_files_cobis = get_file_paths(
+                path_to_lobster_calc=Path(os.getcwd()), requested_files=["icobilist", "cobicar"]
+            )
+
+            req_files["icohplist"] = req_files_cobis["icobilist"]
+            req_files["cohpcar"] = req_files_cobis["cobicar"]
+
+        for arg_name in req_files:
+            setattr(args, arg_name, req_files[arg_name])
 
     if args.action in ["description", "plot-automatic", "plot-automatic-ia"]:
         which_bonds = "all" if args.allbonds else "cation-anion"
@@ -871,24 +840,24 @@ def run(args):
 
     if args.action == "plot":
         if args.cobis:
-            filename = args.cohpcar.parent / "COBICAR.lobster"
-            if not filename.exists():
-                filename = filename.with_name(zpath(filename.name))
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["cobicar"]).get(
+                "cobicar"
+            )
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
-            filename = args.cohpcar.parent / "COOPCAR.lobster"
-            if not filename.exists():
-                filename = filename.with_name(zpath(filename.name))
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["coopcar"]).get(
+                "coopcar"
+            )
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = args.cohpcar.parent / "COHPCAR.lobster"
-            if not filename.exists():
-                filename = filename.with_name(zpath(filename.name))
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["cohpcar"]).get(
+                "cohpcar"
+            )
             options = {"are_cobis": False, "are_coops": False}
 
-        struture_filename = args.structure.parent / "POSCAR"
-        if not struture_filename.exists():
-            struture_filename = struture_filename.with_name(zpath(struture_filename.name))
+        struture_filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure"]).get(
+            "structure"
+        )
 
         completecohp = CompleteCohp.from_file(
             fmt="LOBSTER",
@@ -1051,29 +1020,18 @@ def run(args):
 
     if args.action in ["description-quality"]:
         # Check for .gz files exist for default values and update accordingly
-        mandatory_files = {
-            "structure": "POSCAR",
-            "lobsterin": "lobsterin",
-            "lobsterout": "lobsterout",
-        }
+        req_files = get_file_paths(
+            path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "lobsterin", "lobsterout"]
+        )
+        for arg_name in req_files:
+            setattr(args, arg_name, req_files[arg_name])
 
-        for arg_name in mandatory_files:
-            file_path = getattr(args, arg_name)
-            if not file_path.exists():
-                gz_file_path = file_path.with_name(zpath(file_path.name))
-                if gz_file_path.exists():
-                    setattr(args, arg_name, gz_file_path)
-                else:
-                    raise ValueError(
-                        "Mandatory files necessary for LOBSTER calc quality not found in the current directory."
-                    )
-
-        optional_file = {
+        optional_files = {
             "bandoverlaps": "bandOverlaps.lobster",
             "potcar": "POTCAR",
         }
 
-        for arg_name in optional_file:
+        for arg_name in optional_files:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(zpath(file_path.name))
@@ -1083,34 +1041,26 @@ def run(args):
         bva_comp = args.bvacomp
 
         if bva_comp:
-            bva_files = {
-                "charge": "CHARGE.lobster",
-            }
+            bva_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["charge"])
             for arg_name in bva_files:
-                file_path = getattr(args, arg_name)
-                if not file_path.exists():
-                    gz_file_path = file_path.with_name(zpath(file_path.name))
-                    if gz_file_path.exists():
-                        setattr(args, arg_name, gz_file_path)
-                    else:
-                        raise ValueError("BVA charge requested but CHARGE.lobster file not found.")
+                setattr(args, arg_name, bva_files[arg_name])
 
         dos_comparison = args.doscomp
 
         if dos_comparison:
-            dos_files = {
-                "doscar": "DOSCAR.lobster",
-                "vasprun": "vasprun.xml",
-            }
-
+            dos_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["doscar", "vasprun"])
             for arg_name in dos_files:
-                file_path = getattr(args, arg_name)
-                if not file_path.exists():
-                    gz_file_path = file_path.with_name(zpath(file_path.name))
-                    if gz_file_path.exists():
-                        setattr(args, arg_name, gz_file_path)
-                    else:
-                        raise ValueError("DOS comparisons requested but DOSCAR.lobster, vasprun.xml file not found.")
+                if arg_name == "doscar":
+                    file_path = getattr(args, arg_name)
+                    if not file_path.exists():
+                        gz_file_path = file_path.with_name(zpath(file_path.name))
+                        if gz_file_path.exists():
+                            setattr(args, arg_name, gz_file_path)
+                        else:
+                            raise ValueError(f"{file_path} or {gz_file_path} not found in current directory")
+                else:
+                    setattr(args, arg_name, dos_files[arg_name])
+
         potcar_file_path = args.potcar
 
         quality_dict = Analysis.get_lobster_calc_quality_summary(
@@ -1137,19 +1087,19 @@ def run(args):
                 json.dump(quality_dict, fd)
 
     if args.action in ["plot-dos", "plotdos"]:
-        mandatory_files = {
-            "doscar": "DOSCAR.lobster",
-            "structure": "POSCAR",
-        }
+        req_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "doscar"])
 
-        for arg_name in mandatory_files:
-            file_path = getattr(args, arg_name)
-            if not file_path.exists():
-                gz_file_path = file_path.with_name(zpath(file_path.name))
-                if gz_file_path.exists():
-                    setattr(args, arg_name, gz_file_path)
-                else:
-                    raise ValueError(f"{file_path.name} necessary for plotting DOS not found in the current directory.")
+        for arg_name in req_files:
+            if arg_name == "doscar":
+                file_path = getattr(args, arg_name)
+                if not file_path.exists():
+                    gz_file_path = file_path.with_name(zpath(file_path.name))
+                    if gz_file_path.exists():
+                        setattr(args, arg_name, gz_file_path)
+                    else:
+                        raise ValueError(f"{file_path} or {gz_file_path} not found in current directory")
+            else:
+                setattr(args, arg_name, req_files[arg_name])
 
         from pymatgen.io.lobster import Doscar
 
@@ -1218,22 +1168,28 @@ def run(args):
 
     if args.action in ["plot-icohp-distance", "ploticohpdistance"]:
         if args.cobis:
-            filename = args.icohplist.parent / "ICOBILIST.lobster"
-            if not filename.exists():
-                filename = filename.with_name(zpath(filename.name))
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icobilist"]).get(
+                "icobilist"
+            )
+            args.icohplist = filename
+            # filename = args.icohplist.parent / "ICOBILIST.lobster"
+            # if not filename.exists():
+            #     filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
-            filename = args.icohplist.parent / "ICOOPLIST.lobster"
-            if not filename.exists():
-                filename = filename.with_name(zpath(filename.name))
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icooplist"]).get(
+                "icooplist"
+            )
+            args.icohplist = filename
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = args.icohplist.parent / "ICOHPLIST.lobster"
-            if not filename.exists():
-                filename = filename.with_name(zpath(filename.name))
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icohplist"]).get(
+                "icohplist"
+            )
+            args.icohplist = filename
             options = {"are_cobis": False, "are_coops": False}
 
-        icohpcollection = Icohplist(filename=filename, **options).icohpcollection
+        icohpcollection = Icohplist(filename=args.icohplist, **options).icohpcollection
         icohp_plotter = IcohpDistancePlotter(**options)
 
         icohp_plotter.add_icohps(icohpcollection=icohpcollection, label="")
