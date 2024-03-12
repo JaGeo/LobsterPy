@@ -24,7 +24,7 @@ def get_file_paths(
 
     """
     default_values = {
-        "poscar": "POSCAR",
+        "structure": "POSCAR",
         "cohpcar": "COHPCAR.lobster",
         "icohplist": "ICOHPLIST.lobster",
         "cobicar": "COBICAR.lobster",
@@ -34,6 +34,12 @@ def get_file_paths(
         "charge": "CHARGE.lobster",
         "madelung": "MadelungEnergies.lobster",
         "doscar": ("DOSCAR.LSO.lobster" if use_lso_dos else "DOSCAR.lobster"),
+        "lobsterin": "lobsterin",
+        "lobsterout": "lobsterout",
+        "bandoverlaps": "bandOverlaps.lobster",
+        "potcar": "POTCAR",
+        "vasprun": "vasprun.xml",
+        "incar": "INCAR",
     }
 
     lobster_path = Path(path_to_lobster_calc)
@@ -43,11 +49,11 @@ def get_file_paths(
     for file in requested_files:
         file_str = default_values.get(file)
         file_str = file_str if isinstance(file_str, str) else file
-        if file == "poscar":
+        if file == "structure":
             try:
                 file_paths[file] = get_structure_path(lobster_path=lobster_path)
             except Exception:
-                missing_files.append(default_values["poscar"])
+                missing_files.append(default_values["structure"])
         else:
             file_path = lobster_path / file_str
             if file_path.exists():

@@ -140,9 +140,9 @@ class BatchSummaryFeaturizer:
 
         """
         file_paths = get_file_paths(
-            path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cohpcar", "icohplist"]
+            path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "cohpcar", "icohplist"]
         )
-        structure_path = file_paths.get("poscar")
+        structure_path = file_paths.get("structure")
 
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(file_paths.get("cohpcar")),
@@ -203,33 +203,33 @@ class BatchSummaryFeaturizer:
             A pandas dataframe with computed ionicity for the structure
 
         """
-        file_paths = get_file_paths(path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "charge"])
+        file_paths = get_file_paths(path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "charge"])
 
         if self.charge_type == "mulliken":
             charge_mull = FeaturizeCharges(
                 path_to_charge=str(file_paths.get("charge")),
-                path_to_structure=str(file_paths.get("poscar")),
+                path_to_structure=str(file_paths.get("structure")),
                 charge_type="mulliken",
             )
             df = charge_mull.get_df()
         elif self.charge_type == "loewdin":
             charge_loew = FeaturizeCharges(
                 path_to_charge=str(file_paths.get("charge")),
-                path_to_structure=str(file_paths.get("poscar")),
+                path_to_structure=str(file_paths.get("structure")),
                 charge_type="loewdin",
             )
             df = charge_loew.get_df()
         else:
             charge_mull = FeaturizeCharges(
                 path_to_charge=str(file_paths.get("charge")),
-                path_to_structure=str(file_paths.get("poscar")),
+                path_to_structure=str(file_paths.get("structure")),
                 charge_type="mulliken",
             )
             df_mull = charge_mull.get_df()
 
             charge_loew = FeaturizeCharges(
                 path_to_charge=str(file_paths.get("charge")),
-                path_to_structure=str(file_paths.get("poscar")),
+                path_to_structure=str(file_paths.get("structure")),
                 charge_type="loewdin",
             )
             df_loew = charge_loew.get_df()
@@ -487,7 +487,7 @@ class BatchCoxxFingerprint:
         """
         if self.fingerprint_for.upper() == "COBI":
             file_paths = get_file_paths(
-                path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cobicar", "icobilist"]
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "cobicar", "icobilist"]
             )
 
             coxxcar_path = file_paths.get("cobicar")
@@ -497,7 +497,7 @@ class BatchCoxxFingerprint:
 
         elif self.fingerprint_for.upper() == "COOP":
             file_paths = get_file_paths(
-                path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "coopcar", "icooplist"]
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "coopcar", "icooplist"]
             )
 
             coxxcar_path = file_paths.get("coopcar")
@@ -507,7 +507,7 @@ class BatchCoxxFingerprint:
 
         else:
             file_paths = get_file_paths(
-                path_to_lobster_calc=path_to_lobster_calc, requested_files=["poscar", "cohpcar", "icohplist"]
+                path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "cohpcar", "icohplist"]
             )
 
             coxxcar_path = file_paths.get("cohpcar")
@@ -518,7 +518,7 @@ class BatchCoxxFingerprint:
         coxx = FeaturizeCOXX(
             path_to_coxxcar=str(coxxcar_path),
             path_to_icoxxlist=str(icoxxlist_path),
-            path_to_structure=str(file_paths.get("poscar")),
+            path_to_structure=str(file_paths.get("structure")),
             feature_type=self.feature_type,
             e_range=self.e_range,
             are_coops=are_coops,
@@ -622,11 +622,11 @@ class BatchStructureGraphs:
         dir_name = Path(path_to_lobster_calc)
         file_paths = get_file_paths(
             path_to_lobster_calc=path_to_lobster_calc,
-            requested_files=["charge", "cohpcar", "icohplist", "icooplist", "icobilist", "madelung", "poscar"],
+            requested_files=["charge", "cohpcar", "icohplist", "icooplist", "icobilist", "madelung", "structure"],
         )
 
         graph = LobsterGraph(
-            path_to_poscar=str(file_paths.get("poscar")),
+            path_to_poscar=str(file_paths.get("structure")),
             path_to_charge=str(file_paths.get("charge")),
             path_to_cohpcar=str(file_paths.get("cohpcar")),
             path_to_icohplist=str(file_paths.get("icohplist")),
@@ -738,13 +738,13 @@ class BatchDosFeaturizer:
         """
         file_paths = get_file_paths(
             path_to_lobster_calc=path_to_lobster_calc,
-            requested_files=["poscar", "doscar"],
+            requested_files=["structure", "doscar"],
             use_lso_dos=self.use_lso_dos,
         )
 
         featurize_dos = FeaturizeDoscar(
             path_to_doscar=str(file_paths.get("doscar")),
-            path_to_structure=str(file_paths.get("poscar")),
+            path_to_structure=str(file_paths.get("structure")),
             add_element_dos_moments=self.add_element_dos_moments,
             e_range=self.e_range,
         )
@@ -762,13 +762,13 @@ class BatchDosFeaturizer:
         """
         file_paths = get_file_paths(
             path_to_lobster_calc=path_to_lobster_calc,
-            requested_files=["poscar", "doscar"],
+            requested_files=["structure", "doscar"],
             use_lso_dos=self.use_lso_dos,
         )
 
         featurize_dos = FeaturizeDoscar(
             path_to_doscar=str(file_paths.get("doscar")),
-            path_to_structure=str(file_paths.get("poscar")),
+            path_to_structure=str(file_paths.get("structure")),
             e_range=self.e_range,
         )
 

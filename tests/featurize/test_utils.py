@@ -39,7 +39,7 @@ def test_get_file_paths(tmp_path):
     """
     file_paths_zipped = get_file_paths(
         path_to_lobster_calc=TestDir / "test_data/BaTaO2N1",
-        requested_files=["poscar", "cohpcar", "charge", "icohplist"],
+        requested_files=["structure", "cohpcar", "charge", "icohplist"],
     )
     for key, value in file_paths_zipped.items():
         assert isinstance(key, str)
