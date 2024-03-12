@@ -1,5 +1,8 @@
 # Changelog
+## v0.4.0
+* Fix cli bug, enable spin polarized interactive analysis in cli by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/256
 
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.3.9...v0.4.0
 ## v0.3.9
 * Add JOSS badge by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/248
 * Add note about dummy potcar to example file by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/249
