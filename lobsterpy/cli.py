@@ -429,6 +429,15 @@ def get_parser() -> argparse.ArgumentParser:
         "with orbital-resolved automatic analysis (--orbitalresolved).",
     )
 
+    auto_group.add_argument(
+        "-sspins",
+        "--summedspins",
+        "--summed-spins",
+        action="store_true",
+        default=False,
+        help="Sum COHP `Spin.up` and `Spin.down` populations for automatic analysis",
+    )
+
     # Argument that will help to switch automatic analysis
     analysis_switch = argparse.ArgumentParser(add_help=False)
     analysis_group = analysis_switch.add_argument_group(
@@ -778,6 +787,7 @@ def run(args):
             cutoff_icohp=args.cutofficohp,
             orbital_cutoff=args.orbitalcutoff,
             orbital_resolved=args.orbitalresolved,
+            summed_spins=args.summedspins,
         )
 
         describe = Description(analysis_object=analyse)
