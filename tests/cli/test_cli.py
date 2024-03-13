@@ -142,6 +142,16 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(plot_path)
 
+    def test_cli_with_poscar_lobster(self):
+        os.chdir(TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-2176/")
+        args = [
+            "plot-auto",
+            "--allbonds",
+            "--hideplot",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+
     def test_cli_interactive_plotter(self):
         os.chdir(TestDir / "test_data/NaCl")
         # tests skip showing plots generated using automatic interactive plotter
