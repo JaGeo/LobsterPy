@@ -1058,18 +1058,16 @@ def run(args):
         dos_comparison = args.doscomp
 
         if dos_comparison:
-            dos_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["doscar", "vasprun"])
+            if "DOSCAR.LSO.lobster" in args.doscar.name:
+                dos_files = get_file_paths(
+                    path_to_lobster_calc=Path(os.getcwd()), requested_files=["vasprun", "doscar"], use_lso_dos=True
+                )
+            else:
+                dos_files = get_file_paths(
+                    path_to_lobster_calc=Path(os.getcwd()), requested_files=["vasprun", "doscar"]
+                )
             for arg_name in dos_files:
-                if arg_name == "doscar":
-                    file_path = getattr(args, arg_name)
-                    if not file_path.exists():
-                        gz_file_path = file_path.with_name(zpath(file_path.name))
-                        if gz_file_path.exists():
-                            setattr(args, arg_name, gz_file_path)
-                        else:
-                            raise ValueError(f"{file_path} or {gz_file_path} not found in current directory")
-                else:
-                    setattr(args, arg_name, dos_files[arg_name])
+                setattr(args, arg_name, dos_files[arg_name])
 
         potcar_file_path = args.potcar
 
@@ -1097,19 +1095,15 @@ def run(args):
                 json.dump(quality_dict, fd)
 
     if args.action in ["plot-dos", "plotdos"]:
-        req_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "doscar"])
+        if "DOSCAR.LSO.lobster" in args.doscar.name:
+            req_files = get_file_paths(
+                path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "doscar"], use_lso_dos=True
+            )
+        else:
+            req_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "doscar"])
 
         for arg_name in req_files:
-            if arg_name == "doscar":
-                file_path = getattr(args, arg_name)
-                if not file_path.exists():
-                    gz_file_path = file_path.with_name(zpath(file_path.name))
-                    if gz_file_path.exists():
-                        setattr(args, arg_name, gz_file_path)
-                    else:
-                        raise ValueError(f"{file_path} or {gz_file_path} not found in current directory")
-            else:
-                setattr(args, arg_name, req_files[arg_name])
+            setattr(args, arg_name, req_files[arg_name])
 
         from pymatgen.io.lobster import Doscar
 

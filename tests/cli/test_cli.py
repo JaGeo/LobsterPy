@@ -142,6 +142,16 @@ class TestCLI:
         run(test)
         self.assert_is_finite_file(plot_path)
 
+    def test_cli_with_poscar_lobster(self):
+        os.chdir(TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-2176/")
+        args = [
+            "plot-auto",
+            "--allbonds",
+            "--hideplot",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+
     def test_cli_interactive_plotter(self):
         os.chdir(TestDir / "test_data/NaCl")
         # tests skip showing plots generated using automatic interactive plotter
@@ -370,7 +380,7 @@ class TestCLI:
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
             "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
-            "are: 0.9966, 0.9977, 0.9822."
+            "are: 0.9935, 0.9983, 0.9822."
         )
 
         assert calc_quality_text == ref_text
@@ -583,7 +593,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-        assert str(err3.value) == "Files ['DOSCAR.LSO.lobster', 'vasprun.xml'] not found in NaCl."
+        assert str(err3.value) == "Files ['vasprun.xml', 'DOSCAR.LSO.lobster'] not found in NaCl."
 
         with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/CsH")
