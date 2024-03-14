@@ -22,6 +22,10 @@ Please note that LobsterPy relies on the LOBSTER computation output files. Thus,
 
 
 ## Installation
+
+### Python version
+Before installation, please make sure that you are using one of the supported Python versions (see [pyproject.toml](https://github.com/JaGeo/LobsterPy/blob/main/pyproject.toml)).
+
 ### Standard installation
 Install using ``pip install lobsterpy``
 
