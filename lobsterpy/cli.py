@@ -940,9 +940,9 @@ def run(args):
         if not args.hideplot and not args.save_plot:
             plt.show()
         elif args.save_plot and not args.hideplot:
-            plt.show()
             fig = plt.gcf()
             fig.savefig(args.save_plot)
+            plt.show()
         if args.save_plot and args.hideplot:
             plt.savefig(args.save_plot)
 
@@ -1164,9 +1164,9 @@ def run(args):
         if not args.hideplot and not args.save_plot:
             plt.show()
         elif args.save_plot and not args.hideplot:
-            plt.show()
             fig = plt.gcf()
             fig.savefig(args.save_plot)
+            plt.show()
         if args.save_plot and args.hideplot:
             plt.savefig(args.save_plot)
 
@@ -1206,9 +1206,9 @@ def run(args):
         if not args.hideplot and not args.save_plot:
             plt.show()
         elif args.save_plot and not args.hideplot:
-            plt.show()
             fig = plt.gcf()
             fig.savefig(args.save_plot)
+            plt.show()
         if args.save_plot and args.hideplot:
             plt.savefig(args.save_plot)
 
