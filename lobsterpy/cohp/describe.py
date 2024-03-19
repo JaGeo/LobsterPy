@@ -3,8 +3,8 @@
 
 """This module defines classes to describe the COHPs automatically."""
 from __future__ import annotations
-import warnings
 
+import warnings
 from pathlib import Path
 
 from lobsterpy.plotting import InteractiveCohpPlotter, PlainCohpPlotter
@@ -437,11 +437,12 @@ class Description:
         structure = self.analysis_object.structure
 
         if len(seq_ineq_cations) >= 20:
-
-            warnings.warn("We will switch of displaying all plots "
-                          "as there are more than 20 inequivalent ions. "
-                          "We will instead save them in files called "
-                          "'automatic-analysis-*.png'.")
+            warnings.warn(
+                "We will switch of displaying all plots "
+                "as there are more than 20 inequivalent ions. "
+                "We will instead save them in files called "
+                "'automatic-analysis-*.png'."
+            )
             hide = True
             save = True
             if filename is None:
@@ -478,8 +479,6 @@ class Description:
                     plot.close()
         if not hide:
             plot.show()
-
-
 
     def plot_interactive_cohps(
         self,
