@@ -3,6 +3,7 @@
 
 """This module defines classes to describe the COHPs automatically."""
 from __future__ import annotations
+import warnings
 
 from pathlib import Path
 
@@ -435,6 +436,17 @@ class Description:
         seq_labels = self.analysis_object.seq_labels_cohps
         structure = self.analysis_object.structure
 
+        if len(seq_ineq_cations) >= 20:
+
+            warnings.warn("We will switch of displaying all plots "
+                          "as there are more than 20 inequivalent ions. "
+                          "We will instead save them in files called "
+                          "'automatic-analysis-*.png'.")
+            hide = True
+            save = True
+            if filename is None:
+                filename = "./automatic_analysis.png"
+
         for iplot, (ication, labels, cohps) in enumerate(zip(seq_ineq_cations, seq_labels, seq_cohps)):
             namecation = str(structure[ication].specie)
 
@@ -462,11 +474,12 @@ class Description:
                 else:
                     filename_new = filename
                 plot.savefig(filename_new)
+                if hide:
+                    plot.close()
         if not hide:
             plot.show()
-        else:
-            if not save:
-                plot.close()
+
+
 
     def plot_interactive_cohps(
         self,
