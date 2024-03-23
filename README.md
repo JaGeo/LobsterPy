@@ -48,7 +48,7 @@ An interactive plotter is available via ``lobsterpy automatic-plot-ia``.
 
 Currently, the computed Mulliken charges will be used to determine cations and anions. If no ``CHARGE.lobster`` is available, the algorithm will fall back to the BondValence analysis from pymatgen.
 
-*Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster (i.e.,put "cohpGenerator from 0.1 to 5.0" to *lobsterin*).*
+*Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster (i.e., put `cohpGenerator from 0.1 to 5.0` in the *lobsterin*).*
 
 
 It is also possible to start this automatic analysis from a Python script. See "examples" for scripts.
