@@ -2,6 +2,7 @@
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
 """This module defines classes to analyze the COHPs automatically."""
+
 from __future__ import annotations
 
 import warnings
@@ -640,9 +641,9 @@ class Analysis:
                 max_antibndg_contri_dict = {}
                 for inx in max_antibndg_contri_inxs:
                     max_antibndg_contri_dict[orb_pairs_antibndg[inx]] = orb_contri_antibndg[inx]
-                orbital_summary_stats["orbital_summary_stats"][
-                    "max_antibonding_contribution"
-                ] = max_antibndg_contri_dict
+                orbital_summary_stats["orbital_summary_stats"]["max_antibonding_contribution"] = (
+                    max_antibndg_contri_dict
+                )
 
         return orbital_summary_stats
 
