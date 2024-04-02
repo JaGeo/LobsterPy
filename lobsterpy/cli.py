@@ -2,6 +2,7 @@
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
 """Script to analyze Lobster outputs from the command line."""
+
 from __future__ import annotations
 
 import argparse
