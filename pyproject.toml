@@ -28,7 +28,7 @@ classifiers = [
 ]
 requires-python = ">=3.9,<3.12"
 dependencies = [
-     "pymatgen>=2024.4.12",
+     "pymatgen@git+https://github.com/materialsproject/pymatgen",
      "numpy",
      "typing",
 ]
