@@ -1,4 +1,20 @@
 # Changelog
+## v0.4.1
+* clean up DOSCAR.LSO.lobster handling and add cli test for POSCAR.lobster by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/257
+* Fix saving of plots by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/262
+* fix linting by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/263
+* fix automatic plotting for large structures by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/265
+* Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/266
+* Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/267
+* add code of conduct by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/268
+* pre-commit autoupdate by @pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/270
+* indicate python versions correctly. by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/271
+* Update pymatgen version  by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/273
+* Bump myst-nb from 1.0.0 to 1.1.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/274
+* Update pyproject.toml by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/275
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.0...v0.4.1
+
 ## v0.4.0
 * Fix cli bug, enable spin polarized interactive analysis in cli by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/256
 
