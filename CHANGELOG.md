@@ -1,4 +1,9 @@
 # Changelog
+## v0.4.2
+* Add preliminary support multicobi by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/277
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.1...v0.4.2
+
 ## v0.4.1
 * clean up DOSCAR.LSO.lobster handling and add cli test for POSCAR.lobster by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/257
 * Fix saving of plots by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/262
