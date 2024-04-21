@@ -650,9 +650,7 @@ def get_parser() -> argparse.ArgumentParser:
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
     )
     plot_grouping = plot_parser.add_mutually_exclusive_group()
-    plot_grouping.add_argument("--multi_cobis",
-                               action="store_true",
-                               help="Plot COBICARs including multi-center bonds.")
+    plot_grouping.add_argument("--multi_cobis", action="store_true", help="Plot COBICARs including multi-center bonds.")
 
     plot_grouping.add_argument(
         "--summed",
@@ -862,7 +860,8 @@ def run(args):
             options = {"are_cobis": True, "are_coops": False}
         elif args.multi_cobis:
             filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["cobicar"]).get(
-                "cobicar")
+                "cobicar"
+            )
             options = {"are_cobis": False, "are_coops": False, "are_multi_center_cobis": True}
         elif args.coops:
             filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["coopcar"]).get(
