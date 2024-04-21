@@ -459,6 +459,7 @@ def get_parser() -> argparse.ArgumentParser:
         help="Setting this option starts automatic bonding analysis using COOPs"
         " (Also indicates plotter that input file contains COOP data)",
     )
+
     # Specific to interactive plotter args
     interactive_plotter_args = argparse.ArgumentParser(add_help=False)
     interactive_plotter_group = interactive_plotter_args.add_argument_group("Options specific to interactive plotter")
@@ -649,6 +650,10 @@ def get_parser() -> argparse.ArgumentParser:
         help="List of bond numbers, determining COHPs/COBIs/COOPs to include in plot.",
     )
     plot_grouping = plot_parser.add_mutually_exclusive_group()
+    plot_grouping.add_argument("--multi_cobis",
+                               action="store_true",
+                               help="Plot COBICARs including multi-center bonds.")
+
     plot_grouping.add_argument(
         "--summed",
         action="store_true",
@@ -855,6 +860,10 @@ def run(args):
                 "cobicar"
             )
             options = {"are_cobis": True, "are_coops": False}
+        elif args.multi_cobis:
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["cobicar"]).get(
+                "cobicar")
+            options = {"are_cobis": False, "are_coops": False, "are_multi_center_cobis": True}
         elif args.coops:
             filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["coopcar"]).get(
                 "coopcar"
@@ -876,6 +885,8 @@ def run(args):
             structure_file=struture_filename,
             **options,
         )
+        if args.multi_cobis:
+            options = {"are_cobis": True, "are_coops": False}
         cp = PlainCohpPlotter(**options)
 
         if not args.summed:
