@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
 
-base_style = resources.as_file("lobsterpy.plotting", "lobsterpy_base.mplstyle")
+base_style = resources.path("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
 def get_style_list(
