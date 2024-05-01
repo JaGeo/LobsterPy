@@ -4,10 +4,10 @@
 """Here classes and functions to plot Lobster outputs are provided."""
 
 from __future__ import annotations
-from pathlib import Path
 
 import typing
 from itertools import cycle
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import matplotlib as mpl
