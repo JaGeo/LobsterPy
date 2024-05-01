@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import typing
+from importlib_resources import files, as_file
 from itertools import cycle
 from typing import TYPE_CHECKING, Any
 
@@ -43,8 +44,8 @@ def get_style_list(
     if no_base_style:
         base = []
     else:
-        ref = importlib_resources.files("lobsterpy.plotting") / "lobsterpy_base.mplstyle"
-        with importlib_resources.as_file(ref) as path:
+        ref = files("lobsterpy.plotting") / "lobsterpy_base.mplstyle"
+        with as_file(ref) as path:
             base = [path]
     if styles is None:
         styles = []
