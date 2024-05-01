@@ -4,9 +4,9 @@
 """Here classes and functions to plot Lobster outputs are provided."""
 
 from __future__ import annotations
+from pathlib import Path
 
 import typing
-from importlib import resources
 from itertools import cycle
 from typing import TYPE_CHECKING, Any
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
 
-base_style = resources.path("lobsterpy.plotting", "lobsterpy_base.mplstyle")
+base_style = Path(__file__).absolute().parent / "lobsterpy_base.mplstyle"
 
 
 def get_style_list(
