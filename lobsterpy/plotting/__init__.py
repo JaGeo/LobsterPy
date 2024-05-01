@@ -6,13 +6,13 @@
 from __future__ import annotations
 
 import typing
-from importlib_resources import files, as_file
 from itertools import cycle
 from typing import TYPE_CHECKING, Any
 
 import matplotlib as mpl
 import numpy as np
 import plotly.graph_objs as go
+from importlib_resources import as_file, files
 from matplotlib import pyplot as plt
 from pymatgen.core import Structure
 from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp, IcohpCollection
