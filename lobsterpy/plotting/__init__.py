@@ -40,11 +40,10 @@ def get_style_list(
     :param kwargs: matplotlib-style sheet keyword arguments
 
     """
-    
     if no_base_style:
-        base = []  
+        base = []
     else:
-        ref = importlib_resources.files('lobsterpy.plotting') / 'lobsterpy_base.mplstyle'
+        ref = importlib_resources.files("lobsterpy.plotting") / "lobsterpy_base.mplstyle"
         with importlib_resources.as_file(ref) as path:
             base = [path]
     if styles is None:
