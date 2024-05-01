@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import typing
+from importlib import resources
 from itertools import cycle
 from typing import TYPE_CHECKING, Any
 
@@ -13,7 +14,6 @@ import matplotlib as mpl
 import numpy as np
 import plotly.graph_objs as go
 from matplotlib import pyplot as plt
-from pkg_resources import resource_filename
 from pymatgen.core import Structure
 from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp, IcohpCollection
 from pymatgen.electronic_structure.core import Spin
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
 
-base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
+base_style = resources.as_file("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
 def get_style_list(
