@@ -41,11 +41,7 @@ def get_style_list(
     :param kwargs: matplotlib-style sheet keyword arguments
 
     """
-    if no_base_style:
-        base = []
-    else:
-        # not really happy with this but it works
-        base = [str(Path(__file__).absolute().parent / "lobsterpy_base.mplstyle")]
+    base = [] if no_base_style else [str(Path(__file__).absolute().parent / "lobsterpy_base.mplstyle")]
     if styles is None:
         styles = []
 
