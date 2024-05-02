@@ -373,19 +373,27 @@ class TestCalcQualityDescribeWarnings:
             )
         print(w[2].message)
         print(w[3].message)
-        assert (str(w[0].message) == "Consider using DOSCAR.LSO.lobster, "
-                                     "as non LSO DOS from LOBSTER can have negative DOS values")
-        assert (str(w[1].message) == "Minimum energy range requested "
-                                     "for DOS comparisons is not available in VASP or"
-                                     " LOBSTER calculation. Thus, setting min_e to -5 eV")
-        assert (str(w[2].message) == "Maximum energy range requested "
-                                     "for DOS comparisons is not available in VASP or"
-                                     " LOBSTER calculation. Thus, setting max_e to 0 eV")
-        assert (str(w[3].message) == "Input DOS files have very "
-                                     "few points in the energy interval "
-                                     "and thus comparisons will not be reliable. Please rerun "
-                                     "the calculations with higher number of DOS points. Set NEDOS and COHPSteps"
-                                     " tags to >= 2000 in VASP and LOBSTER calculations, respectively.")
+        assert (
+            str(w[0].message) == "Consider using DOSCAR.LSO.lobster, "
+            "as non LSO DOS from LOBSTER can have negative DOS values"
+        )
+        assert (
+            str(w[1].message) == "Minimum energy range requested "
+            "for DOS comparisons is not available in VASP or"
+            " LOBSTER calculation. Thus, setting min_e to -5 eV"
+        )
+        assert (
+            str(w[2].message) == "Maximum energy range requested "
+            "for DOS comparisons is not available in VASP or"
+            " LOBSTER calculation. Thus, setting max_e to 0 eV"
+        )
+        assert (
+            str(w[3].message) == "Input DOS files have very "
+            "few points in the energy interval "
+            "and thus comparisons will not be reliable. Please rerun "
+            "the calculations with higher number of DOS points. Set NEDOS and COHPSteps"
+            " tags to >= 2000 in VASP and LOBSTER calculations, respectively."
+        )
 
         calc_des = Description.get_calc_quality_description(calc_quality_warnings)
 
@@ -430,9 +438,11 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        assert (str(w3[0].message) == "Consider rerunning the calc with the minimum basis as well. "
-                                      "Choosing is larger basis set is recommended if you see a significant "
-                                      "improvement of the charge spilling and material has non-zero band gap.")
+        assert (
+            str(w3[0].message) == "Consider rerunning the calc with the minimum basis as well. "
+            "Choosing is larger basis set is recommended if you see a significant "
+            "improvement of the charge spilling and material has non-zero band gap."
+        )
 
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
