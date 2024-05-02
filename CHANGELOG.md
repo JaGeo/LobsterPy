@@ -1,4 +1,10 @@
 # Changelog
+## v0.4.3
+* Update sphinx requirement from <6,>=5 to >=5,<8 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/281
+* Python 3.12 support by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/282
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.2...v0.4.3
+
 ## v0.4.2
 * Add preliminary support multicobi by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/277
 
