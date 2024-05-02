@@ -436,17 +436,10 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-<<<<<<< HEAD
-        assert ("Consider rerunning the calc with the minimum basis as well. "
-                "Choosing is larger basis set is recommended if you see a significant "
-                "improvement of the charge spilling and material has non-zero band gap." == str(w3[0].message))
-=======
         assert (
             str(w3[0].message)
             == "Consider rerunning the calc with the minimum basis as well. Choosing is larger basis set is recommended if you see a significant improvement of the charge spilling and material has non-zero band gap."
         )
->>>>>>> 5cc7533a561157df818a3ac7f819046d1a07001e
-
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
         assert calc_des3 == [
