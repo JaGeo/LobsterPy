@@ -371,8 +371,7 @@ class TestCalcQualityDescribeWarnings:
                 dos_comparison=True,
                 bva_comp=False,
             )
-        print(w[2].message)
-        print(w[3].message)
+
         assert (str(w[0].message) == "Consider using DOSCAR.LSO.lobster, "
                                      "as non LSO DOS from LOBSTER can have negative DOS values")
         assert (str(w[1].message) == "Minimum energy range requested "
