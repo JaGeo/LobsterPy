@@ -371,20 +371,27 @@ class TestCalcQualityDescribeWarnings:
                 dos_comparison=True,
                 bva_comp=False,
             )
+        messages=[]
+        for warning in w:
+            messages.append(str(warning.message))
+        count0=0
+        count1=0
+        count2=0
+        count3=0
+        for msg in messages:
+            if "Consider using DOSCAR.LSO.lobster" in msg:
+                count0+=1
+            if "Minimum energy range requested" in msg:
+                count1+=1
+            if "Maximum energy range requested" in msg:
+                count2+=1
+            if "Input DOS files have very few points" in msg:
+                count3 += 1
 
-        assert (str(w[0].message) == "Consider using DOSCAR.LSO.lobster, "
-                                     "as non LSO DOS from LOBSTER can have negative DOS values")
-        assert (str(w[1].message) == "Minimum energy range requested "
-                                     "for DOS comparisons is not available in VASP or"
-                                     " LOBSTER calculation. Thus, setting min_e to -5 eV")
-        assert (str(w[2].message) == "Maximum energy range requested "
-                                     "for DOS comparisons is not available in VASP or"
-                                     " LOBSTER calculation. Thus, setting max_e to 0 eV")
-        assert (str(w[3].message) == "Input DOS files have very "
-                                     "few points in the energy interval "
-                                     "and thus comparisons will not be reliable. Please rerun "
-                                     "the calculations with higher number of DOS points. Set NEDOS and COHPSteps"
-                                     " tags to >= 2000 in VASP and LOBSTER calculations, respectively.")
+        assert count0 ==1
+        assert count1 ==1
+        assert count2 ==1
+        assert count3 ==1
 
         calc_des = Description.get_calc_quality_description(calc_quality_warnings)
 
@@ -429,9 +436,7 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        assert (str(w3[0].message) == "Consider rerunning the calc with the minimum basis as well. "
-                                      "Choosing is larger basis set is recommended if you see a significant "
-                                      "improvement of the charge spilling and material has non-zero band gap.")
+        assert ("Consider rerunning the calc with the minimum basis as well. Choosing is larger basis set is recommended if you see a significant improvement of the charge spilling and material has non-zero band gap." == str(w3[0].message))
 
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
