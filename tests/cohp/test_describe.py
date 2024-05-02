@@ -419,7 +419,8 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        assert "Consider rerunning the calc with the minimum basis" in str(w3[0].message)
+
+        assert "Consider rerunning the calc with the minimum basis" in str(w3[0].message) == True
 
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
