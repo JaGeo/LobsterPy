@@ -437,10 +437,9 @@ class TestCalcQualityDescribeWarnings:
                 bva_comp=True,
             )
         assert (
-            str(w3[0].message)
-            == "Consider rerunning the calc with the minimum basis as well. "
-               "Choosing is larger basis set is recommended if you see a significant "
-               "improvement of the charge spilling and material has non-zero band gap."
+            str(w3[0].message) == "Consider rerunning the calc with the minimum basis as well. "
+            "Choosing is larger basis set is recommended if you see a significant "
+            "improvement of the charge spilling and material has non-zero band gap."
         )
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
