@@ -22,13 +22,14 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.9,<3.12"
+requires-python = ">=3.9,<3.13"
 dependencies = [
-     "pymatgen>=2024.4.13",
+     "pymatgen>=2024.5.1",
      "numpy",
      "typing",
 ]

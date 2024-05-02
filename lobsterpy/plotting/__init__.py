@@ -7,13 +7,13 @@ from __future__ import annotations
 
 import typing
 from itertools import cycle
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import matplotlib as mpl
 import numpy as np
 import plotly.graph_objs as go
 from matplotlib import pyplot as plt
-from pkg_resources import resource_filename
 from pymatgen.core import Structure
 from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp, IcohpCollection
 from pymatgen.electronic_structure.core import Spin
@@ -23,8 +23,6 @@ from pymatgen.electronic_structure.plotter import CohpPlotter, DosPlotter
 if TYPE_CHECKING:
     from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
-
-base_style = resource_filename("lobsterpy.plotting", "lobsterpy_base.mplstyle")
 
 
 def get_style_list(
@@ -43,7 +41,7 @@ def get_style_list(
     :param kwargs: matplotlib-style sheet keyword arguments
 
     """
-    base = [] if no_base_style else [base_style]
+    base = [] if no_base_style else [str(Path(__file__).absolute().parent / "lobsterpy_base.mplstyle")]
     if styles is None:
         styles = []
 
