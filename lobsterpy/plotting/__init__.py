@@ -7,12 +7,12 @@ from __future__ import annotations
 
 import typing
 from itertools import cycle
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import matplotlib as mpl
 import numpy as np
 import plotly.graph_objs as go
-from importlib_resources import as_file, files
 from matplotlib import pyplot as plt
 from pymatgen.core import Structure
 from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp, IcohpCollection
@@ -44,9 +44,8 @@ def get_style_list(
     if no_base_style:
         base = []
     else:
-        ref = files("lobsterpy.plotting") / "lobsterpy_base.mplstyle"
-        with as_file(ref) as path:
-            base = [path]
+        path = Path(__file__).absolute().parent / "lobsterpy_base.mplstyle"
+        base = [path]
     if styles is None:
         styles = []
 
