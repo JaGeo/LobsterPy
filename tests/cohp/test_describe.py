@@ -371,27 +371,27 @@ class TestCalcQualityDescribeWarnings:
                 dos_comparison=True,
                 bva_comp=False,
             )
-        messages=[]
+        messages = []
         for warning in w:
             messages.append(str(warning.message))
-        count0=0
-        count1=0
-        count2=0
-        count3=0
+        count0 = 0
+        count1 = 0
+        count2 = 0
+        count3 = 0
         for msg in messages:
             if "Consider using DOSCAR.LSO.lobster" in msg:
-                count0+=1
+                count0 += 1
             if "Minimum energy range requested" in msg:
-                count1+=1
+                count1 += 1
             if "Maximum energy range requested" in msg:
-                count2+=1
+                count2 += 1
             if "Input DOS files have very few points" in msg:
                 count3 += 1
 
-        assert count0 ==1
-        assert count1 ==1
-        assert count2 ==1
-        assert count3 ==1
+        assert count0 == 1
+        assert count1 == 1
+        assert count2 == 1
+        assert count3 == 1
 
         calc_des = Description.get_calc_quality_description(calc_quality_warnings)
 
@@ -436,7 +436,10 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        assert ("Consider rerunning the calc with the minimum basis as well. Choosing is larger basis set is recommended if you see a significant improvement of the charge spilling and material has non-zero band gap." == str(w3[0].message))
+        assert (
+            str(w3[0].message)
+            == "Consider rerunning the calc with the minimum basis as well. Choosing is larger basis set is recommended if you see a significant improvement of the charge spilling and material has non-zero band gap."
+        )
 
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
