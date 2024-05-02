@@ -44,8 +44,8 @@ def get_style_list(
     if no_base_style:
         base = []
     else:
-        path = Path(__file__).absolute().parent / "lobsterpy_base.mplstyle"
-        base = [path]
+        # not really happy with this but it works
+        base = [str(Path(__file__).absolute().parent / "lobsterpy_base.mplstyle")]
     if styles is None:
         styles = []
 
