@@ -50,7 +50,7 @@ tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov"]
 docs = [
     "sphinx-copybutton==0.5.2",
     "sphinx>=5,<8",
-    "sphinx_design==0.5.0",
+    "sphinx_design==0.6.0",
     "myst-nb==1.1.0",
     "sphinx-book-theme==1.1.2",
     "sphinx-argparse==0.4.0",
