@@ -44,7 +44,7 @@ documentation = "https://jageo.github.io/LobsterPy/"
 changelog = "https://jageo.github.io/LobsterPy/about/changelog.html"
 
 [project.optional-dependencies]
-featurizer = ["mendeleev==0.16.1"]
+featurizer = ["mendeleev==0.16.2"]
 dev = ["pre-commit>=2.12.1"]
 tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov"]
 docs = [
