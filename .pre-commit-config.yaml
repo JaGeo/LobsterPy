@@ -10,7 +10,7 @@ default_language_version:
   python: python3
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.3
+  rev: v0.4.7
   hooks:
   - id: ruff
     args: [--fix]
@@ -59,7 +59,7 @@ repos:
     - types-pkg_resources==0.1.2
     - types-paramiko
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.6
+  rev: v2.3.0
   hooks:
   - id: codespell
     stages: [commit, commit-msg]
