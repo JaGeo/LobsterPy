@@ -442,7 +442,8 @@ class Description:
                 "We will switch of displaying all plots "
                 "as there are more than 20 inequivalent ions. "
                 "We will instead save them in files called "
-                "'automatic-analysis-*.png'."
+                "'automatic-analysis-*.png'.",
+                stacklevel=2,
             )
             hide = True
             save = True

@@ -305,7 +305,8 @@ class FeaturizeLobsterpy:
         except Exception:
             warnings.warn(
                 "MadelungEnergies.lobster file not found in Lobster calc directory provided"
-                " Will set Madelung Energies for crystal structure values to NaN"
+                " Will set Madelung Energies for crystal structure values to NaN",
+                stacklevel=2,
             )
             madelung_energies = {
                 "Mulliken": np.nan,

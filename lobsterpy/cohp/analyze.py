@@ -907,7 +907,8 @@ class Analysis:
             "The bonding, antibonding integral/percent values are numerical estimate."
             " These values are sensitive to COHPstartEnergy parameter."
             " If COHPstartEnergy value does not cover entire range of VASP calculations then"
-            " absolute value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values."
+            " absolute value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.",
+            stacklevel=2,
         )
 
         from scipy.integrate import trapezoid
@@ -1444,7 +1445,8 @@ class Analysis:
             warnings.warn(
                 "Consider rerunning the calc with the minimum basis as well. Choosing is "
                 "larger basis set is recommended if you see a significant improvement of "
-                "the charge spilling and material has non-zero band gap."
+                "the charge spilling and material has non-zero band gap.",
+                stacklevel=2,
             )
 
         if path_to_lobsterout:
@@ -1540,12 +1542,14 @@ class Analysis:
                 quality_dict["charge_comparisons"] = {}  # type: ignore
                 warnings.warn(
                     "Oxidation states from BVA analyzer cannot be determined. "
-                    "Thus BVA charge comparison will be skipped"
+                    "Thus BVA charge comparison will be skipped",
+                    stacklevel=2,
                 )
         if dos_comparison:
             if "LSO" not in str(path_to_doscar).split("."):
                 warnings.warn(
-                    "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values"
+                    "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values",
+                    stacklevel=2,
                 )
             if path_to_doscar:
                 doscar_lobster = Doscar(
@@ -1580,7 +1584,8 @@ class Analysis:
                 else:
                     warnings.warn(
                         "Minimum energy range requested for DOS comparisons is not available "
-                        "in VASP or LOBSTER calculation. Thus, setting min_e to -5 eV"
+                        "in VASP or LOBSTER calculation. Thus, setting min_e to -5 eV",
+                        stacklevel=2,
                     )
                     min_e = -5
 
@@ -1589,7 +1594,8 @@ class Analysis:
                 else:
                     warnings.warn(
                         "Maximum energy range requested for DOS comparisons is not available "
-                        "in VASP or LOBSTER calculation. Thus, setting max_e to 0 eV"
+                        "in VASP or LOBSTER calculation. Thus, setting max_e to 0 eV",
+                        stacklevel=2,
                     )
                     max_e = 0
 
@@ -1598,7 +1604,8 @@ class Analysis:
                         "Input DOS files have very few points in the energy interval and thus "
                         "comparisons will not be reliable. Please rerun the calculations with "
                         "higher number of DOS points. Set NEDOS and COHPSteps tags to >= 2000 in VASP and LOBSTER "
-                        "calculations, respectively."
+                        "calculations, respectively.",
+                        stacklevel=2,
                     )
 
                 if not n_bins:
