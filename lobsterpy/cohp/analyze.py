@@ -1089,7 +1089,7 @@ class Analysis:
         Returns:
             list[tuple[str, str]]: A list of tuples, each containing two elements.
         """
-        list_orbs_comb: list[tuple[str, str]] = []
+        list_orbs_comb: list[tuple[str, str]] = []  # type: ignore
 
         # Add all 2-length permutations
         for perm in permutations(["s", "p", "d", "f"], 2):
@@ -1106,9 +1106,8 @@ class Analysis:
         """
         Group orbital pairs based on the provided bond label.
 
-        Args:
-            bond_label (str): The bond label to filter the orbitals.
-            orb_combinations (list[tuple[str, str]]): A list of tuples containing orbital combinations.
+        :param bond_label: The bond label to filter the orbitals.
+        :param orb_combinations: A list of tuples containing orbital combinations.
 
         Returns:
             dict[str, List[str]]: A dictionary where the keys are top level orbital pairs and the values are lists of
@@ -1130,14 +1129,13 @@ class Analysis:
         """
         Get a lists of bond labels mapped to the corresponding orbital pair.
 
-        Args:
-            orb_pair (dict[str, list[str]]): A dictionary containing orbital pairs as keys and lists of
+        :param orb_pair: A dictionary containing orbital pairs as keys and lists of
             sub orbitals as values.
-            bond_labels (List[str]): A list of bond labels.
-            root_orb_pair (str): The root key in orb_pair use to map bond labels list.
+        :param bond_labels: A list of bond labels.
+        :param root_orb_pair: The root key in orb_pair use to map bond labels list.
 
         Returns:
-            list[int]: A list where the elements of bond_labels are repeated based on the
+            list: A list where the items of bond_labels are repeated based on the
             length of orb_pair[root_orb_pair].
         """
         return [item for item in bond_labels for _ in range(len(orb_pair[root_orb_pair]))]
