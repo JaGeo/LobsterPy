@@ -613,8 +613,8 @@ class Analysis:
 
         Returns:
             dict with orbital data stats the site for relevant orbitals, e.g.
-            {'orbital_summary_stats': {'max_bonding_contribution': {'2s-3s': 0.68},
-            'max_antibonding_contribution': {'2s-2p': 0.36}}}
+            {'orbital_summary_stats': {'max_bonding_contribution': {'3p-3p': 0.41},
+            'max_antibonding_contribution': {'3s-3p': 0.39}}}
 
         """
         # get max orbital bonding and contribution for the site
@@ -664,8 +664,8 @@ class Analysis:
 
         Returns:
             dict with bond labels for each site for relevant orbitals, e.g.
-            {'Na1: Na-Cl': {'3s-3s': ['21', '23', '24', '27', '28', '30']}
-
+            {'Na1: Na-Cl': {'3p-3s': {'bond_labels': ['21', '23', '24', '27', '28', '30'],
+            'relevant_sub_orbitals': ['3py-3s', '3pz-3s', '3px-3s']}}
         """
         site_bond_labels = self.get_site_bond_resolved_labels()
         orb_plot_data = {atom_pair: {} for atom_pair in site_bond_labels}
@@ -770,10 +770,10 @@ class Analysis:
         :param atom_pair: list of atom pair with cation first eg., ["Cl","Na"]
         :param label: LOBSTER relevant bond label eg ., "3"
         :param complete_cohp: pymatgen CompleteCohp object
-        :param orb_pair: relevant orbital pair eg., "2px-3s"
+        :param orb_pair: relevant orbital pair eg., "2p-3s"
 
         Returns:
-            will return list of str, e.g. ["Na(2px)", "Cl(3s)"]
+            will return list of str, e.g. ["Na(2p)", "Cl(3s)"]
 
         """
         orb_atom = {}  # type: ignore
