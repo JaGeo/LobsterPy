@@ -30,7 +30,7 @@ classifiers = [
 requires-python = ">=3.9,<3.13"
 dependencies = [
      "pymatgen>=2024.5.1",
-     "numpy",
+     "numpy<2.0.0",
      "typing",
 ]
 
@@ -46,7 +46,7 @@ changelog = "https://jageo.github.io/LobsterPy/about/changelog.html"
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.17.0"]
 dev = ["pre-commit>=2.12.1"]
-tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov"]
+tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov", "types-setuptools"]
 docs = [
     "sphinx-copybutton==0.5.2",
     "sphinx>=5,<8",

@@ -31,6 +31,10 @@ Install using ``pip install lobsterpy``
 ### Installation with featurizer
 Install using ``pip install lobsterpy[featurizer]``
 
+### Contributing guidelines / Developers installation
+A short guide to contributing to LobsterPy can be found [here](https://jageo.github.io/LobsterPy/dev/contributing.html).
+Additional information for developers can be found [here](https://jageo.github.io/LobsterPy/dev/dev_installation.html).
+
 
 ## Basic usage
 
@@ -77,9 +81,6 @@ It is also possible to start this automatic analysis from a Python script. See "
 ## Comprehensive documentation
 * Checkout the [documentation and tutorials](https://jageo.github.io/LobsterPy/) for more details.
 
-## Contributing
-A short guide to contributing to LobsterPy can be found [here](https://jageo.github.io/LobsterPy/dev/contributing.html).
-Additional information for developers can be found [here](https://jageo.github.io/LobsterPy/dev/dev_installation.html).
 
 ## How to cite?
 Please cite our paper: A. A. Naik, K. Ueltzen, C. Ertural, A. J. Jackson, J. George, *Journal of Open Source Software* **2024**, *9*, 6286. [https://joss.theoj.org/papers/10.21105/joss.06286](https://joss.theoj.org/papers/10.21105/joss.06286).
