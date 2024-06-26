@@ -675,9 +675,11 @@ class InteractiveCohpPlotter(CohpPlotter):
                 key_val = plot_data_orb[bond_key]
                 # get cohp data for each orbital and associated bond labels iteratively
                 for orb, val in key_val.items():
-                    for lab in val:
+                    for lab in val["bond_labels"]:
+                        mapped_bond_labels = [item for item in [lab] for _ in range(len(val["relevant_sub_orbitals"]))]
+
                         cohp_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
-                            label_list=[lab], orbital_list=[orb]
+                            label_list=mapped_bond_labels, orbital_list=val["relevant_sub_orbitals"]
                         )
 
                         energies = cohp_orb.energies - cohp_orb.efermi if self.zero_at_efermi else cohp_orb.energies
@@ -724,15 +726,19 @@ class InteractiveCohpPlotter(CohpPlotter):
                 key_val = plot_data_orb[bond_key]
                 # get summed cohp data for each relevant orbital
                 for orb, val in key_val.items():
+                    mapped_bond_labels = [
+                        item for item in val["bond_labels"] for _ in range(len(val["relevant_sub_orbitals"]))
+                    ]
                     cohp_orb = complete_cohp.get_summed_cohp_by_label_and_orbital_list(
-                        label_list=val, orbital_list=[orb] * len(val)
+                        label_list=mapped_bond_labels,
+                        orbital_list=val["relevant_sub_orbitals"] * len(val["bond_labels"]),
                     )
 
                     energies = cohp_orb.energies - cohp_orb.efermi if self.zero_at_efermi else cohp_orb.energies
                     # plot legends will contain species and orbital along with number of bonds at the site
                     plot_legend = self._get_plot_label_for_label_resolved(
                         structure=analyse.structure,
-                        label_list=val,
+                        label_list=val["bond_labels"],
                         complete_cohp=complete_cohp,
                         orb_list=[orb],
                         orbital_resolved=True,

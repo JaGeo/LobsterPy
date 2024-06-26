@@ -241,11 +241,11 @@ class TestFeaturizeLobsterpy:
         # Here test now only orbital wise analysis column values
         assert df.loc["mp-463", "Icohp_bndg_orb_mean_avg"] == pytest.approx(-0.181250, abs=1e-05)
         assert df.loc["mp-463", "Icohp_bndg_orb_sum_max"] == pytest.approx(-1.430000, abs=1e-05)
-        assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.370000, abs=1e-05)
-        assert df.loc["mp-463", "Icohp_antibndg_orb_mean_std"] == pytest.approx(0.062050, abs=1e-05)
-        assert df.loc["mp-463", "Icohp_antibndg_orb_sum_avg"] == pytest.approx(-1.445000, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.230000, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.015000, abs=1e-05)
+        assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.380000, abs=1e-05)
+        assert df.loc["mp-463", "Icohp_antibndg_orb_mean_std"] == pytest.approx(0.059600, abs=1e-05)
+        assert df.loc["mp-463", "Icohp_antibndg_orb_sum_avg"] == pytest.approx(-0.714100, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.580000, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.169999, abs=1e-05)
 
     # Tests for new jsons from atomate2
     def test_featurize_mp66_json(self):

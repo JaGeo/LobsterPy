@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import warnings
 from collections import Counter
+from itertools import combinations_with_replacement, permutations
 from pathlib import Path
 
 import numpy as np
@@ -435,7 +436,9 @@ class Analysis:
             if label is not None:
                 bond_resolved_label_key = nameion + str(iion + 1) + ":" + label.split("x")[-1]
                 bond_labels = bond_resolved_labels[bond_resolved_label_key]
-                available_orbitals = list(self.chemenv.completecohp.orb_res_cohp[bond_labels[0]].keys())
+                orb_combinations = self._get_orb_combinations()
+                grouped_orb_pairs = self._group_orb_pairs(bond_label=bond_labels[0], orb_combinations=orb_combinations)
+                # available_orbitals = list(self.chemenv.completecohp.orb_res_cohp[bond_labels[0]].keys())
                 # initialize empty list to store orb paris for bonding,
                 # antibonding integrals and  percentages
                 bndg_orb_pair_list = []
@@ -467,9 +470,13 @@ class Analysis:
                 orb_bonding_dict_data = {}  # type: ignore
                 # For each orbital collect the contributions of summed bonding
                 # and antibonding interactions separately
-                for orb in available_orbitals:
+                for orb in grouped_orb_pairs:
+                    mapped_bond_labels = self._get_bond_orb_label_mapped_list(
+                        bond_labels=bond_labels, orb_pair=grouped_orb_pairs, root_orb_pair=orb
+                    )
+                    # for orb in available_orbitals:
                     cohp_summed_orb = self.chemenv.completecohp.get_summed_cohp_by_label_and_orbital_list(
-                        label_list=bond_labels, orbital_list=[orb] * len(bond_labels)
+                        label_list=mapped_bond_labels, orbital_list=grouped_orb_pairs[orb] * len(bond_labels)
                     )
 
                     if type_pop.lower() == "cohp":
@@ -496,10 +503,11 @@ class Analysis:
                     if bndg_tot > 0:
                         orb_icohps_bndg = []
                         for bond_label in bond_labels:
-                            orb_icohp_bn = self.chemenv.Icohpcollection.get_icohp_by_label(
-                                label=bond_label, orbitals=orb
-                            )
-                            orb_icohps_bndg.append(orb_icohp_bn)
+                            for sub_orb in grouped_orb_pairs[orb]:
+                                orb_icohp_bn = self.chemenv.Icohpcollection.get_icohp_by_label(
+                                    label=bond_label, orbitals=sub_orb
+                                )
+                                orb_icohps_bndg.append(orb_icohp_bn)
                         bndg_orb_pair_list.append(orb)
                         bndg_orb_icohp_list.append(orb_icohps_bndg)
                         bndg_orb_integral_list.append(bndg_orb)
@@ -514,10 +522,11 @@ class Analysis:
                     if antibndg_tot > 0:
                         orb_icohps_anti = []
                         for bond_label in bond_labels:
-                            orb_icohp_an = self.chemenv.Icohpcollection.get_icohp_by_label(
-                                label=bond_label, orbitals=orb
-                            )
-                            orb_icohps_anti.append(orb_icohp_an)
+                            for sub_orb in grouped_orb_pairs[orb]:
+                                orb_icohp_an = self.chemenv.Icohpcollection.get_icohp_by_label(
+                                    label=bond_label, orbitals=sub_orb
+                                )
+                                orb_icohps_anti.append(orb_icohp_an)
 
                         antibndg_orb_pair_list.append(orb)
                         antibndg_orb_icohp_list.append(orb_icohps_anti)
@@ -551,6 +560,7 @@ class Analysis:
                                     "integral": bndg_orb_integral_list[inx],
                                     "perc": bndg_orb_perc_list[inx],
                                 },
+                                "relevant_sub_orbitals": grouped_orb_pairs[bndg_orb_pair],
                             }
 
                 # Populate the dictionary with relevant orbitals for antibonding interactions
@@ -586,6 +596,7 @@ class Analysis:
                                     "integral": antibndg_orb_integral_list[inx],
                                     "perc": antibndg_orb_perc_list[inx],
                                 },
+                                "relevant_sub_orbitals": grouped_orb_pairs[antibndg_orb_pair],
                             }
 
                 orb_bonding_dict_data["relevant_bonds"] = bond_labels  # type: ignore
@@ -602,8 +613,8 @@ class Analysis:
 
         Returns:
             dict with orbital data stats the site for relevant orbitals, e.g.
-            {'orbital_summary_stats': {'max_bonding_contribution': {'2s-3s': 0.68},
-            'max_antibonding_contribution': {'2s-2pz': 0.36}}}
+            {'orbital_summary_stats': {'max_bonding_contribution': {'3p-3p': 0.41},
+            'max_antibonding_contribution': {'3s-3p': 0.39}}}
 
         """
         # get max orbital bonding and contribution for the site
@@ -653,8 +664,8 @@ class Analysis:
 
         Returns:
             dict with bond labels for each site for relevant orbitals, e.g.
-            {'Na1: Na-Cl': {'3s-3s': ['21', '23', '24', '27', '28', '30']}
-
+            {'Na1: Na-Cl': {'3p-3s': {'bond_labels': ['21', '23', '24', '27', '28', '30'],
+            'relevant_sub_orbitals': ['3py-3s', '3pz-3s', '3px-3s']}}
         """
         site_bond_labels = self.get_site_bond_resolved_labels()
         orb_plot_data = {atom_pair: {} for atom_pair in site_bond_labels}
@@ -672,7 +683,12 @@ class Analysis:
                                 + "-".join(atom_pair)
                             )
                             label_list = site_bond_labels[key]
-                            orb_plot_data[key].update({orb_pair: label_list})
+                            relevant_sub_orbitals = cba_data["bonds"][atom]["orbital_data"][orb_pair][
+                                "relevant_sub_orbitals"
+                            ]
+                            orb_plot_data[key].update(
+                                {orb_pair: {"bond_labels": label_list, "relevant_sub_orbitals": relevant_sub_orbitals}}
+                            )
         else:
             print("Please set orbital_resolved to True when instantiating Analysis object, to get this data")
 
@@ -754,10 +770,10 @@ class Analysis:
         :param atom_pair: list of atom pair with cation first eg., ["Cl","Na"]
         :param label: LOBSTER relevant bond label eg ., "3"
         :param complete_cohp: pymatgen CompleteCohp object
-        :param orb_pair: relevant orbital pair eg., "2px-3s"
+        :param orb_pair: relevant orbital pair eg., "2p-3s"
 
         Returns:
-            will return list of str, e.g. ["Na(2px)", "Cl(3s)"]
+            will return list of str, e.g. ["Na(2p)", "Cl(3s)"]
 
         """
         orb_atom = {}  # type: ignore
@@ -1062,6 +1078,67 @@ class Analysis:
                 }
 
         return bond_dict
+
+    @staticmethod
+    def _get_orb_combinations():
+        """
+        Get a list of unique 2-length permutations and combinations.
+
+        Generates 2-length permutations and combinations with replacement from the set ['s', 'p', 'd', 'f']
+
+        Returns:
+            list[tuple[str, str]]: A list of tuples, each containing two elements.
+        """
+        list_orbs_comb: list[tuple[str, str]] = []  # type: ignore
+
+        # Add all 2-length permutations
+        for perm in permutations(["s", "p", "d", "f"], 2):
+            list_orbs_comb.append(perm)  # noqa : PERF402
+
+        # Add 2-length combinations with replacement, ensuring no duplicates
+        for comb in combinations_with_replacement(["s", "p", "d", "f"], 2):
+            if comb not in list_orbs_comb:
+                list_orbs_comb.append(comb)
+
+        return list_orbs_comb
+
+    def _group_orb_pairs(self, bond_label: str, orb_combinations: list[tuple[str, str]]) -> dict[str, list[str]]:
+        """
+        Group orbital pairs based on the provided bond label.
+
+        :param bond_label: The bond label to filter the orbitals.
+        :param orb_combinations: A list of tuples containing orbital combinations.
+
+        Returns:
+            dict[str, List[str]]: A dictionary where the keys are top level orbital pairs and the values are lists of
+            sub orbitals associated to the bond label.
+        """
+        orb_pair = {}  # type: ignore
+        bond_label_int = int(bond_label) - 1  # convert label to int to access orbital data from icohpcollection
+        for sub_orb, data in self.chemenv.Icohpcollection._list_orb_icohp[bond_label_int].items():
+            for orb1, orb2 in orb_combinations:
+                if orb1 in data["orbitals"][0][1].name and orb2 in data["orbitals"][1][1].name:
+                    root_orb_pair = f"{data['orbitals'][0][0]}{orb1}-{data['orbitals'][1][0]}{orb2}"
+                    if root_orb_pair not in orb_pair:
+                        orb_pair[root_orb_pair] = []
+                    orb_pair[root_orb_pair].append(sub_orb)
+        return orb_pair
+
+    @staticmethod
+    def _get_bond_orb_label_mapped_list(orb_pair: dict[str, list[str]], bond_labels: list[str], root_orb_pair: str):
+        """
+        Get a lists of bond labels mapped to the corresponding orbital pair.
+
+        :param orb_pair: A dictionary containing orbital pairs as keys and lists of
+            sub orbitals as values.
+        :param bond_labels: A list of bond labels.
+        :param root_orb_pair: The root key in orb_pair use to map bond labels list.
+
+        Returns:
+            list: A list where the items of bond_labels are repeated based on the
+            length of orb_pair[root_orb_pair].
+        """
+        return [item for item in bond_labels for _ in range(len(orb_pair[root_orb_pair]))]
 
     def set_condensed_bonding_analysis(self):
         """

@@ -145,14 +145,14 @@ class TestAnalyse:
         ) == pytest.approx(0.21)
         assert float(
             analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                "3px-3s"
+                "3p-3s"
             ]["ICOBI_sum"]
-        ) == pytest.approx(0.1069)
+        ) == pytest.approx(0.3206)
         assert float(
             analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                "3py-3s"
+                "3p-3s"
             ]["orb_contribution_perc_bonding"]
-        ) == pytest.approx(0.2)
+        ) == pytest.approx(0.6)
         assert analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
             "relevant_bonds"
         ] == [
@@ -166,11 +166,14 @@ class TestAnalyse:
         assert (
             float(
                 analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                    "3pz-3s"
+                    "3p-3s"
                 ]["bonding"]["perc"]
             )
             == 1.0
         )
+        assert analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
+            "3p-3s"
+        ]["relevant_sub_orbitals"] == ["3py-3s", "3pz-3s", "3px-3s"]
 
     def test_all_attributes_nacl_comp_range_orbital(self, analyse_nacl_comp_range_orb):
         assert analyse_nacl_comp_range_orb.condensed_bonding_analysis["number_of_considered_ions"] == pytest.approx(1)
@@ -191,20 +194,20 @@ class TestAnalyse:
             ]["integral"]
         ) == pytest.approx(0.23)
         assert float(
-            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3px-3s"][
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3p-3s"][
                 "ICOHP_sum"
             ]
-        ) == pytest.approx(-0.4828)
+        ) == pytest.approx(-1.4485)
         assert float(
-            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3py-3s"][
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3p-3s"][
                 "orb_contribution_perc_bonding"
             ]
-        ) == pytest.approx(0.13)
+        ) == pytest.approx(0.39)
         assert float(
-            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                "3px-2px"
-            ]["orb_contribution_perc_antibonding"]
-        ) == pytest.approx(0.11)
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3p-2p"][
+                "orb_contribution_perc_antibonding"
+            ]
+        ) == pytest.approx(0.32)
         assert analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
             "relevant_bonds"
         ] == [
@@ -218,19 +221,32 @@ class TestAnalyse:
         assert (
             float(
                 analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                    "3pz-3s"
+                    "3p-3s"
                 ]["bonding"]["perc"]
             )
-            == 1.0
+            == 0.9932
         )
         assert (
             float(
                 analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                    "3pz-2pz"
+                    "3p-2p"
                 ]["antibonding"]["perc"]
             )
             == 0.5
         )
+        assert analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
+            "3p-2p"
+        ]["relevant_sub_orbitals"] == [
+            "3py-2py",
+            "3pz-2py",
+            "3px-2py",
+            "3py-2pz",
+            "3pz-2pz",
+            "3px-2pz",
+            "3py-2px",
+            "3pz-2px",
+            "3px-2px",
+        ]
 
     def test_all_attributes_analyse_nacl_comp_range_cobi(self, analyse_nacl_comp_range_cobi):
         assert analyse_nacl_comp_range_cobi.condensed_bonding_analysis["formula"] == "NaCl"
@@ -736,25 +752,25 @@ class TestAnalyse:
             ]["integral"]
         ) == pytest.approx(0.02)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5px-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5p-4s"][
                 "ICOOP_sum"
             ]
-        ) == pytest.approx(0.0796)
+        ) == pytest.approx(0.2383)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5pz-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5p-4s"][
                 "orb_contribution_perc_bonding"
             ]
-        ) == pytest.approx(0.22)
+        ) == pytest.approx(0.65)
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"][
             "relevant_bonds"
         ] == ["21", "22", "23", "24"]
         assert (
             float(
                 analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"][
-                    "5py-4s"
+                    "5p-4s"
                 ]["bonding"]["perc"]
             )
-            == 1.0
+            == 0.96
         )
         assert (
             float(
@@ -776,15 +792,15 @@ class TestAnalyse:
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["ion"] == "Sb"
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["charge"] == pytest.approx(-1.73)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5pz-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5p-4s"][
                 "orb_contribution_perc_bonding"
             ]
-        ) == pytest.approx(0.22)
+        ) == pytest.approx(0.66)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5px-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5p-4s"][
                 "bonding"
             ]["integral"]
-        ) == pytest.approx(0.16)
+        ) == pytest.approx(0.49)
         assert float(
             analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5s-4s"][
                 "bonding"
