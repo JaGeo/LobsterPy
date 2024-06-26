@@ -5,7 +5,8 @@ Creating input files
 --------------------
 
 .. note::
-   
+   Currently, the input set generated via pymatgen only supports PBE_54 standard POTCARS for identifying available basis sets for elements and adapting INCAR NBANDS.
+
    Important tags in INCAR of VASP to pay attention to before performing lobster runs are NBANDS, NSW, and ISYM. A VASP static run must be performed (no movements of atoms, NSW = 0) before running the LOBSTER program. LOBSTER can only deal with VASP WAVECAR that contains results for the entire mesh or only half of it.
    
    To do this, in the INCAR set, `ISYM = -1` (complete mesh/symmetry switched off) or `ISYM = 0` (half mesh/time-reversal). And to make sure WAVECAR is written, set `LWAVE = .TRUE`. For pCOHP analyses, one needs to have as many bands as there are orbitals on a local basis.
@@ -43,7 +44,7 @@ The suffix “-0” & “-1” indicate input files corresponding to smaller and
 
 .. warning::
      
-         The ‘KPOINTS’ file is not adapted; the user must select the appropriate grid density before starting VASP computations. Usually, a factor of 50 x reciprocal lattice vectors is sufficient for reliable bonding analysis results.
+         The ‘KPOINTS’ file is not adapted; the user must select the appropriate grid density before starting VASP computations. Usually, a factor of 50 x crystallographic reciprocal lattice vectors (i.e., no factor of 2 * pi) is sufficient for reliable bonding analysis results.
 
 Running VASP and Lobster program
 --------------------------------
