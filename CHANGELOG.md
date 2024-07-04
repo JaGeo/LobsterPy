@@ -18,10 +18,13 @@
 * Bump myst-nb from 1.1.0 to 1.1.1 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/311
 * clarify kpoints requirements and limitations with input sets by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/307
 
-## New Contributors
+### New Contributors
 * @DanielYang59 made their first contribution in https://github.com/JaGeo/LobsterPy/pull/305
 
 **Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.4...v0.4.5
+
+## v0.4.4
+* No changes compared to 0.4.3. Just an error with the deployment occurred.
 
 ## v0.4.3
 * Update sphinx requirement from <6,>=5 to >=5,<8 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/281
