@@ -1,4 +1,28 @@
 # Changelog
+
+## v0.4.5
+* Bump mendeleev from 0.15.0 to 0.16.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/288
+* pre-commit autoupdate by @pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/289
+* Bump mendeleev from 0.16.0 to 0.16.1 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/290
+* Bump mendeleev from 0.16.1 to 0.16.2 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/291
+* Bump sphinx-design from 0.5.0 to 0.6.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/292
+* Bump mendeleev from 0.16.2 to 0.17.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/296
+* pre-commit autoupdate by @pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/294
+* Bump sphinx-book-theme from 1.1.2 to 1.1.3 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/298
+* Fix warnings by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/299
+* Update readme by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/302
+* Explicitly use `agg` backend to avoid OS inconsistency by @DanielYang59 in https://github.com/JaGeo/LobsterPy/pull/305
+* Update orbitalwise analysis by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/300
+* Update numpy requirement from <2.0.0 to <3.0.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/309
+* Bump sphinx-toolbox from 3.5.0 to 3.6.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/310
+* Bump myst-nb from 1.1.0 to 1.1.1 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/311
+* clarify kpoints requirements and limitations with input sets by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/307
+
+## New Contributors
+* @DanielYang59 made their first contribution in https://github.com/JaGeo/LobsterPy/pull/305
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.4...v0.4.5
+
 ## v0.4.3
 * Update sphinx requirement from <6,>=5 to >=5,<8 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/281
 * Python 3.12 support by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/282
