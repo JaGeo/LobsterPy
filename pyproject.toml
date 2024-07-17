@@ -181,3 +181,12 @@ no_implicit_optional = false
 [tool.codespell]
 ignore-words-list = "titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo"
 check-filenames = true
+
+[tool.pyright]
+typeCheckingMode = "off"
+reportPossiblyUnboundVariable = true
+reportUnboundVariable = true
+reportMissingImports = false
+reportMissingModuleSource = false
+reportInvalidTypeForm = false
+exclude = ["**/tests"]
