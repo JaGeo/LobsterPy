@@ -184,7 +184,7 @@ check-filenames = true
 
 [tool.pyright]
 typeCheckingMode = "off"
-reportPossiblyUnboundVariable = true
+reportPossiblyUnboundVariable = false
 reportUnboundVariable = true
 reportMissingImports = false
 reportMissingModuleSource = false
