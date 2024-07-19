@@ -31,22 +31,43 @@ jobs:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
         split: [1, 2, 3, 4, 5, 6]
 
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Check out repo
+      uses: actions/checkout@v4
+
+    - name: Set up micromamba
+      uses: mamba-org/setup-micromamba@main
+
+    - name: Create mamba environment
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest pytest-mock pytest-split pytest-cov
-        python -m pip install types-setuptools
-        pip install .[featurizer]
+        micromamba create -n lobpy python=${{ matrix.python-version }} --yes
+
+    - name: Install uv
+      run: micromamba run -n lobpy pip install uv
+
+    - name: Install lobsterpy and dependencies
+      run: |
+        micromamba activate lobpy
+
+        uv pip install --upgrade pip
+        uv pip install --editable '.[tests,featurizer]'
+
+#    - name: Set up Python ${{ matrix.python-version }}
+#      uses: actions/setup-python@v4
+#      with:
+#        python-version: ${{ matrix.python-version }}
+#    - name: Install dependencies
+#      run: |
+#        python -m pip install --upgrade pip
+#        python -m pip install flake8 pytest pytest-mock pytest-split pytest-cov
+#        python -m pip install types-setuptools
+#        pip install .[featurizer]
     - name: Test with pytest and coverage
       # run this locally to update tests durations
       # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./tests/test_data/.pytest-split-durations --store-durations
       run: |
+        micromamba activate lobpy
         pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 6 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
     - name: Upload coverage
       uses: actions/upload-artifact@v3
@@ -58,7 +79,7 @@ jobs:
       needs: test
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
         - name: Set up Python 3.10
           uses: actions/setup-python@v4
           with:
