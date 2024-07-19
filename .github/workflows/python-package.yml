@@ -39,26 +39,27 @@ jobs:
     - name: Check out repo
       uses: actions/checkout@v4
 
-#    - name: Set up micromamba
-#      uses: mamba-org/setup-micromamba@main
+    - name: Set up micromamba
+      uses: mamba-org/setup-micromamba@main
 
-#    - name: Create mamba environment
-#      run: |
-#        micromamba create -n lobpy python=${{ matrix.python-version }} --yes
+    - name: Create mamba environment
+      run: |
+        micromamba create -n lobpy python=${{ matrix.python-version }} --yes
 
-#    - name: Install uv
-#      run: micromamba run -n lobpy pip install uv
+    - name: Install uv
+      run: micromamba run -n lobpy pip install uv
 
     - name: Install LobsterPy and dependencies
       run: |
-        pip install --upgrade pip
-        pip install uv
+        micromamba activate lobpy
+        uv pip install --upgrade pip
         uv pip install --editable '.[tests,featurizer]'
 
     - name: Test with pytest and coverage
       # run this locally to update tests durations
       # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./tests/test_data/.pytest-split-durations --store-durations
       run: |
+        micromamba activate lobpy
         pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 6 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
 
     - name: Upload coverage
