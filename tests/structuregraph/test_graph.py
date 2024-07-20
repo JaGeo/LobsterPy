@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from lobsterpy.structuregraph.graph import LobsterGraph
 
 CurrentDir = Path(__file__).absolute().parent

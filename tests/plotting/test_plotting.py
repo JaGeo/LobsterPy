@@ -4,10 +4,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from plotly.io import read_json
-from pymatgen.electronic_structure.cohp import Cohp
-from pymatgen.electronic_structure.core import Spin
-
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import (
     IcohpDistancePlotter,
@@ -15,6 +11,9 @@ from lobsterpy.plotting import (
     PlainCohpPlotter,
     PlainDosPlotter,
 )
+from plotly.io import read_json
+from pymatgen.electronic_structure.cohp import Cohp
+from pymatgen.electronic_structure.core import Spin
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
