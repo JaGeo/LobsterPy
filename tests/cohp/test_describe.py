@@ -407,7 +407,7 @@ class TestCalcQualityDescribeWarnings:
                 potcar_symbols=["C"],
                 bva_comp=True,
             )
-        assert "Oxidation states from BVA analyzer cannot" in str(w2[0].message)
+        assert "Oxidation states from BVA analyzer cannot" in str(w2[-1].message)
 
         calc_des2 = Description.get_calc_quality_description(calc_quality_warnings2)
 

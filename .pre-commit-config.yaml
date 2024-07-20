@@ -2,7 +2,7 @@ exclude: ^(docs|examples|tests/test_data)
 
 ci:
   autoupdate_schedule: monthly
-  skip: [mypy]
+  skip: [mypy,pyright]
   autofix_commit_msg: pre-commit auto-fixes
   autoupdate_commit_msg: pre-commit autoupdate
 
@@ -65,3 +65,7 @@ repos:
     stages: [commit, commit-msg]
     args: [--ignore-words-list, 'titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo']
     types_or: [python, rst, markdown]
+- repo: https://github.com/RobertCraigie/pyright-python
+  rev: v1.1.372
+  hooks:
+    - id: pyright

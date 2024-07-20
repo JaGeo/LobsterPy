@@ -60,7 +60,7 @@ def get_file_paths(
             if file_path.exists():
                 file_paths[file] = file_path
             else:
-                gz_file_path = Path(zpath(file_path))
+                gz_file_path = Path(zpath(str(file_path.as_posix())))
                 if gz_file_path.exists():
                     file_paths[file] = gz_file_path
                 else:
@@ -86,7 +86,7 @@ def get_structure_path(lobster_path: Path) -> Path:
         poscar_path = lobster_path / filename
         if poscar_path.exists():
             return poscar_path
-        gz_file_path = Path(zpath(poscar_path))
+        gz_file_path = Path(zpath(str(poscar_path.as_posix())))
         if gz_file_path.exists():
             return gz_file_path
 
