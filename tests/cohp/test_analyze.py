@@ -5,11 +5,10 @@ import sys
 from pathlib import Path
 
 import pytest
+from lobsterpy.cohp.analyze import Analysis
 from pymatgen.core import Structure
 from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Lobsterin, Lobsterout
 from pymatgen.io.vasp import Vasprun
-
-from lobsterpy.cohp.analyze import Analysis
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"

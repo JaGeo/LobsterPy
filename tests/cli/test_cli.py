@@ -14,9 +14,8 @@ import matplotlib.pyplot as plt
 import matplotlib.style
 import numpy as np
 import pytest
-from matplotlib.figure import Figure
-
 from lobsterpy.cli import get_parser, run
+from matplotlib.figure import Figure
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"

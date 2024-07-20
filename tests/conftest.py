@@ -5,11 +5,10 @@ import json
 from pathlib import Path
 
 import pytest
-from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.io.lobster import Charge, Doscar, Icohplist
-
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from pymatgen.electronic_structure.cohp import CompleteCohp
+from pymatgen.io.lobster import Charge, Doscar, Icohplist
 
 TestDir = Path(__file__).absolute().parent
 
