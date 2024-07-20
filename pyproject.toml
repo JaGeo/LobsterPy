@@ -6,8 +6,9 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["lobsterpy*"]
-exclude = ["docs*", "tests*", "paper*"]
+#exclude = ["docs*", "tests*", "paper*"]
 
 [project]
 name = "lobsterpy"
@@ -165,7 +166,7 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
-include = ["lobsterpy/*"]
+include = ["src/"]
 omit = [
     # omit anything in test directory anywhere
     "tests/*",
