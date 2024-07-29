@@ -1,4 +1,10 @@
 # Changelog
+## v0.4.6
+* CI Updates by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/314
+* Move to src layout by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/315
+* Bump sphinx-toolbox from 3.6.0 to 3.7.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/313
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.5...v0.4.6
 
 ## v0.4.5
 * Bump mendeleev from 0.15.0 to 0.16.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/288
