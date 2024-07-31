@@ -113,6 +113,7 @@ Lobster job submission script
 Analyze the lobster outputs with automation
 -------------------------------------------
 
+Navigate to directory containing the files of lobster run and then one can use following commands:
 
 1. Automatic analysis and plotting of COHPs/ICOHPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
