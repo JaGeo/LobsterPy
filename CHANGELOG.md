@@ -1,4 +1,10 @@
 # Changelog
+## v0.4.7
+* fix outdated cli tutorial code snippets by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/320
+* Fix unexpected "DOSCAR.LSO.lobster" exception in cli  by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/321
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.6...v0.4.7
+
 ## v0.4.6
 * CI Updates by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/314
 * Move to src layout by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/315
