@@ -23,15 +23,15 @@ layout_dict = {
 }
 
 """
-    General layout of Plotly figure.
+General layout of Plotly figure.
 
-    :param dict titlefont: Line style dictionary.
-    :param bool showlegend: Legend hide or show.
-    :param float title_x: x axis title size.
-    :param float title_y: y axis title size.
-    :param str hovermode: hover behaviour.
-    :param str paper_bgcolor: background color.
-    :param str plot_bgcolor: plot background color.
+:param dict titlefont: Line style dictionary.
+:param bool showlegend: Legend hide or show.
+:param float title_x: x axis title size.
+:param float title_y: y axis title size.
+:param str hovermode: hover behaviour.
+:param str paper_bgcolor: background color.
+:param str plot_bgcolor: plot background color.
 """
 
 cohp_axis_style_dict = {
@@ -50,20 +50,20 @@ cohp_axis_style_dict = {
 }
 
 """
-    COXX axis style.
+COXX axis style.
 
-    :param dict titlefont: axis title font style.
-    :param dict tickfont: axis tick font style.
-    :param str ticks: ticks style.
-    :param float tickwidth: width of ticks.
-    :param bool showgrid: show or hide axis grid.
-    :param bool showline: show or hide axis.
-    :param bool zeroline: show or hide zero line.
-    :param str zerolinecolor: color of zero line.
-    :param float zerolinewidth: width of zero line.
-    :param bool mirror: mirror axis.
-    :param float linewidth: width of axis line.
-    :param str linecolor: color of axis line.
+:param dict titlefont: axis title font style.
+:param dict tickfont: axis tick font style.
+:param str ticks: ticks style.
+:param float tickwidth: width of ticks.
+:param bool showgrid: show or hide axis grid.
+:param bool showline: show or hide axis.
+:param bool zeroline: show or hide zero line.
+:param str zerolinecolor: color of zero line.
+:param float zerolinewidth: width of zero line.
+:param bool mirror: mirror axis.
+:param float linewidth: width of axis line.
+:param str linecolor: color of axis line.
 """
 
 energy_axis_style_dict = {
@@ -82,20 +82,20 @@ energy_axis_style_dict = {
 }
 
 """
-    Energy axis style.
+Energy axis style.
 
-    :param dict titlefont: axis title font style.
-    :param dict tickfont: axis tick font style.
-    :param str ticks: ticks style.
-    :param float tickwidth: width of ticks.
-    :param bool showgrid: show or hide axis grid.
-    :param bool showline: show or hide axis.
-    :param bool zeroline: show or hide zero line.
-    :param str zerolinecolor: color of zero line.
-    :param float zerolinewidth: width of zero line.
-    :param bool mirror: mirror axis.
-    :param float linewidth: width of axis line.
-    :param str linecolor: color of axis line.
+:param dict titlefont: axis title font style.
+:param dict tickfont: axis tick font style.
+:param str ticks: ticks style.
+:param float tickwidth: width of ticks.
+:param bool showgrid: show or hide axis grid.
+:param bool showline: show or hide axis.
+:param bool zeroline: show or hide zero line.
+:param str zerolinecolor: color of zero line.
+:param float zerolinewidth: width of zero line.
+:param bool mirror: mirror axis.
+:param float linewidth: width of axis line.
+:param str linecolor: color of axis line.
 """
 
 spin_up_trace_style_dict = {
@@ -105,11 +105,11 @@ spin_up_trace_style_dict = {
 }
 
 """
-    Line style for Spin.up traces.
+Line style for Spin.up traces.
 
-    :param dict line: Line style dictionary.
-    :param str mode: Plotly mode.
-    :param str visible: Trace visibility.
+:param dict line: Line style dictionary.
+:param str mode: Plotly mode.
+:param str visible: Trace visibility.
 """
 
 spin_down_trace_style_dict = {
@@ -119,11 +119,11 @@ spin_down_trace_style_dict = {
 }
 
 """
-    Line style for Spin.down traces.
+Line style for Spin.down traces.
 
-    :param dict line: Line style dictionary.
-    :param str mode: Plotly mode.
-    :param str visible: Trace visibility.
+:param dict line: Line style dictionary.
+:param str mode: Plotly mode.
+:param str visible: Trace visibility.
 """
 
 legend_style_dict = {
@@ -133,9 +133,9 @@ legend_style_dict = {
 }
 
 """
-    Legend style.
+Legend style.
 
-    :param str bordercolor: border color of legend.
-    :param int borderwidth: width of border.
-    :param str traceorder: order of trace.
+:param str bordercolor: border color of legend.
+:param int borderwidth: width of border.
+:param str traceorder: order of trace.
 """

@@ -357,6 +357,8 @@ class TestCLI:
             "description-quality",
             "--potcar-symbols",
             "Na_pv Cl",
+            "--file-doscar",
+            "DOSCAR.LSO.lobster",
             "--bvacomp",
             "--doscomp",
             "--erange",
@@ -591,6 +593,8 @@ class TestCLI:
             args = [
                 "description-quality",
                 "--doscomp",
+                "-fdos",
+                "DOSCAR.LSO.lobster",
             ]
 
             test = get_parser().parse_args(args)
@@ -602,6 +606,8 @@ class TestCLI:
             os.chdir(TestDir / "test_data/CsH")
             args = [
                 "plot-dos",
+                "-fdos",
+                "DOSCAR.LSO.lobster",
             ]
 
             test = get_parser().parse_args(args)
