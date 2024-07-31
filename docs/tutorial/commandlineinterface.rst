@@ -27,7 +27,7 @@ Simultaneously, ``lobsterin.lobsterpy`` files are created that are necessary for
 
 You can also change the names of output files and path where they are saved using following optional tags:
 
-``lobsterpy create-inputs --incar-out <path/to/incar>/INCAR --lobsterin-out <path/to/lobsterin>/lobsterin``
+``lobsterpy create-inputs --file-incar-out <path/to/incar>/INCAR --file-lobsterin <path/to/lobsterin>/lobsterin``
 
 
 For example if ``Cd`` element has two basis sets ``4d 5s`` ``4d 5s 5p``, thus following files are created:
@@ -113,10 +113,7 @@ Lobster job submission script
 Analyze the lobster outputs with automation
 -------------------------------------------
 
-.. code:: python
-
-    import os
-    os.chdir('Basis_0/') # Navigate to directory containing the files of lobster runs
+Navigate to directory containing the files of lobster run and then one can use following commands:
 
 1. Automatic analysis and plotting of COHPs/ICOHPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,7 +122,7 @@ Analyze the lobster outputs with automation
 
 .. code:: bash
 
-   lobsterpy description --json description.json
+   lobsterpy description --file-json description.json
 
 .. code:: bash
    
@@ -182,7 +179,7 @@ Following is the json file produced.
   }
 
 
--  ``lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will automatically analyze your lobster calculation quality.
+-  ``lobsterpy description-quality --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will automatically analyze your lobster calculation quality.
    
 .. note::
    The LOBSTER calculation directory need to have POTCAR, POSCAR, LOBSTER calculation input and output files to run the **lobsterpy calc-description** command successfully. 
@@ -190,7 +187,7 @@ Following is the json file produced.
 
 .. code:: bash
 
-   lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp --calcqualityjson calc_quality_description.json
+   lobsterpy description-quality --potcar-symbols "Na_pv Cl" --bvacomp --doscomp --file-calc-quality-json calc_quality_description.json
 
 .. code:: bash
    
@@ -269,7 +266,7 @@ You can plot COHPs/COBIs/COOPs from the command line.
 
 .. code:: bash
 
-    lobsterpy plot-icohps-distances
+    lobsterpy plot-icohp-distance
 
 .. image:: tutorial_assets/ICOHPs_distance_example.png
 
@@ -290,10 +287,6 @@ either of these commands:
 
 .. code:: bash
 
-   lobsterpy calc-description -help
-
-.. code:: bash
-
    lobsterpy create-inputs --help
 
 .. code:: bash
@@ -302,11 +295,15 @@ either of these commands:
 
 .. code:: bash
 
+   lobsterpy description-quality --help
+
+.. code:: bash
+
    lobsterpy plot-dos --help
 
 .. code:: bash
 
-   lobsterpy plot-icohps-distances --help
+   lobsterpy plot-icohp-distance --help
 
 .. code:: bash
 
