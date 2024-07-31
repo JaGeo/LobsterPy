@@ -1075,7 +1075,7 @@ def run(args):
                 )
             else:
                 dos_files = get_file_paths(
-                    path_to_lobster_calc=Path(os.getcwd()), requested_files=["vasprun", "doscar"]
+                    path_to_lobster_calc=Path(os.getcwd()), requested_files=["vasprun", "doscar"], use_lso_dos=False
                 )
             for arg_name in dos_files:
                 setattr(args, arg_name, dos_files[arg_name])
