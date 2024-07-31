@@ -121,7 +121,7 @@ Analyze the lobster outputs with automation
 
 .. code:: bash
 
-   lobsterpy description --json description.json
+   lobsterpy description --file-json description.json
 
 .. code:: bash
    
