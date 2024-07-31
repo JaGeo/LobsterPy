@@ -27,7 +27,7 @@ Simultaneously, ``lobsterin.lobsterpy`` files are created that are necessary for
 
 You can also change the names of output files and path where they are saved using following optional tags:
 
-``lobsterpy create-inputs --incar-out <path/to/incar>/INCAR --lobsterin-out <path/to/lobsterin>/lobsterin``
+``lobsterpy create-inputs --file-incar-out <path/to/incar>/INCAR --file-lobsterin <path/to/lobsterin>/lobsterin``
 
 
 For example if ``Cd`` element has two basis sets ``4d 5s`` ``4d 5s 5p``, thus following files are created:
