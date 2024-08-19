@@ -50,7 +50,7 @@ dev = ["pre-commit>=2.12.1"]
 tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov", "types-setuptools"]
 docs = [
     "sphinx-copybutton==0.5.2",
-    "sphinx>=5,<8",
+    "sphinx>=5,<9",
     "sphinx_design==0.6.1",
     "myst-nb==1.1.1",
     "sphinx-book-theme==1.1.3",
