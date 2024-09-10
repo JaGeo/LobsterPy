@@ -63,7 +63,7 @@ jobs:
         pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 6 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
 
     - name: Upload coverage
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-${{ matrix.split }}
         path: .coverage
@@ -84,7 +84,7 @@ jobs:
 
         - name: Download coverage artifacts
           continue-on-error: true
-          uses: actions/download-artifact@v3
+          uses: actions/download-artifact@v4
 
         - name: Run coverage
           continue-on-error: true
