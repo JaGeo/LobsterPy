@@ -61,14 +61,13 @@ jobs:
       run: |
         micromamba activate lobpy
         pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 6 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
-      # ls -la
-      # find . -name ".coverage"
 
     - name: Upload coverage
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-${{ matrix.split }}
+        name: coverage-${{ matrix.split }}-${{ matrix.python-version }}
         include-hidden-files: true
+        overwrite: false
         path: ./.coverage
 
   coverage:
