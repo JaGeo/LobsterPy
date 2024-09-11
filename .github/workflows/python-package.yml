@@ -87,11 +87,13 @@ jobs:
         - name: Download coverage artifacts
           continue-on-error: true
           uses: actions/download-artifact@v4
+          with:
+           pattern: coverage-3.10-*
 
         - name: Run coverage
           continue-on-error: true
           run: |
-            coverage combine coverage-3.10-*
+            coverage combine coverage*/.coverage*
             coverage report --show-missing
 
         - name: Upload coverage reports to Codecov
