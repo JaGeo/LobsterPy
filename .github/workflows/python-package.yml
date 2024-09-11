@@ -65,9 +65,9 @@ jobs:
     - name: Upload coverage
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-${{ matrix.split }}
+        name: coverage-${{ matrix.python-version }}-${{ matrix.split }}
         include-hidden-files: true
-        overwrite: true
+        overwrite: false
         path: ./.coverage
 
   coverage:
@@ -91,7 +91,7 @@ jobs:
         - name: Run coverage
           continue-on-error: true
           run: |
-            coverage combine coverage*/.coverage*
+            coverage combine coverage-3.10-*
             coverage report --show-missing
 
         - name: Upload coverage reports to Codecov
