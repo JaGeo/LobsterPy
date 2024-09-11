@@ -68,6 +68,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: coverage-${{ matrix.split }}
+        include-hidden-files: true
         path: ./.coverage
 
   coverage:
