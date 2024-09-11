@@ -65,9 +65,9 @@ jobs:
     - name: Upload coverage
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-${{ matrix.split }}-${{ matrix.python-version }}
+        name: coverage-${{ matrix.split }}
         include-hidden-files: true
-        overwrite: false
+        overwrite: true
         path: ./.coverage
 
   coverage:
