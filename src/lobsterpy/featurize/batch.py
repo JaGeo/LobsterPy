@@ -128,6 +128,14 @@ class BatchSummaryFeaturizer:
 
         return featurize_lobsterpy.get_df()
 
+    def _featurizeuniquebonds(self, path: str | Path) -> pd.DataFrame:
+        """
+        Featurize Unique bonds identified by Lobsterpy.
+
+        :param path: path to root directory consisting of all lobster calc files
+        """
+        return FeaturizeLobsterpy.get_unique_bonds_df(path_to_lobster_calc=path, bonds=self.bonds)
+
     def _featurizecoxx(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize COHP/COBI/COOPCAR data using FeaturizeCOXX.
@@ -309,6 +317,39 @@ class BatchSummaryFeaturizer:
         df_charges.sort_index(inplace=True)  # noqa: PD002
 
         return pd.concat([df_lobsterpy, df_coxx, df_charges], axis=1)
+
+    def get_unique_bonds_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with unique relevant bonds extracted from LOBSTER files.
+
+        Uses multiprocessing to speed up the process.
+
+        Returns:
+            Returns a pandas dataframe
+
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+
+        row = []
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(total=len(paths), desc="Generating COHP unique bonds dataframe") as pbar,
+        ):
+            for _, result in enumerate(pool.imap_unordered(self._featurizeuniquebonds, paths, chunksize=1)):
+                pbar.update()
+                row.append(result)
+
+        df = pd.concat(row)
+        df.sort_index(inplace=True)  # noqa: PD002
+        df.fillna(0, inplace=True)  # noqa: PD002
+
+        return df
 
 
 class BatchCoxxFingerprint:

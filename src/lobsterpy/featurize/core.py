@@ -322,8 +322,8 @@ class FeaturizeLobsterpy:
     def get_unique_bonds_df(
         path_to_lobster_calc: str | Path,
         bonds: str,
-        summed_icohps: bool,
-        rm_weighted_icohps: bool,
+        summed_icohps: bool = False,
+        rm_weighted_icohps: bool = False,
         ids: str | None = None,
     ) -> pd.DataFrame:
         """
