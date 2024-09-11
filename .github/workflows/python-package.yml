@@ -91,7 +91,7 @@ jobs:
         - name: Run coverage
           continue-on-error: true
           run: |
-            coverage combine coverage*/.coverage*
+            coverage combine coverage*/.coverage-*-3.10
             coverage report --show-missing
 
         - name: Upload coverage reports to Codecov
