@@ -63,9 +63,10 @@ jobs:
         pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 6 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
 
     - name: Upload coverage
+      if: matrix.python-version == '3.10'
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-${{ matrix.split }}-${{ matrix.python-version }}
+        name: coverage-${{ matrix.python-version }}-${{ matrix.split }}
         include-hidden-files: true
         overwrite: false
         path: ./.coverage
@@ -87,11 +88,13 @@ jobs:
         - name: Download coverage artifacts
           continue-on-error: true
           uses: actions/download-artifact@v4
+          with:
+           pattern: coverage-3.10-*
 
         - name: Run coverage
           continue-on-error: true
           run: |
-            coverage combine coverage*/.coverage-*-3.10
+            coverage combine coverage*/.coverage*
             coverage report --show-missing
 
         - name: Upload coverage reports to Codecov
