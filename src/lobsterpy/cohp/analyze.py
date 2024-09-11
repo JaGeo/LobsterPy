@@ -1693,18 +1693,18 @@ class Analysis:
                     max_e=max_e,
                     n_bins=n_bins,
                     normalize=True,
-                    type=orb.name,
+                    fp_type=orb.name,
                 )
                 fp_vasp_orb = dos_vasp.get_dos_fp(
                     min_e=min_e,
                     max_e=max_e,
                     n_bins=n_bins,
                     normalize=True,
-                    type=orb.name,
+                    fp_type=orb.name,
                 )
 
                 tani_orb = round(
-                    dos_vasp.get_dos_fp_similarity(fp_lobster_orb, fp_vasp_orb, tanimoto=True),
+                    dos_vasp.get_dos_fp_similarity(fp_lobster_orb, fp_vasp_orb, metric="tanimoto"),
                     4,
                 )
                 quality_dict["dos_comparisons"][f"tanimoto_orb_{orb.name}"] = tani_orb  # type: ignore
@@ -1714,17 +1714,17 @@ class Analysis:
                 max_e=max_e,
                 n_bins=n_bins,
                 normalize=True,
-                type="summed_pdos",
+                fp_type="summed_pdos",
             )
             fp_vasp = dos_vasp.get_dos_fp(
                 min_e=min_e,
                 max_e=max_e,
                 n_bins=n_bins,
                 normalize=True,
-                type="summed_pdos",
+                fp_type="summed_pdos",
             )
 
-            tanimoto_summed = round(dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, tanimoto=True), 4)
+            tanimoto_summed = round(dos_vasp.get_dos_fp_similarity(fp_lobster, fp_vasp, metric="tanimoto"), 4)
             quality_dict["dos_comparisons"]["tanimoto_summed"] = tanimoto_summed  # type: ignore
             quality_dict["dos_comparisons"]["e_range"] = [min_e, max_e]  # type: ignore
             quality_dict["dos_comparisons"]["n_bins"] = n_bins  # type: ignore
