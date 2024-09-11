@@ -24,7 +24,7 @@ from scipy.signal import hilbert
 
 from lobsterpy.cohp.analyze import Analysis
 
-from . import get_file_paths
+from . import get_electronegativities, get_file_paths, get_reduced_mass
 
 warnings.filterwarnings("ignore")
 
@@ -317,6 +317,79 @@ class FeaturizeLobsterpy:
             data["madelung_energies"] = madelung_energies
 
         return data
+
+    @staticmethod
+    def get_unique_bonds_df(
+        path_to_lobster_calc: str | Path,
+        bonds: str,
+        summed_icohps: bool,
+        rm_weighted_icohps: bool,
+        ids: str | None = None,
+    ) -> pd.DataFrame:
+        """
+        Generate a Pandas dataframe with icohps mean / summed icohps for unique bonds.
+
+        :param path_to_lobster_calc: path to lobsterpy lightweight json file
+        :param bonds: "all" or "cation-anion" bonds
+        :param summed_icohps:  bool indicating whether to sum the icohps for the unique bonds
+        :param rm_weighted_icohps: bool indicating whether to use reduced mass as weights for icohps
+        :param ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            Returns a pandas dataframe with icohps for unique bonds as columns
+
+        """
+        file_paths = get_file_paths(
+            path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "cohpcar", "icohplist", "charge"]
+        )
+
+        try:
+            analyse = Analysis(
+                path_to_poscar=str(file_paths.get("structure")),
+                path_to_icohplist=str(file_paths.get("icohplist")),
+                path_to_cohpcar=str(file_paths.get("cohpcar")),
+                path_to_charge=str(file_paths.get("charge")),
+                cutoff_icohp=0.10,
+                which_bonds=bonds,
+                orbital_resolved=False,
+            )
+
+        except ValueError:
+            analyse = None
+
+        if not ids:
+            ids = Path(path_to_lobster_calc).name
+
+        # define a pandas dataframe
+        df = pd.DataFrame(index=[ids])
+
+        pair_icohps = {}
+        rm_pairs = {}
+        for plot_label in analyse.get_site_bond_resolved_labels():
+            atom_pair = plot_label.split(":")[-1].strip().split("-")
+            pair_rm = get_reduced_mass(atom_pair)
+            pair_en = get_electronegativities(atom_pair)
+            # sort atom names based on electronegativity
+            en_sorted_atom_pair = [x for _, x in sorted(zip(pair_en, atom_pair))]
+            rm_pairs["-".join(en_sorted_atom_pair)] = pair_rm
+            for lab in analyse.get_site_bond_resolved_labels()[plot_label]:
+                val = analyse.chemenv.Icohpcollection.get_icohp_by_label(lab)
+                if "-".join(en_sorted_atom_pair) not in pair_icohps:
+                    pair_icohps["-".join(en_sorted_atom_pair)] = [val]
+                else:
+                    pair_icohps["-".join(en_sorted_atom_pair)].append(val)
+
+        for atom_pair in pair_icohps:
+            if not summed_icohps and not rm_weighted_icohps:
+                df.loc[ids, f"{atom_pair}_icohp_mean"] = np.mean(pair_icohps[atom_pair])
+            elif summed_icohps and not rm_weighted_icohps:
+                df.loc[ids, f"{atom_pair}_icohp_sum"] = np.sum(pair_icohps[atom_pair])
+            elif not summed_icohps and rm_weighted_icohps:
+                df.loc[ids, f"{atom_pair}_rm_icohp_mean"] = np.mean(pair_icohps[atom_pair]) * rm_pairs[atom_pair]
+            else:
+                df.loc[ids, f"{atom_pair}_rm_icohp_sum"] = np.sum(pair_icohps[atom_pair]) * rm_pairs[atom_pair]
+
+        return df
 
 
 class CoxxFingerprint(NamedTuple):
