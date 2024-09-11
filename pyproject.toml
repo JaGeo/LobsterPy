@@ -46,7 +46,7 @@ changelog = "https://jageo.github.io/LobsterPy/about/changelog.html"
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.17.0"]
 dev = ["pre-commit>=2.12.1"]
-tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov", "types-setuptools"]
+tests = ["flake8", "pytest==8.3.2", "pytest-mock", "pytest-split", "pytest-cov", "types-setuptools"]
 docs = [
     "sphinx-copybutton==0.5.2",
     "sphinx>=5,<9",
