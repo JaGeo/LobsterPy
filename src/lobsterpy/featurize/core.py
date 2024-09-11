@@ -1009,27 +1009,6 @@ class FeaturizeCharges:
         return df
 
 
-class DosFingerprint(NamedTuple):
-    """
-    Represents a Density of States (DOS) fingerprint.
-
-    This named tuple is used to store information related to the Density of States (DOS)
-    in a material. It includes the energies, densities, type, number of bins, and bin width.
-
-    :param energies: The energy values associated with the DOS.
-    :param densities: The corresponding density values for each energy.
-    :param type: The type of DOS fingerprint.
-    :param n_bins: The number of bins used in the fingerprint.
-    :param bin_width: The width of each bin in the DOS fingerprint.
-    """
-
-    energies: np.ndarray
-    densities: np.ndarray
-    type: str
-    n_bins: int
-    bin_width: float
-
-
 class FeaturizeDoscar:
     """
     Class to compute DOS moments and fingerprints from DOSCAR.lobster / DOSCAR.LSO.lobster.
@@ -1155,15 +1134,15 @@ class FeaturizeDoscar:
             ids = Path(self.path_to_doscar).parent.name
             df = pd.DataFrame(index=[ids], columns=["DOS_FP"])
 
-        fp = self.dos.get_dos_fp(
-            type=fp_type,
+        dos_fp = self.dos.get_dos_fp(
+            fp_type=fp_type,
             normalize=normalize,
             n_bins=n_bins,
             binning=binning,
             max_e=self.e_range[-1] if self.e_range is not None else None,
             min_e=self.e_range[0] if self.e_range is not None else None,
-        )._asdict()
+        )
 
-        df.loc[ids, "DOS_FP"] = DosFingerprint(**fp)
+        df.loc[ids, "DOS_FP"] = dos_fp
 
         return df

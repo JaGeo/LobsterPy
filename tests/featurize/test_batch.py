@@ -8,8 +8,9 @@ from lobsterpy.featurize.batch import (
     BatchStructureGraphs,
     BatchSummaryFeaturizer,
 )
-from lobsterpy.featurize.core import CoxxFingerprint, DosFingerprint
+from lobsterpy.featurize.core import CoxxFingerprint
 from pymatgen.analysis.graphs import StructureGraph
+from pymatgen.electronic_structure.dos import DosFingerprint
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -576,7 +577,7 @@ class TestBatchDosFeaturizer:
 
         for dos_fp in df_fp["DOS_FP"]:
             assert isinstance(dos_fp, DosFingerprint)
-            assert dos_fp.type == "p"
+            assert dos_fp.fp_type == "p"
             assert dos_fp.n_bins == 100
 
     def test_batch_dos_featurizer_lso(self):
@@ -668,7 +669,7 @@ class TestBatchDosFeaturizer:
 
         for dos_fp in df_fp_lso["DOS_FP"]:
             assert isinstance(dos_fp, DosFingerprint)
-            assert dos_fp.type == "summed_pdos"
+            assert dos_fp.fp_type == "summed_pdos"
             assert dos_fp.n_bins == 256
 
 

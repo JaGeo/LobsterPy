@@ -4,12 +4,12 @@ import numpy as np
 import pandas as pd
 import pytest
 from lobsterpy.featurize.core import (
-    DosFingerprint,
     FeaturizeCharges,
     FeaturizeCOXX,
     FeaturizeDoscar,
     FeaturizeLobsterpy,
 )
+from pymatgen.electronic_structure.dos import DosFingerprint
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
