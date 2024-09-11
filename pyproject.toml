@@ -20,7 +20,6 @@ authors = [{ name = "Janine George", email = "janine.george@bam.de" }]
 version = "0.4.7"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -28,9 +27,9 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.9,<3.13"
+requires-python = ">=3.10,<3.13"
 dependencies = [
-     "pymatgen>=2024.5.1",
+     "pymatgen>=2024.9.10",
      "numpy<3.0.0",
      "typing",
 ]
