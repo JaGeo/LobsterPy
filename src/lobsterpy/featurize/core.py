@@ -270,7 +270,7 @@ class FeaturizeLobsterpy:
         :param path_to_lobster_calc: path to lobsterpy lightweight json file
         :param bonds: "all" or "cation-anion" bonds
         :param orbital_resolved:  bool indicating whether analysis is performed orbital wise
-        :param analysis_kwargs: additional keyword arguments to be passed to the Analysis class
+        :param analysis_kwargs: optional keyword arguments to be passed to the Analysis class
 
         Returns:
             Returns a dictionary with lobster summarized bonding analysis data
