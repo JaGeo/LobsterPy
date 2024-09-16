@@ -246,6 +246,62 @@ class TestFeaturizeLobsterpy:
         assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.580000, abs=1e-05)
         assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.169999, abs=1e-05)
 
+    def test_featurize_unique_bonds_mp463(self):
+        path_to_lobster_calc = TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-463"
+        df = FeaturizeLobsterpy.get_unique_bonds_df(ids=None, bonds="all", path_to_lobster_calc=path_to_lobster_calc)
+
+        expected_cols = [
+            "K-K_icohp_mean",
+            "K-K_icohp_min",
+            "K-K_icohp_max",
+            "K-K_icohp_std",
+            "K-K_icohp_sum",
+            "K-F_icohp_mean",
+            "K-F_icohp_min",
+            "K-F_icohp_max",
+            "K-F_icohp_std",
+            "K-F_icohp_sum",
+        ]
+
+        assert sorted(df.columns) == sorted(expected_cols)
+        assert df.index[0] == "mp-463"
+
+        # Test columns values
+        assert df.loc["mp-463", "K-K_icohp_min"] == pytest.approx(-0.29358, abs=1e-05)
+        assert df.loc["mp-463", "K-K_icohp_max"] == pytest.approx(-0.29354, abs=1e-05)
+        assert df.loc["mp-463", "K-K_icohp_mean"] == pytest.approx(-0.29356, abs=1e-05)
+        assert df.loc["mp-463", "K-K_icohp_sum"] == pytest.approx(-3.52272, abs=1e-05)
+        assert df.loc["mp-463", "K-K_icohp_std"] == pytest.approx(0.00002, abs=1e-05)
+        assert df.loc["mp-463", "K-F_icohp_min"] == pytest.approx(-0.39612, abs=1e-05)
+        assert df.loc["mp-463", "K-F_icohp_max"] == pytest.approx(-0.39612, abs=1e-05)
+        assert df.loc["mp-463", "K-F_icohp_mean"] == pytest.approx(-0.39612, abs=1e-05)
+        assert df.loc["mp-463", "K-F_icohp_sum"] == pytest.approx(-4.75344, abs=1e-05)
+        assert df.loc["mp-463", "K-F_icohp_std"] == pytest.approx(5.551115e-17, abs=1e-05)
+
+    def test_featurize_unique_bonds_mp2176(self):
+        path_to_lobster_calc = TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-2176"
+        df = FeaturizeLobsterpy.get_unique_bonds_df(
+            ids="mp-2176", bonds="all", rm_weighted_icohps=True, path_to_lobster_calc=path_to_lobster_calc
+        )
+
+        expected_cols = [
+            "Zn-Te_rm_icohp_mean",
+            "Zn-Te_rm_icohp_min",
+            "Zn-Te_rm_icohp_max",
+            "Zn-Te_rm_icohp_std",
+            "Zn-Te_rm_icohp_sum",
+        ]
+
+        assert sorted(df.columns) == sorted(expected_cols)
+        assert df.index[0] == "mp-2176"
+
+        # Test columns values
+        assert df.loc["mp-2176", "Zn-Te_rm_icohp_mean"] == pytest.approx(-0.024767, abs=1e-05)
+        assert df.loc["mp-2176", "Zn-Te_rm_icohp_min"] == pytest.approx(-0.024767, abs=1e-05)
+        assert df.loc["mp-2176", "Zn-Te_rm_icohp_max"] == pytest.approx(-0.024767, abs=1e-05)
+        assert df.loc["mp-2176", "Zn-Te_rm_icohp_std"] == pytest.approx(0.000000, abs=1e-05)
+        assert df.loc["mp-2176", "Zn-Te_rm_icohp_sum"] == pytest.approx(-0.198137, abs=1e-05)
+
     # Tests for new jsons from atomate2
     def test_featurize_mp66_json(self):
         featurize_mp66_json = FeaturizeLobsterpy(
