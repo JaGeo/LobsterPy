@@ -58,6 +58,7 @@ class BatchSummaryFeaturizer:
         include_coop_data: bool = False,
         e_range: list[float] = [-5.0, 0.0],
         n_jobs: int = 4,
+        **analysis_kwargs,
     ):
         """
         Featurize lobster data via multiprocessing for large number of compounds.
@@ -74,6 +75,7 @@ class BatchSummaryFeaturizer:
         :param include_coop_data: bool stating to include COOPCAR.lobster features
         :param e_range: range of energy relative to fermi for which moment features needs to be computed
         :param n_jobs: parallel processes to run
+        :param analysis_kwargs: keyword arguments for Analysis class of Lobsterpy
         """
         # Check for valid parameters of string type
         allowed_str_inputs = {
@@ -98,6 +100,7 @@ class BatchSummaryFeaturizer:
         self.include_coop_data = include_coop_data
         self.e_range = e_range
         self.n_jobs = n_jobs
+        self.analysis_kwargs = analysis_kwargs
 
     def _featurizelobsterpy(self, file_name_or_path: str | Path) -> pd.DataFrame:
         """
@@ -124,6 +127,7 @@ class BatchSummaryFeaturizer:
                 path_to_lobster_calc=file_name_or_path,
                 bonds=self.bonds,
                 orbital_resolved=self.orbital_resolved,
+                **self.analysis_kwargs,
             )
 
         return featurize_lobsterpy.get_df()
@@ -134,7 +138,9 @@ class BatchSummaryFeaturizer:
 
         :param path: path to root directory consisting of all lobster calc files
         """
-        return FeaturizeLobsterpy.get_unique_bonds_df(path_to_lobster_calc=path, bonds=self.bonds)
+        return FeaturizeLobsterpy.get_unique_bonds_df(
+            path_to_lobster_calc=path, bonds=self.bonds, n_jobs=self.n_jobs, **self.analysis_kwargs
+        )
 
     def _featurizecoxx(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
