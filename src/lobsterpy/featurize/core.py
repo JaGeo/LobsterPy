@@ -391,11 +391,11 @@ class FeaturizeLobsterpy:
 
         for atom_pair in pair_icohps:
             if rm_weighted_icohps:
-                df.loc[ids, f"{atom_pair}_rm_icohp_mean"] = np.mean(pair_icohps[atom_pair]) * rm_pairs[atom_pair]
-                df.loc[ids, f"{atom_pair}_rm_icohp_min"] = np.min(pair_icohps[atom_pair]) * rm_pairs[atom_pair]
-                df.loc[ids, f"{atom_pair}_rm_icohp_max"] = np.max(pair_icohps[atom_pair]) * rm_pairs[atom_pair]
-                df.loc[ids, f"{atom_pair}_rm_icohp_std"] = np.std(pair_icohps[atom_pair]) * rm_pairs[atom_pair]
-                df.loc[ids, f"{atom_pair}_rm_icohp_sum"] = np.sum(pair_icohps[atom_pair]) * rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_mean"] = np.mean(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_min"] = np.min(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_max"] = np.max(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_std"] = np.std(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_sum"] = np.sum(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
             else:
                 df.loc[ids, f"{atom_pair}_icohp_mean"] = np.mean(pair_icohps[atom_pair])
                 df.loc[ids, f"{atom_pair}_icohp_min"] = np.min(pair_icohps[atom_pair])
