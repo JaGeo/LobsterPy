@@ -1,7 +1,7 @@
 # Changelog
 ## v0.4.9
 ### What's Changed
-* Same as v0.4.8 which did not get released on pypi due to an issue with the release workflow 
+* Same as v0.4.8 which did not get released on pypi due to an issue with the release workflow
 
 ## v0.4.8
 ### What's Changed
