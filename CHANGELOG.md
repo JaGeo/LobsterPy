@@ -1,7 +1,8 @@
 # Changelog
 ## v0.4.9
 ### What's Changed
-Same as v0.4.8 which did not get released on pypi due to an issue with the release workflow 
+* Same as v0.4.8 which did not get released on pypi due to an issue with the release workflow
+
 ## v0.4.8
 ### What's Changed
 * change python version from 3.9 to 3.10 in docs generation by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/322
