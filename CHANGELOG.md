@@ -1,4 +1,24 @@
 # Changelog
+## v0.4.9
+### What's Changed
+* Same as v0.4.8 which did not get released on pypi due to an issue with the release workflow
+
+## v0.4.8
+### What's Changed
+* change python version from 3.9 to 3.10 in docs generation by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/322
+* Bump sphinx-design from 0.6.0 to 0.6.1 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/324
+* Bump sphinx-toolbox from 3.7.0 to 3.8.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/326
+* Update sphinx requirement from <8,>=5 to >=5,<9 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/323
+* Update calc quality and fingerprints usage by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/331
+* Remove redundant coverage uploads and fix coverage reports by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/332
+* Fix the path of lobsterenv.py. by @hongyi-zhao in https://github.com/JaGeo/LobsterPy/pull/333
+
+### New Contributors
+* @hongyi-zhao made their first contribution in https://github.com/JaGeo/LobsterPy/pull/333
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.7...v0.4.8
+
+
 ## v0.4.7
 * fix outdated cli tutorial code snippets by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/320
 * Fix unexpected "DOSCAR.LSO.lobster" exception in cli  by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/321
