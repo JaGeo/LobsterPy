@@ -24,7 +24,7 @@ from scipy.signal import hilbert
 
 from lobsterpy.cohp.analyze import Analysis
 
-from . import get_file_paths
+from . import get_electronegativities, get_file_paths, get_reduced_mass
 
 warnings.filterwarnings("ignore")
 
@@ -37,6 +37,7 @@ class FeaturizeLobsterpy:
     :param path_to_json: path to lobster lightweight json
     :param bonds: "all" or "cation-anion" bonds
     :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
+    :param analysis_kwargs: optional keyword arguments to be passed to the Analysis class
     """
 
     def __init__(
@@ -45,12 +46,14 @@ class FeaturizeLobsterpy:
         path_to_json: str | Path | None = None,
         orbital_resolved: bool = False,
         bonds: str = "all",
+        **analysis_kwargs,
     ):
         """Initialize featurizer."""
         self.path_to_json = path_to_json
         self.path_to_lobster_calc = path_to_lobster_calc
         self.orbital_resolved = orbital_resolved
         self.bonds = bonds
+        self.analysis_kwargs = analysis_kwargs
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """
@@ -74,6 +77,7 @@ class FeaturizeLobsterpy:
                 path_to_lobster_calc=self.path_to_lobster_calc,
                 bonds=self.bonds,
                 orbital_resolved=self.orbital_resolved,
+                **self.analysis_kwargs,
             )
 
             if not ids:
@@ -257,13 +261,16 @@ class FeaturizeLobsterpy:
         return lobster_data
 
     @staticmethod
-    def get_lobsterpy_cba_dict(path_to_lobster_calc: str | Path, bonds: str, orbital_resolved: bool) -> dict:
+    def get_lobsterpy_cba_dict(
+        path_to_lobster_calc: str | Path, bonds: str, orbital_resolved: bool, **analysis_kwargs
+    ) -> dict:
         """
         Generate a Python dictionary object using the Analysis class with condensed bonding analysis data.
 
         :param path_to_lobster_calc: path to lobsterpy lightweight json file
         :param bonds: "all" or "cation-anion" bonds
         :param orbital_resolved:  bool indicating whether analysis is performed orbital wise
+        :param analysis_kwargs: optional keyword arguments to be passed to the Analysis class
 
         Returns:
             Returns a dictionary with lobster summarized bonding analysis data
@@ -282,10 +289,11 @@ class FeaturizeLobsterpy:
                 path_to_icohplist=str(file_paths.get("icohplist")),
                 path_to_cohpcar=str(file_paths.get("cohpcar")),
                 path_to_charge=str(file_paths.get("charge")),
-                summed_spins=False,  # we will always use spin polarization here
-                cutoff_icohp=0.10,
                 which_bonds=which_bonds,
                 orbital_resolved=orbital_resolved,
+                cutoff_icohp=analysis_kwargs.get("cutoff_icohp", 0.10),
+                noise_cutoff=analysis_kwargs.get("noise_cutoff", 0.1),
+                summed_spins=analysis_kwargs.get("summed_spins", False),
             )
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
@@ -317,6 +325,84 @@ class FeaturizeLobsterpy:
             data["madelung_energies"] = madelung_energies
 
         return data
+
+    @staticmethod
+    def get_unique_bonds_df(
+        path_to_lobster_calc: str | Path,
+        bonds: str,
+        rm_weighted_icohps: bool = False,
+        ids: str | None = None,
+        **analysis_kwargs,
+    ) -> pd.DataFrame:
+        """
+        Generate a Pandas dataframe with icohps mean / summed icohps for unique bonds.
+
+        :param path_to_lobster_calc: path to lobsterpy lightweight json file
+        :param bonds: "all" or "cation-anion" bonds
+        :param rm_weighted_icohps: bool indicating whether to use reduced mass as weights for icohps
+        :param ids: set index name in the pandas dataframe. Default is None.
+        :param analysis_kwargs: optional keyword arguments to be passed to the Analysis class
+
+        Returns:
+            Returns a pandas dataframe with icohps for unique bonds as columns
+
+        """
+        file_paths = get_file_paths(
+            path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "cohpcar", "icohplist", "charge"]
+        )
+
+        try:
+            analyse = Analysis(
+                path_to_poscar=str(file_paths.get("structure")),
+                path_to_icohplist=str(file_paths.get("icohplist")),
+                path_to_cohpcar=str(file_paths.get("cohpcar")),
+                path_to_charge=str(file_paths.get("charge")),
+                which_bonds=bonds,
+                cutoff_icohp=analysis_kwargs.get("cutoff_icohp", 0.10),
+                orbital_resolved=analysis_kwargs.get("orbital_resolved", False),
+                noise_cutoff=analysis_kwargs.get("noise_cutoff", 0.1),
+                summed_spins=analysis_kwargs.get("summed_spins", True),
+            )
+
+        except ValueError:
+            analyse = None
+
+        if not ids:
+            ids = Path(path_to_lobster_calc).name
+
+        # define a pandas dataframe
+        df = pd.DataFrame(index=[ids])
+
+        pair_icohps = {}
+        rm_pairs = {}
+        for plot_label in analyse.get_site_bond_resolved_labels():
+            atom_pair = plot_label.split(":")[-1].strip().split("-")
+            pair_rm = get_reduced_mass(atom_pair)
+            pair_en = get_electronegativities(atom_pair)
+            # sort atom names based on electronegativity
+            en_sorted_atom_pair = [x for _, x in sorted(zip(pair_en, atom_pair))]
+            rm_pairs["-".join(en_sorted_atom_pair)] = pair_rm
+            for lab in analyse.get_site_bond_resolved_labels()[plot_label]:
+                val = analyse.chemenv.Icohpcollection.get_icohp_by_label(lab)
+                if "-".join(en_sorted_atom_pair) not in pair_icohps:
+                    pair_icohps["-".join(en_sorted_atom_pair)] = [val]
+                else:
+                    pair_icohps["-".join(en_sorted_atom_pair)].append(val)
+
+        for atom_pair in pair_icohps:
+            if rm_weighted_icohps:
+                df.loc[ids, f"{atom_pair}_rm_icohp_mean"] = np.mean(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_min"] = np.min(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_max"] = np.max(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_std"] = np.std(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+                df.loc[ids, f"{atom_pair}_rm_icohp_sum"] = np.sum(pair_icohps[atom_pair]) / rm_pairs[atom_pair]
+            else:
+                df.loc[ids, f"{atom_pair}_icohp_mean"] = np.mean(pair_icohps[atom_pair])
+                df.loc[ids, f"{atom_pair}_icohp_min"] = np.min(pair_icohps[atom_pair])
+                df.loc[ids, f"{atom_pair}_icohp_max"] = np.max(pair_icohps[atom_pair])
+                df.loc[ids, f"{atom_pair}_icohp_std"] = np.std(pair_icohps[atom_pair])
+                df.loc[ids, f"{atom_pair}_icohp_sum"] = np.sum(pair_icohps[atom_pair])
+        return df
 
 
 class CoxxFingerprint(NamedTuple):

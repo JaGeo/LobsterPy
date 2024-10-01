@@ -2,7 +2,14 @@ import gzip
 import shutil
 from pathlib import Path
 
-from lobsterpy.featurize import get_file_paths, get_structure_path
+import pytest
+from lobsterpy.featurize import (
+    get_electronegativities,
+    get_file_paths,
+    get_reduced_mass,
+    get_structure_path,
+    sort_dict_by_value,
+)
 from pymatgen.core import Structure
 
 CurrentDir = Path(__file__).absolute().parent
@@ -55,3 +62,27 @@ def test_get_file_paths(tmp_path):
     for key, value in file_paths_unzipped.items():
         assert isinstance(key, str)
         assert isinstance(value, Path)
+
+
+def test_get_reduced_mass():
+    """
+    Tests that reduced mass is computed correctly.
+    """
+    assert get_reduced_mass(["H", "Pt"]) == pytest.approx(1.002818, abs=1e-05)
+    assert get_reduced_mass(["Na", "Cl"]) == pytest.approx(13.945765, abs=1e-05)
+
+
+def test_get_electronegativities():
+    """
+    Tests that electronegativities are computed correctly.
+    """
+    assert get_electronegativities(["H", "Pt"]) == pytest.approx([13.61, 10.16], abs=1e-05)
+    assert get_electronegativities(["Na", "Cl"]) == pytest.approx([5.14, 16.97], abs=1e-05)
+
+
+def test_sort_dict_by_value():
+    """
+    Tests that dictionary is sorted by values.
+    """
+    assert sort_dict_by_value(input_dict={"Na-Cl": -1.6, "H-Pt": -3.4}) == {"H-Pt": -3.4, "Na-Cl": -1.6}
+    assert sort_dict_by_value(input_dict={"a": 1, "b": 0, "c": 2}) == {"b": 0, "a": 1, "c": 2}
