@@ -14,8 +14,9 @@ import matplotlib.pyplot as plt
 import matplotlib.style
 import numpy as np
 import pytest
-from lobsterpy.cli import get_parser, run
 from matplotlib.figure import Figure
+
+from lobsterpy.cli import get_parser, run
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -50,13 +51,13 @@ error_test_cases = [
 
 
 class TestCLI:
-    @pytest.fixture()
+    @pytest.fixture
     def inject_mocks(self, mocker):  # noqa: PT004
         # Disable calls to show() so we can get the current figure using gcf()
         mocker.patch("matplotlib.pyplot.show")
         mocker.resetall()
 
-    @pytest.fixture()
+    @pytest.fixture
     def clean_plot(self):  # noqa: PT004
         yield
         plt.close("all")
