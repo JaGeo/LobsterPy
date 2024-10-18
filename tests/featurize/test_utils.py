@@ -2,8 +2,9 @@ import gzip
 import shutil
 from pathlib import Path
 
-from lobsterpy.featurize import get_file_paths, get_structure_path
 from pymatgen.core import Structure
+
+from lobsterpy.featurize import get_file_paths, get_structure_path
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"

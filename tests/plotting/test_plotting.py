@@ -4,6 +4,10 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from plotly.io import read_json
+from pymatgen.electronic_structure.cohp import Cohp
+from pymatgen.electronic_structure.core import Spin
+
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import (
     IcohpDistancePlotter,
@@ -11,9 +15,6 @@ from lobsterpy.plotting import (
     PlainCohpPlotter,
     PlainDosPlotter,
 )
-from plotly.io import read_json
-from pymatgen.electronic_structure.cohp import Cohp
-from pymatgen.electronic_structure.core import Spin
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -491,8 +492,8 @@ class TestIcohpDistancePlotter:
         fig_x_lims = list(fig_xydata.axes[0].get_children()[5].get_view_interval())
         fig_y_lims = list(fig_xydata.axes[0].get_children()[6].get_view_interval())
 
-        assert [0, 4] == fig_x_lims
-        assert [0, 6] == fig_y_lims
+        assert fig_x_lims == [0, 4]
+        assert fig_y_lims == [0, 6]
 
         # icobi
 
@@ -517,8 +518,8 @@ class TestIcohpDistancePlotter:
         fig_x_lims = list(fig_xydata.axes[0].get_children()[5].get_view_interval())
         fig_y_lims = list(fig_xydata.axes[0].get_children()[6].get_view_interval())
 
-        assert [0, 4] == fig_x_lims
-        assert [0, 6] == fig_y_lims
+        assert fig_x_lims == [0, 4]
+        assert fig_y_lims == [0, 6]
 
         # icoop
 
@@ -543,8 +544,8 @@ class TestIcohpDistancePlotter:
         fig_x_lims = list(fig_xydata.axes[0].get_children()[5].get_view_interval())
         fig_y_lims = list(fig_xydata.axes[0].get_children()[6].get_view_interval())
 
-        assert [0, 4] == fig_x_lims
-        assert [0, 6] == fig_y_lims
+        assert fig_x_lims == [0, 4]
+        assert fig_y_lims == [0, 6]
 
 
 class TestPlotterExceptions:
