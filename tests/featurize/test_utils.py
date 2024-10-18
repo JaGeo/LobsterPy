@@ -1,8 +1,8 @@
 import gzip
 import shutil
-import pytest
 from pathlib import Path
 
+import pytest
 from pymatgen.core import Structure
 
 from lobsterpy.featurize import (
