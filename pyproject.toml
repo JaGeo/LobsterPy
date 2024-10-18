@@ -46,7 +46,7 @@ changelog = "https://jageo.github.io/LobsterPy/about/changelog.html"
 [project.optional-dependencies]
 featurizer = ["mendeleev==0.17.0"]
 dev = ["pre-commit>=2.12.1"]
-tests = ["flake8", "pytest", "pytest-mock", "pytest-split", "pytest-cov", "types-setuptools"]
+tests = ["pytest", "pytest-mock", "pytest-split", "pytest-cov", "types-setuptools"]
 docs = [
     "sphinx-copybutton==0.5.2",
     "sphinx>=5,<9",
@@ -64,10 +64,6 @@ lobsterpy = "lobsterpy.cli:main"
 method = "git"
 default-tag = "0.0.1"
 
-[tool.flake8]
-exclude = ".git,test"
-max-line-length = 120
-extend-ignore = "B006,E203,W503,E501,F401,RST21,E741,W291,W293,E231,TYP001"
 
 [tool.cibuildwheel.linux]
 archs = ["auto64"]
