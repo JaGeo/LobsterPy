@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from mendeleev import element
 from monty.os.path import zpath
 
 
@@ -91,3 +92,40 @@ def get_structure_path(lobster_path: Path) -> Path:
             return gz_file_path
 
     raise Exception
+
+
+def get_reduced_mass(atom_pair: list[str]) -> float:
+    """
+    Compute reduced mass between a pair of atoms.
+
+    :param atom_pair: list of atomic species symbols in string
+
+    :return: reduced mass
+    """
+    atom1 = element(atom_pair[0])
+    atom2 = element(atom_pair[1])
+    return (atom1.atomic_weight * atom2.atomic_weight) / (atom1.atomic_weight + atom2.atomic_weight)
+
+
+def get_electronegativities(atom_pair: list[str]) -> list[float]:
+    """
+    Get allen electronegativities for a pair of atoms.
+
+    :param atom_pair: list of atomic species symbols in string
+
+    :return: list of allen electronegativities
+    """
+    atom1 = element(atom_pair[0])
+    atom2 = element(atom_pair[1])
+    return [atom1.electronegativity_allen(), atom2.electronegativity_allen()]
+
+
+def sort_dict_by_value(input_dict: dict[str, float]) -> dict:
+    """
+    Sort dictionary by values.
+
+    :param input_dict: input dictionary
+
+    :return: sorted dictionary
+    """
+    return dict(sorted(input_dict.items(), key=lambda item: item[1]))
