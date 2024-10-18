@@ -1,8 +1,10 @@
 import gzip
 import shutil
+import pytest
 from pathlib import Path
 
-import pytest
+from pymatgen.core import Structure
+
 from lobsterpy.featurize import (
     get_electronegativities,
     get_file_paths,
@@ -10,7 +12,6 @@ from lobsterpy.featurize import (
     get_structure_path,
     sort_dict_by_value,
 )
-from pymatgen.core import Structure
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"

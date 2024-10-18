@@ -2,6 +2,9 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+from pymatgen.analysis.graphs import StructureGraph
+from pymatgen.electronic_structure.dos import DosFingerprint
+
 from lobsterpy.featurize.batch import (
     BatchCoxxFingerprint,
     BatchDosFeaturizer,
@@ -9,8 +12,6 @@ from lobsterpy.featurize.batch import (
     BatchSummaryFeaturizer,
 )
 from lobsterpy.featurize.core import CoxxFingerprint
-from pymatgen.analysis.graphs import StructureGraph
-from pymatgen.electronic_structure.dos import DosFingerprint
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"

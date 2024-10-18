@@ -3,13 +3,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
+from pymatgen.electronic_structure.dos import DosFingerprint
+
 from lobsterpy.featurize.core import (
     FeaturizeCharges,
     FeaturizeCOXX,
     FeaturizeDoscar,
     FeaturizeLobsterpy,
 )
-from pymatgen.electronic_structure.dos import DosFingerprint
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"

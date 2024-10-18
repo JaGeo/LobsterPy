@@ -83,7 +83,7 @@ def get_structure_path(lobster_path: Path) -> Path:
 
     :return: path to structure file
     """
-    for filename in ["POSCAR", "POSCAR.lobster"]:
+    for filename in ["POSCAR", "POSCAR.lobster", "POSCAR.lobster.vasp"]:
         poscar_path = lobster_path / filename
         if poscar_path.exists():
             return poscar_path
