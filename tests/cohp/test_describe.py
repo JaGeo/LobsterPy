@@ -353,7 +353,7 @@ class TestCalcQualityDescribeWarnings:
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("once")
             calc_quality_warnings = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
                 path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "test_data/BaTe_low_quality/lobsterout.gz",
                 path_to_lobsterin=TestDir / "test_data/BaTe_low_quality/lobsterin.gz",
