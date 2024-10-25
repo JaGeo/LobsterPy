@@ -701,6 +701,11 @@ def icohplist_nacl():
 
 
 @pytest.fixture
+def icohplist_aln_v51():
+    return Icohplist(filename=TestDir / "test_data/AlN_v51/ICOHPLIST.lobster.gz")
+
+
+@pytest.fixture
 def icooplist_nacl():
     return Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOOPLIST.lobster.gz")
 
@@ -723,4 +728,16 @@ def k3sb_dos():
     return Doscar(
         doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",
         structure_file=TestDir / "test_data/K3Sb/POSCAR.gz",
+    )
+
+
+@pytest.fixture
+def analyse_aln_v51():
+    return Analysis(
+        path_to_poscar=TestDir / "test_data/AlN_v51/POSCAR.lobster.vasp.gz",
+        path_to_cohpcar=TestDir / "test_data/AlN_v51/COHPCAR.lobster.gz",
+        path_to_icohplist=TestDir / "test_data/AlN_v51/ICOHPLIST.lobster.gz",
+        path_to_charge=TestDir / "test_data/AlN_v51/CHARGE.lobster.gz",
+        which_bonds="cation-anion",
+        cutoff_icohp=0.1,
     )
