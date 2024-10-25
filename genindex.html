@@ -1,0 +1,899 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=55384d60" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="lobsterpy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="installation/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fundamentals/index.html">Fundamental Aspects</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorial/index.html">Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/tutorial.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="reference/index.html">Python API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="reference/lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="reference/lobsterpy.featurize.html">lobsterpy.featurize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.core.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="reference/lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="reference/lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reference/lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="reference/lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="reference/lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="reference/cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference/cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="about/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about/license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2Fgenindex.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.InteractiveCohpPlotter.html#lobsterpy.plotting.InteractiveCohpPlotter.add_all_relevant_cohps">add_all_relevant_cohps() (lobsterpy.plotting.InteractiveCohpPlotter method)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.InteractiveCohpPlotter.html#lobsterpy.plotting.InteractiveCohpPlotter.add_cohp">add_cohp() (lobsterpy.plotting.InteractiveCohpPlotter method)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.InteractiveCohpPlotter.html#lobsterpy.plotting.InteractiveCohpPlotter.add_cohps_by_lobster_label">add_cohps_by_lobster_label() (lobsterpy.plotting.InteractiveCohpPlotter method)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.InteractiveCohpPlotter.html#lobsterpy.plotting.InteractiveCohpPlotter.add_cohps_from_plot_data">add_cohps_from_plot_data() (lobsterpy.plotting.InteractiveCohpPlotter method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.PlainDosPlotter.html#lobsterpy.plotting.PlainDosPlotter.add_dos">add_dos() (lobsterpy.plotting.PlainDosPlotter method)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.IcohpDistancePlotter.html#lobsterpy.plotting.IcohpDistancePlotter.add_icohps">add_icohps() (lobsterpy.plotting.IcohpDistancePlotter method)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.PlainDosPlotter.html#lobsterpy.plotting.PlainDosPlotter.add_site_orbital_dos">add_site_orbital_dos() (lobsterpy.plotting.PlainDosPlotter method)</a>
+</li>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis">Analysis (class in lobsterpy.cohp.analyze)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    bin_width (namedtuple field)
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.bin_width">CoxxFingerprint (namedtuple in lobsterpy.featurize.core)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html#lobsterpy.featurize.batch.BatchCoxxFingerprint">BatchCoxxFingerprint (class in lobsterpy.featurize.batch)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html#lobsterpy.featurize.batch.BatchDosFeaturizer">BatchDosFeaturizer (class in lobsterpy.featurize.batch)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.batch.BatchStructureGraphs.html#lobsterpy.featurize.batch.BatchStructureGraphs">BatchStructureGraphs (class in lobsterpy.featurize.batch)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html#lobsterpy.featurize.batch.BatchSummaryFeaturizer">BatchSummaryFeaturizer (class in lobsterpy.featurize.batch)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    coxx (namedtuple field)
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.coxx">CoxxFingerprint (namedtuple in lobsterpy.featurize.core)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html#lobsterpy.plotting.layout_dicts.cohp_axis_style_dict">cohp_axis_style_dict (in module lobsterpy.plotting.layout_dicts)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint">CoxxFingerprint (namedtuple in lobsterpy.featurize.core)</a>
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.bin_width">bin_width (namedtuple field)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.coxx">coxx (namedtuple field)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.energies">energies (namedtuple field)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.fp_type">fp_type (namedtuple field)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.n_bins">n_bins (namedtuple field)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.spin_type">spin_type (namedtuple field)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description">Description (class in lobsterpy.cohp.describe)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    energies (namedtuple field)
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.energies">CoxxFingerprint (namedtuple in lobsterpy.featurize.core)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html#lobsterpy.plotting.layout_dicts.energy_axis_style_dict">energy_axis_style_dict (in module lobsterpy.plotting.layout_dicts)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    fp_type (namedtuple field)
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.fp_type">CoxxFingerprint (namedtuple in lobsterpy.featurize.core)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeCharges.html#lobsterpy.featurize.core.FeaturizeCharges">FeaturizeCharges (class in lobsterpy.featurize.core)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeCOXX.html#lobsterpy.featurize.core.FeaturizeCOXX">FeaturizeCOXX (class in lobsterpy.featurize.core)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeDoscar.html#lobsterpy.featurize.core.FeaturizeDoscar">FeaturizeDoscar (class in lobsterpy.featurize.core)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html#lobsterpy.featurize.core.FeaturizeLobsterpy">FeaturizeLobsterpy (class in lobsterpy.featurize.core)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.get_calc_quality_description">get_calc_quality_description() (lobsterpy.cohp.describe.Description static method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeCOXX.html#lobsterpy.featurize.core.FeaturizeCOXX.get_cohp_edge">get_cohp_edge() (lobsterpy.featurize.core.FeaturizeCOXX static method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeCOXX.html#lobsterpy.featurize.core.FeaturizeCOXX.get_coxx_center">get_coxx_center() (lobsterpy.featurize.core.FeaturizeCOXX static method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeCOXX.html#lobsterpy.featurize.core.FeaturizeCOXX.get_coxx_fingerprint_df">get_coxx_fingerprint_df() (lobsterpy.featurize.core.FeaturizeCOXX method)</a>
+</li>
+      <li><a href="reference/lobsterpy.structuregraph.graph.LobsterGraph.html#lobsterpy.structuregraph.graph.LobsterGraph.get_decorated_sg">get_decorated_sg() (lobsterpy.structuregraph.graph.LobsterGraph method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html#lobsterpy.featurize.batch.BatchDosFeaturizer.get_df">get_df() (lobsterpy.featurize.batch.BatchDosFeaturizer method)</a>
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.batch.BatchStructureGraphs.html#lobsterpy.featurize.batch.BatchStructureGraphs.get_df">(lobsterpy.featurize.batch.BatchStructureGraphs method)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html#lobsterpy.featurize.batch.BatchSummaryFeaturizer.get_df">(lobsterpy.featurize.batch.BatchSummaryFeaturizer method)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.FeaturizeCharges.html#lobsterpy.featurize.core.FeaturizeCharges.get_df">(lobsterpy.featurize.core.FeaturizeCharges method)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.FeaturizeDoscar.html#lobsterpy.featurize.core.FeaturizeDoscar.get_df">(lobsterpy.featurize.core.FeaturizeDoscar method)</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html#lobsterpy.featurize.core.FeaturizeLobsterpy.get_df">(lobsterpy.featurize.core.FeaturizeLobsterpy method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lobsterpy.featurize.utils.get_file_paths.html#lobsterpy.featurize.utils.get_file_paths">get_file_paths() (in module lobsterpy.featurize.utils)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeDoscar.html#lobsterpy.featurize.core.FeaturizeDoscar.get_fingerprint_df">get_fingerprint_df() (lobsterpy.featurize.core.FeaturizeDoscar method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html#lobsterpy.featurize.batch.BatchDosFeaturizer.get_fingerprints_df">get_fingerprints_df() (lobsterpy.featurize.batch.BatchDosFeaturizer method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis.get_information_all_bonds">get_information_all_bonds() (lobsterpy.cohp.analyze.Analysis method)</a>
+</li>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis.get_lobster_calc_quality_summary">get_lobster_calc_quality_summary() (lobsterpy.cohp.analyze.Analysis static method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html#lobsterpy.featurize.core.FeaturizeLobsterpy.get_lobsterpy_cba_dict">get_lobsterpy_cba_dict() (lobsterpy.featurize.core.FeaturizeLobsterpy static method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeCOXX.html#lobsterpy.featurize.core.FeaturizeCOXX.get_n_moment">get_n_moment() (lobsterpy.featurize.core.FeaturizeCOXX static method)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.IcohpDistancePlotter.html#lobsterpy.plotting.IcohpDistancePlotter.get_plot">get_plot() (lobsterpy.plotting.IcohpDistancePlotter method)</a>
+
+      <ul>
+        <li><a href="reference/lobsterpy.plotting.InteractiveCohpPlotter.html#lobsterpy.plotting.InteractiveCohpPlotter.get_plot">(lobsterpy.plotting.InteractiveCohpPlotter method)</a>
+</li>
+        <li><a href="reference/lobsterpy.plotting.PlainCohpPlotter.html#lobsterpy.plotting.PlainCohpPlotter.get_plot">(lobsterpy.plotting.PlainCohpPlotter method)</a>
+</li>
+        <li><a href="reference/lobsterpy.plotting.PlainDosPlotter.html#lobsterpy.plotting.PlainDosPlotter.get_plot">(lobsterpy.plotting.PlainDosPlotter method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html#lobsterpy.featurize.batch.BatchCoxxFingerprint.get_similarity_matrix_df">get_similarity_matrix_df() (lobsterpy.featurize.batch.BatchCoxxFingerprint method)</a>
+</li>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis.get_site_bond_resolved_labels">get_site_bond_resolved_labels() (lobsterpy.cohp.analyze.Analysis method)</a>
+</li>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis.get_site_orbital_resolved_labels">get_site_orbital_resolved_labels() (lobsterpy.cohp.analyze.Analysis method)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.utils.get_structure_path.html#lobsterpy.featurize.utils.get_structure_path">get_structure_path() (in module lobsterpy.featurize.utils)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.get_style_list.html#lobsterpy.plotting.get_style_list">get_style_list() (in module lobsterpy.plotting)</a>
+</li>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeCOXX.html#lobsterpy.featurize.core.FeaturizeCOXX.get_summarized_coxx_df">get_summarized_coxx_df() (lobsterpy.featurize.core.FeaturizeCOXX method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.IcohpDistancePlotter.html#lobsterpy.plotting.IcohpDistancePlotter">IcohpDistancePlotter (class in lobsterpy.plotting)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.InteractiveCohpPlotter.html#lobsterpy.plotting.InteractiveCohpPlotter">InteractiveCohpPlotter (class in lobsterpy.plotting)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.layout_dicts.layout_dict.html#lobsterpy.plotting.layout_dicts.layout_dict">layout_dict (in module lobsterpy.plotting.layout_dicts)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html#lobsterpy.plotting.layout_dicts.legend_style_dict">legend_style_dict (in module lobsterpy.plotting.layout_dicts)</a>
+</li>
+      <li><a href="reference/lobsterpy.structuregraph.graph.LobsterGraph.html#lobsterpy.structuregraph.graph.LobsterGraph">LobsterGraph (class in lobsterpy.structuregraph.graph)</a>
+</li>
+      <li>
+    lobsterpy.cohp
+
+      <ul>
+        <li><a href="reference/lobsterpy.cohp.html#module-lobsterpy.cohp">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.cohp.analyze
+
+      <ul>
+        <li><a href="reference/lobsterpy.cohp.analyze.html#module-lobsterpy.cohp.analyze">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.cohp.describe
+
+      <ul>
+        <li><a href="reference/lobsterpy.cohp.describe.html#module-lobsterpy.cohp.describe">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.featurize
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.html#module-lobsterpy.featurize">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.featurize.batch
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.batch.html#module-lobsterpy.featurize.batch">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    lobsterpy.featurize.core
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.html#module-lobsterpy.featurize.core">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.featurize.utils
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.utils.html#module-lobsterpy.featurize.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.plotting
+
+      <ul>
+        <li><a href="reference/lobsterpy.plotting.html#module-lobsterpy.plotting">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.plotting.layout_dicts
+
+      <ul>
+        <li><a href="reference/lobsterpy.plotting.layout_dicts.html#module-lobsterpy.plotting.layout_dicts">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.structuregraph
+
+      <ul>
+        <li><a href="reference/lobsterpy.structuregraph.html#module-lobsterpy.structuregraph">module</a>
+</li>
+      </ul></li>
+      <li>
+    lobsterpy.structuregraph.graph
+
+      <ul>
+        <li><a href="reference/lobsterpy.structuregraph.graph.html#module-lobsterpy.structuregraph.graph">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    module
+
+      <ul>
+        <li><a href="reference/lobsterpy.cohp.html#module-lobsterpy.cohp">lobsterpy.cohp</a>
+</li>
+        <li><a href="reference/lobsterpy.cohp.analyze.html#module-lobsterpy.cohp.analyze">lobsterpy.cohp.analyze</a>
+</li>
+        <li><a href="reference/lobsterpy.cohp.describe.html#module-lobsterpy.cohp.describe">lobsterpy.cohp.describe</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.html#module-lobsterpy.featurize">lobsterpy.featurize</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.batch.html#module-lobsterpy.featurize.batch">lobsterpy.featurize.batch</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.core.html#module-lobsterpy.featurize.core">lobsterpy.featurize.core</a>
+</li>
+        <li><a href="reference/lobsterpy.featurize.utils.html#module-lobsterpy.featurize.utils">lobsterpy.featurize.utils</a>
+</li>
+        <li><a href="reference/lobsterpy.plotting.html#module-lobsterpy.plotting">lobsterpy.plotting</a>
+</li>
+        <li><a href="reference/lobsterpy.plotting.layout_dicts.html#module-lobsterpy.plotting.layout_dicts">lobsterpy.plotting.layout_dicts</a>
+</li>
+        <li><a href="reference/lobsterpy.structuregraph.html#module-lobsterpy.structuregraph">lobsterpy.structuregraph</a>
+</li>
+        <li><a href="reference/lobsterpy.structuregraph.graph.html#module-lobsterpy.structuregraph.graph">lobsterpy.structuregraph.graph</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    n_bins (namedtuple field)
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.n_bins">CoxxFingerprint (namedtuple in lobsterpy.featurize.core)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.PlainCohpPlotter.html#lobsterpy.plotting.PlainCohpPlotter">PlainCohpPlotter (class in lobsterpy.plotting)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.PlainDosPlotter.html#lobsterpy.plotting.PlainDosPlotter">PlainDosPlotter (class in lobsterpy.plotting)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.plot_cohps">plot_cohps() (lobsterpy.cohp.describe.Description method)</a>
+</li>
+      <li><a href="reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.plot_interactive_cohps">plot_interactive_cohps() (lobsterpy.cohp.describe.Description method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html#lobsterpy.featurize.core.FeaturizeLobsterpy.read_lobster_lightweight_json">read_lobster_lightweight_json() (lobsterpy.featurize.core.FeaturizeLobsterpy static method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    spin_type (namedtuple field)
+
+      <ul>
+        <li><a href="reference/lobsterpy.featurize.core.CoxxFingerprint.html#lobsterpy.featurize.core.CoxxFingerprint.spin_type">CoxxFingerprint (namedtuple in lobsterpy.featurize.core)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis.set_condensed_bonding_analysis">set_condensed_bonding_analysis() (lobsterpy.cohp.analyze.Analysis method)</a>
+</li>
+      <li><a href="reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.set_description">set_description() (lobsterpy.cohp.describe.Description method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis.set_summary_dicts">set_summary_dicts() (lobsterpy.cohp.analyze.Analysis method)</a>
+</li>
+      <li><a href="reference/lobsterpy.cohp.analyze.Analysis.html#lobsterpy.cohp.analyze.Analysis.setup_env">setup_env() (lobsterpy.cohp.analyze.Analysis method)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html#lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict">spin_down_trace_style_dict (in module lobsterpy.plotting.layout_dicts)</a>
+</li>
+      <li><a href="reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html#lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict">spin_up_trace_style_dict (in module lobsterpy.plotting.layout_dicts)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.plotting.TYPE_CHECKING.html#lobsterpy.plotting.TYPE_CHECKING">TYPE_CHECKING (in module lobsterpy.plotting)</a>
+
+      <ul>
+        <li><a href="reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html#lobsterpy.structuregraph.graph.TYPE_CHECKING">(in module lobsterpy.structuregraph.graph)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.write_calc_quality_description">write_calc_quality_description() (lobsterpy.cohp.describe.Description static method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.write_description">write_description() (lobsterpy.cohp.describe.Description method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
