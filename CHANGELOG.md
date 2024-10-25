@@ -1,4 +1,17 @@
 # Changelog
+
+## v0.5.0
+### What's Changed
+* Update CHANGELOG.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/334
+* Ci updates by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/341
+* Update get struct path by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/340
+* Bump mendeleev from 0.17.0 to 0.18.1 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/338
+* Bump sphinx-toolbox from 3.8.0 to 3.8.1 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/339
+* Bump myst-nb from 1.1.1 to 1.1.2 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/335
+* pin min pymatgen version > lobster 5.0/5.1 support by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/342
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.4.9...v0.5.0
+
 ## v0.4.9
 ### What's Changed
 * Same as v0.4.8 which did not get released on pypi due to an issue with the release workflow
