@@ -8,6 +8,7 @@ from pymatgen.electronic_structure.dos import DosFingerprint
 from lobsterpy.featurize.batch import (
     BatchCoxxFingerprint,
     BatchDosFeaturizer,
+    BatchIcoxxlistFeaturizer,
     BatchStructureGraphs,
     BatchSummaryFeaturizer,
 )
@@ -672,6 +673,113 @@ class TestBatchDosFeaturizer:
             assert isinstance(dos_fp, DosFingerprint)
             assert dos_fp.fp_type == "summed_pdos"
             assert dos_fp.n_bins == 256
+
+
+class TestBatchIcoxxlistFeaturizer:
+    def test_batch_icohplist_featurizer(self):
+        batch_icohp = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs", n_jobs=3, bin_width=0.5
+        )
+
+        df_icohp = batch_icohp.get_df()
+
+        assert isinstance(df_icohp, pd.DataFrame)
+
+        expected_cols = [
+            "bwdf_0.0-0.55",
+            "bwdf_0.55-1.09",
+            "bwdf_1.09-1.64",
+            "bwdf_1.64-2.18",
+            "bwdf_2.18-2.73",
+            "bwdf_2.73-3.27",
+            "bwdf_3.27-3.82",
+            "bwdf_3.82-4.36",
+            "bwdf_4.36-4.91",
+            "bwdf_4.91-5.45",
+            "bwdf_5.45-6.0",
+        ]
+
+        assert sorted(df_icohp.columns) == sorted(expected_cols)
+
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
+
+        assert sorted(df_icohp.index) == sorted(expected_index)
+
+        # Test if all values are above zero > icohps are read
+        result = (df_icohp >= 0).all().all()  # check if all values are above zero
+        assert not result
+
+    def test_batch_icobilist_featurizer(self):
+        batch_icobi = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+            n_jobs=3,
+            bin_width=0.5,
+            read_icobis=True,
+        )
+
+        df_icobi = batch_icobi.get_df()
+
+        assert isinstance(df_icobi, pd.DataFrame)
+
+        expected_cols = [
+            "bwdf_0.0-0.55",
+            "bwdf_0.55-1.09",
+            "bwdf_1.09-1.64",
+            "bwdf_1.64-2.18",
+            "bwdf_2.18-2.73",
+            "bwdf_2.73-3.27",
+            "bwdf_3.27-3.82",
+            "bwdf_3.82-4.36",
+            "bwdf_4.36-4.91",
+            "bwdf_4.91-5.45",
+            "bwdf_5.45-6.0",
+        ]
+
+        assert sorted(df_icobi.columns) == sorted(expected_cols)
+
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
+
+        assert sorted(df_icobi.index) == sorted(expected_index)
+
+        # Test if all values are above zero > icobis are read
+        result = (df_icobi >= 0).all().all()  # check if all values are above zero
+        assert result
+
+    def test_batch_icooplist_featurizer(self):
+        batch_icoop = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+            n_jobs=3,
+            bin_width=0.5,
+            read_icoops=True,
+        )
+
+        df_icoop = batch_icoop.get_df()
+
+        assert isinstance(df_icoop, pd.DataFrame)
+
+        expected_cols = [
+            "bwdf_0.0-0.55",
+            "bwdf_0.55-1.09",
+            "bwdf_1.09-1.64",
+            "bwdf_1.64-2.18",
+            "bwdf_2.18-2.73",
+            "bwdf_2.73-3.27",
+            "bwdf_3.27-3.82",
+            "bwdf_3.82-4.36",
+            "bwdf_4.36-4.91",
+            "bwdf_4.91-5.45",
+            "bwdf_5.45-6.0",
+        ]
+
+        assert sorted(df_icoop.columns) == sorted(expected_cols)
+
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
+
+        assert sorted(df_icoop.index) == sorted(expected_index)
+
+        # Test if all values are above zero > icobis are read
+        result = (df_icoop >= 0).all().all()  # check if all values are above zero
+        assert not result
 
 
 class TestExceptions:
