@@ -42,7 +42,6 @@ class BatchSummaryFeaturizer:
     :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
     :param include_cobi_data: bool stating to include COBICAR.lobster features
     :param include_coop_data: bool stating to include COOPCAR.lobster features
-    :param rm_weighted_icohps: bool stating to weight ICOHPs using reduced masses in unique bonds dataframe
     :param e_range: range of energy relative to fermi for which moment features needs to be computed
     :param n_jobs: parallel processes to run
     """
@@ -57,7 +56,6 @@ class BatchSummaryFeaturizer:
         orbital_resolved: bool = False,
         include_cobi_data: bool = False,
         include_coop_data: bool = False,
-        rm_weighted_icohps: bool = False,
         e_range: list[float] = [-5.0, 0.0],
         n_jobs: int = 4,
         **analysis_kwargs,
@@ -75,7 +73,6 @@ class BatchSummaryFeaturizer:
         :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
         :param include_cobi_data: bool stating to include COBICAR.lobster features
         :param include_coop_data: bool stating to include COOPCAR.lobster features
-        :param rm_weighted_icohps: bool stating to weight ICOHPs using reduced masses in unique bonds dataframe
         :param e_range: range of energy relative to fermi for which moment features needs to be computed
         :param n_jobs: parallel processes to run
         :param analysis_kwargs: keyword arguments for Analysis class of Lobsterpy
@@ -101,7 +98,6 @@ class BatchSummaryFeaturizer:
         self.orbital_resolved = orbital_resolved
         self.include_cobi_data = include_cobi_data
         self.include_coop_data = include_coop_data
-        self.rm_weighted_icohps = rm_weighted_icohps
         self.e_range = e_range
         self.n_jobs = n_jobs
         self.analysis_kwargs = analysis_kwargs
@@ -135,20 +131,6 @@ class BatchSummaryFeaturizer:
             )
 
         return featurize_lobsterpy.get_df()
-
-    def _featurizeuniquebonds(self, path: str | Path) -> pd.DataFrame:
-        """
-        Featurize Unique bonds identified by Lobsterpy.
-
-        :param path: path to root directory consisting of all lobster calc files
-        """
-        return FeaturizeLobsterpy.get_unique_bonds_df(
-            path_to_lobster_calc=path,
-            bonds=self.bonds,
-            n_jobs=self.n_jobs,
-            rm_weighted_icohps=self.rm_weighted_icohps,
-            **self.analysis_kwargs,
-        )
 
     def _featurizecoxx(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
@@ -331,39 +313,6 @@ class BatchSummaryFeaturizer:
         df_charges.sort_index(inplace=True)  # noqa: PD002
 
         return pd.concat([df_lobsterpy, df_coxx, df_charges], axis=1)
-
-    def get_unique_bonds_df(self) -> pd.DataFrame:
-        """
-        Generate a pandas dataframe with unique relevant bonds extracted from LOBSTER files.
-
-        Uses multiprocessing to speed up the process.
-
-        Returns:
-            Returns a pandas dataframe
-
-        """
-        paths = [
-            os.path.join(self.path_to_lobster_calcs, f)
-            for f in os.listdir(self.path_to_lobster_calcs)
-            if not f.startswith("t")
-            and not f.startswith(".")
-            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
-        ]
-
-        row = []
-        with (
-            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
-            tqdm(total=len(paths), desc="Generating ICOHP unique bonds dataframe") as pbar,
-        ):
-            for _, result in enumerate(pool.imap_unordered(self._featurizeuniquebonds, paths, chunksize=1)):
-                pbar.update()
-                row.append(result)
-
-        df = pd.concat(row)
-        df.sort_index(inplace=True)  # noqa: PD002
-        df.fillna(0, inplace=True)  # noqa: PD002
-
-        return df
 
 
 class BatchCoxxFingerprint:
