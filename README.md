@@ -78,7 +78,7 @@ It is also possible to start this automatic analysis from a Python script. See "
     You can get further information by using ``lobsterpy --help`` and also by typing ``lobsterpy description --help``,
 ``lobsterpy automatic-plot --help``, ``lobsterpy plot --help``.
 
-## Comprehensive documentation
+## Documentation
 * Checkout the [documentation and tutorials](https://jageo.github.io/LobsterPy/) for more details.
 
 

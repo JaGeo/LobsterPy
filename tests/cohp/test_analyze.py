@@ -888,6 +888,11 @@ class TestAnalyse:
             abs=0.10,
         )
 
+    def test_analyse_aln_v51(self, analyse_aln_v51):
+        # Test if analyse module works with version 5.1 of lobster
+        assert analyse_aln_v51.condensed_bonding_analysis["formula"] == "AlN"
+        assert analyse_aln_v51.condensed_bonding_analysis["type_charges"] == "Mulliken"
+
     def test_exception(self):
         with pytest.raises(ValueError):  # noqa: PT011
             self.analyse_batao2n1 = Analysis(

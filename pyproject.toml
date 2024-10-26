@@ -17,7 +17,7 @@ readme = "README.md"
 keywords = ["high-throughput", "automated", "lobsteroutput", "bonding-analysis"]
 license = { text = "BSD 3-Clause" }
 authors = [{ name = "Janine George", email = "janine.george@bam.de" }]
-version = "0.4.9"
+version = "0.5.0"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -29,7 +29,7 @@ classifiers = [
 ]
 requires-python = ">=3.10,<3.13"
 dependencies = [
-     "pymatgen>=2024.9.10",
+     "pymatgen>=2024.10.22",
      "numpy<3.0.0",
      "typing",
 ]
