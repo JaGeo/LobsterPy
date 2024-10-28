@@ -1093,6 +1093,18 @@ class IcohpDistancePlotter:
             Defaults to False for COHPs.
     """
 
+    COLOR_PALETTE = [
+        "#e41a1c",
+        "#377eb8",
+        "#4daf4a",
+        "#984ea3",
+        "#ff7f00",
+        "#ffff33",
+        "#a65628",
+        "#f781bf",
+        "#999999",
+    ]
+
     def __init__(self, are_coops: bool = False, are_cobis: bool = False):
         """Initialize ICOHPs or ICOBI or ICOOP vs bond lengths plotter."""
         self.are_coops = are_coops
@@ -1110,6 +1122,7 @@ class IcohpDistancePlotter:
         icohps = []
         bond_len = []
         atom_pairs = []
+        atom_types = []
         orb_data = {}  # type: ignore
         for indx, bond_label in enumerate(icohpcollection._list_labels):
             orb_data.update({bond_label: {}})
@@ -1120,8 +1133,10 @@ class IcohpDistancePlotter:
             atom1 = icohpcollection._list_atom1[indx]
             atom2 = icohpcollection._list_atom2[indx]
             atom_pairs.append(atom1 + "-" + atom2)
+            atom_types.append("-".join(sorted((atom1.strip("0123456789"), atom2.strip("0123456789")))))
 
         self._icohps[label] = {
+            "atom_types": atom_types,
             "atom_pairs": atom_pairs,
             "bond_labels": icohpcollection._list_labels,
             "icohps": icohps,
@@ -1132,16 +1147,20 @@ class IcohpDistancePlotter:
     def get_plot(
         self,
         ax: mpl.axes.Axes | None = None,
+        alpha: float = 0.4,
         marker_size: float = 50,
         marker_style: str = "o",
         xlim: tuple[float, float] | None = None,
         ylim: tuple[float, float] | None = None,
         plot_negative: bool = True,
+        colors: list[str] | None = None,
+        color_interactions: bool = False,
     ):
         """
         Get a matplotlib plot showing the COHP or COBI or COOP with respect to bond lengths.
 
         :param ax: Existing Matplotlib Axes object to plot to.
+        :param alpha: sets the transparency of markers in scatter plots
         :param marker_size: sets the size of markers in scatter plots
         :param marker_style: sets type of marker used in plot
         :param xlim: Specifies the x-axis limits. Defaults to None for
@@ -1149,6 +1168,8 @@ class IcohpDistancePlotter:
         :param ylim: Specifies the y-axis limits. Defaults to None for
             automatic determination.
         :param plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
+        :param colors: list of hex color codes to be used in plot
+        :param color_interactions: If True, will color the interactions based on atom types
 
         Returns:
             A matplotlib object.
@@ -1173,14 +1194,43 @@ class IcohpDistancePlotter:
         ax.set_ylabel(cohp_label)
         ax.set_xlabel("Bond lengths (\u00c5)")
 
-        for label, data in self._icohps.items():
-            x = data["bond_lengths"]
-            if plot_negative and cohp_label == "ICOHP (eV)":
-                ax.set_ylabel("$-$" + cohp_label)
-                y = [-1 * icohp for icohp in data["icohps"]]
-            else:
-                y = data["icohps"]
+        if color_interactions:
+            colors = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
+            atom_types = []
+            for data in self._icohps.values():
+                atom_types.extend(list(set(data["atom_types"])))
+            color_dict = dict(zip(atom_types, colors))
+            for label, data in self._icohps.items():
+                x = data["bond_lengths"]
+                if plot_negative and cohp_label == "ICOHP (eV)":
+                    ax.set_ylabel("$-$" + cohp_label)
+                    y = [-1 * icohp for icohp in data["icohps"]]
+                else:
+                    y = data["icohps"]
+                for i, pair in enumerate(data["atom_types"]):
+                    ax.scatter(
+                        x[i],
+                        y[i],
+                        c=color_dict[pair],
+                        s=marker_size,
+                        alpha=alpha,
+                        marker=marker_style,
+                        label=f"{label}-({pair})",
+                    )
 
-            ax.scatter(x, y, s=marker_size, marker=marker_style, label=label)
+            # Filter out duplicate labels and add only unique labels to the legend
+            handles, labels = plt.gca().get_legend_handles_labels()
+            unique = {label: handle for handle, label in zip(handles, labels)}
+            ax.legend(unique.values(), unique.keys())
+        else:
+            for label, data in self._icohps.items():
+                x = data["bond_lengths"]
+                if plot_negative and cohp_label == "ICOHP (eV)":
+                    ax.set_ylabel("$-$" + cohp_label)
+                    y = [-1 * icohp for icohp in data["icohps"]]
+                else:
+                    y = data["icohps"]
+
+                ax.scatter(x, y, s=marker_size, marker=marker_style, label=label)
 
         return plt
