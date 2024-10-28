@@ -880,6 +880,10 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.02825, abs=1e-05)
         assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.08202, abs=1e-05)
 
+        # Todo: Assert the values in the dataframe
+        df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
+        assert isinstance(df_site, pd.DataFrame)
+
     def test_featurize_k3sb_icoxxlist(self):
         # Test for area normalization, n_bins
         featurize_k3sb_icoxxlist = FeaturizeIcoxxlist(
@@ -897,6 +901,10 @@ class TestFeaturizeIcoxxlist:
         assert np.sum(df.loc["K3Sb"].to_numpy() * featurize_k3sb_icoxxlist.bin_width) == 1
         assert df.loc["K3Sb", "bwdf_3.71-3.72"] == pytest.approx(73.959533, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(26.040467, abs=1e-05)
+
+        # Todo: Assert the values in the dataframe
+        df_site = featurize_k3sb_icoxxlist.get_site_df(ids="K3Sb", site_index=3)
+        assert isinstance(df_site, pd.DataFrame)
 
     def test_featurize_cdf_icoxxlist(self):
         # Test for min and max_lengths and bin_width
@@ -916,3 +924,7 @@ class TestFeaturizeIcoxxlist:
         expected_columns = ["bwdf_2.0-2.67", "bwdf_2.67-3.33", "bwdf_3.33-4.0"]
 
         assert sorted(df.columns) == sorted(expected_columns)
+
+        # Todo: Assert the values in the dataframe
+        df_site = featurize_cdf_icoxxlist.get_site_df(ids="CdF", site_index=1)
+        assert isinstance(df_site, pd.DataFrame)
