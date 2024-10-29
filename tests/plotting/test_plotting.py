@@ -547,6 +547,17 @@ class TestIcohpDistancePlotter:
         assert fig_x_lims == [0, 4]
         assert fig_y_lims == [0, 6]
 
+        # test for colors in icoxx plotter
+        ax_icoop_c = icoop_plotter.get_plot(xlim=(0, 4), ylim=(0, 6), color_interactions=True).gca()
+        ax_icohp_c = icohp_plotter.get_plot(xlim=(0, 4), ylim=(0, 6), color_interactions=True).gca()
+        ax_icobi_c = icobi_plotter.get_plot(xlim=(0, 4), ylim=(0, 6), color_interactions=True).gca()
+        handles_icoop, labels_icoop = ax_icoop_c.get_legend_handles_labels()
+        handles_icohp, labels_icohp = ax_icohp_c.get_legend_handles_labels()
+        handles_icobi, labels_icobi = ax_icobi_c.get_legend_handles_labels()
+        assert len(set(labels_icoop)) == 3
+        assert len(set(labels_icobi)) == 3
+        assert len(set(labels_icohp)) == 3
+
 
 class TestPlotterExceptions:
     def test_plotter_exception(self, plot_analyse_nasi):
