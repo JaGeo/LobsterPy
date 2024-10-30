@@ -884,6 +884,11 @@ class TestFeaturizeIcoxxlist:
         df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
         assert isinstance(df_site, pd.DataFrame)
 
+        # Test for label bwdf
+        bwdf_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="4")
+        assert isinstance(bwdf_label, dict)
+        assert bwdf_label["icoxx_binned"][283] == pytest.approx(-0.00034, abs=1e-05)
+
     def test_featurize_k3sb_icoxxlist(self):
         # Test for area normalization, n_bins
         featurize_k3sb_icoxxlist = FeaturizeIcoxxlist(
