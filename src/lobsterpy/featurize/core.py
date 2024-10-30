@@ -9,6 +9,7 @@ import gzip
 import json
 import warnings
 from itertools import combinations_with_replacement
+from operator import itemgetter
 from pathlib import Path
 from typing import Literal, NamedTuple
 
@@ -1217,13 +1218,53 @@ class FeaturizeIcoxxlist:
             BWDF as a dictionary
         """
         # Collect bond lengths, atom labels and bond strengths
-        bond_lengths = np.array(self.icoxxlist.icohpcollection._list_length)
-        atoms1 = np.array(self.icoxxlist.icohpcollection._list_atom1)
-        atoms2 = np.array(self.icoxxlist.icohpcollection._list_atom2)
-        icoxxs = np.array([sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp])
+        bond_lengths = self.icoxxlist.icohpcollection._list_length
+        atoms1 = self.icoxxlist.icohpcollection._list_atom1
+        atoms2 = self.icoxxlist.icohpcollection._list_atom2
+        icoxxs = [sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp]
+        trans = [list(item) for item in self.icoxxlist.icohpcollection._list_translation]
+        pairs = [sorted([at1, at2]) for at1, at2 in zip(atoms1, atoms2)]
 
-        # Map all data in a single list with tuples
-        all_data = list(zip(atoms1, atoms2, bond_lengths, icoxxs))
+        # Sorted icoxx data without icoxx
+        all_icoxx_data = sorted(zip(pairs, bond_lengths, trans), key=itemgetter(1))
+
+        # Sorted icoxx data with icoxx
+        all_icoxx_data_ic = sorted(zip(pairs, bond_lengths, trans, icoxxs), key=itemgetter(1))
+
+        # Get list of neighbours
+        neighbors_lst = self.structure.get_all_neighbors(r=self.max_length)
+        all_distances = [round(nb[1], 5) for ix, item in enumerate(neighbors_lst) for nb in item]
+        all_trans = [[int(img) for img in nb[3]] for ix, item in enumerate(neighbors_lst) for nb in item]
+        all_pairs = [
+            sorted([nb[0].species_string + str(nb[2] + 1), self.structure[ix].species_string + str(ix + 1)])
+            for ix, item in enumerate(neighbors_lst)
+            for nb in item
+        ]
+
+        # Assimilate all neighbours data in a single list
+        all_rdf_data = sorted(zip(all_pairs, all_distances, all_trans), key=itemgetter(1))
+
+        # Initialize a empty list to store the data that goes in BWDF computation
+        # and collect interactions not in ICOXXLIST
+        complete_data, missing_interactions = [], []
+
+        # Check if interaction exists in both rdf data / icoxx data, then add to complete data
+        for _ix, item in enumerate(all_rdf_data):
+            for ij, item2 in enumerate(all_icoxx_data):
+                if item == item2:
+                    complete_data.append((*item, all_icoxx_data_ic[ij][3]))
+            if item not in all_icoxx_data:  # missing then collect it in missing interactions
+                missing_interactions.append(item)
+
+        # Missing interactions are usually reverse images which LOBSTER sometimes eliminates
+        for item in missing_interactions:
+            item2_mod = list(item)
+            item2_mod[-1] = list(-1 * np.array(item[-1]))  # get the translation image and reverse its direction
+            item2_mod = tuple(item2_mod)  # type: ignore
+            if item2_mod in all_icoxx_data:  # Now check if this interaction exists
+                # get index of interaction to extract corresponding icoxx
+                index_of_ic = all_icoxx_data.index(item2_mod)  # type: ignore
+                complete_data.append((*item, all_icoxx_data_ic[index_of_ic][3]))  # add it to the complete data
 
         # Extract unique atomic species and create possible combinations
         species_combinations = [sorted(item) for item in combinations_with_replacement(self.structure.symbol_set, 2)]
@@ -1244,11 +1285,11 @@ class FeaturizeIcoxxlist:
 
         # Populate bins with corresponding icoxx values
         for key in bwdf_atom_pair:
-            for interactions in all_data:
-                sorted_entry = sorted([interactions[0].strip("0123456789"), interactions[1].strip("0123456789")])
+            for interactions in complete_data:
+                sorted_entry = sorted([interactions[0][0].strip("0123456789"), interactions[0][1].strip("0123456789")])
                 if key == "-".join(sorted_entry):
                     for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
-                        if interactions[2] >= l1 and interactions[2] < l2:
+                        if interactions[1] >= l1 and interactions[1] < l2:
                             bwdf_atom_pair[key]["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
 
         icoxx_binned_summed = np.sum(
@@ -1300,13 +1341,54 @@ class FeaturizeIcoxxlist:
         )[0]
 
         # Collect bond lengths, atom labels and bond strengths
-        bond_lengths = np.array(self.icoxxlist.icohpcollection._list_length)[indices]
-        atoms1 = np.array(self.icoxxlist.icohpcollection._list_atom1)[indices]
-        atoms2 = np.array(self.icoxxlist.icohpcollection._list_atom2)[indices]
-        icoxxs = np.array([sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp])[indices]
+        bond_lengths = np.array(self.icoxxlist.icohpcollection._list_length)[indices].tolist()
+        atoms1 = np.array(self.icoxxlist.icohpcollection._list_atom1)[indices].tolist()
+        atoms2 = np.array(self.icoxxlist.icohpcollection._list_atom2)[indices].tolist()
+        icoxxs = np.array([sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp])[indices].tolist()
+        trans = [list(item) for item in np.array(self.icoxxlist.icohpcollection._list_translation)[indices]]
+        pairs = [sorted([at1, at2]) for at1, at2 in zip(atoms1, atoms2)]
 
-        # Map all data in a single list with tuples
-        all_data = list(zip(atoms1, atoms2, bond_lengths, icoxxs))
+        # Get list of neighbours
+        neighbors_lst = self.structure.get_neighbors(r=self.max_length, site=self.structure.sites[site_index])
+        all_distances = [round(nb[1], 5) for ix, nb in enumerate(neighbors_lst)]
+        all_trans = [[int(img) for img in nb[3]] for ix, nb in enumerate(neighbors_lst)]
+        all_pairs = [
+            sorted(
+                [nb[0].species_string + str(nb[2] + 1), self.structure[site_index].species_string + str(site_index + 1)]
+            )
+            for ix, nb in enumerate(neighbors_lst)
+        ]
+
+        # Sorted icoxx data without icoxx
+        all_icoxx_data = sorted(zip(pairs, bond_lengths, trans), key=itemgetter(1))
+
+        # Sorted icoxx data with icoxx
+        all_icoxx_data_ic = sorted(zip(pairs, bond_lengths, trans, icoxxs), key=itemgetter(1))
+
+        # Assimilate all neighbours data in a single list
+        all_rdf_data = sorted(zip(all_pairs, all_distances, all_trans), key=itemgetter(1))
+
+        # Initialize a empty list to store the data that goes in BWDF computation
+        # and collect interactions not in ICOXXLIST
+        complete_data, missing_interactions = [], []
+
+        # Check if interaction exists in both rdf data / icoxx data, then add to complete data
+        for _ix, item in enumerate(all_rdf_data):
+            for ij, item2 in enumerate(all_icoxx_data):
+                if item == item2:
+                    complete_data.append((*item, all_icoxx_data_ic[ij][3]))
+            if item not in all_icoxx_data:  # missing then collect it in missing interactions
+                missing_interactions.append(item)
+
+        # Missing interactions are usually reverse images which LOBSTER sometimes eliminates
+        for item in missing_interactions:
+            item2_mod = list(item)
+            item2_mod[-1] = list(-1 * np.array(item[-1]))  # get the translation image and reverse its direction
+            item2_mod = tuple(item2_mod)  # type: ignore
+            if item2_mod in all_icoxx_data:  # Now check if this interaction exists
+                # get index of interaction to extract corresponding icoxx
+                index_of_ic = all_icoxx_data.index(item2_mod)  # type: ignore
+                complete_data.append((*item, all_icoxx_data_ic[index_of_ic][3]))  # add it to the complete data
 
         # Calculate number of bins
         n_bins = int(np.ceil((self.max_length - self.min_length) / self.bin_width))
@@ -1318,9 +1400,9 @@ class FeaturizeIcoxxlist:
         # Initialize dictionary for storing binned data by atom pair
         site_bwdf = {"icoxx_binned": np.zeros(bin_centers.shape)}
 
-        for interactions in all_data:
+        for interactions in complete_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
-                if interactions[2] >= l1 and interactions[2] < l2:
+                if interactions[1] >= l1 and interactions[1] < l2:
                     site_bwdf["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
 
         site_bwdf["centers"] = bin_centers
@@ -1349,7 +1431,7 @@ class FeaturizeIcoxxlist:
         """
         features = []
         for edge_1, edge_2 in zip(bwdf["edges"][:-1], bwdf["edges"][1:]):
-            features.append(f"bwdf_{round(edge_1,2)}-{round(edge_2,2)}")
+            features.append(f"bwdf_{round(edge_1, 2)}-{round(edge_2, 2)}")
 
         return features
 
