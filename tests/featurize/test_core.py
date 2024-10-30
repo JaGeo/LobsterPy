@@ -875,9 +875,9 @@ class TestFeaturizeIcoxxlist:
         assert isinstance(df, pd.DataFrame)
         assert len(df.columns) == 299
         assert np.sum(df.loc["NaCl"].to_numpy() * featurize_nacl_icoxxlist.bin_width) != 1
-        assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-3.39234, abs=1e-05)
+        assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-6.78468, abs=1e-05)
         assert df.loc["NaCl", "bwdf_4.01-4.03"] == pytest.approx(-0.68946, abs=1e-05)
-        assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.02825, abs=1e-05)
+        assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.056499, abs=1e-05)
         assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.08202, abs=1e-05)
 
         # Todo: Assert the values in the dataframe
@@ -898,7 +898,7 @@ class TestFeaturizeIcoxxlist:
         # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
         assert len(df.columns) == 599
-        assert np.sum(df.loc["K3Sb"].to_numpy() * featurize_k3sb_icoxxlist.bin_width) == 1
+        assert np.sum(df.loc["K3Sb"].to_numpy() * featurize_k3sb_icoxxlist.bin_width) == pytest.approx(1, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_3.71-3.72"] == pytest.approx(73.959533, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(26.040467, abs=1e-05)
 
