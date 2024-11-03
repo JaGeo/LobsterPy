@@ -83,7 +83,7 @@ It is also possible to start this automatic analysis from a Python script. See "
 
 
 ## How to cite?
-Please cite our papers: 
+Please cite our papers:
 * A. A. Naik, K. Ueltzen, C. Ertural, A. J. Jackson, J. George, *Journal of Open Source Software* **2024**, *9*, 6286. [https://joss.theoj.org/papers/10.21105/joss.06286](https://joss.theoj.org/papers/10.21105/joss.06286).
 * J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, *ChemPlusChem* **2022**, *87*, e202200123. [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123) (Information on the methodology of the automatic analysis)
 
