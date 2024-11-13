@@ -72,9 +72,6 @@ class TestCLI:
 
     @pytest.mark.parametrize("args", test_cases)
     def test_cli_results(self, args, capsys, inject_mocks, clean_plot):
-        # Use Ubuntu default backend for consistency across OS
-        mpl.use("agg")
-
         test = get_parser().parse_args(args)
         run(test)
 
