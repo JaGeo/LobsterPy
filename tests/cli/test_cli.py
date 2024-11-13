@@ -9,7 +9,6 @@ import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.style
 import numpy as np
