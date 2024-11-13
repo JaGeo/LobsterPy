@@ -49,6 +49,7 @@ error_test_cases = [
     (["plot", "1", "--orbitalwise", "1s-1s"], IndexError),
 ]
 
+
 class TestCLI:
     @pytest.fixture
     def inject_mocks(self, mocker):  # noqa: PT004
@@ -71,7 +72,6 @@ class TestCLI:
 
     @pytest.mark.parametrize("args", test_cases)
     def test_cli_results(self, args, capsys, inject_mocks, clean_plot):
-
         # Use non-interactive Agg matplotlib backend to get consistent results across OS
         mpl.use("Agg")
 
