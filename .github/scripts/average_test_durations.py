@@ -55,7 +55,7 @@ def main():
 
     # Merge and update with consolidated durations
     updated_durations = {}
-    for test in collected_tests:
+    for test, duration in collected_tests.items():
         # Update average test durations and exclude test which not exists (can happen on renaming or removing tests)
         if test in consolidated_durations:
             updated_durations[test] = consolidated_durations[test]
