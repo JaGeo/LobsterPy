@@ -1179,7 +1179,7 @@ class FeaturizeIcoxxlist:
         bin_width: float = 0.02,
         max_length: float = 6.0,
         min_length: float = 0.0,
-        normalization: Literal["formula_units", "area", "none"] = "formula_units",
+        normalization: Literal["formula_units", "area", "ein", "none"] = "formula_units",
         are_cobis: bool = False,
         are_coops: bool = False,
     ):
@@ -1269,9 +1269,6 @@ class FeaturizeIcoxxlist:
         # Extract unique atomic species and create possible combinations
         species_combinations = [sorted(item) for item in combinations_with_replacement(self.structure.symbol_set, 2)]
 
-        # Initialize dictionary for storing binned data by atom pair
-        bwdf_atom_pair = {"-".join(atom_pair): {"icoxx_binned": None} for atom_pair in species_combinations}
-
         # Calculate number of bins
         n_bins = int(np.ceil((self.max_length - self.min_length) / self.bin_width))
 
@@ -1279,9 +1276,14 @@ class FeaturizeIcoxxlist:
         bin_edges = np.round(np.linspace(self.min_length, self.max_length, n_bins), 5)
         bin_centers = bin_edges[:-1] + self.bin_width / 2
 
+        # Initialize dictionary for storing binned data by atom pair
+        bwdf_atom_pair = {
+            "-".join(atom_pair): {"icoxx_binned": np.zeros(bin_centers.shape)} for atom_pair in species_combinations
+        }
+
         # Initialize binned data
-        for atom_pair in bwdf_atom_pair:
-            bwdf_atom_pair[atom_pair]["icoxx_binned"] = np.zeros(bin_centers.shape)
+        # for atom_pair in bwdf_atom_pair:
+        #    bwdf_atom_pair[atom_pair]["icoxx_binned"] = np.zeros(bin_centers.shape)
 
         # Populate bins with corresponding icoxx values
         for key in bwdf_atom_pair:
@@ -1289,7 +1291,7 @@ class FeaturizeIcoxxlist:
                 sorted_entry = sorted([interactions[0][0].strip("0123456789"), interactions[0][1].strip("0123456789")])
                 if key == "-".join(sorted_entry):
                     for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
-                        if interactions[1] >= l1 and interactions[1] < l2:
+                        if l1 <= interactions[1] < l2:
                             bwdf_atom_pair[key]["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
 
         icoxx_binned_summed = np.sum(
@@ -1311,6 +1313,12 @@ class FeaturizeIcoxxlist:
                     bwdf_atom_pair[atom_pair]["icoxx_binned"] = (
                         bwdf_atom_pair[atom_pair]["icoxx_binned"] / formula_units
                     )
+                elif self.normalization == "ein":
+                    all_icoxxs = np.array([interactions[3] for interactions in complete_data])
+                    icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
+                    weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
+                    ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
+                    bwdf_atom_pair[atom_pair]["icoxx_binned"] = bwdf_atom_pair[atom_pair]["icoxx_binned"] / ein
 
         return bwdf_atom_pair
 
@@ -1402,7 +1410,7 @@ class FeaturizeIcoxxlist:
 
         for interactions in complete_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
-                if interactions[1] >= l1 and interactions[1] < l2:
+                if l1 <= interactions[1] < l2:
                     site_bwdf["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
 
         site_bwdf["centers"] = bin_centers
@@ -1415,6 +1423,12 @@ class FeaturizeIcoxxlist:
         elif self.normalization == "formula_units":
             formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
             site_bwdf["icoxx_binned"] = site_bwdf["icoxx_binned"] / formula_units
+        elif self.normalization == "ein":
+            all_icoxxs = np.array([interactions[3] for interactions in complete_data])
+            icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
+            weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
+            ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
+            site_bwdf["icoxx_binned"] = site_bwdf["icoxx_binned"] / ein
 
         return site_bwdf
 
@@ -1450,7 +1464,7 @@ class FeaturizeIcoxxlist:
 
         for interactions in complete_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
-                if interactions[1] >= l1 and interactions[1] < l2:
+                if l1 <= interactions[1] < l2:
                     label_bwdf["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
 
         label_bwdf["centers"] = bin_centers
@@ -1463,6 +1477,12 @@ class FeaturizeIcoxxlist:
         elif self.normalization == "formula_units":
             formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
             label_bwdf["icoxx_binned"] = label_bwdf["icoxx_binned"] / formula_units
+        elif self.normalization == "ein":
+            all_icoxxs = np.array([interactions[3] for interactions in complete_data])
+            icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
+            weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
+            ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
+            label_bwdf["icoxx_binned"] = label_bwdf["icoxx_binned"] / ein
 
         return label_bwdf
 
