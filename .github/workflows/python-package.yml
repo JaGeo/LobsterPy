@@ -80,7 +80,7 @@ jobs:
 
     - name: Upload test durations artifact
       if: matrix.python-version == '3.10'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-durations-${{ matrix.python-version }}-${{ matrix.split }}
         include-hidden-files: true
@@ -145,6 +145,8 @@ jobs:
 
     - name: Download test duration artifacts
       uses: actions/download-artifact@v4
+      with:
+        pattern: test-durations-*
 
     - name: Compute average of test durations
       run: |
