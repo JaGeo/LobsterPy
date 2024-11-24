@@ -146,7 +146,7 @@ jobs:
     - name: Download test duration artifacts
       uses: actions/download-artifact@v4
       with:
-           pattern: test-durations-*
+        pattern: test-durations-*
 
     - name: Compute average of test durations
       run: |
