@@ -1210,6 +1210,33 @@ class FeaturizeIcoxxlist:
         self.min_length = min_length
         self.normalization = normalization
 
+    def _normalize_bwdf(self, bwdf: dict, complete_data: list) -> dict:
+        """
+        Normalize BWDF data based on the normalization strategy.
+
+        :param bwdf: BWDF data as a dictionary
+        :param complete_data: complete data from which BWDF is computed
+
+        Returns:
+            Normalized BWDF data as a dictionary
+        """
+        for bwdf_label in bwdf:
+            if bwdf_label not in ("centers", "edges", "bin_width"):
+                if self.normalization == "area":
+                    total_area = np.sum(np.abs(bwdf[bwdf_label]["icoxx_binned"]) * self.bin_width)
+                    bwdf[bwdf_label]["icoxx_binned"] = bwdf[bwdf_label]["icoxx_binned"] / total_area
+                elif self.normalization == "formula_units":
+                    formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
+                    bwdf[bwdf_label]["icoxx_binned"] = bwdf[bwdf_label]["icoxx_binned"] / formula_units
+                elif self.normalization == "ein":
+                    all_icoxxs = np.array([interactions[3] for interactions in complete_data])
+                    icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
+                    weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
+                    ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
+                    bwdf[bwdf_label]["icoxx_binned"] = bwdf[bwdf_label]["icoxx_binned"] / ein
+
+        return bwdf
+
     def calc_bwdf(self):
         """
         Compute BWDF from ICOXXLIST.lobster data.
@@ -1244,7 +1271,7 @@ class FeaturizeIcoxxlist:
         # Assimilate all neighbours data in a single list
         all_rdf_data = sorted(zip(all_pairs, all_distances, all_trans), key=itemgetter(1))
 
-        # Initialize a empty list to store the data that goes in BWDF computation
+        # Initialize an empty list to store the data that goes in BWDF computation
         # and collect interactions not in ICOXXLIST
         complete_data, missing_interactions = [], []
 
@@ -1281,10 +1308,6 @@ class FeaturizeIcoxxlist:
             "-".join(atom_pair): {"icoxx_binned": np.zeros(bin_centers.shape)} for atom_pair in species_combinations
         }
 
-        # Initialize binned data
-        # for atom_pair in bwdf_atom_pair:
-        #    bwdf_atom_pair[atom_pair]["icoxx_binned"] = np.zeros(bin_centers.shape)
-
         # Populate bins with corresponding icoxx values
         for key in bwdf_atom_pair:
             for interactions in complete_data:
@@ -1303,24 +1326,8 @@ class FeaturizeIcoxxlist:
         bwdf_atom_pair["edges"] = bin_edges
         bwdf_atom_pair["bin_width"] = self.bin_width
 
-        for atom_pair in bwdf_atom_pair:
-            if atom_pair not in ("centers", "edges", "bin_width"):
-                if self.normalization == "area":
-                    total_area = np.sum(np.abs(bwdf_atom_pair[atom_pair]["icoxx_binned"]) * self.bin_width)
-                    bwdf_atom_pair[atom_pair]["icoxx_binned"] = bwdf_atom_pair[atom_pair]["icoxx_binned"] / total_area
-                elif self.normalization == "formula_units":
-                    formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
-                    bwdf_atom_pair[atom_pair]["icoxx_binned"] = (
-                        bwdf_atom_pair[atom_pair]["icoxx_binned"] / formula_units
-                    )
-                elif self.normalization == "ein":
-                    all_icoxxs = np.array([interactions[3] for interactions in complete_data])
-                    icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
-                    weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
-                    ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
-                    bwdf_atom_pair[atom_pair]["icoxx_binned"] = bwdf_atom_pair[atom_pair]["icoxx_binned"] / ein
-
-        return bwdf_atom_pair
+        # Normalize BWDF data
+        return self._normalize_bwdf(bwdf=bwdf_atom_pair, complete_data=complete_data)
 
     def calc_site_bwdf(self, site_index: int) -> dict:
         """
@@ -1406,31 +1413,19 @@ class FeaturizeIcoxxlist:
         bin_centers = bin_edges[:-1] + self.bin_width / 2
 
         # Initialize dictionary for storing binned data by atom pair
-        site_bwdf = {"icoxx_binned": np.zeros(bin_centers.shape)}
+        site_bwdf = {f"{site_index}": {"icoxx_binned": np.zeros(bin_centers.shape)}}
 
         for interactions in complete_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
                 if l1 <= interactions[1] < l2:
-                    site_bwdf["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
+                    site_bwdf[f"{site_index}"]["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
 
         site_bwdf["centers"] = bin_centers
         site_bwdf["edges"] = bin_edges
-        site_bwdf["bin_width"] = self.bin_width
+        site_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
 
-        if self.normalization == "area":
-            total_area = np.sum(np.abs(site_bwdf["icoxx_binned"]) * self.bin_width)
-            site_bwdf["icoxx_binned"] = site_bwdf["icoxx_binned"] / total_area
-        elif self.normalization == "formula_units":
-            formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
-            site_bwdf["icoxx_binned"] = site_bwdf["icoxx_binned"] / formula_units
-        elif self.normalization == "ein":
-            all_icoxxs = np.array([interactions[3] for interactions in complete_data])
-            icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
-            weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
-            ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
-            site_bwdf["icoxx_binned"] = site_bwdf["icoxx_binned"] / ein
-
-        return site_bwdf
+        # Normalize BWDF data
+        return self._normalize_bwdf(bwdf=site_bwdf, complete_data=complete_data)
 
     def calc_label_bwdf(self, bond_label: str) -> dict:
         """
@@ -1460,31 +1455,19 @@ class FeaturizeIcoxxlist:
         bin_centers = bin_edges[:-1] + self.bin_width / 2
 
         # Initialize dictionary for storing binned data by atom pair
-        label_bwdf = {"icoxx_binned": np.zeros(bin_centers.shape)}
+        label_bwdf = {bond_label: {"icoxx_binned": np.zeros(bin_centers.shape)}}
 
         for interactions in complete_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
                 if l1 <= interactions[1] < l2:
-                    label_bwdf["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
+                    label_bwdf[bond_label]["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
 
         label_bwdf["centers"] = bin_centers
         label_bwdf["edges"] = bin_edges
-        label_bwdf["bin_width"] = self.bin_width
+        label_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
 
-        if self.normalization == "area":
-            total_area = np.sum(np.abs(label_bwdf["icoxx_binned"]) * self.bin_width)
-            label_bwdf["icoxx_binned"] = label_bwdf["icoxx_binned"] / total_area
-        elif self.normalization == "formula_units":
-            formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
-            label_bwdf["icoxx_binned"] = label_bwdf["icoxx_binned"] / formula_units
-        elif self.normalization == "ein":
-            all_icoxxs = np.array([interactions[3] for interactions in complete_data])
-            icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
-            weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
-            ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
-            label_bwdf["icoxx_binned"] = label_bwdf["icoxx_binned"] / ein
-
-        return label_bwdf
+        # Normalize BWDF data
+        return self._normalize_bwdf(bwdf=label_bwdf, complete_data=complete_data)
 
     @staticmethod
     def _get_features_col_names(bwdf: dict) -> list[str]:
@@ -1528,7 +1511,7 @@ class FeaturizeIcoxxlist:
             ids = Path(self.path_to_icoxxlist).parent.name
             df = pd.DataFrame(index=[ids], columns=column_names)
 
-        for icoxx_weight, col in zip(site_bwdf["icoxx_binned"], column_names):
+        for icoxx_weight, col in zip(site_bwdf[f"{site_index}"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
 
         return df
