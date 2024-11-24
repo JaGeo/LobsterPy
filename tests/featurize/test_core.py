@@ -887,7 +887,7 @@ class TestFeaturizeIcoxxlist:
         # Test for label bwdf
         bwdf_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="4")
         assert isinstance(bwdf_label, dict)
-        assert bwdf_label["icoxx_binned"][283] == pytest.approx(-0.00034, abs=1e-05)
+        assert bwdf_label["4"]["icoxx_binned"][283] == pytest.approx(-0.00034, abs=1e-05)
 
     def test_featurize_k3sb_icoxxlist(self):
         # Test for area normalization, n_bins
