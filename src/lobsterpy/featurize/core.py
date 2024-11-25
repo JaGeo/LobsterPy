@@ -23,6 +23,7 @@ from pymatgen.electronic_structure.core import Spin
 from pymatgen.io.lobster import Charge, Doscar, Icohplist, MadelungEnergies
 from scipy.integrate import trapezoid
 from scipy.signal import hilbert
+from scipy.stats import kurtosis, skew
 
 from lobsterpy.cohp.analyze import Analysis
 
@@ -1165,6 +1166,7 @@ class FeaturizeIcoxxlist:
     :param path_to_icoxxlist: path to ICOXXLIST.lobster
     :param path_to_structure: path to POSCAR
     :param bin_width: bin width for the BWDF
+    :param interactions_tol: tolerance for interactions
     :param max_length: maximum bond length for BWDF computation
     :param min_length: minimum bond length for BWDF computation
     :param normalization: normalization strategy for BWDF
@@ -1177,6 +1179,7 @@ class FeaturizeIcoxxlist:
         path_to_icoxxlist: str | Path,
         path_to_structure: str | Path,
         bin_width: float = 0.02,
+        interactions_tol: float = 1e-3,
         max_length: float = 6.0,
         min_length: float = 0.0,
         normalization: Literal["formula_units", "area", "ein", "none"] = "formula_units",
@@ -1189,6 +1192,7 @@ class FeaturizeIcoxxlist:
         :param path_to_icoxxlist: path to ICOXXLIST.lobster
         :param path_to_structure: path to POSCAR
         :param bin_width: bin width for the BWDF
+        :param interactions_tol: tolerance for interactions
         :param max_length: maximum bond length for BWDF computation
         :param min_length: minimum bond length for BWDF computation
         :param normalization: normalization strategy for BWDF
@@ -1205,6 +1209,7 @@ class FeaturizeIcoxxlist:
             are_cobis=self.are_cobis,
             are_coops=self.are_coops,
         )
+        self.interactions_tol = interactions_tol
         self.structure = Structure.from_file(self.path_to_structure)
         self.max_length = max_length
         self.min_length = min_length
@@ -1315,7 +1320,10 @@ class FeaturizeIcoxxlist:
                 if key == "-".join(sorted_entry):
                     for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
                         if l1 <= interactions[1] < l2:
-                            bwdf_atom_pair[key]["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
+                            # Add icoxx values to the corresponding bin
+                            bwdf_atom_pair[key]["icoxx_binned"][ii] += (
+                                interactions[3] if abs(interactions[3]) > self.interactions_tol else 0
+                            )
 
         icoxx_binned_summed = np.sum(
             [bwdf_atom_pair[atom_pair]["icoxx_binned"] for atom_pair in bwdf_atom_pair], axis=0
@@ -1418,7 +1426,10 @@ class FeaturizeIcoxxlist:
         for interactions in complete_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
                 if l1 <= interactions[1] < l2:
-                    site_bwdf[f"{site_index}"]["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
+                    # Add icoxx values to the corresponding bin
+                    site_bwdf[f"{site_index}"]["icoxx_binned"][ii] += (
+                        interactions[3] if abs(interactions[3]) > self.interactions_tol else 0
+                    )
 
         site_bwdf["centers"] = bin_centers
         site_bwdf["edges"] = bin_edges
@@ -1460,8 +1471,10 @@ class FeaturizeIcoxxlist:
         for interactions in complete_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
                 if l1 <= interactions[1] < l2:
-                    label_bwdf[bond_label]["icoxx_binned"][ii] += interactions[3]  # sum icoxx values in the bin
-
+                    # Add icoxx values to the corresponding bin
+                    label_bwdf[bond_label]["icoxx_binned"][ii] += (
+                        interactions[3] if abs(interactions[3]) > self.interactions_tol else 0
+                    )
         label_bwdf["centers"] = bin_centers
         label_bwdf["edges"] = bin_edges
         label_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
@@ -1513,5 +1526,28 @@ class FeaturizeIcoxxlist:
 
         for icoxx_weight, col in zip(site_bwdf[f"{site_index}"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
+
+        return df
+
+    def get_bwdf_stats(self):
+        """Return a pandas dataframe with statical info from BWDF as columns."""
+        bwdf = self.calc_bwdf()
+        bin_weights = np.abs(bwdf["summed"]["icoxx_binned"] / np.sum(bwdf["summed"]["icoxx_binned"]))
+        column_names = ["bwdf_w_mean", "bwdf_w_std", "bwdf_min", "bwdf_max", "bwdf_w_skew", "bwdf_w_kurtosis"]
+        df = pd.DataFrame(index=[Path(self.path_to_icoxxlist).parent.name], columns=column_names)
+
+        w_bwdf_mean = np.average(bwdf["summed"]["icoxx_binned"], weights=bin_weights)
+        w_bwdf_std = np.sqrt(np.average((bwdf["summed"]["icoxx_binned"] - w_bwdf_mean) ** 2, weights=bin_weights))
+
+        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_w_mean"] = w_bwdf_mean
+        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_w_std"] = w_bwdf_std
+        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_min"] = np.min(bwdf["summed"]["icoxx_binned"])
+        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_max"] = np.max(bwdf["summed"]["icoxx_binned"])
+        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_w_skew"] = skew(
+            bwdf["summed"]["icoxx_binned"] * bin_weights
+        )
+        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_w_kurtosis"] = kurtosis(
+            bwdf["summed"]["icoxx_binned"] * bin_weights
+        )
 
         return df
