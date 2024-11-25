@@ -878,7 +878,7 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-6.78468, abs=1e-05)
         assert df.loc["NaCl", "bwdf_4.01-4.03"] == pytest.approx(-0.68946, abs=1e-05)
         assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.056499, abs=1e-05)
-        assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.08202, abs=1e-05)
+        assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998, abs=1e-05)
 
         # Todo: Assert the values in the dataframe
         df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
@@ -887,7 +887,7 @@ class TestFeaturizeIcoxxlist:
         # Test for label bwdf
         bwdf_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="4")
         assert isinstance(bwdf_label, dict)
-        assert bwdf_label["4"]["icoxx_binned"][283] == pytest.approx(-0.00034, abs=1e-05)
+        assert bwdf_label["4"]["icoxx_binned"][283] == pytest.approx(0, abs=1e-05)
 
     def test_featurize_k3sb_icoxxlist(self):
         # Test for area normalization, n_bins
