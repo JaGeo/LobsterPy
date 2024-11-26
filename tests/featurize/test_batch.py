@@ -678,7 +678,8 @@ class TestBatchDosFeaturizer:
 class TestBatchIcoxxlistFeaturizer:
     def test_batch_icohplist_featurizer(self):
         batch_icohp = BatchIcoxxlistFeaturizer(
-            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs", n_jobs=3, bin_width=0.5
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs", n_jobs=3, bin_width=0.5,
+            bwdf_df_type="complete",
         )
 
         df_icohp = batch_icohp.get_df()
@@ -715,6 +716,7 @@ class TestBatchIcoxxlistFeaturizer:
             n_jobs=3,
             bin_width=0.5,
             read_icobis=True,
+            bwdf_df_type="complete",
         )
 
         df_icobi = batch_icobi.get_df()
@@ -751,6 +753,7 @@ class TestBatchIcoxxlistFeaturizer:
             n_jobs=3,
             bin_width=0.5,
             read_icoops=True,
+            bwdf_df_type="complete",
         )
 
         df_icoop = batch_icoop.get_df()
