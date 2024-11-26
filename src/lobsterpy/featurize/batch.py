@@ -862,8 +862,10 @@ class BatchIcoxxlistFeaturizer:
     def __init__(
         self,
         path_to_lobster_calcs: str | Path,
-        normalization: Literal["formula_units", "area", "ein", "none"] = "formula_units",
+        normalization: Literal["formula_units", "area", "ein", "counts", "none"] = "formula_units",
         bin_width: float = 0.02,
+        bwdf_df_type: Literal["complete", "stats"] = "stats",
+        interactions_tol: float = 1e-3,
         max_length: float = 6.0,
         min_length: float = 0.0,
         read_icobis: bool = False,
@@ -878,6 +880,8 @@ class BatchIcoxxlistFeaturizer:
         :param min_length: minimum bond length for BWDF computation
         :param normalization: normalization strategy for BWDF
         :param bin_width: bin width for BWDF
+        :param bwdf_df_type: type of BWDF dataframe to generate
+        :param interactions_tol: tolerance for interactions
         :param read_icobis: bool to state to read ICOBILIST.lobster from the path
         :param read_icoops: bool to state to read ICOOPLIST.lobster from the path
         :param n_jobs: number of parallel processes to run
@@ -887,6 +891,8 @@ class BatchIcoxxlistFeaturizer:
         self.max_length = max_length
         self.min_length = min_length
         self.bin_width = bin_width
+        self.interactions_tol = interactions_tol
+        self.bwdf_df_type = bwdf_df_type
         self.read_icobis = read_icobis
         self.read_icoops = read_icoops
         self.n_jobs = n_jobs
@@ -894,6 +900,8 @@ class BatchIcoxxlistFeaturizer:
     def _get_icoxxlist_bwdf_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
         Featurize ICOXXLIST data using FeaturizeCOXX.
+
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory
 
         Returns:
             A pandas dataframe with computed ICOXXLIST moment features
@@ -907,6 +915,7 @@ class BatchIcoxxlistFeaturizer:
                 path_to_icoxxlist=file_paths.get("icobilist"),
                 path_to_structure=file_paths.get("structure"),
                 bin_width=self.bin_width,
+                interactions_tol=self.interactions_tol,
                 normalization=self.normalization,
                 max_length=self.max_length,
                 min_length=self.min_length,
@@ -922,6 +931,7 @@ class BatchIcoxxlistFeaturizer:
                 path_to_icoxxlist=file_paths.get("icooplist"),
                 path_to_structure=file_paths.get("structure"),
                 bin_width=self.bin_width,
+                interactions_tol=self.interactions_tol,
                 normalization=self.normalization,
                 max_length=self.max_length,
                 min_length=self.min_length,
@@ -937,6 +947,7 @@ class BatchIcoxxlistFeaturizer:
                 path_to_icoxxlist=file_paths.get("icohplist"),
                 path_to_structure=file_paths.get("structure"),
                 bin_width=self.bin_width,
+                interactions_tol=self.interactions_tol,
                 normalization=self.normalization,
                 max_length=self.max_length,
                 min_length=self.min_length,
@@ -944,7 +955,9 @@ class BatchIcoxxlistFeaturizer:
                 are_coops=self.read_icoops,
             )
 
-        return feat_icoxx.get_df()
+        if self.bwdf_df_type == "complete":
+            return feat_icoxx.get_df()
+        return feat_icoxx.get_bwdf_stats()
 
     def get_df(self) -> pd.DataFrame:
         """
