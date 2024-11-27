@@ -1215,12 +1215,13 @@ class FeaturizeIcoxxlist:
         self.min_length = min_length
         self.normalization = normalization
 
-    def _normalize_bwdf(self, bwdf: dict, complete_data: list) -> dict:
+    def _normalize_bwdf(self, bwdf: dict, icoxx_values: np.ndarray, icoxx_indexes: dict) -> dict:
         """
         Normalize BWDF data based on the normalization strategy.
 
         :param bwdf: BWDF data as a dictionary
-        :param complete_data: complete data from which BWDF is computed
+        :param icoxx_values: ICOXX values used in BWDF computation
+        :param icoxx_indexes: indexes of icoxx from complete data from which BWDF is computed
 
         Returns:
             Normalized BWDF data as a dictionary
@@ -1229,16 +1230,16 @@ class FeaturizeIcoxxlist:
             if bwdf_label not in ("centers", "edges", "bin_width"):
                 if self.normalization == "area":
                     total_area = np.sum(np.abs(bwdf[bwdf_label]["icoxx_binned"]) * self.bin_width)
-                    bwdf[bwdf_label]["icoxx_binned"] = bwdf[bwdf_label]["icoxx_binned"] / total_area
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf[bwdf_label]["icoxx_binned"] / total_area)
                 elif self.normalization == "formula_units":
                     formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
-                    bwdf[bwdf_label]["icoxx_binned"] = bwdf[bwdf_label]["icoxx_binned"] / formula_units
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf[bwdf_label]["icoxx_binned"] / formula_units)
                 elif self.normalization == "ein":
-                    all_icoxxs = np.array([interactions[3] for interactions in complete_data])
+                    all_icoxxs = icoxx_values[icoxx_indexes[bwdf_label]]
                     icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
                     weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
                     ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
-                    bwdf[bwdf_label]["icoxx_binned"] = bwdf[bwdf_label]["icoxx_binned"] / ein
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf[bwdf_label]["icoxx_binned"] / ein)
                 elif self.normalization == "counts":
                     bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(
                         bwdf[bwdf_label]["icoxx_binned"] / bwdf[bwdf_label]["icoxx_counts"]
@@ -1321,9 +1322,13 @@ class FeaturizeIcoxxlist:
             for atom_pair in species_combinations
         }
 
+        # Initialize dictionary to collect interactions indexes from complete_data
+        # Used for EIN normalization
+        icoxx_indexes = {"-".join(atom_pair): [] for atom_pair in species_combinations}
+
         # Populate bins with corresponding icoxx values
         for key in bwdf_atom_pair:
-            for interactions in complete_data:
+            for indx, interactions in enumerate(complete_data):
                 sorted_entry = sorted([interactions[0][0].strip("0123456789"), interactions[0][1].strip("0123456789")])
                 if key == "-".join(sorted_entry):
                     for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
@@ -1335,6 +1340,7 @@ class FeaturizeIcoxxlist:
                             bwdf_atom_pair[key]["icoxx_counts"][ii] += (
                                 1 if abs(interactions[3]) > self.interactions_tol else 0
                             )
+                            icoxx_indexes[key].append(indx)
 
         icoxx_binned_summed = np.sum(
             [bwdf_atom_pair[atom_pair]["icoxx_binned"] for atom_pair in bwdf_atom_pair], axis=0
@@ -1342,6 +1348,7 @@ class FeaturizeIcoxxlist:
         icoxx_counts_summed = np.sum(
             [bwdf_atom_pair[atom_pair]["icoxx_counts"] for atom_pair in bwdf_atom_pair], axis=0
         )
+        icoxx_indexes["summed"] = sorted(index for indexes in icoxx_indexes.values() for index in indexes)
 
         bwdf_atom_pair["summed"] = {"icoxx_binned": icoxx_binned_summed, "icoxx_counts": icoxx_counts_summed}
         bwdf_atom_pair["centers"] = bin_centers
@@ -1349,7 +1356,8 @@ class FeaturizeIcoxxlist:
         bwdf_atom_pair["bin_width"] = self.bin_width
 
         # Normalize BWDF data
-        return self._normalize_bwdf(bwdf=bwdf_atom_pair, complete_data=complete_data)
+        icoxx_values = np.array([interactions[3] for interactions in complete_data])
+        return self._normalize_bwdf(bwdf=bwdf_atom_pair, icoxx_values=icoxx_values, icoxx_indexes=icoxx_indexes)
 
     def calc_site_bwdf(self, site_index: int) -> dict:
         """
@@ -1455,7 +1463,9 @@ class FeaturizeIcoxxlist:
         site_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
 
         # Normalize BWDF data
-        return self._normalize_bwdf(bwdf=site_bwdf, complete_data=complete_data)
+        icoxx_values = np.array([interactions[3] for interactions in complete_data])
+        icoxx_indexes = {f"{site_index}": range(0, len(complete_data), 1)}
+        return self._normalize_bwdf(bwdf=site_bwdf, icoxx_values=icoxx_values, icoxx_indexes=icoxx_indexes)
 
     def calc_label_bwdf(self, bond_label: str) -> dict:
         """
@@ -1504,7 +1514,9 @@ class FeaturizeIcoxxlist:
         label_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
 
         # Normalize BWDF data
-        return self._normalize_bwdf(bwdf=label_bwdf, complete_data=complete_data)
+        icoxx_values = np.array([interactions[3] for interactions in complete_data])
+        icoxx_indexes = {bond_label: range(0, len(complete_data), 1)}
+        return self._normalize_bwdf(bwdf=label_bwdf, icoxx_values=icoxx_values, icoxx_indexes=icoxx_indexes)
 
     @staticmethod
     def _get_features_col_names(bwdf: dict) -> list[str]:
