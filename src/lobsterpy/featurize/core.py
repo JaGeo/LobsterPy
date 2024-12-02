@@ -1537,7 +1537,14 @@ class FeaturizeIcoxxlist:
         return features
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
-        """Return a pandas dataframe with computed BWDF features as columns."""
+        """Return a pandas dataframe with computed BWDF features as columns.
+
+        Args:
+            ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF features
+        """
         bwdf = self.calc_bwdf()
         column_names = self._get_features_col_names(bwdf=bwdf)
         if ids:
@@ -1552,7 +1559,15 @@ class FeaturizeIcoxxlist:
         return df
 
     def get_site_df(self, site_index: int, ids: str | None = None) -> pd.DataFrame:
-        """Return a pandas dataframe with computed BWDF features for a site as columns."""
+        """Return a pandas dataframe with computed BWDF features for a site as columns.
+
+        Args:
+            site_index: index of the site in a structure for which BWDF needs to be computed
+            ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF features for a site
+        """
         site_bwdf = self.calc_site_bwdf(site_index=site_index)
         column_names = [f"{feat_name}_site_{site_index}" for feat_name in self._get_features_col_names(bwdf=site_bwdf)]
         if ids:
@@ -1566,8 +1581,15 @@ class FeaturizeIcoxxlist:
 
         return df
 
-    def get_bwdf_stats(self):
-        """Return a pandas dataframe with statical info from BWDF as columns."""
+    def get_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with statical info from BWDF as columns.
+
+        Args:
+              ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical info
+        """
         bwdf = self.calc_bwdf()
         bin_weights = np.abs(bwdf["summed"]["icoxx_binned"] / np.sum(bwdf["summed"]["icoxx_binned"]))
         column_names = [
@@ -1581,7 +1603,11 @@ class FeaturizeIcoxxlist:
             "bwdf_w_mean",
             "bwdf_w_std",
         ]
-        df = pd.DataFrame(index=[Path(self.path_to_icoxxlist).parent.name], columns=column_names)
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
 
         w_bwdf_mean = np.average(bwdf["summed"]["icoxx_binned"], weights=bin_weights)
         w_bwdf_std = np.sqrt(np.average((bwdf["summed"]["icoxx_binned"] - w_bwdf_mean) ** 2, weights=bin_weights))
