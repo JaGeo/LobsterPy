@@ -1237,7 +1237,8 @@ class FeaturizeIcoxxlist:
                 elif self.normalization == "ein":
                     all_icoxxs = icoxx_values[icoxx_indexes[bwdf_label]]
                     icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
-                    weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights)
+                    # Handle ZeroDivisionErrors when no bonds exist for an atom-pair
+                    weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights) if all_icoxxs.size else 0
                     ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
                     bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf[bwdf_label]["icoxx_binned"] / ein)
                 elif self.normalization == "counts":
