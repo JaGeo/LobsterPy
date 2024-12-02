@@ -1612,14 +1612,14 @@ class FeaturizeIcoxxlist:
         w_bwdf_mean = np.average(bwdf["summed"]["icoxx_binned"], weights=bin_weights)
         w_bwdf_std = np.sqrt(np.average((bwdf["summed"]["icoxx_binned"] - w_bwdf_mean) ** 2, weights=bin_weights))
 
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_sum"] = np.sum(bwdf["summed"]["icoxx_binned"])
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_mean"] = np.mean(bwdf["summed"]["icoxx_binned"])
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_std"] = np.std(bwdf["summed"]["icoxx_binned"])
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_w_mean"] = w_bwdf_mean
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_w_std"] = w_bwdf_std
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_min"] = np.min(bwdf["summed"]["icoxx_binned"])
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_max"] = np.max(bwdf["summed"]["icoxx_binned"])
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_skew"] = skew(bwdf["summed"]["icoxx_binned"])
-        df.loc[Path(self.path_to_icoxxlist).parent.name, "bwdf_kurtosis"] = kurtosis(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_sum"] = np.sum(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_mean"] = np.mean(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_std"] = np.std(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_w_mean"] = w_bwdf_mean
+        df.loc[ids, "bwdf_w_std"] = w_bwdf_std
+        df.loc[ids, "bwdf_min"] = np.min(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_max"] = np.max(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_skew"] = skew(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_kurtosis"] = kurtosis(bwdf["summed"]["icoxx_binned"])
 
         return df
