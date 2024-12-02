@@ -778,6 +778,17 @@ class TestExceptions:
 
         assert str(err.value) == "LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`"
 
+    def test_featurize_icoxxlist(self):
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
+            self.featurize_cdf_icoxx = FeaturizeIcoxxlist(
+                path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
+                path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
+            )
+
+            _ = self.featurize_cdf_icoxx.get_site_df(site_index=5)
+
+        assert str(err.value) == "5 is not a valid site index for the structure"
+
 
 class TestFeaturizeDoscar:
     def test_featurize_nacl_dos(self):
@@ -897,7 +908,7 @@ class TestFeaturizeIcoxxlist:
             are_cobis=True,
         )
         df = featurize_k3sb_icoxxlist.get_df(ids="K3Sb")
-        df_site = featurize_k3sb_icoxxlist.get_site_df(ids="K3Sb", site_index=3)
+        df_site = featurize_k3sb_icoxxlist.get_site_df(site_index=3)
 
         # Test that the method returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
