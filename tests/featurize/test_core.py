@@ -864,33 +864,31 @@ class TestFeaturizeDoscar:
 
 
 class TestFeaturizeIcoxxlist:
-    def test_featurize_nacl_icoxxlist(self):
+    def test_featurize_nacl_icoxxlist_fu(self):
         featurize_nacl_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
             normalization="formula_units",
         )
         df = featurize_nacl_icoxxlist.get_df(ids="NaCl")
+        df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
+        bwdf_dict_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="4")
 
+        # Test that the function returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
+        assert isinstance(df_site, pd.DataFrame)
+        assert isinstance(bwdf_dict_label, dict)
+
+        # check values
         assert len(df.columns) == 299
         assert np.sum(df.loc["NaCl"].to_numpy() * featurize_nacl_icoxxlist.bin_width) != 1
         assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-6.78468, abs=1e-05)
         assert df.loc["NaCl", "bwdf_4.01-4.03"] == pytest.approx(-0.68946, abs=1e-05)
         assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.056499, abs=1e-05)
         assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998, abs=1e-05)
+        assert bwdf_dict_label["4"]["icoxx_binned"][283] == pytest.approx(0, abs=1e-05)
 
-        # Todo: Assert the values in the dataframe
-        df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
-        assert isinstance(df_site, pd.DataFrame)
-
-        # Test for label bwdf
-        bwdf_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="4")
-        assert isinstance(bwdf_label, dict)
-        assert bwdf_label["4"]["icoxx_binned"][283] == pytest.approx(0, abs=1e-05)
-
-    def test_featurize_k3sb_icoxxlist(self):
-        # Test for area normalization, n_bins
+    def test_featurize_k3sb_icoxxlist_area(self):
         featurize_k3sb_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOBILIST.lobster.gz",
             path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
@@ -899,37 +897,56 @@ class TestFeaturizeIcoxxlist:
             are_cobis=True,
         )
         df = featurize_k3sb_icoxxlist.get_df(ids="K3Sb")
+        df_site = featurize_k3sb_icoxxlist.get_site_df(ids="K3Sb", site_index=3)
 
-        # Test that the function returns a pandas DataFrame
+        # Test that the method returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)
+        assert isinstance(df_site, pd.DataFrame)
+
+        # check values
         assert len(df.columns) == 599
         assert np.sum(df.loc["K3Sb"].to_numpy() * featurize_k3sb_icoxxlist.bin_width) == pytest.approx(1, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_3.71-3.72"] == pytest.approx(73.959533, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(26.040467, abs=1e-05)
 
-        # Todo: Assert the values in the dataframe
-        df_site = featurize_k3sb_icoxxlist.get_site_df(ids="K3Sb", site_index=3)
-        assert isinstance(df_site, pd.DataFrame)
-
-    def test_featurize_cdf_icoxxlist(self):
-        # Test for min and max_lengths and bin_width
+    def test_featurize_cdf_icoxxlist_ein(self):
         featurize_cdf_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
+            normalization="ein",
             min_length=2.0,
             max_length=4.0,
             bin_width=0.5,
         )
         df = featurize_cdf_icoxxlist.get_df(ids="CdF")
-
-        # Test that the function returns a pandas DataFrame
-        assert isinstance(df, pd.DataFrame)
-        assert len(df.columns) == 3
-
-        expected_columns = ["bwdf_2.0-2.67", "bwdf_2.67-3.33", "bwdf_3.33-4.0"]
-
-        assert sorted(df.columns) == sorted(expected_columns)
-
-        # Todo: Assert the values in the dataframe
         df_site = featurize_cdf_icoxxlist.get_site_df(ids="CdF", site_index=1)
+        df_stats = featurize_cdf_icoxxlist.get_stats_df(ids="CdF")
+
+        # Test that the methods returns expected object type
+        assert isinstance(df, pd.DataFrame)
         assert isinstance(df_site, pd.DataFrame)
+        assert isinstance(df_stats, pd.DataFrame)
+
+        # Test that columns are as expected on changing min_length, max_length and bin width
+        expected_columns = ["bwdf_2.0-2.67", "bwdf_2.67-3.33", "bwdf_3.33-4.0"]
+        assert sorted(df.columns) == sorted(expected_columns)
+        stats_df_expected_columns = [
+            "bwdf_sum",
+            "bwdf_mean",
+            "bwdf_std",
+            "bwdf_min",
+            "bwdf_max",
+            "bwdf_skew",
+            "bwdf_kurtosis",
+            "bwdf_w_mean",
+            "bwdf_w_std",
+        ]
+        assert sorted(df_stats.columns) == sorted(stats_df_expected_columns)
+
+        # check values
+        assert df.loc["CdF", "bwdf_2.0-2.67"] == pytest.approx(-0.859152, abs=1e-05)
+        assert df.loc["CdF", "bwdf_2.67-3.33"] == pytest.approx(0.003411, abs=1e-05)
+        assert df.loc["CdF", "bwdf_3.33-4.0"] == pytest.approx(-0.038271, abs=1e-05)
+        assert df_site.loc["CdF", "bwdf_2.0-2.67_site_1"] == pytest.approx(-0.826642, abs=1e-05)
+        assert df_site.loc["CdF", "bwdf_2.67-3.33_site_1"] == pytest.approx(0.006564, abs=1e-05)
+        assert df_site.loc["CdF", "bwdf_3.33-4.0_site_1"] == pytest.approx(-0.057155, abs=1e-05)
