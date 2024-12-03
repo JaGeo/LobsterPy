@@ -52,13 +52,13 @@ error_test_cases = [
 
 class TestCLI:
     @pytest.fixture
-    def inject_mocks(self, mocker):  # noqa: PT004
+    def inject_mocks(self, mocker):
         # Disable calls to show() so we can get the current figure using gcf()
         mocker.patch("matplotlib.pyplot.show")
         mocker.resetall()
 
     @pytest.fixture
-    def clean_plot(self):  # noqa: PT004
+    def clean_plot(self):
         yield
         plt.close("all")
         matplotlib.style.use("default")
