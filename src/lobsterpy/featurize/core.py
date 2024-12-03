@@ -1226,24 +1226,24 @@ class FeaturizeIcoxxlist:
         Returns:
             Normalized BWDF data as a dictionary
         """
-        for bwdf_label in bwdf:
+        for bwdf_label, bwdf_value in bwdf.items():
             if bwdf_label not in ("centers", "edges", "bin_width"):
                 if self.normalization == "area":
-                    total_area = np.sum(np.abs(bwdf[bwdf_label]["icoxx_binned"]) * self.bin_width)
-                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf[bwdf_label]["icoxx_binned"] / total_area)
+                    total_area = np.sum(np.abs(bwdf_value["icoxx_binned"]) * self.bin_width)
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / total_area)
                 elif self.normalization == "formula_units":
                     formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
-                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf[bwdf_label]["icoxx_binned"] / formula_units)
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / formula_units)
                 elif self.normalization == "ein":
                     all_icoxxs = icoxx_values[icoxx_indexes[bwdf_label]]
                     icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
                     # Handle ZeroDivisionErrors when no bonds exist for an atom-pair
                     weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights) if all_icoxxs.size else 0
                     ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
-                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf[bwdf_label]["icoxx_binned"] / ein)
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / ein)
                 elif self.normalization == "counts":
                     bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(
-                        bwdf[bwdf_label]["icoxx_binned"] / bwdf[bwdf_label]["icoxx_counts"]
+                        bwdf_value["icoxx_binned"] / bwdf_value["icoxx_counts"]
                     )
 
         return bwdf
