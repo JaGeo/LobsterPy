@@ -1,0 +1,1338 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lobsterpy.cohp.describe &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=55384d60" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lobsterpy/cohp/describe';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <img src="../../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="lobsterpy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fundamentals/index.html">Fundamental Aspects</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/tutorial.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/index.html">Python API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.html">lobsterpy.featurize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../about/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2F_modules/lobsterpy/cohp/describe.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lobsterpy.cohp.describe</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) lobsterpy development team</span>
+<span class="c1"># Distributed under the terms of a BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License</span>
+
+<span class="sd">&quot;&quot;&quot;This module defines classes to describe the COHPs automatically.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">lobsterpy.plotting</span> <span class="kn">import</span> <span class="n">InteractiveCohpPlotter</span><span class="p">,</span> <span class="n">PlainCohpPlotter</span>
+
+
+<div class="viewcode-block" id="Description">
+<a class="viewcode-back" href="../../../reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description">[docs]</a>
+<span class="k">class</span> <span class="nc">Description</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class that will write generate a text description for all relevant bonds.</span>
+
+<span class="sd">    It analyses all relevant coordination environments in the system based on electronic structure theory.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_object</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a text description for all relevant bonds.</span>
+
+<span class="sd">        :param analysis_object: Analysis object from lobsterpy.analysis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span> <span class="o">=</span> <span class="n">analysis_object</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_description</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Description.set_description">
+<a class="viewcode-back" href="../../../reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.set_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the descriptions of the structures using the cation names, starting with numbers at 1.</span>
+
+<span class="sd">        Uses the cation names from the lobster files.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span>
+        <span class="c1"># set type of population analyzed</span>
+        <span class="n">type_pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">_get_pop_type</span><span class="p">()</span>
+        <span class="c1"># set units for populations</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="s2">&quot; eV&quot;</span> <span class="k">if</span> <span class="n">type_pop</span> <span class="o">==</span> <span class="s2">&quot;COHP&quot;</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">which_bonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+            <span class="n">relevant_cations</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">specie</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">isite</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">isite</span><span class="p">,</span> <span class="n">site</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">isite</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_ineq_ions</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;The compound &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;formula&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot; has &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;number_of_considered_ions&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot; symmetry-independent cation(s) with relevant cation-anion interactions: &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">relevant_cations</span><span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),</span>
+                <span class="n">bond_info</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">orb_info</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="nb">type</span><span class="p">,</span> <span class="n">properties</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;bonds&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;has_antibdg_states_below_Efermi&quot;</span><span class="p">]:</span>
+                        <span class="n">bond_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">])</span>
+                            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                            <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="s2">&quot;-&quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; (mean I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">: &quot;</span>
+                            <span class="s2">&quot;&quot;</span>
+                            <span class="o">+</span> <span class="n">properties</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">_mean&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s2">, 0.0 percent antibonding interaction below EFermi)&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">orbital_resolved</span><span class="p">:</span>
+                            <span class="n">text_orbital</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_orbital_resolved_analysis_text</span><span class="p">(</span>
+                                <span class="n">orbital_resolved_data</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span>
+                                <span class="n">type_pop</span><span class="o">=</span><span class="n">type_pop</span><span class="p">,</span>
+                                <span class="n">atom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">),</span>
+                                <span class="n">ion</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">],</span>
+                            <span class="p">)</span>
+                            <span class="n">orb_info</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">text_orbital</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">bond_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">])</span>
+                            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                            <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="s2">&quot;-&quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; (mean I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">: &quot;</span>
+                            <span class="s2">&quot;&quot;</span>
+                            <span class="o">+</span> <span class="n">properties</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">_mean&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s2">, &quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;antibonding&quot;</span><span class="p">][</span><span class="s2">&quot;perc&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+                            <span class="o">+</span> <span class="s2">&quot; percent antibonding interaction below EFermi)&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">orbital_resolved</span><span class="p">:</span>
+                            <span class="n">text_orbital</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_orbital_resolved_analysis_text</span><span class="p">(</span>
+                                <span class="n">orbital_resolved_data</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span>
+                                <span class="n">type_pop</span><span class="o">=</span><span class="n">type_pop</span><span class="p">,</span>
+                                <span class="n">atom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">),</span>
+                                <span class="n">ion</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">],</span>
+                            <span class="p">)</span>
+                            <span class="n">orb_info</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">text_orbital</span><span class="p">)</span>
+
+                <span class="n">bonds</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bond_info</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, and &quot;</span> <span class="o">+</span> <span class="n">bond_info</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bond_info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">bond_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">orb_bonds</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">orb_info</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.In&quot;</span><span class="p">,</span> <span class="s2">&quot;. In&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">orb_bonds</span> <span class="o">=</span> <span class="n">orb_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">orb_info</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;O:6&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; has an &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coordination_environment_to_text</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]))</span>
+                        <span class="o">+</span> <span class="s2">&quot; coordination environment. It has &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; bonds.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">orb_bonds</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orb_bonds</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; has a &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coordination_environment_to_text</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]))</span>
+                        <span class="o">+</span> <span class="s2">&quot; coordination environment. It has &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; bonds.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">orb_bonds</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orb_bonds</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">which_bonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">relevant_ions</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">specie</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">isite</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">isite</span><span class="p">,</span> <span class="n">site</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">structure</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">isite</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_ineq_ions</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;The compound &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;formula&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot; has &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;number_of_considered_ions&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot; symmetry-independent atoms(s) with relevant bonds: &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">relevant_ions</span><span class="p">)</span>
+                <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;sites&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># It has 3 Ta-N (mean ICOHP: -4.78 eV, antibonding interactions below EFermi),</span>
+                <span class="n">bond_info</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">orb_info</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="nb">type</span><span class="p">,</span> <span class="n">properties</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;bonds&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;has_antibdg_states_below_Efermi&quot;</span><span class="p">]:</span>
+                        <span class="n">bond_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">])</span>
+                            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                            <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="s2">&quot;-&quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; (mean I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">: &quot;</span>
+                            <span class="s2">&quot;&quot;</span>
+                            <span class="o">+</span> <span class="n">properties</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">_mean&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s2">, 0.0 percent antibonding interaction below EFermi)&quot;</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">orbital_resolved</span><span class="p">:</span>
+                            <span class="n">text_orbital</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_orbital_resolved_analysis_text</span><span class="p">(</span>
+                                <span class="n">orbital_resolved_data</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span>
+                                <span class="n">type_pop</span><span class="o">=</span><span class="n">type_pop</span><span class="p">,</span>
+                                <span class="n">atom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">),</span>
+                                <span class="n">ion</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">],</span>
+                            <span class="p">)</span>
+                            <span class="n">orb_info</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">text_orbital</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">bond_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="nb">str</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;number_of_bonds&quot;</span><span class="p">])</span>
+                            <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+                            <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="s2">&quot;-&quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; (mean I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">: &quot;</span>
+                            <span class="s2">&quot;&quot;</span>
+                            <span class="o">+</span> <span class="n">properties</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">_mean&quot;</span><span class="p">]</span>
+                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">units</span><span class="si">}</span><span class="s2">, &quot;</span>
+                            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;antibonding&quot;</span><span class="p">][</span><span class="s2">&quot;perc&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+                            <span class="o">+</span> <span class="s2">&quot; percent antibonding interaction below EFermi)&quot;</span>
+                        <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">orbital_resolved</span><span class="p">:</span>
+                            <span class="n">text_orbital</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_orbital_resolved_analysis_text</span><span class="p">(</span>
+                                <span class="n">orbital_resolved_data</span><span class="o">=</span><span class="n">properties</span><span class="p">,</span>
+                                <span class="n">type_pop</span><span class="o">=</span><span class="n">type_pop</span><span class="p">,</span>
+                                <span class="n">atom_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">),</span>
+                                <span class="n">ion</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">],</span>
+                            <span class="p">)</span>
+                            <span class="n">orb_info</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">text_orbital</span><span class="p">)</span>
+
+                <span class="n">bonds</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bond_info</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;, and &quot;</span> <span class="o">+</span> <span class="n">bond_info</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bond_info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">bond_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_info</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">orb_bonds</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">orb_info</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.In&quot;</span><span class="p">,</span> <span class="s2">&quot;. In&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">orb_bonds</span> <span class="o">=</span> <span class="n">orb_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">orb_info</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;O:6&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; has an &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coordination_environment_to_text</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]))</span>
+                        <span class="o">+</span> <span class="s2">&quot; coordination environment. It has &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; bonds.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">orb_bonds</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orb_bonds</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;ion&quot;</span><span class="p">])</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; has a &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_coordination_environment_to_text</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]))</span>
+                        <span class="o">+</span> <span class="s2">&quot; coordination environment. It has &quot;</span>
+                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="s2">&quot; bonds.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">orb_bonds</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orb_bonds</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;madelung_energy&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;madelung_energy&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;The Madelung energy of this crystal structure per unit cell is: &quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span><span class="p">[</span><span class="s2">&quot;madelung_energy&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot; eV.&quot;</span>
+            <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_generate_orbital_resolved_analysis_text</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">orbital_resolved_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">ion</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">atom_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">type_pop</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate text from orbital-resolved analysis data of the most relevant COHP, COOP, or COBI.</span>
+
+<span class="sd">        :param orbital_resolved_data: dict of orbital data from condensed bonding analysis object</span>
+<span class="sd">        :param ion: name of ion at the site</span>
+<span class="sd">        :param atom_name: name of atomic speice to which ion is bonded</span>
+<span class="sd">        :param type_pop: population type analysed could be &quot;COHP&quot; or &quot;COOP&quot; or &quot;COBI&quot;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A python list with text describing the orbital which contributes</span>
+<span class="sd">            the most to the bonding and antibonding in the bond at site</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">orb_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;orbital_summary_stats&quot;</span><span class="p">]:</span>
+            <span class="n">orb_names</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">orb_contri</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># get atom-pair list with ion placed first</span>
+            <span class="n">atom_pair</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">_sort_name</span><span class="p">([</span><span class="n">ion</span><span class="p">,</span> <span class="n">atom_name</span><span class="p">],</span> <span class="n">nameion</span><span class="o">=</span><span class="n">ion</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;max_bonding_contribution&quot;</span> <span class="ow">in</span> <span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;orbital_summary_stats&quot;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">orb</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;orbital_summary_stats&quot;</span><span class="p">][</span>
+                    <span class="s2">&quot;max_bonding_contribution&quot;</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">atom_pair_with_orb_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">_sort_orbital_atom_pair</span><span class="p">(</span>
+                        <span class="n">atom_pair</span><span class="o">=</span><span class="n">atom_pair</span><span class="p">,</span>
+                        <span class="n">complete_cohp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">completecohp</span><span class="p">,</span>
+                        <span class="n">label</span><span class="o">=</span><span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;relevant_bonds&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">orb_pair</span><span class="o">=</span><span class="n">orb</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">orb_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atom_pair_with_orb_name</span><span class="p">))</span>
+                    <span class="n">orb_contri</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span>
+                            <span class="nb">round</span><span class="p">(</span>
+                                <span class="n">data</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+                                <span class="mi">3</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="n">orb_names_anti</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">orb_antibonding</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="s2">&quot;max_antibonding_contribution&quot;</span> <span class="ow">in</span> <span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;orbital_summary_stats&quot;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">orb</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;orbital_summary_stats&quot;</span><span class="p">][</span>
+                    <span class="s2">&quot;max_antibonding_contribution&quot;</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">atom_pair_with_orb_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">_sort_orbital_atom_pair</span><span class="p">(</span>
+                        <span class="n">atom_pair</span><span class="o">=</span><span class="n">atom_pair</span><span class="p">,</span>
+                        <span class="n">complete_cohp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">completecohp</span><span class="p">,</span>
+                        <span class="n">label</span><span class="o">=</span><span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;relevant_bonds&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">orb_pair</span><span class="o">=</span><span class="n">orb</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">orb_names_anti</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atom_pair_with_orb_name</span><span class="p">))</span>
+                    <span class="n">orb_antibonding</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span>
+                            <span class="nb">round</span><span class="p">(</span>
+                                <span class="n">data</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+                                <span class="mi">3</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">orb_name_contri</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">for</span> <span class="n">inx</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orb_names</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">):</span>
+                        <span class="n">orb_name_contri</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="k">elif</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">)</span> <span class="o">!=</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">orb_name_contri</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">orb_name_contri</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="n">orb_name_contri</span> <span class="o">+=</span> <span class="s2">&quot; orbitals, contributing &quot;</span>
+                <span class="k">for</span> <span class="n">inx</span><span class="p">,</span> <span class="n">contribution</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">):</span>
+                        <span class="n">orb_name_contri</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">contribution</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="k">elif</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_contri</span><span class="p">)</span> <span class="o">!=</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">orb_name_contri</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">contribution</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">orb_name_contri</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and </span><span class="si">{</span><span class="n">contribution</span><span class="si">}</span><span class="s2"> percent, respectively&quot;</span>
+                <span class="n">num_bonds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;relevant_bonds&quot;</span><span class="p">])</span>
+                <span class="n">bonds</span> <span class="o">=</span> <span class="s2">&quot;bonds&quot;</span> <span class="k">if</span> <span class="n">num_bonds</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;bond&quot;</span>
+                <span class="n">orb_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;In the </span><span class="si">{</span><span class="n">num_bonds</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atom_pair</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">bonds</span><span class="si">}</span><span class="s2">, relative to the summed I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">s, &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;the maximum bonding contribution is from &quot;</span>
+                    <span class="o">+</span> <span class="n">orb_name_contri</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">orb_contri</span><span class="p">:</span>
+                <span class="n">num_bonds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;relevant_bonds&quot;</span><span class="p">])</span>
+                <span class="n">bonds</span> <span class="o">=</span> <span class="s2">&quot;bonds&quot;</span> <span class="k">if</span> <span class="n">num_bonds</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;bond&quot;</span>
+                <span class="n">orb_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;In the </span><span class="si">{</span><span class="n">num_bonds</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atom_pair</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">bonds</span><span class="si">}</span><span class="s2">, relative to the summed I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">s, &quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;no orbital has a bonding contribution greater than &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">orbital_cutoff</span><span class="o">*</span><span class="mi">100</span><span class="si">}</span><span class="s2"> percent&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">num_bonds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbital_resolved_data</span><span class="p">[</span><span class="s2">&quot;orbital_data&quot;</span><span class="p">][</span><span class="s2">&quot;relevant_bonds&quot;</span><span class="p">])</span>
+                <span class="n">bonds</span> <span class="o">=</span> <span class="s2">&quot;bonds&quot;</span> <span class="k">if</span> <span class="n">num_bonds</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;bond&quot;</span>
+                <span class="n">orb_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;In the </span><span class="si">{</span><span class="n">num_bonds</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atom_pair</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">bonds</span><span class="si">}</span><span class="s2">, relative to the summed I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2">s, &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;the maximum bonding contribution is from the &quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orb_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; orbital, contributing </span><span class="si">{</span><span class="n">orb_contri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> percent&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_antibonding</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">orb_anti</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">for</span> <span class="n">inx</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orb_names_anti</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_names_anti</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_names_anti</span><span class="p">):</span>
+                        <span class="n">orb_anti</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="k">elif</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_antibonding</span><span class="p">)</span> <span class="o">!=</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">orb_anti</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">orb_anti</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="n">orb_anti</span> <span class="o">+=</span> <span class="s2">&quot; orbitals, contributing &quot;</span>
+                <span class="k">for</span> <span class="n">inx</span><span class="p">,</span> <span class="n">contribution</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orb_antibonding</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_names_anti</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_names_anti</span><span class="p">):</span>
+                        <span class="n">orb_anti</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">contribution</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="k">elif</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">orb_antibonding</span><span class="p">)</span> <span class="o">!=</span> <span class="n">inx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">orb_anti</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">contribution</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">orb_anti</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;and </span><span class="si">{</span><span class="n">contribution</span><span class="si">}</span><span class="s2"> percent, respectively.&quot;</span>
+                <span class="n">orb_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;, whereas the maximum antibonding contribution is from </span><span class="si">{</span><span class="n">orb_anti</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">orb_antibonding</span><span class="p">:</span>
+                <span class="n">orb_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;, whereas no significant antibonding contribution is found in this bond.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">orb_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;, whereas the maximum antibonding contribution is from the &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orb_names_anti</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> orbital, contributing </span><span class="si">{</span><span class="n">orb_antibonding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> percent.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># get atom-pair list with ion placed first</span>
+            <span class="n">atom_pair</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">_sort_name</span><span class="p">([</span><span class="n">ion</span><span class="p">,</span> <span class="n">atom_name</span><span class="p">],</span> <span class="n">nameion</span><span class="o">=</span><span class="n">ion</span><span class="p">)</span>
+            <span class="n">percentage_cutoff</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">orbital_cutoff</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">orb_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No individual orbital interactions detected above </span><span class="si">{</span><span class="n">percentage_cutoff</span><span class="si">}</span><span class="s2"> percent&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; with summed I</span><span class="si">{</span><span class="n">type_pop</span><span class="si">}</span><span class="s2"> as reference for the &quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atom_pair</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; bond.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">orb_info</span>
+
+<div class="viewcode-block" id="Description.plot_cohps">
+<a class="viewcode-back" href="../../../reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.plot_cohps">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_cohps</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">xlim</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ylim</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+        <span class="n">integrated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hide</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Automatically generate plots of the most relevant COHPs, COOPs, or COBIs.</span>
+
+<span class="sd">        :param save: will save the plot to a file</span>
+<span class="sd">        :param filename: name of the file to save the plot.</span>
+<span class="sd">        :param ylim: energy scale that is shown in plot (eV)</span>
+<span class="sd">        :param xlim: energy range for COHPs in eV</span>
+<span class="sd">        :param integrated: if True, integrated COHPs will be shown</span>
+<span class="sd">        :param sigma: Standard deviation of Gaussian broadening applied to</span>
+<span class="sd">            population data. If None, no broadening will be added.</span>
+<span class="sd">        :param title: sets the title of figure generated</span>
+<span class="sd">        :param hide: if True, the plot will not be shown.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A matplotlib object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seq_cohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_cohps</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">which_bonds</span> <span class="o">==</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">:</span>
+            <span class="n">seq_ineq_cations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_ineq_ions</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">which_bonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">seq_ineq_cations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_ineq_ions</span>
+        <span class="n">seq_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_labels_cohps</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">structure</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq_ineq_cations</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;We will switch of displaying all plots &quot;</span>
+                <span class="s2">&quot;as there are more than 20 inequivalent ions. &quot;</span>
+                <span class="s2">&quot;We will instead save them in files called &quot;</span>
+                <span class="s2">&quot;&#39;automatic-analysis-*.png&#39;.&quot;</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">hide</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">save</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;./automatic_analysis.png&quot;</span>
+
+        <span class="k">for</span> <span class="n">iplot</span><span class="p">,</span> <span class="p">(</span><span class="n">ication</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">seq_ineq_cations</span><span class="p">,</span> <span class="n">seq_labels</span><span class="p">,</span> <span class="n">seq_cohps</span><span class="p">)):</span>
+            <span class="n">namecation</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">structure</span><span class="p">[</span><span class="n">ication</span><span class="p">]</span><span class="o">.</span><span class="n">specie</span><span class="p">)</span>
+
+            <span class="n">cp</span> <span class="o">=</span> <span class="n">PlainCohpPlotter</span><span class="p">(</span>
+                <span class="n">are_coops</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">are_coops</span><span class="p">,</span>
+                <span class="n">are_cobis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">are_cobis</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">cohp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">cp</span><span class="o">.</span><span class="n">add_cohp</span><span class="p">(</span><span class="n">namecation</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ication</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">label</span><span class="p">,</span> <span class="n">cohp</span><span class="p">)</span>
+
+            <span class="n">plot</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">integrated</span><span class="o">=</span><span class="n">integrated</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+
+            <span class="n">plot</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq_ineq_cations</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+                    <span class="n">filename_new</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">filename</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">iplot</span><span class="si">}{</span><span class="n">filename</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># type: ignore</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">filename_new</span> <span class="o">=</span> <span class="n">filename</span>
+                <span class="n">plot</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename_new</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">hide</span><span class="p">:</span>
+                    <span class="n">plot</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hide</span><span class="p">:</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Description.plot_interactive_cohps">
+<a class="viewcode-back" href="../../../reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.plot_interactive_cohps">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_interactive_cohps</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ylim</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">xlim</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">save_as_html</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">integrated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">label_resolved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">orbital_resolved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">hide</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Automatically generate interactive plots of the most relevant COHPs, COBIs or COOPs.</span>
+
+<span class="sd">        :param save_as_html: will save the plot to a html file</span>
+<span class="sd">        :param filename: name of the file to save the plot.</span>
+<span class="sd">        :param ylim: energy scale that is shown in plot (eV)</span>
+<span class="sd">        :param xlim: energy range for COHPs in eV</span>
+<span class="sd">        :param integrated: if True, integrated COHPs will be shown</span>
+<span class="sd">        :param sigma: Standard deviation of Gaussian broadening applied to</span>
+<span class="sd">            population data. If None, no broadening will be added.</span>
+<span class="sd">        :param label_resolved: if true, relevant cohp curves will be further resolved based on band labels</span>
+<span class="sd">        :param orbital_resolved: if true, relevant orbital interactions in cohp curves will be added to figure</span>
+<span class="sd">        :param title: Title of the interactive plot</span>
+<span class="sd">        :param hide: if True, the plot will not be shown.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A plotly.graph_objects.Figure object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cba_cohp_plot_data</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Initialize dict to store plot data</span>
+        <span class="n">set_cohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_cohps</span>
+        <span class="n">set_labels_cohps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_labels_cohps</span>
+        <span class="n">set_inequivalent_cations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">seq_ineq_ions</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">structure</span>
+
+        <span class="k">for</span> <span class="n">_iplot</span><span class="p">,</span> <span class="p">(</span><span class="n">ication</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">set_inequivalent_cations</span><span class="p">,</span> <span class="n">set_labels_cohps</span><span class="p">,</span> <span class="n">set_cohps</span><span class="p">)):</span>
+            <span class="n">label_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">structure</span><span class="p">[</span><span class="n">ication</span><span class="p">]</span><span class="o">.</span><span class="n">specie</span><span class="si">!s}{</span><span class="n">ication</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">!s}</span><span class="s2">: &quot;</span>
+            <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">cohp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">cohps</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">cba_cohp_plot_data</span><span class="p">[</span><span class="n">label_str</span> <span class="o">+</span> <span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">cohp</span>
+
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">InteractiveCohpPlotter</span><span class="p">(</span>
+            <span class="n">are_coops</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">are_coops</span><span class="p">,</span>
+            <span class="n">are_cobis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="o">.</span><span class="n">are_cobis</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">label_resolved</span> <span class="ow">or</span> <span class="n">orbital_resolved</span><span class="p">:</span>
+            <span class="n">ip</span><span class="o">.</span><span class="n">add_all_relevant_cohps</span><span class="p">(</span>
+                <span class="n">analyse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">analysis_object</span><span class="p">,</span>
+                <span class="n">label_resolved</span><span class="o">=</span><span class="n">label_resolved</span><span class="p">,</span>
+                <span class="n">orbital_resolved</span><span class="o">=</span><span class="n">orbital_resolved</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ip</span><span class="o">.</span><span class="n">add_cohps_from_plot_data</span><span class="p">(</span><span class="n">plot_data_dict</span><span class="o">=</span><span class="n">cba_cohp_plot_data</span><span class="p">)</span>
+
+        <span class="n">plot</span> <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">integrated</span><span class="o">=</span><span class="n">integrated</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">ylim</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+
+        <span class="n">plot</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">title_text</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save_as_html</span><span class="p">:</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">include_mathjax</span><span class="o">=</span><span class="s2">&quot;cdn&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">hide</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">plot</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_coordination_environment_to_text</span><span class="p">(</span><span class="n">ce</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a coordination environment string into a text description of the environment.</span>
+
+<span class="sd">        :param ce: output from ChemEnv package (e.g., &quot;O:6&quot;)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A text description of coordination environment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;S:1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;single (CN=1)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;L:2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;linear (CN=2)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;A:2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;angular (CN=2)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TL:3&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;trigonal planar (CN=3)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TY:3&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;triangular non-coplanar (CN=3)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TS:3&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;t-shaped (CN=3)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;T:4&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;tetrahedral (CN=4)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;S:4&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;square planar (CN=4)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SY:4&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;square non-coplanar (CN=4)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SS:4&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;see-saw like (CN=4)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;PP:5&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;pentagonal (CN=5)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;S:5&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;square pyramidal (CN=5)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;T:5&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;trigonal bipyramidal (CN=5)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;O:6&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;octahedral (CN=6)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;T:6&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;trigonal prismatic (CN=6)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;PP:6&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;pentagonal pyramidal (CN=6)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;PB:7&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;pentagonal bipyramidal (CN=7)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;ST:7&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;square-face capped trigonal prismatic (CN=7)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;ET:7&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;end-trigonal-face capped trigonal prismatic (CN=7)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;FO:7&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;face-capped octahedron (CN=7)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;C:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;cubic (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SA:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;square antiprismatic (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SBT:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;square-face bicapped trigonal prismatic (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TBT:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;triangular-face bicapped trigonal prismatic (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;DD:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;dodecahedronal (with triangular faces) (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;DDPN:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;dodecahedronal (with triangular faces - p2345 plane normalized) (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;HB:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;hexagonal bipyramidal (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;BO_1:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;bicapped octahedral (opposed cap faces) (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;BO_2:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;bicapped octahedral (cap faces with one atom in common) (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;BO_3:8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;bicapped octahedral (cap faces with one edge in common) (CN=8)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TC:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;triangular cupola (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TT_1:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Tricapped triangular prismatic (three square - face caps) (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TT_2:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Tricapped triangular prismatic (two square - face caps and one triangular - face cap) (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TT_3:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Tricapped triangular prism (one square - face cap and two triangular - face caps) (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;HD:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Heptagonal dipyramidal (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TI:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;tridiminished icosohedral (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SMA:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Square-face monocapped antiprism (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SS:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Square-face capped square prismatic (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TO_1:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Tricapped octahedral (all 3 cap faces share one atom) (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TO_2:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Tricapped octahedral (cap faces are aligned) (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TO_3:9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Tricapped octahedron (all 3 cap faces are sharing one edge of a face) (CN=9)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;PP:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Pentagonal prismatic (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;PA:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Pentagonal antiprismatic (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SBSA:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Square-face bicapped square antiprismatic (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;MI:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Metabidiminished icosahedral (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;S:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;sphenocoronal (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;H:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Hexadecahedral (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;BS_1:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Bicapped square prismatic (opposite faces) (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;BS_1:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Bicapped square prismatic (opposite faces) (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;BS_2:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Bicapped square prism(adjacent faces) (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TBSA:10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Trigonal-face bicapped square antiprismatic (CN=10)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;PCPA:11&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Pentagonal - face capped pentagonal antiprismatic (CN=11)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;H:11&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Hendecahedral (CN=11)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SH:11&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Sphenoid hendecahedral (CN=11)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;CO:11&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Cs - octahedral (CN=11)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;DI:11&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Diminished icosahedral (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;I:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Icosahedral (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;PBP: 12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Pentagonal - face bicapped pentagonal prismatic (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;TT:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Truncated tetrahedral (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;C:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Cuboctahedral (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;AC:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Anticuboctahedral (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SC:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Square cupola (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;S:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Sphenomegacorona (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;HP:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Hexagonal prismatic (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;HA:12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Hexagonal antiprismatic (CN=12)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;SH:13&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Square-face capped hexagonal prismatic (CN=13)&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;1-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;2-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;3-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;4-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;5-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;6&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;6-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;7&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;7-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;8&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;8-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;9&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;9-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;10&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;10-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;11&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;11-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;12&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;12-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;13&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;13-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;14&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;14-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;15&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;15-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;16&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;16-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;17&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;17-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;18&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;18-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;19&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;19-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;20&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;20-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;21&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;21-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;22&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;22-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;23&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;23-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;24&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;24-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;25&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;25-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;26&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;26-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;27&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;27-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;28&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;28-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;29&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;29-fold&quot;</span>
+        <span class="k">if</span> <span class="n">ce</span> <span class="o">==</span> <span class="s2">&quot;30&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;30-fold&quot;</span>
+        <span class="k">return</span> <span class="n">ce</span>
+
+<div class="viewcode-block" id="Description.write_description">
+<a class="viewcode-back" href="../../../reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.write_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">write_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the description of the COHPs or COBIs or COOPs to the screen.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">textpart</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">textpart</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Description.get_calc_quality_description">
+<a class="viewcode-back" href="../../../reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.get_calc_quality_description">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_calc_quality_description</span><span class="p">(</span><span class="n">quality_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a text description of the LOBSTER calculation quality.</span>
+
+<span class="sd">        :param quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text_des</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">quality_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;minimal_basis&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+                    <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;The LOBSTER calculation used minimal basis.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+                    <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="s2">&quot;Consider rerunning the calculation with the minimum basis as well. Choosing a &quot;</span>
+                        <span class="s2">&quot;larger basis set is only recommended if you see a significant improvement of &quot;</span>
+                        <span class="s2">&quot;the charge spilling.&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;charge_spilling&quot;</span><span class="p">:</span>
+                <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="s2">&quot;The absolute and total charge spilling for the calculation is </span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2"> %, &quot;</span>
+                    <span class="s2">&quot;respectively.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">quality_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;abs_charge_spilling&quot;</span><span class="p">],</span>
+                        <span class="n">quality_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;abs_total_spilling&quot;</span><span class="p">],</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;band_overlaps_analysis&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">quality_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;file_exists&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">quality_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;has_good_quality_maxDeviation&quot;</span><span class="p">]:</span>
+                        <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="s2">&quot;The bandOverlaps.lobster file is generated during the LOBSTER run. This &quot;</span>
+                            <span class="s2">&quot;indicates that the projected wave function is not completely orthonormalized; &quot;</span>
+                            <span class="s2">&quot;however, the maximal deviation values observed compared to the identity matrix &quot;</span>
+                            <span class="s2">&quot;is below the threshold of 0.1.&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="s2">&quot;The bandOverlaps.lobster file is generated during the LOBSTER run. This &quot;</span>
+                            <span class="s2">&quot;indicates that the projected wave function is not completely orthonormalized. &quot;</span>
+                            <span class="s2">&quot;The maximal deviation value from the identity matrix is </span><span class="si">{}</span><span class="s2">, and there are &quot;</span>
+                            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> percent k-points above the deviation threshold of 0.1. Please check the &quot;</span>
+                            <span class="s2">&quot;results of other quality checks like dos comparisons, charges, &quot;</span>
+                            <span class="s2">&quot;charge spillings before using the results for further &quot;</span>
+                            <span class="s2">&quot;analysis.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">quality_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;max_deviation&quot;</span><span class="p">],</span>
+                                <span class="n">quality_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;percent_kpoints_abv_limit&quot;</span><span class="p">],</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="s2">&quot;The projected wave function is completely orthonormalized as no &quot;</span>
+                        <span class="s2">&quot;bandOverlaps.lobster file is generated during the LOBSTER run.&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;charge_comparisons&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">charge</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mulliken&quot;</span><span class="p">,</span> <span class="s2">&quot;loewdin&quot;</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">val</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;bva_</span><span class="si">{</span><span class="n">charge</span><span class="si">}</span><span class="s2">_agree&quot;</span><span class="p">]:</span>
+                            <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;The atomic charge signs from </span><span class="si">{</span><span class="n">charge</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> population analysis &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;agree with the bond valence analysis.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;bva_</span><span class="si">{</span><span class="n">charge</span><span class="si">}</span><span class="s2">_agree&quot;</span><span class="p">]:</span>
+                            <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;The atomic charge signs from </span><span class="si">{</span><span class="n">charge</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2"> population analysis &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;do not agree with the bond valence analysis.&quot;</span>
+                            <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="s2">&quot;Oxidation states from BVA analyzer cannot be determined. &quot;</span>
+                        <span class="s2">&quot;Thus BVA charge comparison is not conducted.&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;dos_comparisons&quot;</span><span class="p">:</span>
+                <span class="n">comp_types</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">tani_index</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">orb</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;summed&quot;</span><span class="p">]:</span>
+                        <span class="n">comp_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">tani_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">orb</span><span class="p">]))</span>
+                <span class="n">text_des</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="s2">&quot;The Tanimoto index from DOS comparisons in the energy range between </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2"> eV &quot;</span>
+                    <span class="s2">&quot;for </span><span class="si">{}</span><span class="s2"> orbitals are: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">val</span><span class="p">[</span><span class="s2">&quot;e_range&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">val</span><span class="p">[</span><span class="s2">&quot;e_range&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">comp_types</span><span class="p">),</span>
+                        <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tani_index</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">text_des</span></div>
+
+
+<div class="viewcode-block" id="Description.write_calc_quality_description">
+<a class="viewcode-back" href="../../../reference/lobsterpy.cohp.describe.Description.html#lobsterpy.cohp.describe.Description.write_calc_quality_description">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">write_calc_quality_description</span><span class="p">(</span><span class="n">calc_quality_text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the calculation quality description to the screen.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calc_quality_text</span><span class="p">))</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

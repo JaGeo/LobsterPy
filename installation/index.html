@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting started &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=55384d60" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'installation/index';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fundamental Aspects" href="../fundamentals/index.html" />
+    <link rel="prev" title="LobsterPy documentation" href="../index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="lobsterpy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/index.html">Fundamental Aspects</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/tutorial.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Python API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.html">lobsterpy.featurize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2Finstallation/index.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/installation/index.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Getting started</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-version">Python version</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-installation">Standard installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-with-featurizer">Installation with featurizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-guidelines-developers-installation">Contributing guidelines / Developers installation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-cite">How to cite?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy-is-now-a-part-of-an-atomate2-workflow">LobsterPy is now a part of an atomate2 workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h1>
+<div style="border: 1px solid #52a5ab; padding: 5px; position: relative;">
+    <div style="background-color: #52a5ab; color: #ffffff; padding: 0px; position: absolute; top: 0; left: 0; right: 0; text-align: center;">
+        <strong>Important</strong>
+    </div>
+<br>
+<p>Recently released <a class="reference external" href="https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=6">LOBSTER 5.0</a> now generates <code class="docutils literal notranslate"><span class="pre">POSCAR.lobster</span></code> for any kind of LOBSTER calculation by default (This file has same format as the POSCAR from VASP). Thus, LobsterPy in principle, now supports usage with <strong>all</strong> DFT codes supported by LOBSTER and is <strong>no</strong> longer limited to <code class="docutils literal notranslate"><span class="pre">VASP</span></code>. Almost all of the core functionalities of LobsterPy could be used. The user must use <code class="docutils literal notranslate"><span class="pre">POSCAR.lobster</span></code> for <code class="docutils literal notranslate"><span class="pre">path_to_poscar</span></code> and <code class="docutils literal notranslate"><span class="pre">-fstruct</span></code> argument in python and cli interface, respectively.</p>
+<p>The only functionality limited to VASP is DOS comparisons and basis set analysis in the <code class="docutils literal notranslate"><span class="pre">calc_quality_summary</span></code> method of the <code class="docutils literal notranslate"><span class="pre">Analysis</span></code> class, as it relies on VASP output files, namely <code class="docutils literal notranslate"><span class="pre">vasprun.xml</span></code> and <code class="docutils literal notranslate"><span class="pre">POTCAR</span></code>.</p>
+</div>
+<p>Please note that LobsterPy relies on the LOBSTER computation output files. Thus, it will be only able to analyze data that has been computed in the LOBSTER run.</p>
+<p><img alt="LobsterPyAnimation" src="https://github.com/JaGeo/LobsterPy/assets/22094846/8f06b84c-db6d-414c-8590-aa04c957c728" /></p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<section id="python-version">
+<h3>Python version<a class="headerlink" href="#python-version" title="Link to this heading">#</a></h3>
+<p>Before the installation, please make sure that you are using one of the supported Python versions (see <a class="reference external" href="https://github.com/JaGeo/LobsterPy/blob/main/pyproject.toml">pyproject.toml</a>).</p>
+</section>
+<section id="standard-installation">
+<h3>Standard installation<a class="headerlink" href="#standard-installation" title="Link to this heading">#</a></h3>
+<p>Install using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">lobsterpy</span></code></p>
+</section>
+<section id="installation-with-featurizer">
+<h3>Installation with featurizer<a class="headerlink" href="#installation-with-featurizer" title="Link to this heading">#</a></h3>
+<p>Install using <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">lobsterpy[featurizer]</span></code></p>
+</section>
+<section id="contributing-guidelines-developers-installation">
+<h3>Contributing guidelines / Developers installation<a class="headerlink" href="#contributing-guidelines-developers-installation" title="Link to this heading">#</a></h3>
+<p>A short guide to contributing to LobsterPy can be found <a class="reference external" href="https://jageo.github.io/LobsterPy/dev/contributing.html">here</a>.
+Additional information for developers can be found <a class="reference external" href="https://jageo.github.io/LobsterPy/dev/dev_installation.html">here</a>.</p>
+</section>
+</section>
+<section id="basic-usage">
+<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h2>
+<ul>
+<li><p><strong>Automatic analysis and plotting of COHPs / COBIS / COOPs:</strong></p>
+<a class="reference internal image-reference" href="https://github.com/JaGeo/LobsterPy/assets/22094846/6587e752-6ea4-4358-a763-3633d5a21869"><img alt="Output Automatic Analysis" src="https://github.com/JaGeo/LobsterPy/assets/22094846/6587e752-6ea4-4358-a763-3633d5a21869" style="width: 300px;" />
+</a>
+</li>
+</ul>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">description</span></code> for an automated analysis of COHPs for relevant cation-anion bonds or <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">automatic-plot</span></code> to plot the results automatically.
+It will evaluate all COHPs with ICOHP values down to 10% of the strongest ICOHP.
+You can enforce an analysis of all bonds by using <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">automatic-plot</span> <span class="pre">--allbonds</span></code>.
+You can also switch the automatic analysis to use the ICOBIs or ICOOPs. You need to add <code class="docutils literal notranslate"><span class="pre">--cobis</span></code> or <code class="docutils literal notranslate"><span class="pre">--coops</span></code> along with the mentioned commands
+for e.g.like  <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">description</span> <span class="pre">--cobis</span></code></p>
+<p>An interactive plotter is available via <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">automatic-plot-ia</span></code>.</p>
+<p>Currently, the computed Mulliken charges will be used to determine cations and anions. If no <code class="docutils literal notranslate"><span class="pre">CHARGE.lobster</span></code> is available, the algorithm will fall back to the BondValence analysis from pymatgen.</p>
+<p><em>Please be aware that LobsterPy can only analyze bonds that have been included in the initial Lobster computation. Thus, please use the cohpgenerator within Lobster (i.e., put <code class="docutils literal notranslate"><span class="pre">cohpGenerator</span> <span class="pre">from</span> <span class="pre">0.1</span> <span class="pre">to</span> <span class="pre">5.0</span></code> in the <em>lobsterin</em>).</em></p>
+<p>It is also possible to start this automatic analysis from a Python script. See “examples” for scripts.</p>
+<ul>
+<li><p><strong>Plotting DOS from LOBSTER computations:</strong></p>
+<p>To plot densities of states obtained from LOBSTER use <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">plot-dos</span></code>.</p>
+</li>
+<li><p><strong>Generic COHP/ COOP / COBI plotter</strong>:</p>
+<p>We included options to plot COHPs/COBIs/COOPs from the command line.
+<code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">plot</span> <span class="pre">1</span> <span class="pre">2</span></code> will plot COHPs of the first and second bond from <code class="docutils literal notranslate"><span class="pre">COHPCAR.lobster</span></code>. It is possible to sum or integrate the COHPs as well (<code class="docutils literal notranslate"><span class="pre">--summed</span></code>, <code class="docutils literal notranslate"><span class="pre">--integrated</span></code>). You can switch to COBIs or COOPs by using <code class="docutils literal notranslate"><span class="pre">--cobis</span></code> or <code class="docutils literal notranslate"><span class="pre">--coops</span></code>, respectively.</p>
+</li>
+<li><p><strong>Other command line tools</strong>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">create-inputs</span></code> will create standard inputs based on existing POSCAR, POTCAR, and INCAR files. It will allow testing for different basis sets that are available in Lobster. This feature is currently only available for PBE_54 POTCARs, as only the pbeVASPfit2015 basis in LOBSTER that has been fitted to PBE POTCARs includes additional orbitals relevant to solid-state materials. Please
+check out our publication <a class="reference external" href="https://doi.org/10.1002/cplu.202200123">https://doi.org/10.1002/cplu.202200123</a> and LOBSTER program manual for more information</p>
+</li>
+<li><p><strong>Further help?</strong></p>
+<p>You can get further information by using <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">--help</span></code> and also by typing <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">description</span> <span class="pre">--help</span></code>,
+<code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">automatic-plot</span> <span class="pre">--help</span></code>, <code class="docutils literal notranslate"><span class="pre">lobsterpy</span> <span class="pre">plot</span> <span class="pre">--help</span></code>.</p>
+</li>
+</ul>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Checkout the <a class="reference external" href="https://jageo.github.io/LobsterPy/">documentation and tutorials</a> for more details.</p></li>
+</ul>
+</section>
+<section id="how-to-cite">
+<h2>How to cite?<a class="headerlink" href="#how-to-cite" title="Link to this heading">#</a></h2>
+<p>Please cite our papers:</p>
+<ul class="simple">
+<li><p>A. A. Naik, K. Ueltzen, C. Ertural, A. J. Jackson, J. George, <em>Journal of Open Source Software</em> <strong>2024</strong>, <em>9</em>, 6286. <a class="reference external" href="https://joss.theoj.org/papers/10.21105/joss.06286">https://joss.theoj.org/papers/10.21105/joss.06286</a>.</p></li>
+<li><p>J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, <em>ChemPlusChem</em> <strong>2022</strong>, <em>87</em>, e202200123. <a class="reference external" href="https://doi.org/10.1002/cplu.202200123">https://doi.org/10.1002/cplu.202200123</a> (Information on the methodology of the automatic analysis)</p></li>
+</ul>
+<p>Please cite <a class="reference external" href="https://github.com/materialsproject/pymatgen">pymatgen</a>, <a class="reference external" href="https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=1">Lobster</a>, and <a class="reference external" href="https://doi.org/10.1107/S2052520620007994">ChemEnv</a> correctly as well.</p>
+<p>.</p>
+</section>
+<section id="lobsterpy-is-now-a-part-of-an-atomate2-workflow">
+<h2>LobsterPy is now a part of an atomate2 workflow<a class="headerlink" href="#lobsterpy-is-now-a-part-of-an-atomate2-workflow" title="Link to this heading">#</a></h2>
+<p><img alt="LobsterWorkflow" src="https://github.com/JaGeo/LobsterPy/assets/22094846/337615ac-542e-446c-bc63-fb5946b16544" /></p>
+<p>We have now also included the automatic analysis into a fully automatic workflow using VASP and Lobster in <a class="reference external" href="https://github.com/materialsproject/atomate2">atomate2</a>. More documentation and information will follow soon.</p>
+</section>
+<section id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Link to this heading">#</a></h2>
+<p>The development of the program has been supported by a computing time grant. We gratefully acknowledge the Gauss Centre for Supercomputing e.V. (www.gauss-centre.eu) for funding this project by providing computing time on the GCS Supercomputer SuperMUC-NG at Leibniz Supercomputing Centre (www.lrz.de) (project pn73da).</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">LobsterPy documentation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../fundamentals/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Fundamental Aspects</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-version">Python version</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#standard-installation">Standard installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-with-featurizer">Installation with featurizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-guidelines-developers-installation">Contributing guidelines / Developers installation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation">Documentation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-cite">How to cite?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy-is-now-a-part-of-an-atomate2-workflow">LobsterPy is now a part of an atomate2 workflow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

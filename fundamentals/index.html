@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Fundamental Aspects &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=55384d60" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'fundamentals/index';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial" href="../tutorial/index.html" />
+    <link rel="prev" title="Getting started" href="../installation/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="lobsterpy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Getting started</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Fundamental Aspects</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/tutorial.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Python API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.html">lobsterpy.featurize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2Ffundamentals/index.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/fundamentals/index.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Fundamental Aspects</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterenv-detect-coordination-environments-based-on-the-electronic-structure">LobsterEnv : Detect coordination environments based on the electronic structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluating-bonding-and-anti-bonding-percentages">Evaluating bonding and anti-bonding percentages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-orbital-wise-analysis-implementation">Automatic orbital-wise analysis implementation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#features-curated-for-ml-via-featurizer">Features curated for ML via Featurizer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dos-based-features">DOS based features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coxx-based-features-coxx-cohp-cobi-coop">COXX based features (COXX: COHP / COBI / COOP)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#charge-based-features">Charge based features</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="fundamental-aspects">
+<h1>Fundamental Aspects<a class="headerlink" href="#fundamental-aspects" title="Link to this heading">#</a></h1>
+<p>This document aims to provide an overview of important algorithms and implementations that should help users understand the results one obtains from LobsterPy.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>In the following sections the implementations are described using ICOHPs/COHPs.</p>
+<p>It is implied that the procedure followed is the same even for analyzing and curating features for ML for ICOOPs/COOPs or ICOBIs/COBIs.</p>
+</div>
+<section id="lobsterenv-detect-coordination-environments-based-on-the-electronic-structure">
+<h2>LobsterEnv : Detect coordination environments based on the electronic structure<a class="headerlink" href="#lobsterenv-detect-coordination-environments-based-on-the-electronic-structure" title="Link to this heading">#</a></h2>
+<div class="versionadded admonition">
+<p class="admonition-title">New in LobsterEnv</p>
+<ul class="simple">
+<li><p>Can handle ICOBIs and ICOOPs to detect co-ordination environments and relevant bonds.</p></li>
+<li><p>Provide structure graphs with ICOHPs/ ICOBIs/ ICOOPs as edge properties</p></li>
+</ul>
+</div>
+<p>Lobsterenv is the central algorithm on which LobsterPy depends for automatic bonding analysis.</p>
+<p>Below is a schematic depicting how this algorithm works. The image is from a talk given by Prof. Dr. George at <a class="reference external" href="https://opus4.kobv.de/opus4-bam/frontdoor/index/index/start/0/rows/10/sortfield/year/sortorder/desc/searchtype/simple/query/George/author_facetfq/George%2C+Janine/doctypefq/lecture/docId/57876">MC16 2023 Dublin</a></p>
+<p><img alt="Schema depicting working of LobsterEnv algorithm" src="../_images/LobsterEnv_schema.png" /></p>
+<p>Unlike purely geometry-based algorithms, e.g., Voronoi construction, which depends on angle and distance cutoffs, LobsterEnv needs only one parameter that influences neighbor selection, i.e., ICOHPs.</p>
+<p>Thus, when running automatic analysis using the Analysis module, <code class="docutils literal notranslate"><span class="pre">cutoff_icohp</span></code> is the parameter to be paid attention to. This value is set to 10% by default. This means that, depending on the type of bond (cation-anion or all), only ICOHPs with a value of more than 10% of the largest ICOHPs (this value also changes depending on the type of bonds considered for analysis, cation-anion/all bonds) are considered in the analysis.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">noise_cutoff</span></code> parameter takes care of numerical noise, which always exists in theoretical computations. So, ICOHPs, which are negligible, will not be considered in the bonding analysis.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>So far LobsterEnv has only been tested for ICOHPs. ICOOP and ICOBI implementations are recently added.</p>
+</div>
+<div class="dropdown admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Please refer to the following sources for <code class="docutils literal notranslate"><span class="pre">ChemEnv</span></code> and <code class="docutils literal notranslate"><span class="pre">LobsterEnv</span></code> for more details on these algorithms.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?S2052520620007994">D. Waroquiers, J. George, M. Horton, S. Schenk, K. A. Persson, G.-M. Rignanese, X. Gonze, G. Hautier, Acta Cryst B 2020, 76, 683–695.</a></p></li>
+<li><p><a class="reference external" href="https://chemistry-europe.onlinelibrary.wiley.com/doi/full/10.1002/cplu.202200123">J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, ChemPlusChem 2022, e202200123</a></p></li>
+</ul>
+</div>
+</section>
+<section id="evaluating-bonding-and-anti-bonding-percentages">
+<h2>Evaluating bonding and anti-bonding percentages<a class="headerlink" href="#evaluating-bonding-and-anti-bonding-percentages" title="Link to this heading">#</a></h2>
+<p>LobsterPy follows the following steps to evaluate the bonding and anti-bonding percentages at each symmetrically independent site:</p>
+<ol class="arabic simple">
+<li><p>All the relevant bonds are identified for the site in the structure using ICOHPs via LobsterEnv (bond labels from <code class="docutils literal notranslate"><span class="pre">ICOHPLIST.lobster</span></code> are also stored, along with ICOHP values).</p></li>
+<li><p>Read the COHP data from <code class="docutils literal notranslate"><span class="pre">COHPCAR.lobster</span></code> corresponding to bond labels from step 1 and get summed COHPs data for each site separately.</p></li>
+<li><p>Perform numerical integration of the summed COHPs at each site to evaluate the bonding and antibonding integral and percentages below efermi.</p></li>
+<li><p>One can also set the <code class="docutils literal notranslate"><span class="pre">start</span></code> parameter when initializing the Analysis class object to set the start point of energy range below efermi for the integration. (Optional and useful if one wants to look at specific energy range below efermi)</p></li>
+</ol>
+<p>Below is a visual depiction of the evaluation of bonding percentage (Step 3) from COHP data for a site with its relevant neighbours (i.e., bonds).</p>
+<p><img alt="Bonding percentage evaluation" src="../_images/bonding_percentage.png" /></p>
+<p>Similarly, the antibonding percentage is evaluated for the site from the COHP data with its relevant neighbours (i.e., bonds).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ideally, the <span class="math notranslate nohighlight">\((bonding-antibonding) \)</span> integral values should equal the summed ICOHP values at each site. However, as it is a known fact, numerical integration is bound to have some errors. Thus, we might not see this corroborate well for all cases.</p>
+<p>Another crucial factor influencing the results of the numerical integration is the number of points on which the integration is performed. Thus, having a finer grid, i.e., setting <code class="docutils literal notranslate"><span class="pre">COHPSteps</span></code> to <code class="docutils literal notranslate"><span class="pre">2000</span></code> or more in your LOBSTER run, will help one get better estimates. From our experience, setting <code class="docutils literal notranslate"><span class="pre">COHPSteps</span></code> to <code class="docutils literal notranslate"><span class="pre">10000</span></code> provided very consistent results. (Be mindful that the sizes of files generated from such setting can become quite large depending on the complexity of the structure)</p>
+<p>Also, it is important to note that the ICOHP values from <code class="docutils literal notranslate"><span class="pre">ICOHPLIST.lobster</span></code> consider the entire range below efermi. Thus, if the <code class="docutils literal notranslate"><span class="pre">COHPCAR.lobster</span></code> is not computed for the entire energy range below efermi, then your results will also not corroborate to the summed ICOHPs at the site.</p>
+</div>
+</section>
+<section id="automatic-orbital-wise-analysis-implementation">
+<h2>Automatic orbital-wise analysis implementation<a class="headerlink" href="#automatic-orbital-wise-analysis-implementation" title="Link to this heading">#</a></h2>
+<p>LobsterPy follows the following steps to evaluate the relevant orbitals contributing to the bonds automatically. Steps 1 to 3 are identical to the <strong>Evaluating bonding and anti-bonding percentages</strong>. Thus, for brevity, we will not relist them here and only list the steps further. The steps mentioned below are repeated for each symmetrically independent site:</p>
+<ol class="arabic simple" start="4">
+<li><p>Read the list of available orbitals from <code class="docutils literal notranslate"><span class="pre">COHPCAR.lobster</span></code> at the site</p></li>
+<li><p>Get summed COHPs for each orbital using the bond label list (step 1)</p></li>
+<li><p>Check if the total bonding and antibonding integrals obtained in step 3 are each greater than 0</p></li>
+<li><p>Evaluate the bonding integral (area under the curve) from COHP data for each orbital and store these values in two lists. One will have orbital pair names, and the other will have corresponding evaluated bonding integrals. Similarly, create two more lists with antibonding orbital pair names and corresponding antibonding integrals.</p></li>
+<li><p>Evaluate the orbital contribution percentages using the following formula:</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[\text{(Anti) bonding contribution for each orbital}=\frac{\text{each orbital (anti)bonding integral}}{\text{sum(orbital (anti)bonding integral)}}\]</div>
+<ol class="arabic simple" start="9">
+<li><p>If the orbital contribution is more than the <code class="docutils literal notranslate"><span class="pre">orbital_cutoff</span></code> set in the Analysis class object, include that orbital pair interaction as relevant (do this for bonding and antibonding separately using contribution percentages as evaluated in step 8.</p></li>
+<li><p>Get max anti(bonding) contribution using contribution percentages evaluated in step 8 and add it to the orbital summary dict (this dict is used in description text output generation).</p></li>
+</ol>
+<p>As mentioned in step 9, the results will vary a lot depending on the <code class="docutils literal notranslate"><span class="pre">orbital_cutoff</span></code> set when initializing the Analysis class object. The default value is set to 0.05 (i.e. 5%).</p>
+<p>Below is a visual depiction of the evaluation of orbital contribution percentage (Step 7) from summed orbital COHP data for a site. Subfigure (a) and (b) depict the evaluation of orbital contribution for bonding and antibonding interactions relative to summed orbital COHPs at the site.</p>
+<p><img alt="Orbital contribution percentage evaluation" src="../_images/orbital_wise_illustration.png" /></p>
+</section>
+<section id="features-curated-for-ml-via-featurizer">
+<h2>Features curated for ML via Featurizer<a class="headerlink" href="#features-curated-for-ml-via-featurizer" title="Link to this heading">#</a></h2>
+<section id="dos-based-features">
+<h3>DOS based features<a class="headerlink" href="#dos-based-features" title="Link to this heading">#</a></h3>
+<h4><center>Moment based features</center></h4>
+<p>These features are implemented for DOS in <a class="reference external" href="https://github.com/materialsproject/pymatgen/tree/master">pymatgen</a> by Rosen et.al. as part of their <a class="reference external" href="https://pubs.rsc.org/en/content/articlelanding/2023/SC/D2SC05772G">A. S. Rosen, S. Vijay, K. A. Persson, Chem. Sci. 2023, 14, 1503–1511.</a> work</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://github.com/materialsproject/pymatgen/blob/2ccbfa16cbffb1016501c18117e70a3f96a83de2/pymatgen/electronic_structure/dos.py#L833">Center</a></p></li>
+<li><p><a class="reference external" href="https://github.com/materialsproject/pymatgen/blob/2ccbfa16cbffb1016501c18117e70a3f96a83de2/pymatgen/electronic_structure/dos.py#L862">Width</a></p></li>
+<li><p><a class="reference external" href="https://github.com/materialsproject/pymatgen/blob/2ccbfa16cbffb1016501c18117e70a3f96a83de2/pymatgen/electronic_structure/dos.py#L889">Skewness</a></p></li>
+<li><p><a class="reference external" href="https://github.com/materialsproject/pymatgen/blob/2ccbfa16cbffb1016501c18117e70a3f96a83de2/pymatgen/electronic_structure/dos.py#L919">Kurtosis</a></p></li>
+<li><p><a class="reference external" href="https://github.com/materialsproject/pymatgen/blob/2ccbfa16cbffb1016501c18117e70a3f96a83de2/pymatgen/electronic_structure/dos.py#L1056">Edge</a></p></li>
+</ol>
+<p>The <span class="math notranslate nohighlight">\(n^{th}\)</span> moment for projected dos (PDOS) is computed using following relation</p>
+<p><span class="math notranslate nohighlight">\(n^{th}_{moment} = \frac{\int (p^n \cdot \text{PDOS} \, dE)}{\int \text{PDOS} \, dE}\)</span></p>
+<p>The resulting <span class="math notranslate nohighlight">\(1^{st}\)</span>, <span class="math notranslate nohighlight">\(2^{nd}\)</span>, <span class="math notranslate nohighlight">\(3^{rd}\)</span> and <span class="math notranslate nohighlight">\(4^{th}\)</span> moment are named as *_band_center, *_band_width, *_band_skew, *_band_kurtosis, respectively. Here <code class="docutils literal notranslate"><span class="pre">*</span></code> denotes the orbital names, namely <code class="docutils literal notranslate"><span class="pre">s,p,d,</span> <span class="pre">or</span> <span class="pre">f</span></code>.</p>
+<p>Similar features for elements can also be obtained, element DOS will be used instead of PDOS. Please check the tutorials for example usage.</p>
+<div class="dropdown admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Please refer to the following sources for more details on these.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://doi.org/10.1016/0039-6028(96)80007-0">B. Hammer, J. K. Nørskov, Surface Science 1995, 343, 211–220.</a></p></li>
+<li><p><a class="reference external" href="https://doi.org/10.1103/PhysRevB.89.115114">H. Xin, A. Vojvodic, J. Voss, J. K. Nørskov, F. Abild-Pedersen, Phys. Rev. B 2014, 89, 115114.</a></p></li>
+</ul>
+</div>
+<h4><center>Fingerprints</center></h4>
+<p>DOS <a class="reference external" href="https://github.com/materialsproject/pymatgen/blob/2ccbfa16cbffb1016501c18117e70a3f96a83de2/pymatgen/electronic_structure/dos.py#L1093">Fingerprints</a> are basically DOS data discretized into histograms that will allow to compute similarity between DOS/PDOS of different materials numerically.</p>
+<p>This feature was implemented in <a class="reference external" href="https://github.com/materialsproject/pymatgen/tree/master">pymatgen</a> as part of our LOBSTER database publication <a class="reference external" href="https://www.nature.com/articles/s41597-023-02477-5">A. A. Naik, C. Ertural, N. Dhamrait, P. Benner, J. George, Sci Data 2023, 10, 610.</a></p>
+</section>
+<section id="coxx-based-features-coxx-cohp-cobi-coop">
+<h3>COXX based features (COXX: COHP / COBI / COOP)<a class="headerlink" href="#coxx-based-features-coxx-cohp-cobi-coop" title="Link to this heading">#</a></h3>
+<h4><center>Average features</center></h4>
+<p>The below mentioned features are implemented based on the work of</p>
+<p><a class="reference external" href="https://linkinghub.elsevier.com/retrieve/pii/B9780128231449001205">R. Nelson, C. Ertural, P. C. Müller, R. Dronskowski, in Compr. Inorg. Chem. III, Elsevier, 2023, pp. 141–201.</a></p>
+<p>The <span class="math notranslate nohighlight">\(\overline{\mathrm{ICOHP}}\)</span> can be interpreted as the average bond strength inside the given material.</p>
+<p><span class="math notranslate nohighlight">\(\overline{\mathrm{COHP}}(E) =\sum_i\left(w_i \cdot \operatorname{COHP}_i(E)\right)\)</span></p>
+<p><span class="math notranslate nohighlight">\(w_i =\frac{\mathrm{ICOHP}_i}{\mathrm{ICOHP}_{\text {total}}}\)</span></p>
+<p><span class="math notranslate nohighlight">\(\overline{\mathrm{ICOHP}}=\int_{-\infty}^{\varepsilon_{\mathrm{F}}} \overline{\mathrm{COHP}}(E) \mathrm{d}E \)</span></p>
+<p>The EIN is comparable to a coordination number</p>
+<p><span class="math notranslate nohighlight">\(\mathrm{EIN}=\frac{\mathrm{ICOHP}_{\text {total }}}{\overline{\mathrm{ICOHP}}} \cdot \frac{2}{N_{\text {Atoms }}}\)</span></p>
+<h4><center>Moment based features and fingerprints </center></h4>
+<p>These features are inspired from the features implemented for DOS in <a class="reference external" href="https://github.com/materialsproject/pymatgen/tree/master">pymatgen</a> as described in DOS based features section above. Following features are accessible</p>
+<ol class="arabic simple">
+<li><p>Center</p></li>
+<li><p>Width</p></li>
+<li><p>Skewness</p></li>
+<li><p>Kurtosis</p></li>
+<li><p>Edge</p></li>
+<li><p>Fingerprints</p></li>
+</ol>
+<p>For the case of COXXs, the <span class="math notranslate nohighlight">\(n^{th}\)</span> moment is computed using following relation</p>
+<p><span class="math notranslate nohighlight">\(n^{th}_{moment} = \frac{\int (p^n \cdot \text{COXXs} \, dE)}{\int \text{COXXs} \, dE}\)</span></p>
+<p>The resulting <span class="math notranslate nohighlight">\(1^{st}\)</span>, <span class="math notranslate nohighlight">\(2^{nd}\)</span>, <span class="math notranslate nohighlight">\(3^{rd}\)</span> and <span class="math notranslate nohighlight">\(4^{th}\)</span> moment are named as center_COXX, width_COXX, skewness_COXX, kurtosis_COXX, respectively.</p>
+<p>To generate COXX fingerprints we discretize COXX data into histograms that will allow to compute similarity between COXX curves of different materials numerically.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>One can select the range of energy and type of interactions (bonding, antibonding, overall) one would like to compute these features.</p>
+</div>
+<h4><center>Summary stats features from LobsterPy condensed bonding analysis dicts</center></h4>
+<p>These features were first implemented as part of our Database publication : <a class="reference external" href="https://doi.org/10.1038/s41597-023-02477-5">A. A. Naik, C. Ertural, N. Dhamrait, P. Benner, J. George, Sci. Data 2023, 10, 610.</a></p>
+<p>The source code can be found <a class="reference external" href="https://github.com/naik-aakash/lobster-database-paper-analysis-scripts/blob/e274cc66fe5cdef981c9de0609eaba4368226c9a/ML_model/featurizer/lobster_featurizer.py#L33">here</a>.</p>
+<p>This is code have been intergrated in our Package and it is extended to also work for COBI/COOP condensed bonding analysis dicts and can user can now also include orbital wise analysis summary stats (Optional).</p>
+</section>
+<section id="charge-based-features">
+<h3>Charge based features<a class="headerlink" href="#charge-based-features" title="Link to this heading">#</a></h3>
+<p>As Ionicity quantifies the strength of an ionic bond in the compound, there are several approaches to quantify it. Here we use the formulation as per <a class="reference external" href="https://linkinghub.elsevier.com/retrieve/pii/B9780128231449001205">R. Nelson, C. Ertural, P. C. Müller, R. Dronskowski, in Compr. Inorg. Chem. III, Elsevier, 2023, pp. 141–201.</a>, which use following relation:</p>
+<p><span class="math notranslate nohighlight">\(I_{\text {Charges }}=\frac{1}{N_{\text {Atoms }}} \sum_i^{N_{\text {Atoms }}}\left(\frac{q_i}{v_{\text {eff }, i}}\right)\)</span></p>
+<p>It is possible to compute ionicity based on above mentioned formula using either the Mulliken or Löwdin charges obtained from LOBSTER run.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../installation/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Getting started</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../tutorial/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Tutorial</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterenv-detect-coordination-environments-based-on-the-electronic-structure">LobsterEnv : Detect coordination environments based on the electronic structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluating-bonding-and-anti-bonding-percentages">Evaluating bonding and anti-bonding percentages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-orbital-wise-analysis-implementation">Automatic orbital-wise analysis implementation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#features-curated-for-ml-via-featurizer">Features curated for ML via Featurizer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dos-based-features">DOS based features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#coxx-based-features-coxx-cohp-cobi-coop">COXX based features (COXX: COHP / COBI / COOP)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#charge-based-features">Charge based features</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

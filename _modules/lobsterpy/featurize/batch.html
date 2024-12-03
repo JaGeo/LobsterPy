@@ -1,0 +1,1325 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lobsterpy.featurize.batch &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=55384d60" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/lobsterpy/featurize/batch';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <img src="../../../_static/logo.png" class="logo__image only-dark pst-js-only" alt="lobsterpy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fundamentals/index.html">Fundamental Aspects</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial/index.html">Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/tutorial.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial/computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/index.html">Python API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.html">lobsterpy.featurize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../reference/lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../reference/cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../reference/cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../about/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about/license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2F_modules/lobsterpy/featurize/batch.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for lobsterpy.featurize.batch</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) lobsterpy development team</span>
+<span class="c1"># Distributed under the terms of a BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License</span>
+
+<span class="sd">&quot;&quot;&quot;This module defines wrapper classes to quickly obtain similarity matrix of input fingerprint objects.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm.autonotebook</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">lobsterpy.featurize.core</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CoxxFingerprint</span><span class="p">,</span>
+    <span class="n">FeaturizeCharges</span><span class="p">,</span>
+    <span class="n">FeaturizeCOXX</span><span class="p">,</span>
+    <span class="n">FeaturizeDoscar</span><span class="p">,</span>
+    <span class="n">FeaturizeLobsterpy</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">lobsterpy.structuregraph.graph</span> <span class="kn">import</span> <span class="n">LobsterGraph</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">get_file_paths</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BatchSummaryFeaturizer">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html#lobsterpy.featurize.batch.BatchSummaryFeaturizer">[docs]</a>
+<span class="k">class</span> <span class="nc">BatchSummaryFeaturizer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Batch Featurizer sets that generates summary features from lobster data.</span>
+
+<span class="sd">    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">    :param path_to_jsons: path to root directory consisting of all lobster lightweight jsons</span>
+<span class="sd">    :param feature_type: set the feature type for moment features.</span>
+<span class="sd">        Possible options are `bonding`, `antibonding` or `overall`</span>
+<span class="sd">    :param charge_type: set charge type used for computing ionicity. Possible options are</span>
+<span class="sd">        `mulliken`, `loewdin` or `both`.</span>
+<span class="sd">    :param bonds: `all_bonds` or `cation_anion_bonds`</span>
+<span class="sd">    :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise</span>
+<span class="sd">    :param include_cobi_data: bool stating to include COBICAR.lobster features</span>
+<span class="sd">    :param include_coop_data: bool stating to include COOPCAR.lobster features</span>
+<span class="sd">    :param e_range: range of energy relative to fermi for which moment features needs to be computed</span>
+<span class="sd">    :param n_jobs: parallel processes to run</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path_to_lobster_calcs</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">path_to_jsons</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">feature_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;antibonding&quot;</span><span class="p">,</span>
+        <span class="n">charge_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">bonds</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">orbital_resolved</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">include_cobi_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">include_coop_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">e_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="n">n_jobs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Featurize lobster data via multiprocessing for large number of compounds.</span>
+
+<span class="sd">        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">        :param path_to_jsons: path to root directory consisting of all lobster lightweight jsons</span>
+<span class="sd">        :param feature_type: set the feature type for moment features.</span>
+<span class="sd">            Possible options are `bonding`, `antibonding` or `overall`</span>
+<span class="sd">        :param charge_type: set charge type used for computing ionicity. Possible options are</span>
+<span class="sd">            `mulliken`, `loewdin` or `both`.</span>
+<span class="sd">        :param bonds: `all` or `cation-anion` bonds</span>
+<span class="sd">        :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise</span>
+<span class="sd">        :param include_cobi_data: bool stating to include COBICAR.lobster features</span>
+<span class="sd">        :param include_coop_data: bool stating to include COOPCAR.lobster features</span>
+<span class="sd">        :param e_range: range of energy relative to fermi for which moment features needs to be computed</span>
+<span class="sd">        :param n_jobs: parallel processes to run</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check for valid parameters of string type</span>
+        <span class="n">allowed_str_inputs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;charge_type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mulliken&quot;</span><span class="p">,</span> <span class="s2">&quot;loewdin&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;bonds&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;cation-anion&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;feature_type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;bonding&quot;</span><span class="p">,</span> <span class="s2">&quot;antibonding&quot;</span><span class="p">,</span> <span class="s2">&quot;overall&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">param_string</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">charge_type</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">feature_type</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;charge_type&quot;</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="s2">&quot;feature_type&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_str_inputs</span><span class="p">[</span><span class="n">param_string</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">param_string</span><span class="si">}</span><span class="s2"> set to </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> but must be in &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">allowed_str_inputs</span><span class="p">[</span><span class="n">param_string</span><span class="p">])</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span> <span class="o">=</span> <span class="n">path_to_lobster_calcs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_jsons</span> <span class="o">=</span> <span class="n">path_to_jsons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span> <span class="o">=</span> <span class="n">feature_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charge_type</span> <span class="o">=</span> <span class="n">charge_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="n">bonds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orbital_resolved</span> <span class="o">=</span> <span class="n">orbital_resolved</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_cobi_data</span> <span class="o">=</span> <span class="n">include_cobi_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include_coop_data</span> <span class="o">=</span> <span class="n">include_coop_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e_range</span> <span class="o">=</span> <span class="n">e_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+
+    <span class="k">def</span> <span class="nf">_featurizelobsterpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name_or_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Featurize Lobsterpy condensed bonding analysis data.</span>
+
+<span class="sd">        if lightweight json file exists loads that or invokes LobsterPy Analysis class.</span>
+
+<span class="sd">        :param file_name_or_path: path to the LOBSTER calc directory or</span>
+<span class="sd">            lightweight condensed bonding analysis json file name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with ICOHP stats like mean, min, max of relevant bonds and</span>
+<span class="sd">            madelung energies</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_name_or_path</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">featurize_lobsterpy</span> <span class="o">=</span> <span class="n">FeaturizeLobsterpy</span><span class="p">(</span>
+                <span class="n">path_to_json</span><span class="o">=</span><span class="n">file_name_or_path</span><span class="p">,</span>
+                <span class="n">bonds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">featurize_lobsterpy</span> <span class="o">=</span> <span class="n">FeaturizeLobsterpy</span><span class="p">(</span>
+                <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">file_name_or_path</span><span class="p">,</span>
+                <span class="n">bonds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">,</span>
+                <span class="n">orbital_resolved</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">orbital_resolved</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">featurize_lobsterpy</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_featurizecoxx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_lobster_calc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Featurize COHP/COBI/COOPCAR data using FeaturizeCOXX.</span>
+
+<span class="sd">        :param path_to_lobster_calc: path to root LOBSTER calc directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with COHP summary stats data mainly weighted ICOHP/ICOOP/ICOBI,</span>
+<span class="sd">            Effective interaction number and moment features (center, width, skewness and kurtosis)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+            <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span> <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">,</span> <span class="s2">&quot;cohpcar&quot;</span><span class="p">,</span> <span class="s2">&quot;icohplist&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">structure_path</span> <span class="o">=</span> <span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)</span>
+
+        <span class="n">coxx</span> <span class="o">=</span> <span class="n">FeaturizeCOXX</span><span class="p">(</span>
+            <span class="n">path_to_coxxcar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohpcar&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_icoxxlist</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icohplist&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">structure_path</span><span class="p">),</span>
+            <span class="n">feature_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span><span class="p">,</span>
+            <span class="n">e_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">e_range</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">coxx</span><span class="o">.</span><span class="n">get_summarized_coxx_df</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">coxx</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_cobi_data</span><span class="p">:</span>
+            <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+                <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span> <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cobicar&quot;</span><span class="p">,</span> <span class="s2">&quot;icobilist&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">coxx</span> <span class="o">=</span> <span class="n">FeaturizeCOXX</span><span class="p">(</span>
+                <span class="n">path_to_coxxcar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cobicar&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_icoxxlist</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icobilist&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">structure_path</span><span class="p">),</span>
+                <span class="n">feature_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span><span class="p">,</span>
+                <span class="n">e_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">e_range</span><span class="p">,</span>
+                <span class="n">are_cobis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">df_cobi</span> <span class="o">=</span> <span class="n">coxx</span><span class="o">.</span><span class="n">get_summarized_coxx_df</span><span class="p">()</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">df_cobi</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">coxx</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_coop_data</span><span class="p">:</span>
+            <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+                <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span> <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;coopcar&quot;</span><span class="p">,</span> <span class="s2">&quot;icooplist&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">coxx</span> <span class="o">=</span> <span class="n">FeaturizeCOXX</span><span class="p">(</span>
+                <span class="n">path_to_coxxcar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coopcar&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_icoxxlist</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icooplist&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">structure_path</span><span class="p">),</span>
+                <span class="n">feature_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span><span class="p">,</span>
+                <span class="n">e_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">e_range</span><span class="p">,</span>
+                <span class="n">are_coops</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">df_coop</span> <span class="o">=</span> <span class="n">coxx</span><span class="o">.</span><span class="n">get_summarized_coxx_df</span><span class="p">()</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">df_coop</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">coxx</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">_featurizecharges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_lobster_calc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Featurize CHARGE.lobster.gz data that using FeaturizeCharges.</span>
+
+<span class="sd">        :param path_to_lobster_calc: path to root LOBSTER calc directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with computed ionicity for the structure</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span><span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span> <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge_type</span> <span class="o">==</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">:</span>
+            <span class="n">charge_mull</span> <span class="o">=</span> <span class="n">FeaturizeCharges</span><span class="p">(</span>
+                <span class="n">path_to_charge</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+                <span class="n">charge_type</span><span class="o">=</span><span class="s2">&quot;mulliken&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">charge_mull</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge_type</span> <span class="o">==</span> <span class="s2">&quot;loewdin&quot;</span><span class="p">:</span>
+            <span class="n">charge_loew</span> <span class="o">=</span> <span class="n">FeaturizeCharges</span><span class="p">(</span>
+                <span class="n">path_to_charge</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+                <span class="n">charge_type</span><span class="o">=</span><span class="s2">&quot;loewdin&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">charge_loew</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">charge_mull</span> <span class="o">=</span> <span class="n">FeaturizeCharges</span><span class="p">(</span>
+                <span class="n">path_to_charge</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+                <span class="n">charge_type</span><span class="o">=</span><span class="s2">&quot;mulliken&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">df_mull</span> <span class="o">=</span> <span class="n">charge_mull</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+
+            <span class="n">charge_loew</span> <span class="o">=</span> <span class="n">FeaturizeCharges</span><span class="p">(</span>
+                <span class="n">path_to_charge</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">)),</span>
+                <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+                <span class="n">charge_type</span><span class="o">=</span><span class="s2">&quot;loewdin&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">df_loew</span> <span class="o">=</span> <span class="n">charge_loew</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_mull</span><span class="p">,</span> <span class="n">df_loew</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+
+<div class="viewcode-block" id="BatchSummaryFeaturizer.get_df">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html#lobsterpy.featurize.batch.BatchSummaryFeaturizer.get_df">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a pandas dataframe with summary features extracted from LOBSTER files.</span>
+
+<span class="sd">        Uses multiprocessing to speed up the process.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Returns a pandas dataframe</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_jsons</span><span class="p">:</span>
+            <span class="n">file_name_or_path</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_jsons</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_jsons</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="p">]</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_to_jsons</span><span class="p">:</span>
+            <span class="n">file_name_or_path</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+            <span class="p">]</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">maxtasksperchild</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">,</span>
+            <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">file_name_or_path</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Generating LobsterPy summary stats&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_featurizelobsterpy</span><span class="p">,</span> <span class="n">file_name_or_path</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">df_lobsterpy</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">df_lobsterpy</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: PD002</span>
+
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+        <span class="p">]</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">maxtasksperchild</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">,</span>
+            <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Generating COHP/COOP/COBI summary stats&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_featurizecoxx</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">df_coxx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">df_coxx</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: PD002</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">maxtasksperchild</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">,</span>
+            <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Generating charge based features&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_featurizecharges</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">df_charges</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">df_charges</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: PD002</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_lobsterpy</span><span class="p">,</span> <span class="n">df_coxx</span><span class="p">,</span> <span class="n">df_charges</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BatchCoxxFingerprint">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html#lobsterpy.featurize.batch.BatchCoxxFingerprint">[docs]</a>
+<span class="k">class</span> <span class="nc">BatchCoxxFingerprint</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    BatchFeaturizer to generate COHP/COOP/COBI fingerprints and Tanimoto index similarity matrix.</span>
+
+<span class="sd">    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">    :param feature_type: set the feature type for moment features.</span>
+<span class="sd">        Possible options are `bonding`, `antibonding` or `overall`</span>
+<span class="sd">    :param label_list: bond labels list for which fingerprints needs to be generated.</span>
+<span class="sd">    :param tanimoto: bool to state to compute tanimoto index between fingerprint objects</span>
+<span class="sd">    :param normalize: bool to state to normalize the fingerprint data</span>
+<span class="sd">    :param spin_type: can be `summed` or `up` or `down`.</span>
+<span class="sd">    :param n_bins: sets number for bins for fingerprint objects</span>
+<span class="sd">    :param e_range: range of energy relative to fermi for which moment features needs to be computed</span>
+<span class="sd">    :param n_jobs: number of parallel processes to run</span>
+<span class="sd">    :param fingerprint_for: Possible options are `cohp` or `cobi` or `coop`.</span>
+<span class="sd">        Based on this fingerprints will be computed for COHPCAR/COOBICAR/COOPCAR.lobster files</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        fingerprint_df: A pandas dataframe with fingerprint objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path_to_lobster_calcs</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">feature_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;overall&quot;</span><span class="p">,</span>
+        <span class="n">label_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tanimoto</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">spin_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;summed&quot;</span><span class="p">,</span>
+        <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">56</span><span class="p">,</span>
+        <span class="n">e_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">fingerprint_for</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cohp&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate COHP/COOP/COBI fingerprints and pair-wise Tanimoto index similarity matrix.</span>
+
+<span class="sd">        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">        :param feature_type: set the feature type for moment features.</span>
+<span class="sd">            Possible options are `bonding`, `antibonding` or `overall`</span>
+<span class="sd">        :param label_list: bond labels list for which fingerprints needs to be generated.</span>
+<span class="sd">        :param tanimoto: bool to state to compute tanimoto index between fingerprint objects</span>
+<span class="sd">        :param normalize: bool to state to normalize the fingerprint data</span>
+<span class="sd">        :param spin_type: can be `summed` or `up` or `down`.</span>
+<span class="sd">        :param n_bins: sets number for bins for fingerprint objects</span>
+<span class="sd">        :param e_range: range of energy relative to fermi for which moment features needs to be computed</span>
+<span class="sd">        :param n_jobs: number of parallel processes to run</span>
+<span class="sd">        :param fingerprint_for: Possible options are `cohp` or `cobi` or `coop`.</span>
+<span class="sd">            Based on this fingerprints will be computed for COHPCAR/COOBICAR/COOPCAR.lobster files</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span> <span class="o">=</span> <span class="n">path_to_lobster_calcs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span> <span class="o">=</span> <span class="n">feature_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tanimoto</span> <span class="o">=</span> <span class="n">tanimoto</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span> <span class="o">=</span> <span class="n">normalize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_list</span> <span class="o">=</span> <span class="n">label_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spin_type</span> <span class="o">=</span> <span class="n">spin_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span> <span class="o">=</span> <span class="n">n_bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e_range</span> <span class="o">=</span> <span class="n">e_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_for</span> <span class="o">=</span> <span class="n">fingerprint_for</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fingerprints_df</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BatchCoxxFingerprint.get_similarity_matrix_df">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html#lobsterpy.featurize.batch.BatchCoxxFingerprint.get_similarity_matrix_df">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_similarity_matrix_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute pairwise similarity index for each fingerprint object in input dataframe.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             A Pandas dataframe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">col</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">col1</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tanimoto</span><span class="p">:</span>
+                    <span class="n">simi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fp_similarity</span><span class="p">(</span>
+                        <span class="n">col</span><span class="p">[</span><span class="s2">&quot;COXX_FP&quot;</span><span class="p">],</span>
+                        <span class="n">col1</span><span class="p">[</span><span class="s2">&quot;COXX_FP&quot;</span><span class="p">],</span>
+                        <span class="n">tanimoto</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tanimoto</span><span class="p">,</span>
+                        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">simi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fp_similarity</span><span class="p">(</span>
+                        <span class="n">col</span><span class="p">[</span><span class="s2">&quot;COXX_FP&quot;</span><span class="p">],</span>
+                        <span class="n">col1</span><span class="p">[</span><span class="s2">&quot;COXX_FP&quot;</span><span class="p">],</span>
+                        <span class="n">tanimoto</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">simi</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">matrix</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_df</span><span class="o">.</span><span class="n">index</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fp_to_dict</span><span class="p">(</span><span class="n">fp</span><span class="p">:</span> <span class="n">CoxxFingerprint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a fingerprint obj into a dictionary.</span>
+
+<span class="sd">        :param fp: The fingerprint to be converted into a dictionary</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dict of the fingerprint Keys=type, Values=np.ndarray(energies, cohp)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fp_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">fp_dict</span><span class="p">[</span><span class="n">fp</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fp</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fp</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">return</span> <span class="n">fp_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_fp_similarity</span><span class="p">(</span>
+        <span class="n">fp1</span><span class="p">:</span> <span class="n">CoxxFingerprint</span><span class="p">,</span>
+        <span class="n">fp2</span><span class="p">:</span> <span class="n">CoxxFingerprint</span><span class="p">,</span>
+        <span class="n">col</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">pt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;All&quot;</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">tanimoto</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the similarity index (dot product) of two fingerprints.</span>
+
+<span class="sd">        :param fp1 The 1st CoxxFingerprint object</span>
+<span class="sd">        :param fp2: The 2nd CoxxFingerprint object</span>
+<span class="sd">        :param col: The item in the fingerprints (0:energies,1: coxxs) to take the dot product of (default is 1)</span>
+<span class="sd">        :param pt: The index of the point that the dot product is to be taken (default is All)</span>
+<span class="sd">        :param normalize: If True normalize the scalar product to 1 (default is False)</span>
+<span class="sd">        :param tanimoto: If True will compute Tanimoto index (default is False)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If both tanimoto and normalize are set to True.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Similarity index (float): The value of dot product</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fp1_dict</span> <span class="o">=</span> <span class="n">BatchCoxxFingerprint</span><span class="o">.</span><span class="n">_fp_to_dict</span><span class="p">(</span><span class="n">fp1</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fp1</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">fp1</span>
+
+        <span class="n">fp2_dict</span> <span class="o">=</span> <span class="n">BatchCoxxFingerprint</span><span class="o">.</span><span class="n">_fp_to_dict</span><span class="p">(</span><span class="n">fp2</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fp2</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">fp2</span>
+
+        <span class="k">if</span> <span class="n">pt</span> <span class="o">==</span> <span class="s2">&quot;All&quot;</span><span class="p">:</span>
+            <span class="n">vec1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pt</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">fp1_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+            <span class="n">vec2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">pt</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">pt</span> <span class="ow">in</span> <span class="n">fp2_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vec1</span> <span class="o">=</span> <span class="n">fp1_dict</span><span class="p">[</span><span class="n">fp1</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">pt</span><span class="p">]][</span><span class="n">col</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+            <span class="n">vec2</span> <span class="o">=</span> <span class="n">fp2_dict</span><span class="p">[</span><span class="n">fp2</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">pt</span><span class="p">]][</span><span class="n">col</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">normalize</span> <span class="ow">and</span> <span class="n">tanimoto</span><span class="p">:</span>
+            <span class="n">rescale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">tanimoto</span> <span class="ow">and</span> <span class="n">normalize</span><span class="p">:</span>
+            <span class="n">rescale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec2</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">tanimoto</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">normalize</span><span class="p">:</span>
+            <span class="n">rescale</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot compute similarity index. Please set either normalize=True or tanimoto=True or both to False.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">)</span> <span class="o">/</span> <span class="n">rescale</span>
+
+    <span class="k">def</span> <span class="nf">_fingerprint_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_lobster_calc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get fingerprint object dataframe via  FeaturizeCOXX.get_coxx_fingerprint_df.</span>
+
+<span class="sd">        Also helps to generate the data used for fingerprint generation.</span>
+
+<span class="sd">        :param path_to_lobster_calc: path to root LOBSTER calculation directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with COXX fingerprint object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_for</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;COBI&quot;</span><span class="p">:</span>
+            <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+                <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span> <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">,</span> <span class="s2">&quot;cobicar&quot;</span><span class="p">,</span> <span class="s2">&quot;icobilist&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">coxxcar_path</span> <span class="o">=</span> <span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cobicar&quot;</span><span class="p">)</span>
+            <span class="n">icoxxlist_path</span> <span class="o">=</span> <span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icobilist&quot;</span><span class="p">)</span>
+            <span class="n">are_cobis</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">are_coops</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_for</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;COOP&quot;</span><span class="p">:</span>
+            <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+                <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span> <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">,</span> <span class="s2">&quot;coopcar&quot;</span><span class="p">,</span> <span class="s2">&quot;icooplist&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">coxxcar_path</span> <span class="o">=</span> <span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coopcar&quot;</span><span class="p">)</span>
+            <span class="n">icoxxlist_path</span> <span class="o">=</span> <span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icooplist&quot;</span><span class="p">)</span>
+            <span class="n">are_cobis</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">are_coops</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+                <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span> <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">,</span> <span class="s2">&quot;cohpcar&quot;</span><span class="p">,</span> <span class="s2">&quot;icohplist&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">coxxcar_path</span> <span class="o">=</span> <span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohpcar&quot;</span><span class="p">)</span>
+            <span class="n">icoxxlist_path</span> <span class="o">=</span> <span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icohplist&quot;</span><span class="p">)</span>
+            <span class="n">are_cobis</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">are_coops</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">coxx</span> <span class="o">=</span> <span class="n">FeaturizeCOXX</span><span class="p">(</span>
+            <span class="n">path_to_coxxcar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">coxxcar_path</span><span class="p">),</span>
+            <span class="n">path_to_icoxxlist</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">icoxxlist_path</span><span class="p">),</span>
+            <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+            <span class="n">feature_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_type</span><span class="p">,</span>
+            <span class="n">e_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">e_range</span><span class="p">,</span>
+            <span class="n">are_coops</span><span class="o">=</span><span class="n">are_coops</span><span class="p">,</span>
+            <span class="n">are_cobis</span><span class="o">=</span><span class="n">are_cobis</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">coxx</span><span class="o">.</span><span class="n">get_coxx_fingerprint_df</span><span class="p">(</span>
+            <span class="n">spin_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spin_type</span><span class="p">,</span>
+            <span class="n">n_bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span><span class="p">,</span>
+            <span class="n">normalize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">,</span>
+            <span class="n">label_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">label_list</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_fingerprints_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate fingerprint objects dataframe using BatchCoxxFingerprint._fingerprint_df.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with COXX fingerprint objects</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+        <span class="p">]</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">maxtasksperchild</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">,</span>
+            <span class="n">tqdm</span><span class="p">(</span>
+                <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">),</span>
+                <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Generating </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_for</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> fingerprints&quot;</span><span class="p">,</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fingerprint_df</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: PD002</span>
+
+        <span class="k">return</span> <span class="n">df</span></div>
+
+
+
+<div class="viewcode-block" id="BatchStructureGraphs">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html#lobsterpy.featurize.batch.BatchStructureGraphs">[docs]</a>
+<span class="k">class</span> <span class="nc">BatchStructureGraphs</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Batch Featurizer that generates structure graphs with lobster data.</span>
+
+<span class="sd">    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">    :param add_additional_data_sg: bool indicating whether to include `icoop` and `icobi` data as edge properties</span>
+<span class="sd">    :param which_bonds: selects which kind of bonds are analyzed. &quot;all&quot; is the default</span>
+<span class="sd">    :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.</span>
+<span class="sd">    :param noise_cutoff: if provided hardcodes the lower limit of icohps considered.</span>
+<span class="sd">    :param start: start energy for bonding antibonding percent integration</span>
+<span class="sd">    :param n_jobs: parallel processes to run</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path_to_lobster_calcs</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">add_additional_data_sg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">which_bonds</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">cutoff_icohp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.10</span><span class="p">,</span>
+        <span class="n">noise_cutoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate structure graphs with LOBSTER data via multiprocessing.</span>
+
+<span class="sd">        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">        :param add_additional_data_sg: bool indicating whether to include `icoop` and `icobi` data as edge properties</span>
+<span class="sd">        :param which_bonds: selects which kind of bonds are analyzed. &quot;all&quot; is the default</span>
+<span class="sd">        :param cutoff_icohp: only bonds that are stronger than cutoff_icohp * strongest ICOHP will be considered.</span>
+<span class="sd">        :param noise_cutoff: if provided hardcodes the lower limit of icohps considered.</span>
+<span class="sd">        :param start: start energy for bonding antibonding percent integration</span>
+<span class="sd">        :param n_jobs: parallel processes to run</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span> <span class="o">=</span> <span class="n">path_to_lobster_calcs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_additional_data_sg</span> <span class="o">=</span> <span class="n">add_additional_data_sg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">which_bonds</span> <span class="o">=</span> <span class="n">which_bonds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutff_icohp</span> <span class="o">=</span> <span class="n">cutoff_icohp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise_cutoff</span> <span class="o">=</span> <span class="n">noise_cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+
+    <span class="k">def</span> <span class="nf">_get_sg_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_lobster_calc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a structure graph with LOBSTER data bonding analysis data.</span>
+
+<span class="sd">        :param path_to_lobster_calc: path to root LOBSTER calculation directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A  structure graph with LOBSTER data as edge and node properties in structure graph objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dir_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path_to_lobster_calc</span><span class="p">)</span>
+        <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+            <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span>
+            <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="s2">&quot;cohpcar&quot;</span><span class="p">,</span> <span class="s2">&quot;icohplist&quot;</span><span class="p">,</span> <span class="s2">&quot;icooplist&quot;</span><span class="p">,</span> <span class="s2">&quot;icobilist&quot;</span><span class="p">,</span> <span class="s2">&quot;madelung&quot;</span><span class="p">,</span> <span class="s2">&quot;structure&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">LobsterGraph</span><span class="p">(</span>
+            <span class="n">path_to_poscar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_charge</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_cohpcar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cohpcar&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_icohplist</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icohplist&quot;</span><span class="p">)),</span>
+            <span class="n">add_additional_data_sg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_additional_data_sg</span><span class="p">,</span>
+            <span class="n">path_to_icooplist</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icooplist&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_icobilist</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icobilist&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_madelung</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;madelung&quot;</span><span class="p">)),</span>
+            <span class="n">which_bonds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">which_bonds</span><span class="p">,</span>
+            <span class="n">cutoff_icohp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cutff_icohp</span><span class="p">,</span>
+            <span class="n">noise_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">noise_cutoff</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">dir_name</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">ids</span><span class="p">])</span>
+
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ids</span><span class="p">,</span> <span class="s2">&quot;structure_graph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">sg</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+
+<div class="viewcode-block" id="BatchStructureGraphs.get_df">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html#lobsterpy.featurize.batch.BatchStructureGraphs.get_df">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a pandas dataframe with structure graph with LOBSTER data.</span>
+
+<span class="sd">        Uses multiprocessing to speed up the process.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Returns a pandas dataframe</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">maxtasksperchild</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">,</span>
+            <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Generating Structure Graphs&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_sg_df</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">df_sg</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">df_sg</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: PD002</span>
+
+        <span class="k">return</span> <span class="n">df_sg</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="BatchDosFeaturizer">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html#lobsterpy.featurize.batch.BatchDosFeaturizer">[docs]</a>
+<span class="k">class</span> <span class="nc">BatchDosFeaturizer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    BatchFeaturizer to generate Lobster DOS moment features and fingerprints.</span>
+
+<span class="sd">    :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">    :param add_element_dos_moments: add element dos moment features alongside orbital dos</span>
+<span class="sd">    :param normalize: bool to state to normalize the fingerprint data</span>
+<span class="sd">    :param n_bins: sets number for bins for fingerprint objects</span>
+<span class="sd">    :param e_range: range of energy relative to fermi for which moment features needs to be computed</span>
+<span class="sd">    :param n_jobs: number of parallel processes to run</span>
+<span class="sd">    :param fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`</span>
+<span class="sd">        (default is summed_pdos)</span>
+<span class="sd">    :param use_lso_dos: Will force featurizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path_to_lobster_calcs</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">add_element_dos_moments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">fingerprint_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;summed_pdos&quot;</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">56</span><span class="p">,</span>
+        <span class="n">e_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">use_lso_dos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize BatchDosFeaturizer.</span>
+
+<span class="sd">        :param path_to_lobster_calcs: path to root directory consisting of all lobster calc</span>
+<span class="sd">        :param add_element_dos_moments: add element dos moment features alongside orbital dos</span>
+<span class="sd">        :param normalize: bool to state to normalize the fingerprint data</span>
+<span class="sd">        :param n_bins: sets number for bins for fingerprint objects</span>
+<span class="sd">        :param e_range: range of energy relative to fermi for which moment features needs to be computed</span>
+<span class="sd">        :param n_jobs: number of parallel processes to run</span>
+<span class="sd">        :param fingerprint_type: Specify fingerprint type to compute, can accept `{s/p/d/f/}summed_{pdos/tdos}`</span>
+<span class="sd">            (default is summed_pdos)</span>
+<span class="sd">        :param use_lso_dos: Will force featurizer to use DOSCAR.LSO.lobster instead of DOSCAR.lobster</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span> <span class="o">=</span> <span class="n">path_to_lobster_calcs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_element_dos_moments</span> <span class="o">=</span> <span class="n">add_element_dos_moments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_type</span> <span class="o">=</span> <span class="n">fingerprint_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e_range</span> <span class="o">=</span> <span class="n">e_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalize</span> <span class="o">=</span> <span class="n">normalize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span> <span class="o">=</span> <span class="n">n_bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_lso_dos</span> <span class="o">=</span> <span class="n">use_lso_dos</span>
+
+    <span class="k">def</span> <span class="nf">_get_dos_moments_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_lobster_calc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Featurize DOSCAR.lobster data using FeaturizeDOSCAR.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with computed PDOS moment features</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+            <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span>
+            <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">,</span> <span class="s2">&quot;doscar&quot;</span><span class="p">],</span>
+            <span class="n">use_lso_dos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_lso_dos</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">featurize_dos</span> <span class="o">=</span> <span class="n">FeaturizeDoscar</span><span class="p">(</span>
+            <span class="n">path_to_doscar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;doscar&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+            <span class="n">add_element_dos_moments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">add_element_dos_moments</span><span class="p">,</span>
+            <span class="n">e_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">e_range</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">featurize_dos</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_dos_fingerprints_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_lobster_calc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Featurize DOSCAR.lobster data into fingerprints using FeaturizeDOSCAR.</span>
+
+<span class="sd">        :param path_to_lobster_calc: path to root LOBSTER calculation directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with DOS fingerprint objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">file_paths</span> <span class="o">=</span> <span class="n">get_file_paths</span><span class="p">(</span>
+            <span class="n">path_to_lobster_calc</span><span class="o">=</span><span class="n">path_to_lobster_calc</span><span class="p">,</span>
+            <span class="n">requested_files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;structure&quot;</span><span class="p">,</span> <span class="s2">&quot;doscar&quot;</span><span class="p">],</span>
+            <span class="n">use_lso_dos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_lso_dos</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">featurize_dos</span> <span class="o">=</span> <span class="n">FeaturizeDoscar</span><span class="p">(</span>
+            <span class="n">path_to_doscar</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;doscar&quot;</span><span class="p">)),</span>
+            <span class="n">path_to_structure</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file_paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;structure&quot;</span><span class="p">)),</span>
+            <span class="n">e_range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">e_range</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">featurize_dos</span><span class="o">.</span><span class="n">get_fingerprint_df</span><span class="p">(</span>
+            <span class="n">fp_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fingerprint_type</span><span class="p">,</span>
+            <span class="n">normalize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">,</span>
+            <span class="n">n_bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="BatchDosFeaturizer.get_df">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html#lobsterpy.featurize.batch.BatchDosFeaturizer.get_df">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a pandas dataframe with all moment features.</span>
+
+<span class="sd">        Moment features are PDOS (optional: element dos) center, width, skewness, kurtosis</span>
+<span class="sd">        and upper band edge.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with moment features</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">maxtasksperchild</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">,</span>
+            <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Generating PDOS moment features&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_dos_moments_df</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">df_dos</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">df_dos</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: PD002</span>
+
+        <span class="k">return</span> <span class="n">df_dos</span></div>
+
+
+<div class="viewcode-block" id="BatchDosFeaturizer.get_fingerprints_df">
+<a class="viewcode-back" href="../../../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html#lobsterpy.featurize.batch.BatchDosFeaturizer.get_fingerprints_df">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_fingerprints_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a pandas dataframe with DOS fingerprints.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A pandas dataframe with fingerprint objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_to_lobster_calcs</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="p">(</span>
+            <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">maxtasksperchild</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">,</span>
+            <span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Generating DOS fingerprints&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pbar</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_dos_fingerprints_df</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="n">df_dos_fp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">df_dos_fp</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># noqa: PD002</span>
+
+        <span class="k">return</span> <span class="n">df_dos_fp</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

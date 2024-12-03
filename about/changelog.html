@@ -1,0 +1,973 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Changelog &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=55384d60" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'about/changelog';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="Developer Installation" href="../dev/dev_installation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt="lobsterpy - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/index.html">Fundamental Aspects</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/tutorial.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Python API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.html">lobsterpy.featurize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2Fabout/changelog.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/about/changelog.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Changelog</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-5-0">v0.5.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-changed">What’s Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-9">v0.4.9</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">What’s Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-8">v0.4.8</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">What’s Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-contributors">New Contributors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-7">v0.4.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-6">v0.4.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-5">v0.4.5</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">New Contributors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-4">v0.4.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-3">v0.4.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-2">v0.4.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-1">v0.4.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-0">v0.4.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-9">v0.3.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-8">v0.3.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-7">v0.3.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-6">v0.3.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-5">v0.3.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-4">v0.3.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-3">v0.3.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-2">v0.3.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-1">v0.3.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-0">v0.3.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-9">v0.2.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-8">v0.2.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-7">v0.2.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-5">v0.2.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-4">v0.2.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-3">v0.2.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-2">v0.2.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-1">v0.2.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-1-0">v0.1.0</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h1>
+<section id="v0-5-0">
+<h2>v0.5.0<a class="headerlink" href="#v0-5-0" title="Link to this heading">#</a></h2>
+<section id="what-s-changed">
+<h3>What’s Changed<a class="headerlink" href="#what-s-changed" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Update CHANGELOG.md by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/334</p></li>
+<li><p>Ci updates by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/341</p></li>
+<li><p>Update get struct path by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/340</p></li>
+<li><p>Bump mendeleev from 0.17.0 to 0.18.1 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/338</p></li>
+<li><p>Bump sphinx-toolbox from 3.8.0 to 3.8.1 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/339</p></li>
+<li><p>Bump myst-nb from 1.1.1 to 1.1.2 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/335</p></li>
+<li><p>pin min pymatgen version &gt; lobster 5.0/5.1 support by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/342</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.9…v0.5.0</p>
+</section>
+</section>
+<section id="v0-4-9">
+<h2>v0.4.9<a class="headerlink" href="#v0-4-9" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3>What’s Changed<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Same as v0.4.8 which did not get released on pypi due to an issue with the release workflow</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-4-8">
+<h2>v0.4.8<a class="headerlink" href="#v0-4-8" title="Link to this heading">#</a></h2>
+<section id="id2">
+<h3>What’s Changed<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>change python version from 3.9 to 3.10 in docs generation by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/322</p></li>
+<li><p>Bump sphinx-design from 0.6.0 to 0.6.1 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/324</p></li>
+<li><p>Bump sphinx-toolbox from 3.7.0 to 3.8.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/326</p></li>
+<li><p>Update sphinx requirement from &lt;8,&gt;=5 to &gt;=5,&lt;9 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/323</p></li>
+<li><p>Update calc quality and fingerprints usage by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/331</p></li>
+<li><p>Remove redundant coverage uploads and fix coverage reports by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/332</p></li>
+<li><p>Fix the path of lobsterenv.py. by &#64;hongyi-zhao in https://github.com/JaGeo/LobsterPy/pull/333</p></li>
+</ul>
+</section>
+<section id="new-contributors">
+<h3>New Contributors<a class="headerlink" href="#new-contributors" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>&#64;hongyi-zhao made their first contribution in https://github.com/JaGeo/LobsterPy/pull/333</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.7…v0.4.8</p>
+</section>
+</section>
+<section id="v0-4-7">
+<h2>v0.4.7<a class="headerlink" href="#v0-4-7" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>fix outdated cli tutorial code snippets by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/320</p></li>
+<li><p>Fix unexpected “DOSCAR.LSO.lobster” exception in cli  by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/321</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.6…v0.4.7</p>
+</section>
+<section id="v0-4-6">
+<h2>v0.4.6<a class="headerlink" href="#v0-4-6" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>CI Updates by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/314</p></li>
+<li><p>Move to src layout by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/315</p></li>
+<li><p>Bump sphinx-toolbox from 3.6.0 to 3.7.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/313</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.5…v0.4.6</p>
+</section>
+<section id="v0-4-5">
+<h2>v0.4.5<a class="headerlink" href="#v0-4-5" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Bump mendeleev from 0.15.0 to 0.16.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/288</p></li>
+<li><p>pre-commit autoupdate by &#64;pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/289</p></li>
+<li><p>Bump mendeleev from 0.16.0 to 0.16.1 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/290</p></li>
+<li><p>Bump mendeleev from 0.16.1 to 0.16.2 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/291</p></li>
+<li><p>Bump sphinx-design from 0.5.0 to 0.6.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/292</p></li>
+<li><p>Bump mendeleev from 0.16.2 to 0.17.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/296</p></li>
+<li><p>pre-commit autoupdate by &#64;pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/294</p></li>
+<li><p>Bump sphinx-book-theme from 1.1.2 to 1.1.3 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/298</p></li>
+<li><p>Fix warnings by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/299</p></li>
+<li><p>Update readme by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/302</p></li>
+<li><p>Explicitly use <code class="docutils literal notranslate"><span class="pre">agg</span></code> backend to avoid OS inconsistency by &#64;DanielYang59 in https://github.com/JaGeo/LobsterPy/pull/305</p></li>
+<li><p>Update orbitalwise analysis by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/300</p></li>
+<li><p>Update numpy requirement from &lt;2.0.0 to &lt;3.0.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/309</p></li>
+<li><p>Bump sphinx-toolbox from 3.5.0 to 3.6.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/310</p></li>
+<li><p>Bump myst-nb from 1.1.0 to 1.1.1 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/311</p></li>
+<li><p>clarify kpoints requirements and limitations with input sets by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/307</p></li>
+</ul>
+<section id="id3">
+<h3>New Contributors<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>&#64;DanielYang59 made their first contribution in https://github.com/JaGeo/LobsterPy/pull/305</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.4…v0.4.5</p>
+</section>
+</section>
+<section id="v0-4-4">
+<h2>v0.4.4<a class="headerlink" href="#v0-4-4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>No changes compared to 0.4.3. Just an error with the deployment occurred.</p></li>
+</ul>
+</section>
+<section id="v0-4-3">
+<h2>v0.4.3<a class="headerlink" href="#v0-4-3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Update sphinx requirement from &lt;6,&gt;=5 to &gt;=5,&lt;8 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/281</p></li>
+<li><p>Python 3.12 support by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/282</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.2…v0.4.3</p>
+</section>
+<section id="v0-4-2">
+<h2>v0.4.2<a class="headerlink" href="#v0-4-2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add preliminary support multicobi by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/277</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.1…v0.4.2</p>
+</section>
+<section id="v0-4-1">
+<h2>v0.4.1<a class="headerlink" href="#v0-4-1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>clean up DOSCAR.LSO.lobster handling and add cli test for POSCAR.lobster by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/257</p></li>
+<li><p>Fix saving of plots by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/262</p></li>
+<li><p>fix linting by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/263</p></li>
+<li><p>fix automatic plotting for large structures by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/265</p></li>
+<li><p>Update README.md by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/266</p></li>
+<li><p>Update README.md by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/267</p></li>
+<li><p>add code of conduct by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/268</p></li>
+<li><p>pre-commit autoupdate by &#64;pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/270</p></li>
+<li><p>indicate python versions correctly. by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/271</p></li>
+<li><p>Update pymatgen version  by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/273</p></li>
+<li><p>Bump myst-nb from 1.0.0 to 1.1.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/274</p></li>
+<li><p>Update pyproject.toml by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/275</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.4.0…v0.4.1</p>
+</section>
+<section id="v0-4-0">
+<h2>v0.4.0<a class="headerlink" href="#v0-4-0" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fix cli bug, enable spin polarized interactive analysis in cli by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/256</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.3.9…v0.4.0</p>
+</section>
+<section id="v0-3-9">
+<h2>v0.3.9<a class="headerlink" href="#v0-3-9" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add JOSS badge by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/248</p></li>
+<li><p>Add note about dummy potcar to example file by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/249</p></li>
+<li><p>Fix link to changelog by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/250</p></li>
+<li><p>Fix citation and readme by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/251</p></li>
+<li><p>remove redundant orbplot arg and fix a typo by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/253</p></li>
+</ul>
+</section>
+<section id="v0-3-8">
+<h2>v0.3.8<a class="headerlink" href="#v0-3-8" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Add Contributing guide to Readme by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/224</p></li>
+<li><p>address review comments &gt; LOBSTER citation, similar packages by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/226</p></li>
+<li><p>add missing , by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/227</p></li>
+<li><p>Bump sphinx-book-theme from 1.1.0 to 1.1.2 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/230</p></li>
+<li><p>tutorial: replace os with pathlib.Path by &#64;berquist in https://github.com/JaGeo/LobsterPy/pull/231</p></li>
+<li><p>Review 2 suggestion by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/234</p></li>
+<li><p>Accommodate LobsterEnv breaking changes by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/232</p></li>
+<li><p>Configuration consolidation by &#64;berquist in https://github.com/JaGeo/LobsterPy/pull/235</p></li>
+<li><p>Add coverage report by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/238</p></li>
+<li><p>Update README.md by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/239</p></li>
+<li><p>Add precommit badge by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/240</p></li>
+<li><p>Analysis extend + adapt to latest changes in LobterEnv by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/233</p></li>
+<li><p>Add explanation to cli help by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/244</p></li>
+<li><p>File path handling in featurizer module by &#64;kaueltzen in https://github.com/JaGeo/LobsterPy/pull/242</p></li>
+<li><p>Add cutoff args to batch structure graphs featurizer by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/245</p></li>
+<li><p>[JOSS] Paper nitpicks by &#64;RMeli in https://github.com/JaGeo/LobsterPy/pull/247</p></li>
+<li><p>Update readme and paper.md by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/246</p></li>
+</ul>
+</section>
+<section id="v0-3-7">
+<h2>v0.3.7<a class="headerlink" href="#v0-3-7" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Set python version stricter limit and accommodate recent pymatgen changes by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/222</p></li>
+</ul>
+</section>
+<section id="v0-3-6">
+<h2>v0.3.6<a class="headerlink" href="#v0-3-6" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>JOSS paper by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/203</p></li>
+</ul>
+</section>
+<section id="v0-3-5">
+<h2>v0.3.5<a class="headerlink" href="#v0-3-5" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fix header by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/189</p></li>
+<li><p>WIP[fix interactive plots] by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/190</p></li>
+<li><p>Update docs.yml by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/191</p></li>
+<li><p>Update docs.yml by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/192</p></li>
+<li><p>Update docs.yml by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/194</p></li>
+<li><p>Update conf.py by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/195</p></li>
+<li><p>Update tutorial.ipynb by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/196</p></li>
+<li><p>Update tutorial.ipynb by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/197</p></li>
+<li><p>Update tutorial.ipynb by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/198</p></li>
+<li><p>Update tutorial.ipynb by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/199</p></li>
+<li><p>Update conf.py by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/200</p></li>
+<li><p>Fix blank interactive plots by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/201</p></li>
+<li><p>Fix typos and grammatical errors by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/202</p></li>
+<li><p>Minor documentation fixes by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/206</p></li>
+<li><p>address doc review comments by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/208</p></li>
+<li><p>Bump mendeleev from 0.14.0 to 0.15.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/211</p></li>
+<li><p>Bump myst-nb from 0.17.2 to 1.0.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/204</p></li>
+<li><p>Bump ipython from 8.16.1 to 8.19.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/209</p></li>
+<li><p>Bump sphinx-book-theme from 1.0.1 to 1.1.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/210</p></li>
+<li><p>Fix doc by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/213</p></li>
+<li><p>Remove redundant ipython from doc dependencies by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/216</p></li>
+<li><p>Fix: text generation error when no bonds are detected at site in cation-anion analysis by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/217</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.3.4…v0.3.5</p>
+</section>
+<section id="v0-3-4">
+<h2>v0.3.4<a class="headerlink" href="#v0-3-4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>fix changelog by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/188</p></li>
+<li><p>Update documentation by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/180</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.3.3…v0.3.4</p>
+</section>
+<section id="v0-3-3">
+<h2>v0.3.3<a class="headerlink" href="#v0-3-3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>fixing which_bonds  by &#64;JonasGrandel in https://github.com/JaGeo/LobsterPy/pull/168</p></li>
+<li><p>fix create inputs alias not working; update test for the same by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/171</p></li>
+<li><p>Automatic orbital wise analysis functionality in analyze module by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/132</p></li>
+<li><p>Replace unittests with pytests + update CI workflow and code doc-strings by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/177</p></li>
+<li><p>replace get_anion_types with anion_types by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/174</p></li>
+<li><p>rename keys of calc quality summary and snake_case by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/178</p></li>
+<li><p>Remove read the docs config  by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/182</p></li>
+<li><p>Refactor cli.py for cleaner options on cli help by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/172</p></li>
+<li><p>overwrite add_cohp for interactive plotter &gt; Now it works as expected by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/176</p></li>
+<li><p>Extend featurizer by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/179</p></li>
+<li><p>Update README.md by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/184</p></li>
+<li><p>Increase test coverage by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/185</p></li>
+<li><p>add POSCAR.lobster support in featurizer by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/186</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.3.2…v0.3.3</p>
+</section>
+<section id="v0-3-2">
+<h2>v0.3.2<a class="headerlink" href="#v0-3-2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>cli invert axis, add get site all orbitals dos plot by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/149</p></li>
+<li><p>Update README.md by &#64;JaGeo in https://github.com/JaGeo/LobsterPy/pull/150</p></li>
+<li><p>Bump mendeleev from 0.12.1 to 0.14.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/151</p></li>
+<li><p>snakecase key names of calc quality summary dict by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/157</p></li>
+<li><p>Fix missing matplotlib style file in package installation  by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/159</p></li>
+<li><p>snakecase whichbonds arg and update tests by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/161</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.3.1…v0.3.2</p>
+</section>
+<section id="v0-3-1">
+<h2>v0.3.1<a class="headerlink" href="#v0-3-1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>ICOHP vs bond length plotter by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/137</p></li>
+<li><p>Remove python 3.8 support by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/134</p></li>
+<li><p>Add units to plotters by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/136</p></li>
+<li><p>Bump sphinx-pdj-theme from 0.2.1 to 0.4.0 by &#64;dependabot in https://github.com/JaGeo/LobsterPy/pull/111</p></li>
+<li><p>Doscar plotting by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/138</p></li>
+<li><p>added lobster calc quality summary method to analyze module by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/115</p></li>
+<li><p>Add featurizer by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/102</p></li>
+<li><p>COBI COOP extension by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/128</p></li>
+<li><p>Structure graphs by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/63</p></li>
+<li><p>fix docs build, remove unwanted dependencies by &#64;naik-aakash in https://github.com/JaGeo/LobsterPy/pull/146</p></li>
+</ul>
+<p><strong>Full Changelog</strong>: https://github.com/JaGeo/LobsterPy/compare/v0.3.0…v0.3.1</p>
+</section>
+<section id="v0-3-0">
+<h2>v0.3.0<a class="headerlink" href="#v0-3-0" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>addition of an interactive plotter by &#64;naik-aakash and &#64;kaueltzen. Reviews by &#64;ajjackson and &#64;jageo</p></li>
+</ul>
+</section>
+<section id="v0-2-9">
+<h2>v0.2.9<a class="headerlink" href="#v0-2-9" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>fix the error handling in cases ChemEnv cannot determine a coordination environment and we use coordination numbers instead for the cation-anion mode</p></li>
+</ul>
+</section>
+<section id="v0-2-8">
+<h2>v0.2.8<a class="headerlink" href="#v0-2-8" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>fix issue while saving files</p></li>
+</ul>
+</section>
+<section id="v0-2-7">
+<h2>v0.2.7<a class="headerlink" href="#v0-2-7" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>compatible with atomate2</p></li>
+</ul>
+</section>
+<section id="v0-2-5">
+<h2>v0.2.5<a class="headerlink" href="#v0-2-5" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>compatible with latest pymatgen version</p></li>
+</ul>
+</section>
+<section id="v0-2-4">
+<h2>v0.2.4<a class="headerlink" href="#v0-2-4" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>fixing linting errors due to new mypy versions</p></li>
+</ul>
+</section>
+<section id="v0-2-3">
+<h2>v0.2.3<a class="headerlink" href="#v0-2-3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>bonding and antibonding contributions will now be integrated and a percentage of antibonding interactions below Efermi will be given.</p></li>
+</ul>
+</section>
+<section id="v0-2-2">
+<h2>v0.2.2<a class="headerlink" href="#v0-2-2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>users can provide their own basis functions for lobsterin/INCAR generation</p></li>
+<li><p>documentation added</p></li>
+<li><p>fixes to saving files</p></li>
+</ul>
+</section>
+<section id="v0-2-1">
+<h2>v0.2.1<a class="headerlink" href="#v0-2-1" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Fix error message when LobsterPy is used in cation-anion mode for materials that are not ionic.</p></li>
+<li><p>automatic plots are now saved correctly. Before only the last plot was saved.</p></li>
+<li><p>Additional Gaussian broadening available for COHPs</p></li>
+<li><p>lobsterins can be generated with the command-line interface</p></li>
+</ul>
+</section>
+<section id="v0-1-0">
+<h2>v0.1.0<a class="headerlink" href="#v0-1-0" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>First LobsterPy release</p></li>
+<li><p>Automatic COHP analysis (description and plots)</p></li>
+<li><p>Command line tool to perform automatic analysis</p></li>
+<li><p>Command line tool to plot COHPs, COOPs, and COBIs - also orbitalwise and summed</p></li>
+<li><p>Many options to refine plots (own matplotlib styles, changes of font size, sizes)</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../dev/dev_installation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Developer Installation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="license.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">License</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-5-0">v0.5.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-changed">What’s Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-9">v0.4.9</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">What’s Changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-8">v0.4.8</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">What’s Changed</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-contributors">New Contributors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-7">v0.4.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-6">v0.4.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-5">v0.4.5</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">New Contributors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-4">v0.4.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-3">v0.4.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-2">v0.4.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-1">v0.4.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-4-0">v0.4.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-9">v0.3.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-8">v0.3.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-7">v0.3.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-6">v0.3.6</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-5">v0.3.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-4">v0.3.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-3">v0.3.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-2">v0.3.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-1">v0.3.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-3-0">v0.3.0</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-9">v0.2.9</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-8">v0.2.8</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-7">v0.2.7</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-5">v0.2.5</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-4">v0.2.4</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-3">v0.2.3</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-2">v0.2.2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-2-1">v0.2.1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#v0-1-0">v0.1.0</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
