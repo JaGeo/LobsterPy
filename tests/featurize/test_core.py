@@ -875,11 +875,16 @@ class TestFeaturizeDoscar:
 
 
 class TestFeaturizeIcoxxlist:
-    def test_featurize_nacl_icoxxlist_fu(self):
+    @pytest.mark.parametrize(
+        "unique",
+        [(False, True)],
+    )
+    def test_featurize_nacl_icoxxlist_fu(self, unique):
         featurize_nacl_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
             normalization="formula_units",
+            unique=unique,
         )
         df = featurize_nacl_icoxxlist.get_df(ids="NaCl")
         df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
@@ -893,19 +898,31 @@ class TestFeaturizeIcoxxlist:
         # check values
         assert len(df.columns) == 299
         assert np.sum(df.loc["NaCl"].to_numpy() * featurize_nacl_icoxxlist.bin_width) != 1
-        assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-6.78468, abs=1e-05)
-        assert df.loc["NaCl", "bwdf_4.01-4.03"] == pytest.approx(-0.68946, abs=1e-05)
-        assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.056499, abs=1e-05)
-        assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998, abs=1e-05)
         assert bwdf_dict_label["12"]["icoxx_binned"][200] == pytest.approx(-0.02923, abs=1e-05)
 
-    def test_featurize_k3sb_icoxxlist_area(self):
+        if not unique:
+            assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-6.78468, abs=1e-05)
+            assert df.loc["NaCl", "bwdf_4.01-4.03"] == pytest.approx(-0.68946, abs=1e-05)
+            assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.056499, abs=1e-05)
+            assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998, abs=1e-05)
+        else:
+            assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-6.78468 / 2, abs=1e-05)
+            assert df.loc["NaCl", "bwdf_4.01-4.03"] == pytest.approx(-0.68946 / 2, abs=1e-05)
+            assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.056499 / 2, abs=1e-05)
+            assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998 / 2, abs=1e-05)
+
+    @pytest.mark.parametrize(
+        "unique",
+        [(False, True)],
+    )
+    def test_featurize_k3sb_icoxxlist_area(self, unique):
         featurize_k3sb_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOBILIST.lobster.gz",
             path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
             normalization="area",
             bin_width=0.01,
             are_cobis=True,
+            unique=unique,
         )
         df = featurize_k3sb_icoxxlist.get_df(ids="K3Sb")
         df_site = featurize_k3sb_icoxxlist.get_site_df(site_index=3)
@@ -920,7 +937,11 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["K3Sb", "bwdf_3.71-3.72"] == pytest.approx(73.959533, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(26.040467, abs=1e-05)
 
-    def test_featurize_cdf_icoxxlist_ein(self):
+    @pytest.mark.parametrize(
+        "unique",
+        [(False, True)],
+    )
+    def test_featurize_cdf_icoxxlist_ein(self, unique):
         featurize_cdf_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
@@ -928,6 +949,7 @@ class TestFeaturizeIcoxxlist:
             min_length=2.0,
             max_length=4.0,
             bin_width=0.5,
+            unique=unique,
         )
         df = featurize_cdf_icoxxlist.get_df(ids="CdF")
         df_site = featurize_cdf_icoxxlist.get_site_df(ids="CdF", site_index=1)
@@ -958,10 +980,6 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["CdF", "bwdf_2.0-2.67"] == pytest.approx(-0.859152, abs=1e-05)
         assert df.loc["CdF", "bwdf_2.67-3.33"] == pytest.approx(0.003411, abs=1e-05)
         assert df.loc["CdF", "bwdf_3.33-4.0"] == pytest.approx(-0.038271, abs=1e-05)
-        # check values (site)
-        assert df_site.loc["CdF", "bwdf_2.0-2.67_site_1"] == pytest.approx(-0.826642, abs=1e-05)
-        assert df_site.loc["CdF", "bwdf_2.67-3.33_site_1"] == pytest.approx(0.006564, abs=1e-05)
-        assert df_site.loc["CdF", "bwdf_3.33-4.0_site_1"] == pytest.approx(-0.057155, abs=1e-05)
         # check values (stats)
         assert df_stats.loc["CdF", "bwdf_sum"] == pytest.approx(-0.894011, abs=1e-05)
         assert df_stats.loc["CdF", "bwdf_mean"] == pytest.approx(-0.298004, abs=1e-05)
@@ -973,13 +991,28 @@ class TestFeaturizeIcoxxlist:
         assert df_stats.loc["CdF", "bwdf_w_mean"] == pytest.approx(-0.821011, abs=1e-05)
         assert df_stats.loc["CdF", "bwdf_w_std"] == pytest.approx(0.173176, abs=1e-05)
 
-    def test_featurize_nasbf6_icoxxlist_none(self):
+        # check values (site)
+        if not unique:
+            assert df_site.loc["CdF", "bwdf_2.0-2.67_site_1"] == pytest.approx(-0.878003446, abs=1e-05)
+            assert df_site.loc["CdF", "bwdf_2.67-3.33_site_1"] == pytest.approx(0.004647920, abs=1e-05)
+            assert df_site.loc["CdF", "bwdf_3.33-4.0_site_1"] == pytest.approx(-0.030353185, abs=1e-05)
+        else:
+            assert df_site.loc["CdF", "bwdf_2.0-2.67_site_1"] == pytest.approx(-0.8734928, abs=1e-05)
+            assert df_site.loc["CdF", "bwdf_2.67-3.33_site_1"] == pytest.approx(0.002312, abs=1e-05)
+            assert df_site.loc["CdF", "bwdf_3.33-4.0_site_1"] == pytest.approx(-0.030197251, abs=1e-05)
+
+    @pytest.mark.parametrize(
+        "unique",
+        [(False, True)],
+    )
+    def test_featurize_nasbf6_icoxxlist_none(self, unique):
         featurize_nasbf6_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/NaSbF6/POSCAR.gz",
             normalization="none",
             bin_width=0.1,
             are_cobis=False,
+            unique=unique,
         )
         df = featurize_nasbf6_icoxxlist.get_df(ids="NaSbF6")
 
@@ -988,22 +1021,37 @@ class TestFeaturizeIcoxxlist:
 
         # check values (complete)
         assert len(df.columns) == 59
-        assert df.loc["NaSbF6", "bwdf_1.83-1.93"] == pytest.approx(-65.42448, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_2.24-2.34"] == pytest.approx(-7.30296, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_2.64-2.75"] == pytest.approx(-1.46688, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_3.25-3.36"] == pytest.approx(-0.19632, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_3.76-3.86"] == pytest.approx(-0.61584, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_4.17-4.27"] == pytest.approx(-0.20136, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_4.58-4.68"] == pytest.approx(-0.30996, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_4.78-4.88"] == pytest.approx(-0.11904, abs=1e-05)
+        if not unique:
+            assert df.loc["NaSbF6", "bwdf_1.83-1.93"] == pytest.approx(-65.42448, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_2.24-2.34"] == pytest.approx(-7.30296, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_2.64-2.75"] == pytest.approx(-1.46688, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_3.25-3.36"] == pytest.approx(-0.19632, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_3.76-3.86"] == pytest.approx(-0.61584, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_4.17-4.27"] == pytest.approx(-0.20136, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_4.58-4.68"] == pytest.approx(-0.30996, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_4.78-4.88"] == pytest.approx(-0.11904, abs=1e-05)
+        else:
+            assert df.loc["NaSbF6", "bwdf_1.83-1.93"] == pytest.approx(-65.42448 / 2, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_2.24-2.34"] == pytest.approx(-7.30296 / 2, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_2.64-2.75"] == pytest.approx(-1.46688 / 2, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_3.25-3.36"] == pytest.approx(-0.19632 / 2, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_3.76-3.86"] == pytest.approx(-0.61584 / 2, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_4.17-4.27"] == pytest.approx(-0.20136 / 2, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_4.58-4.68"] == pytest.approx(-0.30996 / 2, abs=1e-05)
+            assert df.loc["NaSbF6", "bwdf_4.78-4.88"] == pytest.approx(-0.11904 / 2, abs=1e-05)
 
-    def test_featurize_csh_icoxxlist_counts(self):
+    @pytest.mark.parametrize(
+        "unique",
+        [(False, True)],
+    )
+    def test_featurize_csh_icoxxlist_counts(self, unique):
         featurize_csh_icoxxlist = FeaturizeIcoxxlist(
             path_to_icoxxlist=TestDir / "test_data/CsH/ICOHPLIST.lobster.gz",
             path_to_structure=TestDir / "test_data/CsH/POSCAR.gz",
             normalization="counts",
             bin_width=0.1,
             are_cobis=False,
+            unique=unique,
         )
         df = featurize_csh_icoxxlist.get_df()
         df_stats = featurize_csh_icoxxlist.get_stats_df()
