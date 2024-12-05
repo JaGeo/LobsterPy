@@ -1192,7 +1192,7 @@ class FeaturizeIcoxxlist:
         :param path_to_icoxxlist: path to ICOXXLIST.lobster
         :param path_to_structure: path to POSCAR
         :param bin_width: bin width for the BWDF
-        :param interactions_tol: tolerance for interactions
+        :param interactions_tol: numerical tolerance considered for interactions to be zero
         :param max_length: maximum bond length for BWDF computation
         :param min_length: minimum bond length for BWDF computation
         :param normalization: normalization strategy for BWDF
@@ -1282,66 +1282,71 @@ class FeaturizeIcoxxlist:
         all_icoxx_data_w_icoxx = list(zip(pairs, pair_distances, trans, bond_lengths, icoxxs))
 
         # separate data points where translation vector and bond distances agree
+        # 0: pair, 1: computed bond length from translation, 2: translation, 3: icoxx bond length
         correct_icoxx_data = [(item[0], item[1], item[2]) for item in all_icoxx_data if item[1] == item[3]]
         correct_icoxx_data_w_icoxx = [item for item in all_icoxx_data_w_icoxx if item[1] == item[3]]
         # separate data points where translation vector and bond distances disagree
+        # 0: pair, 1: computed bond length from translation, 2: translation, 3: icoxx bond length
         problematic_icoxx_data = [item for item in all_icoxx_data if item[1] != item[3]]
         problematic_icoxx_data_w_icoxx = [item for item in all_icoxx_data_w_icoxx if item[1] != item[3]]
 
-        # Get all unique neighbours data in a single list
-        unique_nb_lst = self.structure.get_symmetric_neighbor_list(r=self.max_length, sg=None, unique=self.unique)
-        unique_distances = [round(dist, 5) for dist in unique_nb_lst[3]]
-        unique_trans = [[int(i) for i in img] for img in unique_nb_lst[2]]
-        unique_pairs = [
+        # Get all neighbours data in a single list
+        rdf_nb_lst = self.structure.get_symmetric_neighbor_list(r=self.max_length, sg=None, unique=self.unique)
+        rdf_distances = [round(dist, 5) for dist in rdf_nb_lst[3]]
+        rdf_trans = [[int(i) for i in img] for img in rdf_nb_lst[2]]
+        rdf_pairs = [
             sorted(
                 [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
             )
-            for org, dest in zip(unique_nb_lst[0], unique_nb_lst[1])
+            for org, dest in zip(rdf_nb_lst[0], rdf_nb_lst[1])
         ]
 
-        unique_rdf_data = list(zip(unique_pairs, unique_distances, unique_trans))
+        # 0: pair, 1: bond length, 2: translation
+        unique_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
 
         # Initialize an empty list to store the data that goes in BWDF computation
         # and collect interactions not in ICOXXLIST
         complete_data, missing_interactions = [], []
 
         # Check if interaction exists in both rdf data / icoxx data, then add to complete data
-        for _ix, item in enumerate(unique_rdf_data):
-            for ij, item2 in enumerate(correct_icoxx_data):  # enumerate(all_icoxx_data):
-                if item == item2:
-                    complete_data.append((*item, correct_icoxx_data_w_icoxx[ij][4]))
-            if item not in correct_icoxx_data:  # missing then collect it in missing interactions
-                missing_interactions.append(item)  # type: ignore
+        for _ix, rdf_p_d_t in enumerate(unique_rdf_data):
+            for ij, icoxx_p_d_t in enumerate(correct_icoxx_data):  # enumerate(all_icoxx_data):
+                if rdf_p_d_t == icoxx_p_d_t:
+                    complete_data.append((*rdf_p_d_t, correct_icoxx_data_w_icoxx[ij][4]))
+            if rdf_p_d_t not in correct_icoxx_data:  # missing then collect it in missing interactions
+                missing_interactions.append(rdf_p_d_t)  # type: ignore
 
         # check for problematic icoxx data
         corrected_problematic_icoxx_data = []
         corrected_problematic_icoxx_data_w_icoxx = []
-        for ix, item in enumerate(problematic_icoxx_data):
-            for item2 in missing_interactions[:]:
-                if (item[0], item[3]) == (item2[0], item2[1]):
-                    corrected_problematic_icoxx_data.append(item2)
-                    corrected_problematic_icoxx_data_w_icoxx.append((*item2, problematic_icoxx_data_w_icoxx[ix][4]))
-                    complete_data.append((*item2, problematic_icoxx_data_w_icoxx[ix][4]))
-                    missing_interactions.remove(item2)  # type: ignore
+        for ix, icoxx_p_d_t in enumerate(problematic_icoxx_data):
+            for rdf_p_d_t in missing_interactions[:]:
+                if icoxx_p_d_t[0] == rdf_p_d_t[0] and np.isclose(rdf_p_d_t[1], icoxx_p_d_t[3]):
+                    corrected_problematic_icoxx_data.append(rdf_p_d_t)
+                    corrected_problematic_icoxx_data_w_icoxx.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))
+                    complete_data.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))
+                    missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Check if the missing interactions are reverse images in ref neighbours data which LOBSTER sometimes eliminates
-        for item in missing_interactions[:]:
-            item2_mod = list(item)
-            item2_mod[-1] = list(-1 * np.array(item[-1]))  # get the translation image and reverse its direction
-            item2_mod = tuple(item2_mod)  # type: ignore
-            if item2_mod in correct_icoxx_data:  # Now check if this interaction exists
+        for rdf_p_d_t in missing_interactions[:]:
+            rdf_p_d_t_mod = list(rdf_p_d_t)
+            rdf_p_d_t_mod[-1] = list(
+                -1 * np.array(rdf_p_d_t[-1])
+            )  # get the translation image and reverse its direction
+            rdf_p_d_t_mod = tuple(rdf_p_d_t_mod)  # type: ignore
+            if rdf_p_d_t_mod in correct_icoxx_data:  # Now check if this interaction exists
                 # get index of interaction to extract corresponding icoxx
-                index_of_ic = correct_icoxx_data.index(item2_mod)  # type: ignore
-                complete_data.append((*item2_mod, correct_icoxx_data_w_icoxx[index_of_ic][4]))
-                missing_interactions.remove(item)  # type: ignore
+                index_of_ic = correct_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
+                complete_data.append((*rdf_p_d_t_mod, correct_icoxx_data_w_icoxx[index_of_ic][4]))
+                missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
-            elif item2_mod in corrected_problematic_icoxx_data:  # Now check if this interaction exists
+            elif rdf_p_d_t_mod in corrected_problematic_icoxx_data:  # Now check if this interaction exists
                 # get index of interaction to extract corresponding icoxx
-                index_of_ic = corrected_problematic_icoxx_data.index(item2_mod)  # type: ignore
+                index_of_ic = corrected_problematic_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
                 complete_data.append(
-                    (*item2_mod, corrected_problematic_icoxx_data_w_icoxx[index_of_ic][4])
+                    (*rdf_p_d_t_mod, corrected_problematic_icoxx_data_w_icoxx[index_of_ic][4])
                 )  # add it to the complete data
-                missing_interactions.remove(item)  # type: ignore
+                missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Extract unique atomic species and create possible combinations
         species_combinations = [sorted(item) for item in combinations_with_replacement(self.structure.symbol_set, 2)]
@@ -1457,66 +1462,66 @@ class FeaturizeIcoxxlist:
         problematic_icoxx_data = [item for item in all_icoxx_data if item[1] != item[3]]
         problematic_icoxx_data_w_icoxx = [item for item in all_icoxx_data_w_icoxx if item[1] != item[3]]
 
-        # Get all unique neighbours data in a single list
-        unique_nb_lst = self.structure.get_symmetric_neighbor_list(r=self.max_length, sg=None, unique=self.unique)
+        # Get all neighbours data in a single list
+        rdf_nb_lst = self.structure.get_symmetric_neighbor_list(r=self.max_length, sg=None, unique=self.unique)
         relevant_site_indices = [
             ix
-            for ix, (org, dest) in enumerate(zip(unique_nb_lst[0], unique_nb_lst[1]))
+            for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
             if org == site_index or dest == site_index
         ]
-        unique_distances = [round(dist, 5) for ix, dist in enumerate(unique_nb_lst[3]) if ix in relevant_site_indices]
-        unique_trans = [[int(i) for i in img] for ix, img in enumerate(unique_nb_lst[2]) if ix in relevant_site_indices]
-        unique_pairs = [
+        rdf_distances = [round(dist, 5) for ix, dist in enumerate(rdf_nb_lst[3]) if ix in relevant_site_indices]
+        rdf_trans = [[int(i) for i in img] for ix, img in enumerate(rdf_nb_lst[2]) if ix in relevant_site_indices]
+        rdf_pairs = [
             sorted(
                 [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
             )
-            for ix, (org, dest) in enumerate(zip(unique_nb_lst[0], unique_nb_lst[1]))
+            for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
             if ix in relevant_site_indices
         ]
 
-        unique_rdf_data = list(zip(unique_pairs, unique_distances, unique_trans))
+        unique_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
 
         # Initialize an empty list to store the data that goes in BWDF computation
         # and collect interactions not in ICOXXLIST
         complete_data, missing_interactions = [], []
 
         # Check if interaction exists in both rdf data / icoxx data, then add to complete data
-        for _ix, item in enumerate(unique_rdf_data):
-            for ij, item2 in enumerate(all_icoxx_data):
-                if item == item2:
-                    complete_data.append((*item, correct_icoxx_data_w_icoxx[ij][4]))
-            if item not in all_icoxx_data:  # missing then collect it in missing interactions
-                missing_interactions.append(item)
+        for _ix, rdf_p_d_t in enumerate(unique_rdf_data):
+            for ij, icoxx_p_d_t in enumerate(all_icoxx_data):
+                if rdf_p_d_t == icoxx_p_d_t:
+                    complete_data.append((*rdf_p_d_t, correct_icoxx_data_w_icoxx[ij][4]))
+            if rdf_p_d_t not in all_icoxx_data:  # missing then collect it in missing interactions
+                missing_interactions.append(rdf_p_d_t)
 
         # check for problematic icoxx data
         corrected_problematic_icoxx_data = []
         corrected_problematic_icoxx_data_w_icoxx = []
-        for ix, item in enumerate(problematic_icoxx_data):  # type: ignore
-            for item2 in missing_interactions[:]:  # type: ignore
-                if (item[0], item[3]) == (item2[0], item2[1]):  # type: ignore
-                    corrected_problematic_icoxx_data.append(item2)
-                    corrected_problematic_icoxx_data_w_icoxx.append((*item2, problematic_icoxx_data_w_icoxx[ix][4]))
-                    complete_data.append((*item2, problematic_icoxx_data_w_icoxx[ix][4]))  # type: ignore
-                    missing_interactions.remove(item2)  # type: ignore
+        for ix, icoxx_p_d_t in enumerate(problematic_icoxx_data):  # type: ignore
+            for rdf_p_d_t in missing_interactions[:]:  # type: ignore
+                if icoxx_p_d_t[0] == rdf_p_d_t[0] and np.isclose(rdf_p_d_t[1], icoxx_p_d_t[3]):  # type: ignore
+                    corrected_problematic_icoxx_data.append(rdf_p_d_t)
+                    corrected_problematic_icoxx_data_w_icoxx.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))
+                    complete_data.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))  # type: ignore
+                    missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Check if the missing interactions are reverse images in ref neighbours data which LOBSTER sometimes eliminates
-        for item in missing_interactions[:]:
-            item2_mod = list(item)
-            item2_mod[-1] = list(-1 * np.array(item[-1]))  # get the translation image and reverse its direction
-            item2_mod = tuple(item2_mod)  # type: ignore
-            if item2_mod in correct_icoxx_data:  # Now check if this interaction exists
+        for rdf_p_d_t in missing_interactions[:]:
+            rdf_p_d_t_mod = list(rdf_p_d_t)
+            rdf_p_d_t_mod[-1] = list(
+                -1 * np.array(rdf_p_d_t[-1])
+            )  # get the translation image and reverse its direction
+            rdf_p_d_t_mod = tuple(rdf_p_d_t_mod)  # type: ignore
+            if rdf_p_d_t_mod in correct_icoxx_data:  # Now check if this interaction exists
                 # get index of interaction to extract corresponding icoxx
-                index_of_ic = correct_icoxx_data.index(item2_mod)  # type: ignore
-                complete_data.append((*item2_mod, correct_icoxx_data_w_icoxx[index_of_ic][4]))
-                missing_interactions.remove(item)  # type: ignore
+                index_of_ic = correct_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
+                complete_data.append((*rdf_p_d_t_mod, correct_icoxx_data_w_icoxx[index_of_ic][4]))
+                missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
-            elif item2_mod in corrected_problematic_icoxx_data:  # Now check if this interaction exists
+            elif rdf_p_d_t_mod in corrected_problematic_icoxx_data:  # Now check if this interaction exists
                 # get index of interaction to extract corresponding icoxx
-                index_of_ic = corrected_problematic_icoxx_data.index(item2_mod)  # type: ignore
-                complete_data.append(
-                    (*item2_mod, corrected_problematic_icoxx_data_w_icoxx[index_of_ic][4])
-                )  # add it to the complete data
-                missing_interactions.remove(item)  # type: ignore
+                index_of_ic = corrected_problematic_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
+                complete_data.append((*rdf_p_d_t_mod, corrected_problematic_icoxx_data_w_icoxx[index_of_ic][4]))  # type:ignore # add it to the complete data
+                missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Calculate number of bins
         n_bins = int(np.ceil((self.max_length - self.min_length) / self.bin_width))
