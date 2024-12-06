@@ -51,7 +51,7 @@ def get_file_paths(
 
     """
     default_values = {
-        "structure": "POSCAR",
+        "structure": "CONTCAR",
         "cohpcar": "COHPCAR.lobster",
         "icohplist": "ICOHPLIST.lobster",
         "cobicar": "COBICAR.lobster",
@@ -102,13 +102,13 @@ def get_structure_path(lobster_path: Path) -> Path:
     """
     Search iteratively for (unzipped / zipped) structure file.
 
-    POSCAR is prioritized over POSCAR.lobster.
+    CONTCAR is prioritized over POSCAR.lobster.
 
     :param lobster_path: path to root LOBSTER calc directory
 
     :return: path to structure file
     """
-    for filename in ["POSCAR", "POSCAR.lobster", "POSCAR.lobster.vasp"]:
+    for filename in ["CONTCAR", "POSCAR.lobster", "POSCAR.lobster.vasp"]:
         poscar_path = lobster_path / filename
         if poscar_path.exists():
             return poscar_path
