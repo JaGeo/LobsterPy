@@ -1157,10 +1157,9 @@ class FeaturizeIcoxxlist:
         interactions_tol: float = 1e-3,
         max_length: float = 6.0,
         min_length: float = 0.0,
-        normalization: Literal["formula_units", "area", "ein", "counts", "none"] = "formula_units",
+        normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
         are_cobis: bool = False,
         are_coops: bool = False,
-        unique: bool = False,
     ):
         """
         Featurize ICOHPLIST.lobster data.
@@ -1174,7 +1173,6 @@ class FeaturizeIcoxxlist:
         :param normalization: normalization strategy for BWDF
         :param are_cobis: bool indicating if file contains COBI/ICOBI data
         :param are_coops: bool indicating if file contains COOP/ICOOP data
-        :param unique: bool indicating if only unique bonds are to be considered
         """
         self.path_to_icoxxlist = path_to_icoxxlist
         self.path_to_structure = path_to_structure
@@ -1191,15 +1189,12 @@ class FeaturizeIcoxxlist:
         self.max_length = max_length
         self.min_length = min_length
         self.normalization = normalization
-        self.unique = unique
 
-    def _normalize_bwdf(self, bwdf: dict, icoxx_values: np.ndarray, icoxx_indexes: dict) -> dict:
+    def _normalize_bwdf(self, bwdf: dict) -> dict:
         """
         Normalize BWDF data based on the normalization strategy.
 
         :param bwdf: BWDF data as a dictionary
-        :param icoxx_values: ICOXX values used in BWDF computation
-        :param icoxx_indexes: indexes of icoxx from complete data from which BWDF is computed
 
         Returns:
             Normalized BWDF data as a dictionary
@@ -1212,13 +1207,6 @@ class FeaturizeIcoxxlist:
                 elif self.normalization == "formula_units":
                     formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
                     bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / formula_units)
-                elif self.normalization == "ein":
-                    all_icoxxs = icoxx_values[icoxx_indexes[bwdf_label]]
-                    icoxx_weights = np.array([(icoxx / np.sum(all_icoxxs)) for icoxx in all_icoxxs])
-                    # Handle ZeroDivisionErrors when no bonds exist for an atom-pair
-                    weighted_icoxx = np.average(np.array(all_icoxxs), weights=icoxx_weights) if all_icoxxs.size else 0
-                    ein = (np.sum(all_icoxxs) / weighted_icoxx) * (2 / self.structure.num_sites)
-                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / ein)
                 elif self.normalization == "counts":
                     bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(
                         bwdf_value["icoxx_binned"] / bwdf_value["icoxx_counts"]
@@ -1240,34 +1228,13 @@ class FeaturizeIcoxxlist:
         icoxxs = [sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp]
         trans = [list(item) for item in self.icoxxlist.icohpcollection._list_translation]
         pairs = [sorted([at1, at2]) for at1, at2 in zip(atoms1, atoms2)]
-        pair_indices = [
-            [int("".join(filter(str.isdigit, at1))) - 1, int("".join(filter(str.isdigit, at2))) - 1]
-            for at1, at2 in zip(atoms1, atoms2)
-        ]
-
-        pair_distances = []
-        for idx, pair in enumerate(pair_indices):
-            start_pos = self.structure[pair[0]].coords
-            offset = self.structure[pair[1]].frac_coords + np.array(trans[idx])
-            end_pos = self.structure.lattice.get_cartesian_coords(offset)
-            dist_computed = round(np.linalg.norm(start_pos - end_pos), 5)
-            pair_distances.append(dist_computed)
 
         # Assimilate icoxx data in tuples
-        all_icoxx_data = list(zip(pairs, pair_distances, trans, bond_lengths))
-        all_icoxx_data_w_icoxx = list(zip(pairs, pair_distances, trans, bond_lengths, icoxxs))
-
-        # separate data points where translation vector and bond distances agree
-        # 0: pair, 1: computed bond length from translation, 2: translation, 3: icoxx bond length
-        correct_icoxx_data = [(item[0], item[1], item[2]) for item in all_icoxx_data if item[1] == item[3]]
-        correct_icoxx_data_w_icoxx = [item for item in all_icoxx_data_w_icoxx if item[1] == item[3]]
-        # separate data points where translation vector and bond distances disagree
-        # 0: pair, 1: computed bond length from translation, 2: translation, 3: icoxx bond length
-        problematic_icoxx_data = [item for item in all_icoxx_data if item[1] != item[3]]
-        problematic_icoxx_data_w_icoxx = [item for item in all_icoxx_data_w_icoxx if item[1] != item[3]]
+        all_icoxx_data = list(zip(pairs, bond_lengths, trans))
+        all_icoxx_data_w_icoxx = list(zip(pairs, bond_lengths, trans, icoxxs))
 
         # Get all neighbours data in a single list
-        rdf_nb_lst = self.structure.get_symmetric_neighbor_list(r=self.max_length, sg=None, unique=self.unique)
+        rdf_nb_lst = self.structure.get_neighbor_list(r=self.max_length)
         rdf_distances = [round(dist, 5) for dist in rdf_nb_lst[3]]
         rdf_trans = [[int(i) for i in img] for img in rdf_nb_lst[2]]
         rdf_pairs = [
@@ -1278,30 +1245,18 @@ class FeaturizeIcoxxlist:
         ]
 
         # 0: pair, 1: bond length, 2: translation
-        unique_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
+        all_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
 
         # Initialize an empty list to store the data that goes in BWDF computation
-        # and collect interactions not in ICOXXLIST
         complete_data, missing_interactions = [], []
 
         # Check if interaction exists in both rdf data / icoxx data, then add to complete data
-        for _ix, rdf_p_d_t in enumerate(unique_rdf_data):
-            for ij, icoxx_p_d_t in enumerate(correct_icoxx_data):  # enumerate(all_icoxx_data):
+        for _ix, rdf_p_d_t in enumerate(all_rdf_data):
+            for ij, icoxx_p_d_t in enumerate(all_icoxx_data):  # enumerate(all_icoxx_data):
                 if rdf_p_d_t == icoxx_p_d_t:
-                    complete_data.append((*rdf_p_d_t, correct_icoxx_data_w_icoxx[ij][4]))
-            if rdf_p_d_t not in correct_icoxx_data:  # missing then collect it in missing interactions
+                    complete_data.append((*rdf_p_d_t, all_icoxx_data_w_icoxx[ij][3]))
+            if rdf_p_d_t not in all_icoxx_data:  # missing then collect it in missing interactions
                 missing_interactions.append(rdf_p_d_t)  # type: ignore
-
-        # check for problematic icoxx data
-        corrected_problematic_icoxx_data = []
-        corrected_problematic_icoxx_data_w_icoxx = []
-        for ix, icoxx_p_d_t in enumerate(problematic_icoxx_data):
-            for rdf_p_d_t in missing_interactions[:]:
-                if icoxx_p_d_t[0] == rdf_p_d_t[0] and np.isclose(rdf_p_d_t[1], icoxx_p_d_t[3]):
-                    corrected_problematic_icoxx_data.append(rdf_p_d_t)
-                    corrected_problematic_icoxx_data_w_icoxx.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))
-                    complete_data.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))
-                    missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Check if the missing interactions are reverse images in ref neighbours data which LOBSTER sometimes eliminates
         for rdf_p_d_t in missing_interactions[:]:
@@ -1310,18 +1265,10 @@ class FeaturizeIcoxxlist:
                 -1 * np.array(rdf_p_d_t[-1])
             )  # get the translation image and reverse its direction
             rdf_p_d_t_mod = tuple(rdf_p_d_t_mod)  # type: ignore
-            if rdf_p_d_t_mod in correct_icoxx_data:  # Now check if this interaction exists
+            if rdf_p_d_t_mod in all_icoxx_data:  # Now check if this interaction exists
                 # get index of interaction to extract corresponding icoxx
-                index_of_ic = correct_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
-                complete_data.append((*rdf_p_d_t_mod, correct_icoxx_data_w_icoxx[index_of_ic][4]))
-                missing_interactions.remove(rdf_p_d_t)  # type: ignore
-
-            elif rdf_p_d_t_mod in corrected_problematic_icoxx_data:  # Now check if this interaction exists
-                # get index of interaction to extract corresponding icoxx
-                index_of_ic = corrected_problematic_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
-                complete_data.append(
-                    (*rdf_p_d_t_mod, corrected_problematic_icoxx_data_w_icoxx[index_of_ic][4])
-                )  # add it to the complete data
+                index_of_ic = all_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
+                complete_data.append((*rdf_p_d_t_mod, all_icoxx_data_w_icoxx[index_of_ic][3]))
                 missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Extract unique atomic species and create possible combinations
@@ -1343,13 +1290,9 @@ class FeaturizeIcoxxlist:
             for atom_pair in species_combinations
         }
 
-        # Initialize dictionary to collect interactions indexes from complete_data
-        # Used for EIN normalization
-        icoxx_indexes = {"-".join(atom_pair): [] for atom_pair in species_combinations}
-
         # Populate bins with corresponding icoxx values
         for key in bwdf_atom_pair:
-            for indx, interactions in enumerate(complete_data):
+            for interactions in complete_data:
                 sorted_entry = sorted([interactions[0][0].strip("0123456789"), interactions[0][1].strip("0123456789")])
                 if key == "-".join(sorted_entry):
                     for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
@@ -1361,7 +1304,6 @@ class FeaturizeIcoxxlist:
                             bwdf_atom_pair[key]["icoxx_counts"][ii] += (
                                 1 if abs(interactions[3]) > self.interactions_tol else 0
                             )
-                            icoxx_indexes[key].append(indx)
 
         icoxx_binned_summed = np.sum(
             [bwdf_atom_pair[atom_pair]["icoxx_binned"] for atom_pair in bwdf_atom_pair], axis=0
@@ -1369,16 +1311,17 @@ class FeaturizeIcoxxlist:
         icoxx_counts_summed = np.sum(
             [bwdf_atom_pair[atom_pair]["icoxx_counts"] for atom_pair in bwdf_atom_pair], axis=0
         )
-        icoxx_indexes["summed"] = sorted(index for indexes in icoxx_indexes.values() for index in indexes)
 
         bwdf_atom_pair["summed"] = {"icoxx_binned": icoxx_binned_summed, "icoxx_counts": icoxx_counts_summed}
         bwdf_atom_pair["centers"] = bin_centers
         bwdf_atom_pair["edges"] = bin_edges
         bwdf_atom_pair["bin_width"] = self.bin_width
 
+        if len(missing_interactions) > 0:
+            print(Path(self.path_to_icoxxlist).parent.name, len(missing_interactions))
+
         # Normalize BWDF data
-        icoxx_values = np.array([interactions[3] for interactions in complete_data])
-        return self._normalize_bwdf(bwdf=bwdf_atom_pair, icoxx_values=icoxx_values, icoxx_indexes=icoxx_indexes)
+        return self._normalize_bwdf(bwdf=bwdf_atom_pair)
 
     def calc_site_bwdf(self, site_index: int) -> dict:
         """
@@ -1414,32 +1357,12 @@ class FeaturizeIcoxxlist:
         trans = [list(item) for item in np.array(self.icoxxlist.icohpcollection._list_translation)[indices]]
         pairs = [sorted([at1, at2]) for at1, at2 in zip(atoms1, atoms2)]
 
-        pair_indices = [
-            [int("".join(filter(str.isdigit, at1))) - 1, int("".join(filter(str.isdigit, at2))) - 1]
-            for at1, at2 in zip(atoms1, atoms2)
-        ]
-
-        pair_distances = []
-        for idx, pair in enumerate(pair_indices):
-            start_pos = self.structure[pair[0]].coords
-            offset = self.structure[pair[1]].frac_coords + np.array(trans[idx])
-            end_pos = self.structure.lattice.get_cartesian_coords(offset)
-            dist_computed = round(np.linalg.norm(start_pos - end_pos), 5)
-            pair_distances.append(dist_computed)
-
         # Assimilate icoxx data in tuples
-        all_icoxx_data = list(zip(pairs, pair_distances, trans, bond_lengths))
-        all_icoxx_data_w_icoxx = list(zip(pairs, pair_distances, trans, bond_lengths, icoxxs))
-
-        # separate data points where translation vector and bond distances agree
-        correct_icoxx_data = [(item[0], item[1], item[2]) for item in all_icoxx_data if item[1] == item[3]]
-        correct_icoxx_data_w_icoxx = [item for item in all_icoxx_data_w_icoxx if item[1] == item[3]]
-        # separate data points where translation vector and bond distances disagree
-        problematic_icoxx_data = [item for item in all_icoxx_data if item[1] != item[3]]
-        problematic_icoxx_data_w_icoxx = [item for item in all_icoxx_data_w_icoxx if item[1] != item[3]]
+        all_icoxx_data = list(zip(pairs, bond_lengths, trans))
+        all_icoxx_data_w_icoxx = list(zip(pairs, bond_lengths, trans, icoxxs))
 
         # Get all neighbours data in a single list
-        rdf_nb_lst = self.structure.get_symmetric_neighbor_list(r=self.max_length, sg=None, unique=self.unique)
+        rdf_nb_lst = self.structure.get_neighbor_list(r=self.max_length)
         relevant_site_indices = [
             ix
             for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
@@ -1455,30 +1378,19 @@ class FeaturizeIcoxxlist:
             if ix in relevant_site_indices
         ]
 
-        unique_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
+        all_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
 
         # Initialize an empty list to store the data that goes in BWDF computation
         # and collect interactions not in ICOXXLIST
         complete_data, missing_interactions = [], []
 
         # Check if interaction exists in both rdf data / icoxx data, then add to complete data
-        for _ix, rdf_p_d_t in enumerate(unique_rdf_data):
+        for _ix, rdf_p_d_t in enumerate(all_rdf_data):
             for ij, icoxx_p_d_t in enumerate(all_icoxx_data):
                 if rdf_p_d_t == icoxx_p_d_t:
-                    complete_data.append((*rdf_p_d_t, correct_icoxx_data_w_icoxx[ij][4]))
+                    complete_data.append((*rdf_p_d_t, all_icoxx_data_w_icoxx[ij][3]))
             if rdf_p_d_t not in all_icoxx_data:  # missing then collect it in missing interactions
                 missing_interactions.append(rdf_p_d_t)
-
-        # check for problematic icoxx data
-        corrected_problematic_icoxx_data = []
-        corrected_problematic_icoxx_data_w_icoxx = []
-        for ix, icoxx_p_d_t in enumerate(problematic_icoxx_data):  # type: ignore
-            for rdf_p_d_t in missing_interactions[:]:  # type: ignore
-                if icoxx_p_d_t[0] == rdf_p_d_t[0] and np.isclose(rdf_p_d_t[1], icoxx_p_d_t[3]):  # type: ignore
-                    corrected_problematic_icoxx_data.append(rdf_p_d_t)
-                    corrected_problematic_icoxx_data_w_icoxx.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))
-                    complete_data.append((*rdf_p_d_t, problematic_icoxx_data_w_icoxx[ix][4]))  # type: ignore
-                    missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Check if the missing interactions are reverse images in ref neighbours data which LOBSTER sometimes eliminates
         for rdf_p_d_t in missing_interactions[:]:
@@ -1487,16 +1399,10 @@ class FeaturizeIcoxxlist:
                 -1 * np.array(rdf_p_d_t[-1])
             )  # get the translation image and reverse its direction
             rdf_p_d_t_mod = tuple(rdf_p_d_t_mod)  # type: ignore
-            if rdf_p_d_t_mod in correct_icoxx_data:  # Now check if this interaction exists
+            if rdf_p_d_t_mod in all_icoxx_data:  # Now check if this interaction exists
                 # get index of interaction to extract corresponding icoxx
-                index_of_ic = correct_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
-                complete_data.append((*rdf_p_d_t_mod, correct_icoxx_data_w_icoxx[index_of_ic][4]))
-                missing_interactions.remove(rdf_p_d_t)  # type: ignore
-
-            elif rdf_p_d_t_mod in corrected_problematic_icoxx_data:  # Now check if this interaction exists
-                # get index of interaction to extract corresponding icoxx
-                index_of_ic = corrected_problematic_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
-                complete_data.append((*rdf_p_d_t_mod, corrected_problematic_icoxx_data_w_icoxx[index_of_ic][4]))  # type:ignore # add it to the complete data
+                index_of_ic = all_icoxx_data.index(rdf_p_d_t_mod)  # type: ignore
+                complete_data.append((*rdf_p_d_t_mod, all_icoxx_data_w_icoxx[index_of_ic][3]))
                 missing_interactions.remove(rdf_p_d_t)  # type: ignore
 
         # Calculate number of bins
@@ -1527,9 +1433,7 @@ class FeaturizeIcoxxlist:
         site_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
 
         # Normalize BWDF data
-        icoxx_values = np.array([interactions[3] for interactions in complete_data])
-        icoxx_indexes = {f"{site_index}": range(0, len(complete_data), 1)}
-        return self._normalize_bwdf(bwdf=site_bwdf, icoxx_values=icoxx_values, icoxx_indexes=icoxx_indexes)
+        return self._normalize_bwdf(bwdf=site_bwdf)
 
     def calc_label_bwdf(self, bond_label: str) -> dict:
         """
@@ -1578,9 +1482,7 @@ class FeaturizeIcoxxlist:
         label_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
 
         # Normalize BWDF data
-        icoxx_values = np.array([interactions[3] for interactions in complete_data])
-        icoxx_indexes = {bond_label: range(0, len(complete_data), 1)}
-        return self._normalize_bwdf(bwdf=label_bwdf, icoxx_values=icoxx_values, icoxx_indexes=icoxx_indexes)
+        return self._normalize_bwdf(bwdf=label_bwdf)
 
     @staticmethod
     def _get_features_col_names(bwdf: dict) -> list[str]:

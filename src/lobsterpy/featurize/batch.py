@@ -861,7 +861,7 @@ class BatchIcoxxlistFeaturizer:
     def __init__(
         self,
         path_to_lobster_calcs: str | Path,
-        normalization: Literal["formula_units", "area", "ein", "counts", "none"] = "formula_units",
+        normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
         bin_width: float = 0.02,
         bwdf_df_type: Literal["complete", "stats"] = "stats",
         interactions_tol: float = 1e-3,
