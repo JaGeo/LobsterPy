@@ -1317,9 +1317,6 @@ class FeaturizeIcoxxlist:
         bwdf_atom_pair["edges"] = bin_edges
         bwdf_atom_pair["bin_width"] = self.bin_width
 
-        if len(missing_interactions) > 0:
-            print(Path(self.path_to_icoxxlist).parent.name, len(missing_interactions))
-
         # Normalize BWDF data
         return self._normalize_bwdf(bwdf=bwdf_atom_pair)
 
