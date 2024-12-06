@@ -897,7 +897,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_coxx_exception.path_to_lobster_calcs
             )
 
-        assert str(err3.value) == "Files ['POSCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster'] not found in JSONS."
+        assert str(err3.value) == "Files ['CONTCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster'] not found in JSONS."
 
         # Charges exception
         with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
@@ -907,7 +907,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_ch_exception.path_to_lobster_calcs
             )
 
-        assert str(err4.value) == "Files ['POSCAR', 'CHARGE.lobster'] not found in JSONS."
+        assert str(err4.value) == "Files ['CONTCAR', 'CHARGE.lobster'] not found in JSONS."
 
         # Fingerprint similarity exception
         with pytest.raises(Exception) as err8:  # noqa: PT012, PT011

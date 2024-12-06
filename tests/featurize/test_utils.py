@@ -25,10 +25,10 @@ def test_get_structure_path(tmp_path):
     file is read.
     """
     with (
-        gzip.open(TestDir / "test_data/test_structure_path_handling/POSCAR.gz", "rb") as zipped_poscar,
-        open(tmp_path / "POSCAR", "wb") as unzipped_poscar,
+        gzip.open(TestDir / "test_data/test_structure_path_handling/CONTCAR.gz", "rb") as zipped_poscar,
+        open(tmp_path / "CONTCAR", "wb") as unzipped_contcar,
     ):
-        shutil.copyfileobj(zipped_poscar, unzipped_poscar)
+        shutil.copyfileobj(zipped_poscar, unzipped_contcar)
 
     poscar_path_unzipped = get_structure_path(lobster_path=tmp_path)
     assert isinstance(poscar_path_unzipped, Path)

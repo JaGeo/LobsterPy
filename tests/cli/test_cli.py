@@ -574,7 +574,7 @@ class TestCLI:
             run(test)
         assert (
             str(err1.value)
-            == "Files ['POSCAR', 'CHARGE.lobster', 'ICOHPLIST.lobster', 'COHPCAR.lobster'] not found in tests."
+            == "Files ['CONTCAR', 'CHARGE.lobster', 'ICOHPLIST.lobster', 'COHPCAR.lobster'] not found in tests."
         )
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
@@ -586,7 +586,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-        assert str(err2.value) == "Files ['POSCAR', 'lobsterin', 'lobsterout'] not found in tests."
+        assert str(err2.value) == "Files ['CONTCAR', 'lobsterin', 'lobsterout'] not found in tests."
         #
         # doscar comparison exceptions test
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
