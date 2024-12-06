@@ -15,7 +15,7 @@ Creating input files
    
 
 With LobsterPy, these intricate details are handled with a single command. We need the standard VASP input files, i.e. 
-``INCAR, KPOINTS, POTCAR and POSCAR`` in the calculation directory. Once you have these files, one needs to run the following command:
+``INCAR, KPOINTS, POTCAR and CONTCAR`` in the calculation directory. Once you have these files, one needs to run the following command:
 
 ``lobsterpy create-inputs``
 
