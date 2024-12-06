@@ -1253,7 +1253,9 @@ class FeaturizeIcoxxlist:
         # Check if interaction exists in both rdf data / icoxx data, then add to complete data
         for _ix, rdf_p_d_t in enumerate(all_rdf_data):
             for ij, icoxx_p_d_t in enumerate(all_icoxx_data):  # enumerate(all_icoxx_data):
-                if rdf_p_d_t == icoxx_p_d_t:
+                if (rdf_p_d_t[0], rdf_p_d_t[2]) == (icoxx_p_d_t[0], icoxx_p_d_t[2]) and np.isclose(
+                    rdf_p_d_t[1], icoxx_p_d_t[1]
+                ):
                     complete_data.append((*rdf_p_d_t, all_icoxx_data_w_icoxx[ij][3]))
             if rdf_p_d_t not in all_icoxx_data:  # missing then collect it in missing interactions
                 missing_interactions.append(rdf_p_d_t)  # type: ignore
