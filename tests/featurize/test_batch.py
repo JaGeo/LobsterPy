@@ -681,7 +681,6 @@ class TestBatchIcoxxlistFeaturizer:
         [
             ("formula_units", "complete"),
             ("area", "stats"),
-            ("ein", "complete"),
             ("counts", "stats"),
             ("none", "complete"),
         ],
@@ -734,7 +733,7 @@ class TestBatchIcoxxlistFeaturizer:
 
     @pytest.mark.parametrize(
         ("normalization", "bwdf_df_type"),
-        [("formula_units", "stats"), ("area", "complete"), ("ein", "stats"), ("counts", "complete"), ("none", "stats")],
+        [("formula_units", "stats"), ("area", "complete"), ("counts", "complete"), ("none", "stats")],
     )
     def test_batch_icobilist_featurizer(self, normalization, bwdf_df_type):
         batch_icobi = BatchIcoxxlistFeaturizer(
@@ -789,7 +788,6 @@ class TestBatchIcoxxlistFeaturizer:
         [
             ("formula_units", "complete"),
             ("area", "stats"),
-            ("ein", "complete"),
             ("counts", "stats"),
             ("none", "complete"),
         ],
