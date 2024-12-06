@@ -10,7 +10,7 @@ import json
 import warnings
 from itertools import combinations_with_replacement
 from pathlib import Path
-from typing import Literal, NamedTuple
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -25,8 +25,7 @@ from scipy.signal import hilbert
 from scipy.stats import kurtosis, skew
 
 from lobsterpy.cohp.analyze import Analysis
-
-from . import get_file_paths
+from lobsterpy.featurize.utils import CoxxFingerprint, get_file_paths
 
 warnings.filterwarnings("ignore")
 
@@ -327,29 +326,6 @@ class FeaturizeLobsterpy:
             data["madelung_energies"] = madelung_energies
 
         return data
-
-
-class CoxxFingerprint(NamedTuple):
-    """
-    Represents a Coxx fingerprint.
-
-    This named tuple is used to store information related to a Coxx fingerprint, which
-    includes energies, Coxx values, fingerprint type, spin type, number of bins, and bin width.
-
-    :param energies: The energy values associated with the Coxx fingerprint.
-    :param coxx: The Coxx values corresponding to each energy.
-    :param fp_type: The type of the Coxx fingerprint.
-    :param spin_type: The spin type associated with the fingerprint.
-    :param n_bins: The number of bins used in the Coxx fingerprint.
-    :param bin_width: The width of each bin in the Coxx fingerprint.
-    """
-
-    energies: np.ndarray
-    coxx: np.ndarray
-    fp_type: str
-    spin_type: str
-    n_bins: int
-    bin_width: float
 
 
 class FeaturizeCOXX:

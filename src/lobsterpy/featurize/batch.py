@@ -23,9 +23,8 @@ from lobsterpy.featurize.core import (
     FeaturizeIcoxxlist,
     FeaturizeLobsterpy,
 )
+from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.structuregraph.graph import LobsterGraph
-
-from . import get_file_paths
 
 warnings.filterwarnings("ignore")
 

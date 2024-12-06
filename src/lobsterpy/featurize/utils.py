@@ -6,9 +6,34 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import NamedTuple
 
+import numpy as np
 from mendeleev import element
 from monty.os.path import zpath
+
+
+class CoxxFingerprint(NamedTuple):
+    """
+    Represents a Coxx fingerprint.
+
+    This named tuple is used to store information related to a Coxx fingerprint, which
+    includes energies, Coxx values, fingerprint type, spin type, number of bins, and bin width.
+
+    :param energies: The energy values associated with the Coxx fingerprint.
+    :param coxx: The Coxx values corresponding to each energy.
+    :param fp_type: The type of the Coxx fingerprint.
+    :param spin_type: The spin type associated with the fingerprint.
+    :param n_bins: The number of bins used in the Coxx fingerprint.
+    :param bin_width: The width of each bin in the Coxx fingerprint.
+    """
+
+    energies: np.ndarray
+    coxx: np.ndarray
+    fp_type: str
+    spin_type: str
+    n_bins: int
+    bin_width: float
 
 
 def get_file_paths(
