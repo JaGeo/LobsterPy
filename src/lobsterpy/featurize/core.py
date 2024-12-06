@@ -1192,7 +1192,7 @@ class FeaturizeIcoxxlist:
         :param path_to_icoxxlist: path to ICOXXLIST.lobster
         :param path_to_structure: path to POSCAR
         :param bin_width: bin width for the BWDF
-        :param interactions_tol: numerical tolerance considered for interactions to be zero
+        :param interactions_tol: numerical tolerance considered for interactions to be insignificant
         :param max_length: maximum bond length for BWDF computation
         :param min_length: minimum bond length for BWDF computation
         :param normalization: normalization strategy for BWDF
