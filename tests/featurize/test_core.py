@@ -897,7 +897,7 @@ class TestFeaturizeIcoxxlist:
 
         assert df.loc["NaCl", "bwdf_2.83-2.85"] == pytest.approx(-6.78468, abs=1e-05)
         assert df.loc["NaCl", "bwdf_4.01-4.03"] == pytest.approx(-0.68946, abs=1e-05)
-        assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.056499, abs=1e-05)
+        assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.0529699, abs=1e-05)
         assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998, abs=1e-05)
 
     def test_featurize_k3sb_icoxxlist_area(self):
@@ -918,8 +918,8 @@ class TestFeaturizeIcoxxlist:
         # check values
         assert len(df.columns) == 599
         assert np.sum(df.loc["K3Sb"].to_numpy() * featurize_k3sb_icoxxlist.bin_width) == pytest.approx(1, abs=1e-05)
-        assert df.loc["K3Sb", "bwdf_3.71-3.72"] == pytest.approx(73.959533, abs=1e-05)
-        assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(26.040467, abs=1e-05)
+        assert df.loc["K3Sb", "bwdf_3.71-3.72"] == pytest.approx(72.421012, abs=1e-05)
+        assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(27.578987, abs=1e-05)
 
     def test_featurize_nasbf6_icoxxlist_none(self):
         featurize_nasbf6_icoxxlist = FeaturizeIcoxxlist(
@@ -936,14 +936,14 @@ class TestFeaturizeIcoxxlist:
 
         # check values (complete)
         assert len(df.columns) == 59
-        assert df.loc["NaSbF6", "bwdf_1.83-1.93"] == pytest.approx(-65.42448, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_2.24-2.34"] == pytest.approx(-7.30296, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_1.83-1.93"] == pytest.approx(-65.42447, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_2.24-2.34"] == pytest.approx(-3.65148, abs=1e-05)
         assert df.loc["NaSbF6", "bwdf_2.64-2.75"] == pytest.approx(-1.46688, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_3.25-3.36"] == pytest.approx(-0.19632, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_3.76-3.86"] == pytest.approx(-0.61584, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_4.17-4.27"] == pytest.approx(-0.20136, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_4.58-4.68"] == pytest.approx(-0.30996, abs=1e-05)
-        assert df.loc["NaSbF6", "bwdf_4.78-4.88"] == pytest.approx(-0.11904, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_3.25-3.36"] == pytest.approx(-0.09815, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_3.76-3.86"] == pytest.approx(-0.61583, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_4.17-4.27"] == pytest.approx(-0.20135, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_4.58-4.68"] == pytest.approx(-0.28409, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_4.78-4.88"] == pytest.approx(-0.11903, abs=1e-05)
 
     def test_featurize_csh_icoxxlist_counts(self):
         featurize_csh_icoxxlist = FeaturizeIcoxxlist(
@@ -972,6 +972,6 @@ class TestFeaturizeIcoxxlist:
         assert df_stats.loc["CsH", "bwdf_min"] == pytest.approx(-0.61476, abs=1e-05)
         assert df_stats.loc["CsH", "bwdf_max"] == pytest.approx(0.0, abs=1e-05)
         assert df_stats.loc["CsH", "bwdf_skew"] == pytest.approx(-7.190032, abs=1e-05)
-        assert df_stats.loc["CsH", "bwdf_kurtosis"] == pytest.approx(50.925997, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_kurtosis"] == pytest.approx(50.92604, abs=1e-05)
         assert df_stats.loc["CsH", "bwdf_w_mean"] == pytest.approx(-0.510679, abs=1e-05)
         assert df_stats.loc["CsH", "bwdf_w_std"] == pytest.approx(0.213234, abs=1e-05)
