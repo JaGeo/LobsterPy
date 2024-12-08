@@ -1190,80 +1190,99 @@ class FeaturizeIcoxxlist:
         self.min_length = min_length
         self.normalization = normalization
 
-    def _normalize_bwdf(self, bwdf: dict) -> dict:
+    def get_icoxx_neighbors_data(self, site_index: int | None = None) -> dict[str, list]:
         """
-        Normalize BWDF data based on the normalization strategy.
+        Get the neighbors data with icoxx values for a structure.
 
-        :param bwdf: BWDF data as a dictionary
+        Uses distance based neighbor list as reference to map the neighbor's data.
+
+        Args:
+            site_index: index of the site for which neighbors data is returned. Default is None (All sites).
 
         Returns:
-            Normalized BWDF data as a dictionary
+            Neighbors data as a dictionary
         """
-        for bwdf_label, bwdf_value in bwdf.items():
-            if bwdf_label not in ("centers", "edges", "bin_width"):
-                if self.normalization == "area":
-                    total_area = np.sum(np.abs(bwdf_value["icoxx_binned"]) * self.bin_width)
-                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / total_area)
-                elif self.normalization == "formula_units":
-                    formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
-                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / formula_units)
-                elif self.normalization == "counts":
-                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(
-                        bwdf_value["icoxx_binned"] / bwdf_value["icoxx_counts"]
-                    )
+        # Get all neighbors data in a single list using distance based algorithm
+        # This is used as a reference to map the icoxx data
+        rdf_nb_lst = self.structure.get_neighbor_list(r=self.max_length)
 
-        return bwdf
-
-    def calc_bwdf(self):
-        """
-        Compute BWDF from ICOXXLIST.lobster data.
-
-        Returns:
-            BWDF as a dictionary
-        """
         # Collect bond lengths, atom labels and bond strengths
-        bond_lengths = self.icoxxlist.icohpcollection._list_length
-        atoms1 = self.icoxxlist.icohpcollection._list_atom1
-        atoms2 = self.icoxxlist.icohpcollection._list_atom2
-        icoxxs = [sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp]
-        trans = [list(item) for item in self.icoxxlist.icohpcollection._list_translation]
-        pairs = [sorted([at1, at2]) for at1, at2 in zip(atoms1, atoms2)]
+        if site_index is not None:
+            if site_index not in range(self.structure.num_sites):
+                raise ValueError(f"{site_index} is not a valid site index for the structure")
+            bond_labels = np.array(self.icoxxlist.icohpcollection._list_labels)
+            indices = np.where(
+                np.isin(
+                    bond_labels,
+                    list(
+                        self.icoxxlist.icohpcollection.get_icohp_dict_of_site(
+                            site_index, minbondlength=self.min_length, maxbondlength=self.max_length
+                        ).keys()
+                    ),
+                )
+            )[0]
+
+            bond_lengths = np.array(self.icoxxlist.icohpcollection._list_length)[indices].tolist()
+            atoms1 = np.array(self.icoxxlist.icohpcollection._list_atom1)[indices].tolist()
+            atoms2 = np.array(self.icoxxlist.icohpcollection._list_atom2)[indices].tolist()
+            icoxxs = np.array([sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp])[
+                indices
+            ].tolist()
+            trans = [list(item) for item in np.array(self.icoxxlist.icohpcollection._list_translation)[indices]]
+            pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
+
+            relevant_site_indices = [
+                ix
+                for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
+                if org == site_index or dest == site_index
+            ]
+            rdf_distances = [round(dist, 5) for ix, dist in enumerate(rdf_nb_lst[3]) if ix in relevant_site_indices]
+            rdf_trans = [[int(i) for i in img] for ix, img in enumerate(rdf_nb_lst[2]) if ix in relevant_site_indices]
+            rdf_pairs = [
+                [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
+                for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
+                if ix in relevant_site_indices
+            ]
+
+        else:  # complete structure
+            bond_lengths = self.icoxxlist.icohpcollection._list_length
+            atoms1 = self.icoxxlist.icohpcollection._list_atom1
+            atoms2 = self.icoxxlist.icohpcollection._list_atom2
+            icoxxs = [sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp]
+            trans = [list(item) for item in self.icoxxlist.icohpcollection._list_translation]
+            pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
+
+            rdf_distances = [round(dist, 5) for dist in rdf_nb_lst[3]]
+            rdf_trans = [[int(i) for i in img] for img in rdf_nb_lst[2]]
+            rdf_pairs = [
+                [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
+                for org, dest in zip(rdf_nb_lst[0], rdf_nb_lst[1])
+            ]
 
         # Assimilate icoxx data in tuples
-        all_icoxx_data = list(zip(pairs, bond_lengths, trans))
-
-        # Get all neighbours data in a single list
-        rdf_nb_lst = self.structure.get_neighbor_list(r=self.max_length)
-        rdf_distances = [round(dist, 5) for dist in rdf_nb_lst[3]]
-        rdf_trans = [[int(i) for i in img] for img in rdf_nb_lst[2]]
-        rdf_pairs = [
-            sorted(
-                [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
-            )
-            for org, dest in zip(rdf_nb_lst[0], rdf_nb_lst[1])
-        ]
+        input_icoxx_list = list(zip(pairs, bond_lengths, trans))
 
         # 0: pair, 1: bond length, 2: translation
-        all_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
+        ref_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
 
         # Create a temp dict for faster lookup
         icoxx_dict = {
             (tuple(icoxx_p_d_t[0]), tuple(icoxx_p_d_t[2])): (icoxx_p_d_t[1], icoxxs[idx])
-            for idx, icoxx_p_d_t in enumerate(all_icoxx_data)
+            for idx, icoxx_p_d_t in enumerate(input_icoxx_list)
         }
         # Initialize an empty list to store the data that goes in BWDF computation
-        complete_data, missing_interactions = [], []
+        mapped_icoxx_data, missing_interactions = [], []
 
         # Check if interaction exists in both rdf data / icoxx data, then add to complete data
-        for rdf_p_d_t in all_rdf_data:
+        for rdf_p_d_t in ref_rdf_data:
             pair_translation_key = (tuple(rdf_p_d_t[0]), tuple(rdf_p_d_t[2]))
             bond_length = rdf_p_d_t[1]
             if pair_translation_key in icoxx_dict:
                 icoxx_bond_length, icoxx_value = icoxx_dict[pair_translation_key]
-                if np.absolute(bond_length - icoxx_bond_length) <= 1e-5:
+                if round(np.absolute(bond_length - icoxx_bond_length), 5) <= 1e-5:
                     complete_entry = (*rdf_p_d_t, icoxx_value)
-                    if complete_entry not in complete_data:
-                        complete_data.append(complete_entry)
+                    if complete_entry not in mapped_icoxx_data:
+                        mapped_icoxx_data.append(complete_entry)
                 else:
                     missing_interactions.append(rdf_p_d_t)
             else:
@@ -1272,15 +1291,33 @@ class FeaturizeIcoxxlist:
         # Check if the missing interactions are reverse images in ref neighbours data which LOBSTER sometimes eliminates
         for rdf_p_d_t in missing_interactions[:]:
             reversed_translation = tuple(-1 * np.array(rdf_p_d_t[2]))
-            reversed_key = (tuple(rdf_p_d_t[0]), reversed_translation)
+            reversed_pair = tuple(reversed(rdf_p_d_t[0]))
+            reversed_key = (reversed_pair, reversed_translation)
 
             if reversed_key in icoxx_dict:
                 icoxx_bond_length, icoxx_value = icoxx_dict[reversed_key]
-                if np.absolute(rdf_p_d_t[1] - icoxx_bond_length) <= 1e-5:
+                if round(np.absolute(rdf_p_d_t[1] - icoxx_bond_length), 5) <= 1e-5:
                     complete_entry = (*rdf_p_d_t, icoxx_value)
-                    if complete_entry not in complete_data:
-                        complete_data.append((*rdf_p_d_t, icoxx_value))
+                    if complete_entry not in mapped_icoxx_data:
+                        mapped_icoxx_data.append((*rdf_p_d_t, icoxx_value))
                         missing_interactions.remove(rdf_p_d_t)
+
+        return {
+            "ref_rdf_data": ref_rdf_data,
+            "input_icoxx_list": input_icoxx_list,
+            "mapped_icoxx_data": mapped_icoxx_data,
+            "missing_interactions": missing_interactions,
+        }
+
+    def calc_bwdf(self):
+        """
+        Compute BWDF from ICOXXLIST.lobster data.
+
+        Returns:
+            BWDF as a dictionary
+        """
+        # Get all neighbors data in a single list
+        mapped_icoxx_data = self.get_icoxx_neighbors_data()["mapped_icoxx_data"]
 
         # Extract unique atomic species and create possible combinations
         species_combinations = [sorted(item) for item in combinations_with_replacement(self.structure.symbol_set, 2)]
@@ -1303,7 +1340,7 @@ class FeaturizeIcoxxlist:
 
         # Populate bins with corresponding icoxx values
         for key in bwdf_atom_pair:
-            for interactions in complete_data:
+            for interactions in mapped_icoxx_data:
                 sorted_entry = sorted([interactions[0][0].strip("0123456789"), interactions[0][1].strip("0123456789")])
                 if key == "-".join(sorted_entry):
                     for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
@@ -1344,85 +1381,8 @@ class FeaturizeIcoxxlist:
         if site_index not in range(self.structure.num_sites):
             raise ValueError(f"{site_index} is not a valid site index for the structure")
 
-        # Get bond labels for the site
-        bond_labels = np.array(self.icoxxlist.icohpcollection._list_labels)
-        indices = np.where(
-            np.isin(
-                bond_labels,
-                list(
-                    self.icoxxlist.icohpcollection.get_icohp_dict_of_site(
-                        site_index, minbondlength=self.min_length, maxbondlength=self.max_length
-                    ).keys()
-                ),
-            )
-        )[0]
-
-        # Collect bond lengths, atom labels and bond strengths
-        bond_lengths = np.array(self.icoxxlist.icohpcollection._list_length)[indices].tolist()
-        atoms1 = np.array(self.icoxxlist.icohpcollection._list_atom1)[indices].tolist()
-        atoms2 = np.array(self.icoxxlist.icohpcollection._list_atom2)[indices].tolist()
-        icoxxs = np.array([sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp])[indices].tolist()
-        trans = [list(item) for item in np.array(self.icoxxlist.icohpcollection._list_translation)[indices]]
-        pairs = [sorted([at1, at2]) for at1, at2 in zip(atoms1, atoms2)]
-
-        # Assimilate icoxx data in tuples
-        all_icoxx_data = list(zip(pairs, bond_lengths, trans))
-
-        # Get all neighbours data in a single list
-        rdf_nb_lst = self.structure.get_neighbor_list(r=self.max_length)
-        relevant_site_indices = [
-            ix
-            for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
-            if org == site_index or dest == site_index
-        ]
-        rdf_distances = [round(dist, 5) for ix, dist in enumerate(rdf_nb_lst[3]) if ix in relevant_site_indices]
-        rdf_trans = [[int(i) for i in img] for ix, img in enumerate(rdf_nb_lst[2]) if ix in relevant_site_indices]
-        rdf_pairs = [
-            sorted(
-                [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
-            )
-            for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
-            if ix in relevant_site_indices
-        ]
-
-        all_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
-
-        # Create a temp dict for faster lookup
-        icoxx_dict = {
-            (tuple(icoxx_p_d_t[0]), tuple(icoxx_p_d_t[2])): (icoxx_p_d_t[1], icoxxs[idx])
-            for idx, icoxx_p_d_t in enumerate(all_icoxx_data)
-        }
-        # Initialize an empty list to store the data that goes in BWDF computation
-        # and collect interactions not in ICOXXLIST
-        complete_data, missing_interactions = [], []
-
-        # Check if interaction exists in both rdf data / icoxx data, then add to complete data
-        for rdf_p_d_t in all_rdf_data:
-            pair_translation_key = (tuple(rdf_p_d_t[0]), tuple(rdf_p_d_t[2]))
-            bond_length = rdf_p_d_t[1]
-            if pair_translation_key in icoxx_dict:
-                icoxx_bond_length, icoxx_value = icoxx_dict[pair_translation_key]
-                if np.absolute(bond_length - icoxx_bond_length) <= 1e-5:
-                    complete_entry = (*rdf_p_d_t, icoxx_value)
-                    if complete_entry not in complete_data:
-                        complete_data.append(complete_entry)
-                else:
-                    missing_interactions.append(rdf_p_d_t)
-            else:
-                missing_interactions.append(rdf_p_d_t)
-
-        # Check if the missing interactions are reverse images in ref neighbours data which LOBSTER sometimes eliminates
-        for rdf_p_d_t in missing_interactions[:]:
-            reversed_translation = tuple(-1 * np.array(rdf_p_d_t[2]))
-            reversed_key = (tuple(rdf_p_d_t[0]), reversed_translation)
-
-            if reversed_key in icoxx_dict:
-                icoxx_bond_length, icoxx_value = icoxx_dict[reversed_key]
-                if np.absolute(rdf_p_d_t[1] - icoxx_bond_length) <= 1e-5:
-                    complete_entry = (*rdf_p_d_t, icoxx_value)
-                    if complete_entry not in complete_data:
-                        complete_data.append((*rdf_p_d_t, icoxx_value))
-                        missing_interactions.remove(rdf_p_d_t)
+        # Get all neighbors data in a single list
+        mapped_icoxx_data = self.get_icoxx_neighbors_data(site_index=site_index)["mapped_icoxx_data"]
 
         # Calculate number of bins
         n_bins = int(np.ceil((self.max_length - self.min_length) / self.bin_width))
@@ -1436,7 +1396,7 @@ class FeaturizeIcoxxlist:
             f"{site_index}": {"icoxx_binned": np.zeros(bin_centers.shape), "icoxx_counts": np.zeros(bin_centers.shape)}
         }
 
-        for interactions in complete_data:
+        for interactions in mapped_icoxx_data:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
                 if l1 <= interactions[1] < l2:
                     # Add icoxx values to the corresponding bin
@@ -1519,6 +1479,30 @@ class FeaturizeIcoxxlist:
             features.append(f"bwdf_{round(edge_1, 2)}-{round(edge_2, 2)}")
 
         return features
+
+    def _normalize_bwdf(self, bwdf: dict) -> dict:
+        """
+        Normalize BWDF data based on the normalization strategy.
+
+        :param bwdf: BWDF data as a dictionary
+
+        Returns:
+            Normalized BWDF data as a dictionary
+        """
+        for bwdf_label, bwdf_value in bwdf.items():
+            if bwdf_label not in ("centers", "edges", "bin_width"):
+                if self.normalization == "area":
+                    total_area = np.sum(np.abs(bwdf_value["icoxx_binned"]) * self.bin_width)
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / total_area)
+                elif self.normalization == "formula_units":
+                    formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / formula_units)
+                elif self.normalization == "counts":
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(
+                        bwdf_value["icoxx_binned"] / bwdf_value["icoxx_counts"]
+                    )
+
+        return bwdf
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """Return a pandas dataframe with computed BWDF features as columns.
