@@ -896,7 +896,7 @@ class TestAnalyse:
     def test_exception(self):
         with pytest.raises(ValueError):  # noqa: PT011
             self.analyse_batao2n1 = Analysis(
-                path_to_poscar=TestDir / "test_data/BaTaO2N1/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/BaTaO2N1/CONTCAR.gz",
                 path_to_cohpcar=TestDir / "test_data/BaTaO2N1/COHPCAR.lobster.gz",
                 path_to_icohplist=TestDir / "test_data/BaTaO2N1/ICOHPLIST.lobster.gz",
                 path_to_charge=TestDir / "test_data/BaTaO2N1/CHARGE.lobster.gz",
@@ -905,7 +905,7 @@ class TestAnalyse:
             )
         with pytest.raises(ValueError) as err:  # noqa: PT011
             self.analyse_c = Analysis(
-                path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/C/CONTCAR.gz",
                 path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
                 path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
                 path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
@@ -922,7 +922,7 @@ class TestAnalyseCalcQuality:
     def test_calc_quality_summary_with_objs(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
         bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
-        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz")
         vasprun_obj = Vasprun(
             filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
         )
@@ -948,7 +948,7 @@ class TestAnalyseCalcQuality:
         )
 
         calc_des_with_paths = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data" / "K3Sb" / "POSCAR.gz",
+            path_to_poscar=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz",
             potcar_symbols=["K_sv", "Sb"],
             path_to_charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
             path_to_doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
@@ -966,7 +966,7 @@ class TestAnalyseCalcQuality:
     def test_calc_quality_summary_exceptions(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
         bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
-        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz")
         vasprun_obj = Vasprun(
             filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
         )

@@ -8,6 +8,7 @@ from pymatgen.electronic_structure.dos import DosFingerprint
 from lobsterpy.featurize.batch import (
     BatchCoxxFingerprint,
     BatchDosFeaturizer,
+    BatchIcoxxlistFeaturizer,
     BatchStructureGraphs,
     BatchSummaryFeaturizer,
 )
@@ -674,6 +675,172 @@ class TestBatchDosFeaturizer:
             assert dos_fp.n_bins == 256
 
 
+class TestBatchIcoxxlistFeaturizer:
+    @pytest.mark.parametrize(
+        ("normalization", "bwdf_df_type"),
+        [
+            ("formula_units", "complete"),
+            ("area", "stats"),
+            ("counts", "stats"),
+            ("none", "complete"),
+        ],
+    )
+    def test_batch_icohplist_featurizer(self, normalization, bwdf_df_type):
+        batch_icohp = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+            n_jobs=3,
+            bin_width=0.5,
+            normalization=normalization,
+            bwdf_df_type=bwdf_df_type,
+        )
+
+        df_icohp = batch_icohp.get_df()
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
+        # Test if all values are < zero (icohps are read correctly)
+        result = (df_icohp >= 0).all().all()  # check if all values are above zero
+        assert isinstance(df_icohp, pd.DataFrame)
+        assert sorted(df_icohp.index) == sorted(expected_index)
+        assert not result
+        if bwdf_df_type == "complete":
+            expected_cols = [
+                "bwdf_0.0-0.55",
+                "bwdf_0.55-1.09",
+                "bwdf_1.09-1.64",
+                "bwdf_1.64-2.18",
+                "bwdf_2.18-2.73",
+                "bwdf_2.73-3.27",
+                "bwdf_3.27-3.82",
+                "bwdf_3.82-4.36",
+                "bwdf_4.36-4.91",
+                "bwdf_4.91-5.45",
+                "bwdf_5.45-6.0",
+            ]
+            assert sorted(df_icohp.columns) == sorted(expected_cols)
+
+        else:
+            stats_df_expected_columns = [
+                "bwdf_sum",
+                "bwdf_mean",
+                "bwdf_std",
+                "bwdf_min",
+                "bwdf_max",
+                "bwdf_skew",
+                "bwdf_kurtosis",
+                "bwdf_w_mean",
+                "bwdf_w_std",
+            ]
+            assert sorted(df_icohp.columns) == sorted(stats_df_expected_columns)
+
+    @pytest.mark.parametrize(
+        ("normalization", "bwdf_df_type"),
+        [("formula_units", "stats"), ("area", "complete"), ("counts", "complete"), ("none", "stats")],
+    )
+    def test_batch_icobilist_featurizer(self, normalization, bwdf_df_type):
+        batch_icobi = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+            n_jobs=3,
+            bin_width=0.5,
+            read_icobis=True,
+            normalization=normalization,
+            bwdf_df_type=bwdf_df_type,
+        )
+
+        df_icobi = batch_icobi.get_df()
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
+        # Test if all values are above zero > icobis are read
+        result = (df_icobi >= 0).all().all()  # check if all values are above zero
+        assert isinstance(df_icobi, pd.DataFrame)
+        assert sorted(df_icobi.index) == sorted(expected_index)
+        assert result
+
+        if bwdf_df_type == "complete":
+            expected_cols = [
+                "bwdf_0.0-0.55",
+                "bwdf_0.55-1.09",
+                "bwdf_1.09-1.64",
+                "bwdf_1.64-2.18",
+                "bwdf_2.18-2.73",
+                "bwdf_2.73-3.27",
+                "bwdf_3.27-3.82",
+                "bwdf_3.82-4.36",
+                "bwdf_4.36-4.91",
+                "bwdf_4.91-5.45",
+                "bwdf_5.45-6.0",
+            ]
+            assert sorted(df_icobi.columns) == sorted(expected_cols)
+
+        else:
+            stats_df_expected_columns = [
+                "bwdf_sum",
+                "bwdf_mean",
+                "bwdf_std",
+                "bwdf_min",
+                "bwdf_max",
+                "bwdf_skew",
+                "bwdf_kurtosis",
+                "bwdf_w_mean",
+                "bwdf_w_std",
+            ]
+            assert sorted(df_icobi.columns) == sorted(stats_df_expected_columns)
+
+    @pytest.mark.parametrize(
+        ("normalization", "bwdf_df_type"),
+        [
+            ("formula_units", "complete"),
+            ("area", "stats"),
+            ("counts", "stats"),
+            ("none", "complete"),
+        ],
+    )
+    def test_batch_icooplist_featurizer(self, normalization, bwdf_df_type):
+        batch_icoop = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+            n_jobs=3,
+            bin_width=0.5,
+            read_icoops=True,
+            normalization=normalization,
+            bwdf_df_type=bwdf_df_type,
+        )
+
+        df_icoop = batch_icoop.get_df()
+        expected_index = ["mp-1000", "mp-2176", "mp-463"]
+        # Test if all values are above zero > icobis are read
+        result = (df_icoop >= 0).all().all()  # check if all values are above zero
+        assert isinstance(df_icoop, pd.DataFrame)
+        assert sorted(df_icoop.index) == sorted(expected_index)
+        assert not result
+
+        if bwdf_df_type == "complete":
+            expected_cols = [
+                "bwdf_0.0-0.55",
+                "bwdf_0.55-1.09",
+                "bwdf_1.09-1.64",
+                "bwdf_1.64-2.18",
+                "bwdf_2.18-2.73",
+                "bwdf_2.73-3.27",
+                "bwdf_3.27-3.82",
+                "bwdf_3.82-4.36",
+                "bwdf_4.36-4.91",
+                "bwdf_4.91-5.45",
+                "bwdf_5.45-6.0",
+            ]
+
+            assert sorted(df_icoop.columns) == sorted(expected_cols)
+        else:
+            stats_df_expected_columns = [
+                "bwdf_sum",
+                "bwdf_mean",
+                "bwdf_std",
+                "bwdf_min",
+                "bwdf_max",
+                "bwdf_skew",
+                "bwdf_kurtosis",
+                "bwdf_w_mean",
+                "bwdf_w_std",
+            ]
+            assert sorted(df_icoop.columns) == sorted(stats_df_expected_columns)
+
+
 class TestExceptions:
     def test_batch_summary_featurizer_exception(self):
         with pytest.raises(ValueError) as err0:  # noqa: PT012, PT011
@@ -728,7 +895,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_coxx_exception.path_to_lobster_calcs
             )
 
-        assert str(err3.value) == "Files ['POSCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster'] not found in JSONS."
+        assert str(err3.value) == "Files ['CONTCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster'] not found in JSONS."
 
         # Charges exception
         with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
@@ -738,7 +905,7 @@ class TestExceptions:
                 path_to_lobster_calc=self.raise_ch_exception.path_to_lobster_calcs
             )
 
-        assert str(err4.value) == "Files ['POSCAR', 'CHARGE.lobster'] not found in JSONS."
+        assert str(err4.value) == "Files ['CONTCAR', 'CHARGE.lobster'] not found in JSONS."
 
         # Fingerprint similarity exception
         with pytest.raises(Exception) as err8:  # noqa: PT012, PT011
