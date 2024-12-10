@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import numpy as np
@@ -895,9 +896,16 @@ class TestFeaturizeIcoxxlist:
         df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
         bwdf_dict_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="12")
 
+        df_sorted_bwdf = featurize_nacl_icoxxlist.get_sorted_bwdf_df(ids="NaCl")
+        df_sorted_dists_n = featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="negative")
+        df_sorted_dists_p = featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="positive")
+
+        with pytest.raises(ValueError, match=re.escape("param mode must be in ('positive', 'negative')")):
+            featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="invalid")
+
         # Test that the function returns a pandas DataFrame
-        assert isinstance(df, pd.DataFrame)
-        assert isinstance(df_site, pd.DataFrame)
+        for obj in df, df_site, df_sorted_bwdf, df_sorted_dists_n, df_sorted_dists_p:
+            assert isinstance(obj, pd.DataFrame)
         assert isinstance(bwdf_dict_label, dict)
 
         # check values
@@ -916,6 +924,8 @@ class TestFeaturizeIcoxxlist:
         assert df_site.loc["NaCl", "bwdf_4.02-4.04_site_0"] == pytest.approx(-0.35076, abs=1e-05)
         assert df_site.loc["NaCl", "bwdf_4.92-4.94_site_0"] == pytest.approx(-0.0565, abs=1e-05)
         assert df_site.loc["NaCl", "wasserstein_dist_to_rdf_site_0"] == pytest.approx(0, abs=1e-05)
+
+        assert len(df_sorted_dists_n.columns) + len(df_sorted_dists_p.columns) == len(df_sorted_bwdf.columns)
 
     def test_featurize_k3sb_icoxxlist_area(self):
         featurize_k3sb_icoxxlist = FeaturizeIcoxxlist(

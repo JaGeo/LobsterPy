@@ -1642,7 +1642,8 @@ class FeaturizeIcoxxlist:
         Returns:
             A pandas dataframe object with binned distances sorted by BWDF values.
         """
-        assert mode in ["positive", "negative"], "param mode must be in ('positive', 'negative')"
+        if mode not in ["positive", "negative"]:
+            raise ValueError("param mode must be in ('positive', 'negative')")
         if not ids:
             ids = Path(self.path_to_icoxxlist).parent.name
         bwdf = self.calc_bwdf()
