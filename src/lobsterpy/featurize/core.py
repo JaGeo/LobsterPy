@@ -1630,3 +1630,28 @@ class FeaturizeIcoxxlist:
         sorted_icoxx = icoxx[icoxx != 0.0]
         column_names = [f"bwdf_at_dist{d}" for d in range(len(sorted_icoxx))]
         return pd.DataFrame.from_dict({ids: dict(zip(column_names, sorted_icoxx))}).T
+
+    def get_sorted_dist_df(self, ids: str | None = None, mode: str = "negative") -> pd.DataFrame:
+        """Return a pandas dataframe with distances sorted by BWDF values, descending.
+
+        Args:
+            ids: set index name in the pandas dataframe. Default is None
+            mode: must be in ("positive", "negative"), defines whether BWDF values above or
+                below zero are considered for distance featurization.
+
+        Returns:
+            A pandas dataframe object with binned distances sorted by BWDF values.
+        """
+        assert mode in ["positive", "negative"], "param mode must be in ('positive', 'negative')"
+        if not ids:
+            ids = Path(self.path_to_icoxxlist).parent.name
+        bwdf = self.calc_bwdf()
+        sorted_dist_ids = bwdf["summed"]["icoxx_binned"].argsort()
+
+        if mode == "negative":
+            sorted_dists = [bwdf["centers"][i] for i in sorted_dist_ids if bwdf["summed"]["icoxx_binned"][i] < 0]
+        else:
+            sorted_dists = [bwdf["centers"][i] for i in sorted_dist_ids[::-1] if bwdf["summed"]["icoxx_binned"][i] > 0]
+
+        column_names = [f"dist_at_{mode[:3]}_bwdf{d}" for d in range(len(sorted_dists))]
+        return pd.DataFrame.from_dict({ids: dict(zip(column_names, sorted_dists))}).T
