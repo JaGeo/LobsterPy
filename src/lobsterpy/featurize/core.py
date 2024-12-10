@@ -1614,3 +1614,19 @@ class FeaturizeIcoxxlist:
         df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
 
         return df
+
+    def get_sorted_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with BWDF values sorted by distances, ascending.
+
+        Args:
+            ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with binned BWDF values sorted by distance.
+        """
+        if not ids:
+            ids = Path(self.path_to_icoxxlist).parent.name
+        icoxx = self.calc_bwdf()["summed"]["icoxx_binned"]
+        sorted_icoxx = icoxx[icoxx != 0.0]
+        column_names = [f"bwdf_at_dist{d}" for d in range(len(sorted_icoxx))]
+        return pd.DataFrame.from_dict({ids: dict(zip(column_names, sorted_icoxx))}).T
