@@ -1,5 +1,5 @@
-PAW_PBE Cd 06Sep2000                   
-   12.0000000000000     
+PAW_PBE Cd 06Sep2000
+   12.0000000000000
  parameters from PSCTR are:
    VRHFIN =Cd : s2 d10
    LEXCH  = PE
@@ -22,7 +22,7 @@ PAW_PBE Cd 06Sep2000
    RAUG   =    1.300    factor for augmentation sphere
    RDEP   =    2.450    radius for radial grids
    RDEPT  =    1.955    core radius for aug-charge
- 
+
    Atomic configuration
    12 entries
      n  l   j            E        occ.
@@ -2557,8 +2557,8 @@ ae wavefunction
 0.2576035234401479 0.3640124921257016 0.288899004130087 0.2265224648018036 0.9375571811391434
 0.047421418793431 0.7078207398135626 0.1652177305239367
 End of Dataset
-PAW_PBE F 08Apr2002                    
-   7.00000000000000     
+PAW_PBE F 08Apr2002
+   7.00000000000000
  parameters from PSCTR are:
    VRHFIN =F: s2p5
    LEXCH  = PE
@@ -2580,7 +2580,7 @@ PAW_PBE F 08Apr2002
    RAUG   =    1.300    factor for augmentation sphere
    RDEP   =    1.539    radius for radial grids
    RDEPT  =    1.299    core radius for aug-charge
- 
+
    Atomic configuration
     4 entries
      n  l   j            E        occ.
