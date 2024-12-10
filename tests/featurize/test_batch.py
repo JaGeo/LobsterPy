@@ -703,17 +703,19 @@ class TestBatchIcoxxlistFeaturizer:
         assert not result
         if bwdf_df_type == "complete":
             expected_cols = [
-                "bwdf_0.0-0.55",
-                "bwdf_0.55-1.09",
-                "bwdf_1.09-1.64",
-                "bwdf_1.64-2.18",
-                "bwdf_2.18-2.73",
-                "bwdf_2.73-3.27",
-                "bwdf_3.27-3.82",
-                "bwdf_3.82-4.36",
-                "bwdf_4.36-4.91",
-                "bwdf_4.91-5.45",
-                "bwdf_5.45-6.0",
+                "bwdf_0.0-0.5",
+                "bwdf_0.5-1.0",
+                "bwdf_1.0-1.5",
+                "bwdf_1.5-2.0",
+                "bwdf_2.0-2.5",
+                "bwdf_2.5-3.0",
+                "bwdf_3.0-3.5",
+                "bwdf_3.5-4.0",
+                "bwdf_4.0-4.5",
+                "bwdf_4.5-5.0",
+                "bwdf_5.0-5.5",
+                "bwdf_5.5-6.0",
+                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icohp.columns) == sorted(expected_cols)
 
@@ -728,6 +730,7 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
+                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icohp.columns) == sorted(stats_df_expected_columns)
 
@@ -755,17 +758,19 @@ class TestBatchIcoxxlistFeaturizer:
 
         if bwdf_df_type == "complete":
             expected_cols = [
-                "bwdf_0.0-0.55",
-                "bwdf_0.55-1.09",
-                "bwdf_1.09-1.64",
-                "bwdf_1.64-2.18",
-                "bwdf_2.18-2.73",
-                "bwdf_2.73-3.27",
-                "bwdf_3.27-3.82",
-                "bwdf_3.82-4.36",
-                "bwdf_4.36-4.91",
-                "bwdf_4.91-5.45",
-                "bwdf_5.45-6.0",
+                "bwdf_0.0-0.5",
+                "bwdf_0.5-1.0",
+                "bwdf_1.0-1.5",
+                "bwdf_1.5-2.0",
+                "bwdf_2.0-2.5",
+                "bwdf_2.5-3.0",
+                "bwdf_3.0-3.5",
+                "bwdf_3.5-4.0",
+                "bwdf_4.0-4.5",
+                "bwdf_4.5-5.0",
+                "bwdf_5.0-5.5",
+                "bwdf_5.5-6.0",
+                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icobi.columns) == sorted(expected_cols)
 
@@ -780,6 +785,7 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
+                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icobi.columns) == sorted(stats_df_expected_columns)
 
@@ -812,17 +818,19 @@ class TestBatchIcoxxlistFeaturizer:
 
         if bwdf_df_type == "complete":
             expected_cols = [
-                "bwdf_0.0-0.55",
-                "bwdf_0.55-1.09",
-                "bwdf_1.09-1.64",
-                "bwdf_1.64-2.18",
-                "bwdf_2.18-2.73",
-                "bwdf_2.73-3.27",
-                "bwdf_3.27-3.82",
-                "bwdf_3.82-4.36",
-                "bwdf_4.36-4.91",
-                "bwdf_4.91-5.45",
-                "bwdf_5.45-6.0",
+                "bwdf_0.0-0.5",
+                "bwdf_0.5-1.0",
+                "bwdf_1.0-1.5",
+                "bwdf_1.5-2.0",
+                "bwdf_2.0-2.5",
+                "bwdf_2.5-3.0",
+                "bwdf_3.0-3.5",
+                "bwdf_3.5-4.0",
+                "bwdf_4.0-4.5",
+                "bwdf_4.5-5.0",
+                "bwdf_5.0-5.5",
+                "bwdf_5.5-6.0",
+                "wasserstein_dist_to_rdf",
             ]
 
             assert sorted(df_icoop.columns) == sorted(expected_cols)
@@ -837,6 +845,7 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
+                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icoop.columns) == sorted(stats_df_expected_columns)
 
