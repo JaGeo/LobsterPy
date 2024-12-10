@@ -22,7 +22,7 @@ from pymatgen.electronic_structure.core import Spin
 from pymatgen.io.lobster import Charge, Doscar, Icohplist, MadelungEnergies
 from scipy.integrate import trapezoid
 from scipy.signal import hilbert
-from scipy.stats import kurtosis, skew
+from scipy.stats import kurtosis, skew, wasserstein_distance
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.featurize.utils import CoxxFingerprint, get_file_paths
@@ -1302,11 +1302,27 @@ class FeaturizeIcoxxlist:
                         mapped_icoxx_data.append((*rdf_p_d_t, icoxx_value))
                         missing_interactions.remove(rdf_p_d_t)
 
+        # Compute histogram of bond lengths from the reference rdf and
+        # icoxx data to get wasserstein distance
+        rdf_dist = [entry[1] for entry in ref_rdf_data]
+        icoxx_dist = [entry[1] for entry in mapped_icoxx_data]
+        rdf_hist, _ = np.histogram(
+            rdf_dist,
+            bins=np.arange(0, self.max_length + self.bin_width, self.bin_width),
+            density=False,
+        )
+        icoxx_hist, _ = np.histogram(
+            icoxx_dist,
+            bins=np.arange(0, self.max_length + self.bin_width, self.bin_width),
+            density=False,
+        )
+
         return {
             "ref_rdf_data": ref_rdf_data,
             "input_icoxx_list": input_icoxx_list,
             "mapped_icoxx_data": mapped_icoxx_data,
             "missing_interactions": missing_interactions,
+            "wasserstein_dist_to_rdf": wasserstein_distance(rdf_hist, icoxx_hist),
         }
 
     def calc_bwdf(self):
@@ -1317,13 +1333,13 @@ class FeaturizeIcoxxlist:
             BWDF as a dictionary
         """
         # Get all neighbors data in a single list
-        mapped_icoxx_data = self.get_icoxx_neighbors_data()["mapped_icoxx_data"]
+        icoxx_neighbors_data = self.get_icoxx_neighbors_data()
 
         # Extract unique atomic species and create possible combinations
         species_combinations = [sorted(item) for item in combinations_with_replacement(self.structure.symbol_set, 2)]
 
         # Calculate number of bins
-        n_bins = int(np.ceil((self.max_length - self.min_length) / self.bin_width))
+        n_bins = int(np.ceil(((self.max_length + self.bin_width) - self.min_length) / self.bin_width))
 
         # Get bin edges and centers
         bin_edges = np.round(np.linspace(self.min_length, self.max_length, n_bins), 5)
@@ -1340,7 +1356,7 @@ class FeaturizeIcoxxlist:
 
         # Populate bins with corresponding icoxx values
         for key in bwdf_atom_pair:
-            for interactions in mapped_icoxx_data:
+            for interactions in icoxx_neighbors_data["mapped_icoxx_data"]:
                 sorted_entry = sorted([interactions[0][0].strip("0123456789"), interactions[0][1].strip("0123456789")])
                 if key == "-".join(sorted_entry):
                     for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
@@ -1364,6 +1380,7 @@ class FeaturizeIcoxxlist:
         bwdf_atom_pair["centers"] = bin_centers
         bwdf_atom_pair["edges"] = bin_edges
         bwdf_atom_pair["bin_width"] = self.bin_width
+        bwdf_atom_pair["wasserstein_dist_to_rdf"] = icoxx_neighbors_data["wasserstein_dist_to_rdf"]
 
         # Normalize BWDF data
         return self._normalize_bwdf(bwdf=bwdf_atom_pair)
@@ -1382,10 +1399,10 @@ class FeaturizeIcoxxlist:
             raise ValueError(f"{site_index} is not a valid site index for the structure")
 
         # Get all neighbors data in a single list
-        mapped_icoxx_data = self.get_icoxx_neighbors_data(site_index=site_index)["mapped_icoxx_data"]
+        icoxx_neighbors_data = self.get_icoxx_neighbors_data(site_index=site_index)
 
         # Calculate number of bins
-        n_bins = int(np.ceil((self.max_length - self.min_length) / self.bin_width))
+        n_bins = int(np.ceil(((self.max_length + self.bin_width) - self.min_length) / self.bin_width))
 
         # Get bin edges and centers
         bin_edges = np.round(np.linspace(self.min_length, self.max_length, n_bins), 5)
@@ -1396,7 +1413,7 @@ class FeaturizeIcoxxlist:
             f"{site_index}": {"icoxx_binned": np.zeros(bin_centers.shape), "icoxx_counts": np.zeros(bin_centers.shape)}
         }
 
-        for interactions in mapped_icoxx_data:
+        for interactions in icoxx_neighbors_data["mapped_icoxx_data"]:
             for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
                 if l1 <= interactions[1] < l2:
                     # Add icoxx values to the corresponding bin
@@ -1410,6 +1427,7 @@ class FeaturizeIcoxxlist:
         site_bwdf["centers"] = bin_centers
         site_bwdf["edges"] = bin_edges
         site_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
+        site_bwdf["wasserstein_dist_to_rdf"] = icoxx_neighbors_data["wasserstein_dist_to_rdf"]  # type: ignore[assignment]
 
         # Normalize BWDF data
         return self._normalize_bwdf(bwdf=site_bwdf)
@@ -1435,7 +1453,7 @@ class FeaturizeIcoxxlist:
         complete_data = [(sorted([atom1, atom2]), bond_length, trans, icoxx)]
 
         # Calculate number of bins
-        n_bins = int(np.ceil((self.max_length - self.min_length) / self.bin_width))
+        n_bins = int(np.ceil(((self.max_length + self.bin_width) - self.min_length) / self.bin_width))
 
         # Get bin edges and centers
         bin_edges = np.round(np.linspace(self.min_length, self.max_length, n_bins), 5)
@@ -1490,7 +1508,7 @@ class FeaturizeIcoxxlist:
             Normalized BWDF data as a dictionary
         """
         for bwdf_label, bwdf_value in bwdf.items():
-            if bwdf_label not in ("centers", "edges", "bin_width"):
+            if bwdf_label not in ("centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
                 if self.normalization == "area":
                     total_area = np.sum(np.abs(bwdf_value["icoxx_binned"]) * self.bin_width)
                     bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / total_area)
@@ -1524,6 +1542,8 @@ class FeaturizeIcoxxlist:
         for icoxx_weight, col in zip(bwdf["summed"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
 
+        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
+
         return df
 
     def get_site_df(self, site_index: int, ids: str | None = None) -> pd.DataFrame:
@@ -1546,6 +1566,8 @@ class FeaturizeIcoxxlist:
 
         for icoxx_weight, col in zip(site_bwdf[f"{site_index}"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
+
+        df[f"wasserstein_dist_to_rdf_site_{site_index}"] = site_bwdf["wasserstein_dist_to_rdf"]
 
         return df
 
@@ -1589,5 +1611,6 @@ class FeaturizeIcoxxlist:
         df.loc[ids, "bwdf_max"] = np.max(bwdf["summed"]["icoxx_binned"])
         df.loc[ids, "bwdf_skew"] = skew(bwdf["summed"]["icoxx_binned"])
         df.loc[ids, "bwdf_kurtosis"] = kurtosis(bwdf["summed"]["icoxx_binned"])
+        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
 
         return df
