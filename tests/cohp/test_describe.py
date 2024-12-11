@@ -421,6 +421,7 @@ class TestCalcQualityDescribeWarnings:
 
         with warnings.catch_warnings(record=True) as w3:
             warnings.simplefilter("once")
+            warnings.filterwarnings("ignore", module="pymatgen")
             calc_quality_warnings3 = Analysis.get_lobster_calc_quality_summary(
                 path_to_poscar=TestDir / "test_data/BeTe/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/BeTe/CHARGE.lobster.gz",
