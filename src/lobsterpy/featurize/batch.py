@@ -852,6 +852,16 @@ class BatchIcoxxlistFeaturizer:
     :param min_length: minimum bond length for BWDF computation
     :param normalization: normalization strategy for BWDF
     :param bin_width: sets number for bins for fingerprint objects
+    :param bwdf_df_type: Type of BWDF dataframe to generate
+
+        - "binned": Binned BWDF function.
+        - "stats": Statistical features of BWDF function.
+        - "sorted_bwdf": BWDF values sorted by distances, ascending.
+        - "sorted_dists": Distances sorted by BWDF values (either only positive or negative),
+          sorted descending by absolute values.
+    :param sorted_dists_mode: only applies if bwdf_df_type=="sorted_dists".
+        Corresponds to param "mode" of get_sorted_dist_df, defines whether BWDF values above or
+        below zero are considered for distance featurization.
     :read_icobis: bool to state to read ICOBILIST.lobster from the path
     :read_icoops: bool to state to read ICOOPLIST.lobster from the path
     :param n_jobs: number of parallel processes to run
@@ -880,14 +890,15 @@ class BatchIcoxxlistFeaturizer:
         :param min_length: minimum bond length for BWDF computation
         :param normalization: normalization strategy for BWDF
         :param bin_width: bin width for BWDF
-        :param bwdf_df_type: type of BWDF dataframe to generate
-            "binned": binned BWDF function
-            "stats": statistical features of bWDF function
-            "sorted_bwdf": BWDF values sorted by distances, ascending
-            "sorted_dists": distances sorted by BWDF values (either only positive or negative),
-                sorted descending by absolute values
+        :param bwdf_df_type: Type of BWDF dataframe to generate
+
+            - "binned": Binned BWDF function.
+            - "stats": Statistical features of BWDF function.
+            - "sorted_bwdf": BWDF values sorted by distances, ascending.
+            - "sorted_dists": Distances sorted by BWDF values (either only positive or negative),
+              sorted descending by absolute values.
         :param sorted_dists_mode: only applies if bwdf_df_type=="sorted_dists".
-            corresponds to param "mode" of get_sorted_dist_df, defines whether BWDF values above or
+            Corresponds to param "mode" of get_sorted_dist_df, defines whether BWDF values above or
             below zero are considered for distance featurization.
         :param interactions_tol: tolerance for interactions
         :param read_icobis: bool to state to read ICOBILIST.lobster from the path
