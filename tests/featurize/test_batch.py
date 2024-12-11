@@ -679,10 +679,10 @@ class TestBatchIcoxxlistFeaturizer:
     @pytest.mark.parametrize(
         ("normalization", "bwdf_df_type"),
         [
-            ("formula_units", "complete"),
+            ("formula_units", "binned"),
             ("area", "stats"),
             ("counts", "stats"),
-            ("none", "complete"),
+            ("none", "binned"),
         ],
     )
     def test_batch_icohplist_featurizer(self, normalization, bwdf_df_type):
@@ -701,7 +701,7 @@ class TestBatchIcoxxlistFeaturizer:
         assert isinstance(df_icohp, pd.DataFrame)
         assert sorted(df_icohp.index) == sorted(expected_index)
         assert not result
-        if bwdf_df_type == "complete":
+        if bwdf_df_type == "binned":
             expected_cols = [
                 "bwdf_0.0-0.5",
                 "bwdf_0.5-1.0",
@@ -736,7 +736,7 @@ class TestBatchIcoxxlistFeaturizer:
 
     @pytest.mark.parametrize(
         ("normalization", "bwdf_df_type"),
-        [("formula_units", "stats"), ("area", "complete"), ("counts", "complete"), ("none", "stats")],
+        [("formula_units", "stats"), ("area", "binned"), ("counts", "binned"), ("none", "stats")],
     )
     def test_batch_icobilist_featurizer(self, normalization, bwdf_df_type):
         batch_icobi = BatchIcoxxlistFeaturizer(
@@ -756,7 +756,7 @@ class TestBatchIcoxxlistFeaturizer:
         assert sorted(df_icobi.index) == sorted(expected_index)
         assert result
 
-        if bwdf_df_type == "complete":
+        if bwdf_df_type == "binned":
             expected_cols = [
                 "bwdf_0.0-0.5",
                 "bwdf_0.5-1.0",
@@ -792,10 +792,10 @@ class TestBatchIcoxxlistFeaturizer:
     @pytest.mark.parametrize(
         ("normalization", "bwdf_df_type"),
         [
-            ("formula_units", "complete"),
+            ("formula_units", "binned"),
             ("area", "stats"),
             ("counts", "stats"),
-            ("none", "complete"),
+            ("none", "binned"),
         ],
     )
     def test_batch_icooplist_featurizer(self, normalization, bwdf_df_type):
@@ -816,7 +816,7 @@ class TestBatchIcoxxlistFeaturizer:
         assert sorted(df_icoop.index) == sorted(expected_index)
         assert not result
 
-        if bwdf_df_type == "complete":
+        if bwdf_df_type == "binned":
             expected_cols = [
                 "bwdf_0.0-0.5",
                 "bwdf_0.5-1.0",
