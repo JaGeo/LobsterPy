@@ -1046,3 +1046,6 @@ class TestFeaturizeIcoxxlist:
             assert isinstance(obj, pd.DataFrame)
 
         assert len(df_sorted_dists_n.columns) + len(df_sorted_dists_p.columns) == len(df_sorted_bwdf.columns)
+        assert df_sorted_bwdf.loc["mp-463", "bwdf_at_dist0"] == pytest.approx(0.2748, abs=1e-04)
+        assert df_sorted_dists_n.loc["mp-463", "dist_at_neg_bwdf1"] == pytest.approx(4.65, abs=1e-02)
+        assert df_sorted_dists_p.loc["mp-463", "dist_at_pos_bwdf1"] == pytest.approx(2.75, abs=1e-02)
