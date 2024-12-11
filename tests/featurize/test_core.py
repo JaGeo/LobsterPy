@@ -800,6 +800,14 @@ class TestExceptions:
 
         assert str(err2.value) == "5 is not a valid site index for the structure"
 
+        with pytest.raises(ValueError, match=re.escape("param mode must be in ('positive', 'negative')")):  # noqa: PT012
+            featurize_nacl_icoxxlist = FeaturizeIcoxxlist(
+                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+                path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
+                normalization="formula_units",
+            )
+            featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="invalid")
+
 
 class TestFeaturizeDoscar:
     def test_featurize_nacl_dos(self):
@@ -899,9 +907,6 @@ class TestFeaturizeIcoxxlist:
         df_sorted_bwdf = featurize_nacl_icoxxlist.get_sorted_bwdf_df(ids="NaCl")
         df_sorted_dists_n = featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="negative")
         df_sorted_dists_p = featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="positive")
-
-        with pytest.raises(ValueError, match=re.escape("param mode must be in ('positive', 'negative')")):
-            featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="invalid")
 
         # Test that the function returns a pandas DataFrame
         for obj in df, df_site, df_sorted_bwdf, df_sorted_dists_n, df_sorted_dists_p:
@@ -1035,9 +1040,6 @@ class TestFeaturizeIcoxxlist:
         df_sorted_bwdf = featurize_mp463_icoxxlist.get_sorted_bwdf_df(ids="mp-463")
         df_sorted_dists_n = featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="negative")
         df_sorted_dists_p = featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="positive")
-
-        with pytest.raises(ValueError, match=re.escape("param mode must be in ('positive', 'negative')")):
-            featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="invalid")
 
         # Test that the function returns a pandas DataFrame
         for obj in df_sorted_bwdf, df_sorted_dists_n, df_sorted_dists_p:
