@@ -1634,7 +1634,8 @@ class FeaturizeIcoxxlist:
     def get_sorted_dist_df(
         self, ids: str | None = None, mode: Literal["positive", "negative"] = "negative"
     ) -> pd.DataFrame:
-        """Return a pandas dataframe with distances sorted by BWDF values, descending.
+        """Return a pandas dataframe with distances sorted by BWDF values
+        (either only positive or negative),  sorted descending by absolute values.
 
         Args:
             ids: set index name in the pandas dataframe. Default is None

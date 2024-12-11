@@ -845,7 +845,7 @@ class BatchDosFeaturizer:
 
 class BatchIcoxxlistFeaturizer:
     """
-    BatchFeaturizer to generate BWDF from ICOXXLIST.lobster data.
+    BatchFeaturizer to generate BWDF-derived features from ICOXXLIST.lobster data.
 
     :param path_to_lobster_calcs: path to root directory consisting of all lobster calc
     :param max_length: maximum bond length for BWDF computation
@@ -863,7 +863,8 @@ class BatchIcoxxlistFeaturizer:
         path_to_lobster_calcs: str | Path,
         normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
         bin_width: float = 0.02,
-        bwdf_df_type: Literal["complete", "stats"] = "stats",
+        bwdf_df_type: Literal["binned", "stats", "sorted_bwdf", "sorted_dists"] = "stats",
+        sorted_dists_mode: Literal["positive", "negative"] = "negative",
         interactions_tol: float = 1e-3,
         max_length: float = 6.0,
         min_length: float = 0.0,
@@ -880,6 +881,14 @@ class BatchIcoxxlistFeaturizer:
         :param normalization: normalization strategy for BWDF
         :param bin_width: bin width for BWDF
         :param bwdf_df_type: type of BWDF dataframe to generate
+            "binned": binned BWDF function
+            "stats": statistical features of bWDF function
+            "sorted_bwdf": BWDF values sorted by distances, ascending
+            "sorted_dists": distances sorted by BWDF values (either only positive or negative),
+                sorted descending by absolute values
+        :param sorted_dists_mode: only applies if bwdf_df_type=="sorted_dists".
+            corresponds to param "mode" of get_sorted_dist_df, defines whether BWDF values above or
+            below zero are considered for distance featurization.
         :param interactions_tol: tolerance for interactions
         :param read_icobis: bool to state to read ICOBILIST.lobster from the path
         :param read_icoops: bool to state to read ICOOPLIST.lobster from the path
@@ -892,6 +901,7 @@ class BatchIcoxxlistFeaturizer:
         self.bin_width = bin_width
         self.interactions_tol = interactions_tol
         self.bwdf_df_type = bwdf_df_type
+        self.sorted_dists_mode = sorted_dists_mode
         self.read_icobis = read_icobis
         self.read_icoops = read_icoops
         self.n_jobs = n_jobs
@@ -954,7 +964,7 @@ class BatchIcoxxlistFeaturizer:
                 are_coops=self.read_icoops,
             )
 
-        if self.bwdf_df_type == "complete":
+        if self.bwdf_df_type == "binned":
             return feat_icoxx.get_binned_bwdf_df()
         return feat_icoxx.get_stats_df()
 
