@@ -1522,7 +1522,7 @@ class FeaturizeIcoxxlist:
 
         return bwdf
 
-    def get_df(self, ids: str | None = None) -> pd.DataFrame:
+    def get_binned_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
         """Return a pandas dataframe with computed BWDF features as columns.
 
         Args:
@@ -1631,7 +1631,9 @@ class FeaturizeIcoxxlist:
         column_names = [f"bwdf_at_dist{d}" for d in range(len(sorted_icoxx))]
         return pd.DataFrame.from_dict({ids: dict(zip(column_names, sorted_icoxx))}).T
 
-    def get_sorted_dist_df(self, ids: str | None = None, mode: str = "negative") -> pd.DataFrame:
+    def get_sorted_dist_df(
+        self, ids: str | None = None, mode: Literal["positive", "negative"] = "negative"
+    ) -> pd.DataFrame:
         """Return a pandas dataframe with distances sorted by BWDF values, descending.
 
         Args:

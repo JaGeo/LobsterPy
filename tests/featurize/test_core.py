@@ -892,7 +892,7 @@ class TestFeaturizeIcoxxlist:
             path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
             normalization="formula_units",
         )
-        df = featurize_nacl_icoxxlist.get_df(ids="NaCl")
+        df = featurize_nacl_icoxxlist.get_binned_bwdf_df(ids="NaCl")
         df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
         bwdf_dict_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="12")
 
@@ -935,7 +935,7 @@ class TestFeaturizeIcoxxlist:
             bin_width=0.01,
             are_cobis=True,
         )
-        df = featurize_k3sb_icoxxlist.get_df(ids="K3Sb")
+        df = featurize_k3sb_icoxxlist.get_binned_bwdf_df(ids="K3Sb")
         df_site = featurize_k3sb_icoxxlist.get_site_df(site_index=2)
 
         # Test that the method returns a pandas DataFrame
@@ -962,7 +962,7 @@ class TestFeaturizeIcoxxlist:
             bin_width=0.1,
             are_cobis=False,
         )
-        df = featurize_nasbf6_icoxxlist.get_df(ids="NaSbF6")
+        df = featurize_nasbf6_icoxxlist.get_binned_bwdf_df(ids="NaSbF6")
         df_site = featurize_nasbf6_icoxxlist.get_site_df(ids="NaSbF6", site_index=6)
 
         # Test that the method returns a pandas DataFrame
@@ -999,7 +999,7 @@ class TestFeaturizeIcoxxlist:
             bin_width=0.1,
             are_cobis=False,
         )
-        df = featurize_csh_icoxxlist.get_df()
+        df = featurize_csh_icoxxlist.get_binned_bwdf_df()
         df_stats = featurize_csh_icoxxlist.get_stats_df()
 
         # Test that the method returns a pandas DataFrame
@@ -1023,3 +1023,24 @@ class TestFeaturizeIcoxxlist:
         assert df_stats.loc["CsH", "bwdf_w_mean"] == pytest.approx(-0.510679, abs=1e-05)
         assert df_stats.loc["CsH", "bwdf_w_std"] == pytest.approx(0.213234, abs=1e-05)
         assert df_stats.loc["CsH", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
+
+    def test_featurize_mp463_icoxxlist_sorting(self):  # Added to have both pos. and neg. BWDF values
+        featurize_mp463_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-463/ICOOPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-463/CONTCAR.gz",
+            normalization="formula_units",
+            bin_width=0.1,
+            are_coops=True,
+        )
+        df_sorted_bwdf = featurize_mp463_icoxxlist.get_sorted_bwdf_df(ids="mp-463")
+        df_sorted_dists_n = featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="negative")
+        df_sorted_dists_p = featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="positive")
+
+        with pytest.raises(ValueError, match=re.escape("param mode must be in ('positive', 'negative')")):
+            featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="invalid")
+
+        # Test that the function returns a pandas DataFrame
+        for obj in df_sorted_bwdf, df_sorted_dists_n, df_sorted_dists_p:
+            assert isinstance(obj, pd.DataFrame)
+
+        assert len(df_sorted_dists_n.columns) + len(df_sorted_dists_p.columns) == len(df_sorted_bwdf.columns)

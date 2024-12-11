@@ -955,7 +955,7 @@ class BatchIcoxxlistFeaturizer:
             )
 
         if self.bwdf_df_type == "complete":
-            return feat_icoxx.get_df()
+            return feat_icoxx.get_binned_bwdf_df()
         return feat_icoxx.get_stats_df()
 
     def get_df(self) -> pd.DataFrame:
