@@ -901,10 +901,10 @@ class TestBatchIcoxxlistFeaturizer:
             non_zero = count_nonzero(df_icoop.values)
             if sorted_dists_mode == "positive":
                 assert non_zero == 4
-                assert set(df_icoop.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(4)}
+                assert set(df_icoop.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(2)}
             else:
                 assert non_zero == 5
-                assert set(df_icoop.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(5)}
+                assert set(df_icoop.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(2)}
 
 
 class TestExceptions:
