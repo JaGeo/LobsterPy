@@ -977,6 +977,10 @@ class BatchIcoxxlistFeaturizer:
 
         if self.bwdf_df_type == "binned":
             return feat_icoxx.get_binned_bwdf_df()
+        if self.bwdf_df_type == "sorted_bwdf":
+            return feat_icoxx.get_sorted_bwdf_df()
+        if self.bwdf_df_type == "sorted_dists":
+            return feat_icoxx.get_sorted_dist_df(mode=self.sorted_dists_mode)
         return feat_icoxx.get_stats_df()
 
     def get_df(self) -> pd.DataFrame:
@@ -1003,6 +1007,8 @@ class BatchIcoxxlistFeaturizer:
                 row.append(result)
 
         df_icoxxlist = pd.concat(row)
+        if self.bwdf_df_type in ["sorted_bwdf", "sorted_dists"]:
+            df_icoxxlist = df_icoxxlist.fillna(value=0.0)
         df_icoxxlist.sort_index(inplace=True)  # noqa: PD002
 
         return df_icoxxlist

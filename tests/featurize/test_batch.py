@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+from numpy import unique
 from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.electronic_structure.dos import DosFingerprint
 
@@ -677,30 +678,32 @@ class TestBatchDosFeaturizer:
 
 class TestBatchIcoxxlistFeaturizer:
     @pytest.mark.parametrize(
-        ("normalization", "bwdf_df_type"),
+        ("normalization", "bwdf_df_type", "sorted_dists_mode"),
         [
-            ("formula_units", "binned"),
-            ("area", "stats"),
-            ("counts", "stats"),
-            ("none", "binned"),
+            ("formula_units", "binned", "negative"),
+            ("area", "stats", "negative"),
+            ("counts", "stats", "negative"),
+            ("none", "binned", "negative"),
+            ("formula_units", "sorted_dists", "negative"),
+            ("formula_units", "sorted_bwdf", "negative"),
         ],
     )
-    def test_batch_icohplist_featurizer(self, normalization, bwdf_df_type):
+    def test_batch_icohplist_featurizer(self, normalization, bwdf_df_type, sorted_dists_mode):
         batch_icohp = BatchIcoxxlistFeaturizer(
             path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             n_jobs=3,
             bin_width=0.5,
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
+            sorted_dists_mode=sorted_dists_mode,
         )
 
         df_icohp = batch_icohp.get_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
-        # Test if all values are < zero (icohps are read correctly)
-        result = (df_icohp >= 0).all().all()  # check if all values are above zero
         assert isinstance(df_icohp, pd.DataFrame)
         assert sorted(df_icohp.index) == sorted(expected_index)
-        assert not result
+        if bwdf_df_type != "sorted_dists":
+            assert not (df_icohp >= 0).all().all()  # Test if all values are < zero (icohps are read correctly)
         if bwdf_df_type == "binned":
             expected_cols = [
                 "bwdf_0.0-0.5",
@@ -719,7 +722,7 @@ class TestBatchIcoxxlistFeaturizer:
             ]
             assert sorted(df_icohp.columns) == sorted(expected_cols)
 
-        else:
+        elif bwdf_df_type == "stats":
             stats_df_expected_columns = [
                 "bwdf_sum",
                 "bwdf_mean",
@@ -734,11 +737,30 @@ class TestBatchIcoxxlistFeaturizer:
             ]
             assert sorted(df_icohp.columns) == sorted(stats_df_expected_columns)
 
+        elif bwdf_df_type == "sorted_bwdf":
+            assert not df_icohp.isna().to_numpy().any()
+            unique_values, counts = unique(df_icohp.values, return_counts=True)
+            assert dict(zip(unique_values, counts))[0.0] == 3
+            assert set(df_icohp.columns) == {f"bwdf_at_dist{c_idx}" for c_idx in range(4)}
+
+        else:  # sorted_dists
+            assert not df_icohp.isna().to_numpy().any()
+            unique_values, counts = unique(df_icohp.values, return_counts=True)
+            assert dict(zip(unique_values, counts))[0.0] == 3
+            assert set(df_icohp.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(4)}
+
     @pytest.mark.parametrize(
-        ("normalization", "bwdf_df_type"),
-        [("formula_units", "stats"), ("area", "binned"), ("counts", "binned"), ("none", "stats")],
+        ("normalization", "bwdf_df_type", "sorted_dists_mode"),
+        [
+            ("formula_units", "stats", "negative"),
+            ("area", "binned", "negative"),
+            ("counts", "binned", "negative"),
+            ("none", "stats", "negative"),
+            ("area", "sorted_dists", "positive"),
+            ("area", "sorted_bwdf", "negative"),
+        ],
     )
-    def test_batch_icobilist_featurizer(self, normalization, bwdf_df_type):
+    def test_batch_icobilist_featurizer(self, normalization, bwdf_df_type, sorted_dists_mode):
         batch_icobi = BatchIcoxxlistFeaturizer(
             path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             n_jobs=3,
@@ -746,6 +768,7 @@ class TestBatchIcoxxlistFeaturizer:
             read_icobis=True,
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
+            sorted_dists_mode=sorted_dists_mode,
         )
 
         df_icobi = batch_icobi.get_df()
@@ -774,7 +797,7 @@ class TestBatchIcoxxlistFeaturizer:
             ]
             assert sorted(df_icobi.columns) == sorted(expected_cols)
 
-        else:
+        elif bwdf_df_type == "stats":
             stats_df_expected_columns = [
                 "bwdf_sum",
                 "bwdf_mean",
@@ -790,15 +813,17 @@ class TestBatchIcoxxlistFeaturizer:
             assert sorted(df_icobi.columns) == sorted(stats_df_expected_columns)
 
     @pytest.mark.parametrize(
-        ("normalization", "bwdf_df_type"),
+        ("normalization", "bwdf_df_type", "sorted_dists_mode"),
         [
-            ("formula_units", "binned"),
-            ("area", "stats"),
-            ("counts", "stats"),
-            ("none", "binned"),
+            ("formula_units", "binned", "positive"),
+            ("area", "stats", "positive"),
+            ("counts", "stats", "positive"),
+            ("none", "binned", "positive"),
+            ("none", "sorted_dists", "positive"),
+            ("none", "sorted_bwdf", "positive"),
         ],
     )
-    def test_batch_icooplist_featurizer(self, normalization, bwdf_df_type):
+    def test_batch_icooplist_featurizer(self, normalization, bwdf_df_type, sorted_dists_mode):
         batch_icoop = BatchIcoxxlistFeaturizer(
             path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
             n_jobs=3,
@@ -806,6 +831,7 @@ class TestBatchIcoxxlistFeaturizer:
             read_icoops=True,
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
+            sorted_dists_mode=sorted_dists_mode,
         )
 
         df_icoop = batch_icoop.get_df()
@@ -832,9 +858,9 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_5.5-6.0",
                 "wasserstein_dist_to_rdf",
             ]
-
             assert sorted(df_icoop.columns) == sorted(expected_cols)
-        else:
+
+        elif bwdf_df_type == "stats":
             stats_df_expected_columns = [
                 "bwdf_sum",
                 "bwdf_mean",
@@ -848,6 +874,9 @@ class TestBatchIcoxxlistFeaturizer:
                 "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icoop.columns) == sorted(stats_df_expected_columns)
+
+        elif bwdf_df_type == "sorted_dists":
+            pass  # TODO
 
 
 class TestExceptions:
