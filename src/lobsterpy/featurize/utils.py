@@ -134,7 +134,7 @@ def get_reduced_mass(atom_pair: list[str]) -> float:
 
 def get_electronegativities(atom_pair: list[str]) -> list[float]:
     """
-    Get allen electronegativities for a pair of atoms.
+    Get Allen electronegativities for a pair of atoms.
 
     :param atom_pair: list of atomic species symbols in string
 
