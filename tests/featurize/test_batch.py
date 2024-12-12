@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -997,3 +998,15 @@ class TestExceptions:
             str(err8.value) == "Cannot compute similarity index. Please set either normalize=True or "
             "tanimoto=True or both to False."
         )
+
+        with pytest.raises(ValueError, match=re.escape("param mode must be in ('positive', 'negative')")):  # noqa: PT012
+            batch_icoop = BatchIcoxxlistFeaturizer(
+                path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+                n_jobs=3,
+                bin_width=0.5,
+                read_icoops=True,
+                normalization="area",
+                bwdf_df_type="sorted_dists",
+                sorted_dists_mode="invalid",
+            )
+            _ = batch_icoop.get_df()
