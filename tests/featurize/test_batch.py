@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-from numpy import unique
+from numpy import count_nonzero, unique
 from pymatgen.analysis.graphs import StructureGraph
 from pymatgen.electronic_structure.dos import DosFingerprint
 
@@ -757,6 +757,7 @@ class TestBatchIcoxxlistFeaturizer:
             ("counts", "binned", "negative"),
             ("none", "stats", "negative"),
             ("area", "sorted_dists", "positive"),
+            ("area", "sorted_dists", "negative"),
             ("area", "sorted_bwdf", "negative"),
         ],
     )
@@ -774,10 +775,9 @@ class TestBatchIcoxxlistFeaturizer:
         df_icobi = batch_icobi.get_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
         # Test if all values are above zero > icobis are read
-        result = (df_icobi >= 0).all().all()  # check if all values are above zero
+        assert (df_icobi >= 0).all().all()  # check if all values are above zero
         assert isinstance(df_icobi, pd.DataFrame)
         assert sorted(df_icobi.index) == sorted(expected_index)
-        assert result
 
         if bwdf_df_type == "binned":
             expected_cols = [
@@ -812,6 +812,21 @@ class TestBatchIcoxxlistFeaturizer:
             ]
             assert sorted(df_icobi.columns) == sorted(stats_df_expected_columns)
 
+        elif bwdf_df_type == "sorted_bwdf":
+            assert not df_icobi.isna().to_numpy().any()
+            unique_values = unique(df_icobi.values)
+            assert 0.0 not in unique_values
+            assert set(df_icobi.columns) == {f"bwdf_at_dist{c_idx}" for c_idx in range(2)}
+
+        else:  # sorted_dists
+            assert not df_icobi.isna().to_numpy().any()
+            unique_values = unique(df_icobi.values)
+            if sorted_dists_mode == "positive":
+                assert 0.0 not in unique_values
+                assert set(df_icobi.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(2)}
+            else:
+                assert df_icobi.empty
+
     @pytest.mark.parametrize(
         ("normalization", "bwdf_df_type", "sorted_dists_mode"),
         [
@@ -820,6 +835,7 @@ class TestBatchIcoxxlistFeaturizer:
             ("counts", "stats", "positive"),
             ("none", "binned", "positive"),
             ("none", "sorted_dists", "positive"),
+            ("none", "sorted_dists", "negative"),
             ("none", "sorted_bwdf", "positive"),
         ],
     )
@@ -836,11 +852,10 @@ class TestBatchIcoxxlistFeaturizer:
 
         df_icoop = batch_icoop.get_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
-        # Test if all values are above zero > icobis are read
-        result = (df_icoop >= 0).all().all()  # check if all values are above zero
+        if bwdf_df_type != "sorted_dists":
+            assert not (df_icoop >= 0).all().all()  # Test if all values are above zero > icobis are read
         assert isinstance(df_icoop, pd.DataFrame)
         assert sorted(df_icoop.index) == sorted(expected_index)
-        assert not result
 
         if bwdf_df_type == "binned":
             expected_cols = [
@@ -875,8 +890,21 @@ class TestBatchIcoxxlistFeaturizer:
             ]
             assert sorted(df_icoop.columns) == sorted(stats_df_expected_columns)
 
-        elif bwdf_df_type == "sorted_dists":
-            pass  # TODO
+        elif bwdf_df_type == "sorted_bwdf":
+            assert not df_icoop.isna().to_numpy().any()
+            unique_values, counts = unique(df_icoop.values, return_counts=True)
+            assert dict(zip(unique_values, counts))[0.0] == 3
+            assert set(df_icoop.columns) == {f"bwdf_at_dist{c_idx}" for c_idx in range(4)}
+
+        else:  # sorted_dists
+            assert not df_icoop.isna().to_numpy().any()
+            non_zero = count_nonzero(df_icoop.values)
+            if sorted_dists_mode == "positive":
+                assert non_zero == 4
+                assert set(df_icoop.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(4)}
+            else:
+                assert non_zero == 5
+                assert set(df_icoop.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(5)}
 
 
 class TestExceptions:
