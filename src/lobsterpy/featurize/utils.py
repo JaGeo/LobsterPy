@@ -138,7 +138,7 @@ def get_electronegativities(atom_pair: list[str]) -> list[float]:
 
     :param atom_pair: list of atomic species symbols in string
 
-    :return: list of allen electronegativities
+    :return: list of Allen electronegativities
     """
     atom1 = element(atom_pair[0])
     atom2 = element(atom_pair[1])
