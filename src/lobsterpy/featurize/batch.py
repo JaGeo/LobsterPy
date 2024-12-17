@@ -988,7 +988,9 @@ class BatchIcoxxlistFeaturizer:
         Generate a pandas dataframe with BWDF for all calcs.
 
         Returns:
-            A pandas dataframe with BWDF as columns
+            A pandas dataframe with BWDF features as columns.
+            The features can be either binned, sorted or statistical.
+            Depends on the "bwdf_df_type" parameter set when the class is initialized.
         """
         paths = [
             os.path.join(self.path_to_lobster_calcs, f)

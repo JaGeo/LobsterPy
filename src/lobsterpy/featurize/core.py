@@ -1136,7 +1136,7 @@ class FeaturizeDoscar:
 
 class FeaturizeIcoxxlist:
     """
-    Class to compute BWDF from ICOXXLIST.lobster.
+    Class to Featurize ICOXXLIST.lobster as Bond weighted distribution function (BWDF).
 
     :param path_to_icoxxlist: path to ICOXXLIST.lobster
     :param path_to_structure: path to POSCAR
@@ -1162,7 +1162,7 @@ class FeaturizeIcoxxlist:
         are_coops: bool = False,
     ):
         """
-        Featurize ICOHPLIST.lobster data.
+        Initialize FeaturizeIcoxxlist class attributes.
 
         :param path_to_icoxxlist: path to ICOXXLIST.lobster
         :param path_to_structure: path to POSCAR
@@ -1190,7 +1190,7 @@ class FeaturizeIcoxxlist:
         self.min_length = min_length
         self.normalization = normalization
 
-    def get_icoxx_neighbors_data(self, site_index: int | None = None) -> dict[str, list]:
+    def get_icoxx_neighbors_data(self, site_index: int | None = None) -> dict:
         """
         Get the neighbors data with icoxx values for a structure.
 
@@ -1200,7 +1200,12 @@ class FeaturizeIcoxxlist:
             site_index: index of the site for which neighbors data is returned. Default is None (All sites).
 
         Returns:
-            Neighbors data as a dictionary
+            Neighbors data as a dictionary with the following information:
+            - "ref_rdf_data": radial distribution function (RDF) data
+            - "input_icoxx_list": complete ICOXXLIST.lobster data in the form of list of tuples
+            - "mapped_icoxx_data": ICOXX values mapped to RDF data
+            - "missing_interactions": list of interactions that are present in RDF data but not in ICOXX data
+            - "wasserstein_dist_to_rdf": wasserstein distance computed between ref_rdf_data and mapped_icoxx_data.
         """
         # Get all neighbors data in a single list using distance based algorithm
         # This is used as a reference to map the icoxx data
@@ -1325,12 +1330,21 @@ class FeaturizeIcoxxlist:
             "wasserstein_dist_to_rdf": wasserstein_distance(rdf_hist, icoxx_hist),
         }
 
-    def calc_bwdf(self):
+    def calc_bwdf(self) -> dict:
         """
         Compute BWDF from ICOXXLIST.lobster data.
 
         Returns:
-            BWDF as a dictionary
+            dict:
+            BWDF as a dictionary for each atom pair and entire structure
+
+            - "A-B": BWDF for atom pair A-B, e.g., "Na-Cl": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "summed": BWDF for entire structure, e.g., "summed": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "centers": bin centers for BWDF
+            - "edges": bin edges for BWDF
+            - "bin_width": bin width
+            - "wasserstein_dist_to_rdf": wasserstein distance between RDF and ICOXX data
+
         """
         # Get all neighbors data in a single list
         icoxx_neighbors_data = self.get_icoxx_neighbors_data()
@@ -1379,7 +1393,7 @@ class FeaturizeIcoxxlist:
         bwdf_atom_pair["summed"] = {"icoxx_binned": icoxx_binned_summed, "icoxx_counts": icoxx_counts_summed}
         bwdf_atom_pair["centers"] = bin_centers
         bwdf_atom_pair["edges"] = bin_edges
-        bwdf_atom_pair["bin_width"] = self.bin_width
+        bwdf_atom_pair["bin_width"] = self.bin_width  # type: ignore[assignment]
         bwdf_atom_pair["wasserstein_dist_to_rdf"] = icoxx_neighbors_data["wasserstein_dist_to_rdf"]
 
         # Normalize BWDF data
@@ -1393,7 +1407,15 @@ class FeaturizeIcoxxlist:
             site_index: index of the site for which BWDF needs to be computed
 
         Returns:
-            BWDF for a site as a dictionary
+            dict:
+            BWDF as a dictionary for the site in the following format
+
+            - "X": BWDF for the site X, e.g., "0": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "centers": bin centers for BWDF
+            - "edges": bin edges for BWDF
+            - "bin_width": bin width
+            - "wasserstein_dist_to_rdf": wasserstein distance between RDF and ICOXX data
+
         """
         if site_index not in range(self.structure.num_sites):
             raise ValueError(f"{site_index} is not a valid site index for the structure")
@@ -1440,7 +1462,14 @@ class FeaturizeIcoxxlist:
             bond_label: bond label for which BWDF needs to be computed
 
         Returns:
-            BWDF for a bond label as a dictionary
+            dict:
+            BWDF as a dictionary for the bond label in the following format
+
+            - "X": BWDF for the bond label, e.g., "20": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "centers": bin centers for BWDF
+            - "edges": bin edges for BWDF
+            - "bin_width": bin width
+            - "wasserstein_dist_to_rdf": wasserstein distance between RDF and ICOXX data
         """
         index = self.icoxxlist.icohpcollection._list_labels.index(bond_label)
         bond_length = self.icoxxlist.icohpcollection._list_length[index]
@@ -1529,7 +1558,8 @@ class FeaturizeIcoxxlist:
             ids: set index name in the pandas dataframe. Default is None.
 
         Returns:
-            A pandas dataframe object with BWDF features
+            A pandas dataframe object with BWDF as columns. Each column contains
+            sum of icoxx values corresponding to bins.
         """
         bwdf = self.calc_bwdf()
         column_names = self._get_features_col_names(bwdf=bwdf)
@@ -1554,7 +1584,8 @@ class FeaturizeIcoxxlist:
             ids: set index name in the pandas dataframe. Default is None.
 
         Returns:
-            A pandas dataframe object with BWDF features for a site
+            A pandas dataframe object with BWDF as columns for a site. Each column contains
+            sum of icoxx values corresponding to bins.
         """
         site_bwdf = self.calc_site_bwdf(site_index=site_index)
         column_names = [f"{feat_name}_site_{site_index}" for feat_name in self._get_features_col_names(bwdf=site_bwdf)]
@@ -1578,7 +1609,8 @@ class FeaturizeIcoxxlist:
               ids: set index name in the pandas dataframe. Default is None.
 
         Returns:
-            A pandas dataframe object with BWDF statistical info
+            A pandas dataframe object with BWDF statistical information as columns.
+            Columns include sum, mean, std, min, max, skew, kurtosis, weighted mean and weighted std.
         """
         bwdf = self.calc_bwdf()
         bin_weights = np.abs(bwdf["summed"]["icoxx_binned"] / np.sum(bwdf["summed"]["icoxx_binned"]))
