@@ -1200,7 +1200,9 @@ class FeaturizeIcoxxlist:
             site_index: index of the site for which neighbors data is returned. Default is None (All sites).
 
         Returns:
-            Neighbors data as a dictionary with the following information:
+            dict:
+            Neighbors data as a dictionary with the following information
+
             - "ref_rdf_data": radial distribution function (RDF) data
             - "input_icoxx_list": complete ICOXXLIST.lobster data in the form of list of tuples
             - "mapped_icoxx_data": ICOXX values mapped to RDF data
