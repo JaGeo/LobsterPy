@@ -851,7 +851,7 @@ class BatchIcoxxlistFeaturizer:
     :param max_length: maximum bond length for BWDF computation
     :param min_length: minimum bond length for BWDF computation
     :param normalization: normalization strategy for BWDF
-    :param bin_width: sets number for bins for fingerprint objects
+    :param bin_width: bin width for BWDF
     :param bwdf_df_type: Type of BWDF dataframe to generate
 
         - "binned": Binned BWDF function.
