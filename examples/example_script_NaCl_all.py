@@ -7,7 +7,7 @@ directory = "NaCl"
 
 # Setup analysis dict
 analyse = Analysis(
-    path_to_poscar=os.path.join(directory, "POSCAR"),
+    path_to_poscar=os.path.join(directory, "CONTCAR"),
     path_to_icohplist=os.path.join(directory, "ICOHPLIST.lobster"),
     path_to_cohpcar=os.path.join(directory, "COHPCAR.lobster"),
     path_to_charge=os.path.join(directory, "CHARGE.lobster"),

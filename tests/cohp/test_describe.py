@@ -296,7 +296,7 @@ class TestDescribe:
 class TestCalcQualityDescribe:
     def test_calc_quality_description_text(self):
         calc_quality_K3Sb = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "test_data/K3Sb/lobsterout.gz",
             path_to_lobsterin=TestDir / "test_data/K3Sb/lobsterin.gz",
@@ -311,7 +311,7 @@ class TestCalcQualityDescribe:
         )
 
         calc_quality_CsH = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data/CsH/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/CsH/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/CsH/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "test_data/CsH/lobsterout.gz",
             path_to_lobsterin=TestDir / "test_data/CsH/lobsterin.gz",
@@ -400,7 +400,7 @@ class TestCalcQualityDescribeWarnings:
         with warnings.catch_warnings(record=True) as w2:
             warnings.simplefilter("once")
             calc_quality_warnings2 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/C/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "test_data/C/lobsterout.gz",
                 path_to_lobsterin=TestDir / "test_data/C/lobsterin.gz",
@@ -421,8 +421,9 @@ class TestCalcQualityDescribeWarnings:
 
         with warnings.catch_warnings(record=True) as w3:
             warnings.simplefilter("once")
+            warnings.filterwarnings("ignore", module="pymatgen")
             calc_quality_warnings3 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/BeTe/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/BeTe/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/BeTe/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "test_data/BeTe/lobsterout.gz",
                 path_to_lobsterin=TestDir / "test_data/BeTe/lobsterin.gz",

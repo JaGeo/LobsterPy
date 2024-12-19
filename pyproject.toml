@@ -128,7 +128,7 @@ ignore = [
   "RUF012",  # Disable checks for mutable class args. This is a non-problem.
   "SIM105",  # Use contextlib.suppress(OSError) instead of try-except-pass
   "SIM114",  # Combine `if` branches using logical `or` operator
-  "TCH002",  # Move third-party import into a type-checking block
+  "TC002",  # Move third-party import into a type-checking block
 ]
 pydocstyle.convention = "google"
 

@@ -18,7 +18,7 @@ TestDir = Path(__file__).absolute().parent
 @pytest.fixture
 def analyse_nacl():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
@@ -30,7 +30,7 @@ def analyse_nacl():
 @pytest.fixture
 def analyse_nacl_comp_range():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
@@ -42,7 +42,7 @@ def analyse_nacl_comp_range():
 @pytest.fixture
 def analyse_nacl_comp_range_orb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
@@ -59,7 +59,7 @@ def analyse_nacl_comp_range_orb_with_objs():
     completecohp_obj = CompleteCohp.from_file(
         filename=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
         fmt="LOBSTER",
-        structure_file=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        structure_file=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
     )
     icohplist_obj = Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz")
 
@@ -81,7 +81,7 @@ def analyse_nacl_comp_range_orb_with_objs():
 @pytest.fixture
 def analyse_nacl_comp_range_cobi():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COBICAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
@@ -95,7 +95,7 @@ def analyse_nacl_comp_range_cobi():
 @pytest.fixture
 def analyse_nacl_comp_range_cobi_orb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COBICAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
@@ -110,7 +110,7 @@ def analyse_nacl_comp_range_cobi_orb():
 @pytest.fixture
 def analyse_nacl_nan():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
@@ -123,7 +123,7 @@ def analyse_nacl_nan():
 @pytest.fixture
 def analyse_nacl_valences():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=None,
@@ -135,7 +135,7 @@ def analyse_nacl_valences():
 @pytest.fixture
 def analyse_nacl_madelung():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
@@ -148,7 +148,7 @@ def analyse_nacl_madelung():
 @pytest.fixture
 def analyse_bati03():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/BaTiO3/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
@@ -160,7 +160,7 @@ def analyse_bati03():
 @pytest.fixture
 def analyse_batao2n1():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTaO2N1/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/BaTaO2N1/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTaO2N1/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTaO2N1/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/BaTaO2N1/CHARGE.lobster.gz",
@@ -172,7 +172,7 @@ def analyse_batao2n1():
 @pytest.fixture
 def analyse_bati03_differentcutoff():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/BaTiO3/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
@@ -184,7 +184,7 @@ def analyse_bati03_differentcutoff():
 @pytest.fixture
 def analyse_nacl_distorted():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_distorted/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_distorted/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_distorted/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_distorted/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_distorted/CHARGE.lobster.gz",
@@ -196,7 +196,7 @@ def analyse_nacl_distorted():
 @pytest.fixture
 def analyse_nacl_spin():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_spin/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_spin/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_spin/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_spin/CHARGE.lobster.gz",
@@ -208,7 +208,7 @@ def analyse_nacl_spin():
 @pytest.fixture
 def analyse_nacl_all():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
@@ -220,7 +220,7 @@ def analyse_nacl_all():
 @pytest.fixture
 def analyse_nacl_madelung_all():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
@@ -233,7 +233,7 @@ def analyse_nacl_madelung_all():
 @pytest.fixture
 def analyse_nasi_madelung_all():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaSi/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaSi/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster.gz",
@@ -246,7 +246,7 @@ def analyse_nasi_madelung_all():
 @pytest.fixture
 def analyse_batao2n1_cutoff():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTaO2N1/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/BaTaO2N1/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTaO2N1/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTaO2N1/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/BaTaO2N1/CHARGE.lobster.gz",
@@ -258,7 +258,7 @@ def analyse_batao2n1_cutoff():
 @pytest.fixture
 def analyse_nasbf6():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaSbF6/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaSbF6/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaSbF6/CHARGE.lobster.gz",
@@ -270,7 +270,7 @@ def analyse_nasbf6():
 @pytest.fixture
 def analyse_nasbf6_anbd():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaSbF6/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaSbF6/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaSbF6/CHARGE.lobster.gz",
@@ -283,7 +283,7 @@ def analyse_nasbf6_anbd():
 @pytest.fixture
 def analyse_cdf():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/CdF/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/CdF/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
@@ -296,7 +296,7 @@ def analyse_cdf():
 @pytest.fixture
 def analyse_cdf_comp_range():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/CdF_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/CdF_comp_range/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/CdF_comp_range/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/CdF_comp_range/CHARGE.lobster.gz",
@@ -308,7 +308,7 @@ def analyse_cdf_comp_range():
 @pytest.fixture
 def analyse_cdf_comp_range_coop():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/CdF_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/CdF_comp_range/COOPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/CdF_comp_range/ICOOPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/CdF_comp_range/CHARGE.lobster.gz",
@@ -322,7 +322,7 @@ def analyse_cdf_comp_range_coop():
 @pytest.fixture
 def analyse_k3sb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
@@ -334,7 +334,7 @@ def analyse_k3sb():
 @pytest.fixture
 def analyse_k3sb_all():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
@@ -349,7 +349,7 @@ def analyse_k3sb_all_objs():
     completecohp_obj = CompleteCohp.from_file(
         filename=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
         fmt="LOBSTER",
-        structure_file=TestDir / "test_data/K3Sb/POSCAR.gz",
+        structure_file=TestDir / "test_data/K3Sb/CONTCAR.gz",
     )
     icohplist_obj = Icohplist(filename=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz")
     return Analysis(
@@ -368,7 +368,7 @@ def analyse_k3sb_all_objs():
 @pytest.fixture
 def analyse_k3sb_all_cobi():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/K3Sb/COBICAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/K3Sb/ICOBILIST.lobster.gz",
         path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
@@ -382,7 +382,7 @@ def analyse_k3sb_all_cobi():
 @pytest.fixture
 def analyse_k3sb_all_coop_orb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/K3Sb/COOPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/K3Sb/ICOOPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
@@ -469,7 +469,7 @@ def describe_k3sb_all(analyse_k3sb_all):
 @pytest.fixture
 def describe_batio3():
     analyse_batio3 = Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/BaTiO3/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
@@ -482,7 +482,7 @@ def describe_batio3():
 @pytest.fixture
 def describe_batio3_orb():
     analyse_bati03_orb = Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/BaTiO3/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
@@ -497,7 +497,7 @@ def describe_batio3_orb():
 @pytest.fixture
 def describe_c_orb():
     analyse_c_orb = Analysis(
-        path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/C/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
@@ -512,7 +512,7 @@ def describe_c_orb():
 @pytest.fixture(scope="class")
 def describe_cdf():
     analyse_cdf = Analysis(
-        path_to_poscar=TestDir / "test_data/CdF/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/CdF/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
@@ -526,7 +526,7 @@ def describe_cdf():
 @pytest.fixture
 def describe_cdf_anbd():
     analyse_cdf_anbd = Analysis(
-        path_to_poscar=TestDir / "test_data/CdF/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/CdF/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
@@ -540,7 +540,7 @@ def describe_cdf_anbd():
 @pytest.fixture
 def describe_csh_all():
     analyse_csh_all = Analysis(
-        path_to_poscar=TestDir / "test_data/CsH/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/CsH/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/CsH/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/CsH/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/CsH/CHARGE.lobster.gz",
@@ -553,7 +553,7 @@ def describe_csh_all():
 @pytest.fixture
 def describe_nacl_spin():
     analyse_nacl_spin = Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_spin/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_spin/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_spin/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_spin/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_spin/CHARGE.lobster.gz",
@@ -567,7 +567,7 @@ def describe_nacl_spin():
 @pytest.fixture
 def describe_nasbf6_orb():
     analyse_nasbf6_orb = Analysis(
-        path_to_poscar=TestDir / "test_data/NaSbF6/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaSbF6/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaSbF6/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaSbF6/CHARGE.lobster.gz",
@@ -585,7 +585,7 @@ def describe_nasbf6_orb():
 @pytest.fixture
 def plot_analyse_nacl():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl/CHARGE.lobster.gz",
@@ -598,7 +598,7 @@ def plot_analyse_nacl():
 @pytest.fixture
 def plot_analyse_cdf_orb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/CdF_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/CdF_comp_range/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/CdF_comp_range/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/CdF_comp_range/CHARGE.lobster.gz",
@@ -613,7 +613,7 @@ def plot_analyse_cdf_orb():
 @pytest.fixture
 def plot_analyse_nacl_cobi():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COBICAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
@@ -628,7 +628,7 @@ def plot_analyse_nacl_cobi():
 @pytest.fixture
 def plot_analyse_nacl_cobi_orb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COBICAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOBILIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
@@ -644,7 +644,7 @@ def plot_analyse_nacl_cobi_orb():
 @pytest.fixture
 def plot_analyse_nasi():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/NaSi/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/NaSi/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster.gz",
@@ -657,7 +657,7 @@ def plot_analyse_nasi():
 @pytest.fixture
 def plot_analyse_batio3_orb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/BaTiO3/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/BaTiO3/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/BaTiO3/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/BaTiO3/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/BaTiO3/CHARGE.lobster.gz",
@@ -671,7 +671,7 @@ def plot_analyse_batio3_orb():
 @pytest.fixture
 def plot_analyse_k3sb():
     return Analysis(
-        path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+        path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
         path_to_cohpcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
         path_to_icohplist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
         path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
@@ -719,7 +719,7 @@ def icobilist_nacl():
 def nacl_dos():
     return Doscar(
         doscar=TestDir / "test_data/NaCl_comp_range/DOSCAR.LSO.lobster.gz",
-        structure_file=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+        structure_file=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
     )
 
 
@@ -727,7 +727,7 @@ def nacl_dos():
 def k3sb_dos():
     return Doscar(
         doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",
-        structure_file=TestDir / "test_data/K3Sb/POSCAR.gz",
+        structure_file=TestDir / "test_data/K3Sb/CONTCAR.gz",
     )
 
 
