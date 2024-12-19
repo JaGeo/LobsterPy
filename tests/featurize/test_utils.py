@@ -1,5 +1,6 @@
 import gzip
 import shutil
+import warnings
 from pathlib import Path
 
 import pytest
@@ -38,6 +39,42 @@ def test_get_structure_path(tmp_path):
 
     elements = Structure.from_file(poscar_path_both).elements
     assert "Zn" not in [el.symbol for el in elements]
+
+
+def test_get_structure_path_warning(tmp_path):
+    # test that the warning is raised when reading POSCAR
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("once")
+        warnings.filterwarnings("ignore", module="pymatgen")
+        source_file = TestDir / "test_data/test_structure_path_handling/CONTCAR.gz"
+        temp_poscar_path = tmp_path / "POSCAR"  # copy CONTCAR as POSCAR
+        shutil.copy(source_file, temp_poscar_path)
+        _ = get_structure_path(lobster_path=tmp_path)
+
+        assert (
+            str(w[0].message) == "Falling back to POSCAR, translations between individual "
+            "atoms may differ from LOBSTER outputs. Please note that "
+            "translations in the LOBSTER outputs are consistent with "
+            "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
+            "written by LOBSTER >=v5)."
+        )
+
+    # test that the warning is raised when reading POSCAR.gz
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("once")
+        warnings.filterwarnings("ignore", module="pymatgen")
+        source_file = TestDir / "test_data/test_structure_path_handling/CONTCAR.gz"
+        temp_poscar_path = tmp_path / "POSCAR.gz"  # copy CONTCAR as POSCAR
+        shutil.copy(source_file, temp_poscar_path)
+        _ = get_structure_path(lobster_path=tmp_path)
+
+        assert (
+            str(w[0].message) == "Falling back to POSCAR, translations between individual "
+            "atoms may differ from LOBSTER outputs. Please note that "
+            "translations in the LOBSTER outputs are consistent with "
+            "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
+            "written by LOBSTER >=v5)."
+        )
 
 
 def test_get_file_paths(tmp_path):

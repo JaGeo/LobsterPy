@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import io
+import shutil
 import sys
+import warnings
 from pathlib import Path
 
 import pytest
@@ -916,6 +918,29 @@ class TestAnalyse:
             str(err.value) == "Consider switching to an analysis of all bonds and not only cation-anion bonds. "
             "It looks like no cations are detected."
         )
+
+    def test_warning(self, tmp_path):
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("once")
+            warnings.filterwarnings("ignore", module="pymatgen")
+            source_file = TestDir / "test_data/C/CONTCAR.gz"
+            temp_poscar_path = tmp_path / "POSCAR.gz"  # copy CONTCAR as POSCAR
+            shutil.copy(source_file, temp_poscar_path)
+            self.analyse_c = Analysis(
+                path_to_poscar=temp_poscar_path,
+                path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
+                path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
+                which_bonds="all",
+                cutoff_icohp=0.1,
+            )
+            assert (
+                str(w[0].message) == "Falling back to POSCAR, translations between individual "
+                "atoms may differ from LOBSTER outputs. Please note that "
+                "translations in the LOBSTER outputs are consistent with "
+                "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
+                "written by LOBSTER >=v5)."
+            )
 
 
 class TestAnalyseCalcQuality:
