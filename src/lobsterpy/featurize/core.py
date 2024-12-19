@@ -334,7 +334,7 @@ class FeaturizeCOXX:
 
     :param path_to_coxxcar: path to COXXCAR.lobster (e.g., `COXXCAR.lobster`)
     :param path_to_icoxxlist: path to ICOXXLIST.lobster (e.g., `ICOXXLIST.lobster`)
-    :param path_to_structure: path to structure file (e.g., `POSCAR`)
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
     :param feature_type: set the feature type for moment features and fingerprints.
         Possible options are `bonding`, `antibonding` or `overall`.
     :param are_cobis: bool indicating if file contains COBI/ICOBI data.
@@ -357,7 +357,7 @@ class FeaturizeCOXX:
 
         :param path_to_coxxcar: path to COXXCAR.lobster (e.g., `COXXCAR.lobster`)
         :param path_to_icoxxlist: path to ICOXXLIST.lobster (e.g., `ICOXXLIST.lobster`)
-        :param path_to_structure: path to structure file (e.g., `POSCAR`)
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
         :param feature_type: set the feature type for moment features and fingerprints.
             Possible options are `bonding`, `antibonding` or `overall`.
         :param are_cobis: bool indicating if file contains COBI/ICOBI data
@@ -879,7 +879,7 @@ class FeaturizeCharges:
     """
     Class to compute Ionicity from CHARGE.lobster data.
 
-    :param path_to_structure: path to POSCAR
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
     :param path_to_charge: path to CHARGE.lobster (e.g., `CHARGE.lobster`)
     :param charge_type: set charge type used for computing ionicity.
         Possible options are `Mulliken` or `Loewdin`
@@ -894,7 +894,7 @@ class FeaturizeCharges:
         """
         Compute the Ionicity of the structure from CHARGE.lobster data.
 
-        :param path_to_structure: path to POSCAR
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
         :param path_to_charge: path to CHARGE.lobster (e.g., `CHARGE.lobster`)
         :param charge_type: set charge type used for computing ionicity.
             Possible options are `mulliken` or `loewdin`
@@ -999,7 +999,7 @@ class FeaturizeDoscar:
     """
     Class to compute DOS moments and fingerprints from DOSCAR.lobster / DOSCAR.LSO.lobster.
 
-    :param path_to_structure: path to POSCAR
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
     :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster
     :param e_range: range of energy relative to fermi for which moment features and
         features needs to be computed
@@ -1016,7 +1016,7 @@ class FeaturizeDoscar:
         """
         Featurize DOSCAR.lobster or DOSCAR.LSO.lobster data.
 
-        :param path_to_structure: path to POSCAR
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
         :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster
         :param e_range: range of energy relative to fermi for which moment features and
             features needs to be computed
@@ -1139,7 +1139,7 @@ class FeaturizeIcoxxlist:
     Class to Featurize ICOXXLIST.lobster as Bond weighted distribution function (BWDF).
 
     :param path_to_icoxxlist: path to ICOXXLIST.lobster
-    :param path_to_structure: path to POSCAR
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
     :param bin_width: bin width for the BWDF
     :param interactions_tol: tolerance for interactions
     :param max_length: maximum bond length for BWDF computation
@@ -1165,7 +1165,7 @@ class FeaturizeIcoxxlist:
         Initialize FeaturizeIcoxxlist class attributes.
 
         :param path_to_icoxxlist: path to ICOXXLIST.lobster
-        :param path_to_structure: path to POSCAR
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
         :param bin_width: bin width for the BWDF
         :param interactions_tol: numerical tolerance considered for interactions to be insignificant
         :param max_length: maximum bond length for BWDF computation

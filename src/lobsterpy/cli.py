@@ -561,7 +561,8 @@ def get_parser() -> argparse.ArgumentParser:
         ],
         help=(
             "Deliver a text description of the LOBSTER calc quality analysis. "
-            "Mandatory required files: CONTCAR, POTCAR, lobsterout, lobsterin. "
+            "Mandatory required files: structure file compatible with --file-structure (preferably CONTCAR), "
+            "POTCAR, lobsterout, lobsterin. "
             "Optional files (BVA comparison): CHARGE.lobster, "
             "(DOS comparison): DOSCAR.lobster/ DOSCAR.LSO.lobster, Vasprun.xml."
         ),

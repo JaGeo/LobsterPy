@@ -19,7 +19,7 @@ TestDir = CurrentDir / "../"
 
 def test_get_structure_path(tmp_path):
     """
-    Tests that POSCAR path is returned by get_structure_path function.
+    Tests that CONTCAR path is returned by get_structure_path function.
 
     Tests that in case of both LOBSTER and VASP structure files present, the VASP
     file is read.

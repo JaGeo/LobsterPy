@@ -41,7 +41,7 @@ class Analysis:
     :param path_to_cohpcar: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
     :param path_to_charge: path to `CHARGE.lobster`.
     :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
-    :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
+    :param path_to_poscar: path to structure (e.g., `CONTCAR` (preferred), `POSCAR` or `POSCAR.lobster`)
     :param path_to_madelung: path to `MadelungEnergies.lobster`.
     :param charge_obj: pymatgen lobster.io.charge object
     :param completecohp_obj: pymatgen.electronic_structure.cohp.CompleteCohp object
