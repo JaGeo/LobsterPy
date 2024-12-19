@@ -87,9 +87,13 @@ Please cite our papers:
 * A. A. Naik, K. Ueltzen, C. Ertural, A. J. Jackson, J. George, *Journal of Open Source Software* **2024**, *9*, 6286. [https://joss.theoj.org/papers/10.21105/joss.06286](https://joss.theoj.org/papers/10.21105/joss.06286).
 * J. George, G. Petretto, A. Naik, M. Esters, A. J. Jackson, R. Nelson, R. Dronskowski, G.-M. Rignanese, G. Hautier, *ChemPlusChem* **2022**, *87*, e202200123. [https://doi.org/10.1002/cplu.202200123](https://doi.org/10.1002/cplu.202200123) (Information on the methodology of the automatic analysis)
 
+If you use any of the following Featurizers, also cite the respective papers:
+
+* `FeaturizeCharges`: R. Nelson, C. Ertural, P. C. Müller, R. Dronskowski, in Comprehensive Inorganic Chemistry III, *Elsevier*, **2023**, pp. 141–201. [https://doi.org/10.1016/B978-0-12-823144-9.00120-5](https://doi.org/10.1016/B978-0-12-823144-9.00120-5)
+* `FeaturizeIcoxxlist`: V. L. Deringer, W. Zhang, M. Lumeij, S. Maintz, M. Wuttig, R. Mazzarello, R. Dronskowski, *Angewandte Chemie International Edition 2014*, *53*, 10817–10820. [https://doi.org/10.1002/anie.201404223](https://doi.org/10.1002/anie.201404223)
+
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=1), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
-.
 
 ## LobsterPy is now a part of an atomate2 workflow
 ![LobsterWorkflow](https://github.com/JaGeo/LobsterPy/assets/22094846/337615ac-542e-446c-bc63-fb5946b16544)

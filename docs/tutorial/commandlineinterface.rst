@@ -15,7 +15,7 @@ Creating input files
    
 
 With LobsterPy, these intricate details are handled with a single command. We need the standard VASP input files, i.e. 
-``INCAR, KPOINTS, POTCAR and POSCAR`` in the calculation directory. Once you have these files, one needs to run the following command:
+``INCAR, KPOINTS, POTCAR and CONTCAR`` in the calculation directory. Once you have these files, one needs to run the following command:
 
 ``lobsterpy create-inputs``
 
@@ -182,7 +182,7 @@ Following is the json file produced.
 -  ``lobsterpy description-quality --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will automatically analyze your lobster calculation quality.
    
 .. note::
-   The LOBSTER calculation directory need to have POTCAR, POSCAR, LOBSTER calculation input and output files to run the **lobsterpy calc-description** command successfully. 
+   The LOBSTER calculation directory need to have POTCAR, structure file (preferably CONTCAR), LOBSTER calculation input and output files to run the **lobsterpy description-quality** command successfully.
    If POTCAR is not available then you need to supply **--potcar-symbols** along with the command. Other optional files are vasprun.xml if **--doscomp** is switched on.
 
 .. code:: bash

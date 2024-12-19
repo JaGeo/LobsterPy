@@ -63,10 +63,10 @@ def get_parser() -> argparse.ArgumentParser:
     structure_file.add_argument(
         "-fstruct",
         "--file-structure",
-        default="POSCAR",
+        default="CONTCAR",
         dest="structure",
         type=Path,
-        help='path to structure file. Default is "POSCAR". '
+        help='path to structure file. Default is "CONTCAR". '
         'Can also read "POSCAR.lobster" file or any '
         'suitable file format supported by pymatgen "Structure.from_file" method.',
     )
@@ -561,7 +561,8 @@ def get_parser() -> argparse.ArgumentParser:
         ],
         help=(
             "Deliver a text description of the LOBSTER calc quality analysis. "
-            "Mandatory required files: POSCAR, POTCAR, lobsterout, lobsterin. "
+            "Mandatory required files: structure file compatible with --file-structure (preferably CONTCAR), "
+            "POTCAR, lobsterout, lobsterin. "
             "Optional files (BVA comparison): CHARGE.lobster, "
             "(DOS comparison): DOSCAR.lobster/ DOSCAR.LSO.lobster, Vasprun.xml."
         ),
@@ -874,14 +875,14 @@ def run(args):
             )
             options = {"are_cobis": False, "are_coops": False}
 
-        struture_filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure"]).get(
+        structure_filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure"]).get(
             "structure"
         )
 
         completecohp = CompleteCohp.from_file(
             fmt="LOBSTER",
             filename=filename,
-            structure_file=struture_filename,
+            structure_file=structure_filename,
             **options,
         )
         if args.multi_cobis:
@@ -962,13 +963,9 @@ def run(args):
         from pymatgen.io.lobster import Lobsterin
 
         # Check for .gz files exist for default values and update accordingly
-        default_files = {
-            "structure": "POSCAR",
-            "potcar": "POTCAR",
-            "incar": "INCAR",
-        }
+        req_file_arg_names = ["structure", "potcar", "incar"]
 
-        for arg_name in default_files:
+        for arg_name in req_file_arg_names:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(zpath(file_path.name))
