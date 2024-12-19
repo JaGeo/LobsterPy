@@ -7,10 +7,17 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import NamedTuple
+from warnings import warn
 
 import numpy as np
 from mendeleev import element
 from monty.os.path import zpath
+
+POSCAR_WARNING = (
+    "Falling back to POSCAR. Please note that LOBSTER is using CONTCAR "
+    "and translations between individual atoms may differ."
+    "Please ignore this warning if you are creating VASP or LOBSTER inputs."
+)
 
 
 class CoxxFingerprint(NamedTuple):
@@ -111,9 +118,13 @@ def get_structure_path(lobster_path: Path) -> Path:
     for filename in ["CONTCAR", "POSCAR.lobster", "POSCAR.lobster.vasp", "POSCAR"]:
         poscar_path = lobster_path / filename
         if poscar_path.exists():
+            if filename == "POSCAR":
+                warn(POSCAR_WARNING)
             return poscar_path
         gz_file_path = Path(zpath(str(poscar_path.as_posix())))
         if gz_file_path.exists():
+            if filename == "POSCAR":
+                warn(POSCAR_WARNING)
             return gz_file_path
 
     raise Exception
