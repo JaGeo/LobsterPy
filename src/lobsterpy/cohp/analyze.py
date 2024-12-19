@@ -1431,15 +1431,15 @@ class Analysis:
 
     @staticmethod
     def get_lobster_calc_quality_summary(
-        path_to_poscar: str | None = None,
-        path_to_lobsterout: str | None = None,
-        path_to_lobsterin: str | None = None,
-        path_to_potcar: str | None = None,
+        path_to_poscar: str | Path | None = None,
+        path_to_lobsterout: str | Path | None = None,
+        path_to_lobsterin: str | Path | None = None,
+        path_to_potcar: str | Path | None = None,
         potcar_symbols: list | None = None,
-        path_to_charge: str | None = None,
-        path_to_bandoverlaps: str | None = None,
-        path_to_doscar: str | None = None,
-        path_to_vasprun: str | None = None,
+        path_to_charge: str | Path | None = None,
+        path_to_bandoverlaps: str | Path | None = None,
+        path_to_doscar: str | Path | None = None,
+        path_to_vasprun: str | Path | None = None,
         structure_obj: Structure | None = None,
         lobsterin_obj: Lobsterin | None = None,
         lobsterout_obj: Lobsterout | None = None,
@@ -1501,7 +1501,7 @@ class Analysis:
             )
 
         if path_to_poscar:
-            if path_to_poscar.endswith("POSCAR"):
+            if str(path_to_poscar).endswith("POSCAR"):
                 warnings.warn(POSCAR_WARNING)
             struct = Structure.from_file(path_to_poscar)
         elif structure_obj:
