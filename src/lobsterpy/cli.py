@@ -963,13 +963,9 @@ def run(args):
         from pymatgen.io.lobster import Lobsterin
 
         # Check for .gz files exist for default values and update accordingly
-        default_files = {
-            "structure": "CONTCAR",
-            "potcar": "POTCAR",
-            "incar": "INCAR",
-        }
+        req_file_arg_names = ["structure", "potcar", "incar"]
 
-        for arg_name in default_files:
+        for arg_name in req_file_arg_names:
             file_path = getattr(args, arg_name)
             if not file_path.exists():
                 gz_file_path = file_path.with_name(zpath(file_path.name))
