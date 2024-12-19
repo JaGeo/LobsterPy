@@ -14,9 +14,9 @@ from mendeleev import element
 from monty.os.path import zpath
 
 POSCAR_WARNING = (
-    "Falling back to POSCAR. Please note that LOBSTER is using CONTCAR "
-    "and translations between individual atoms may differ."
-    "Please ignore this warning if you are creating VASP or LOBSTER inputs."
+    "Falling back to POSCAR, translations between individual atoms may differ from LOBSTER outputs. "
+    "Please note that translations in the LOBSTER outputs are consistent with CONTCAR "
+    "(also with POSCAR.lobster.vasp or POSCAR.vasp : written by LOBSTER >=v5)."
 )
 
 

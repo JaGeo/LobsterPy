@@ -30,8 +30,9 @@ from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 POSCAR_WARNING = (
-    "Falling back to POSCAR. Please note that LOBSTER is using CONTCAR "
-    "and translations between individual atoms may differ."
+    "Falling back to POSCAR, translations between individual atoms may differ from LOBSTER outputs. "
+    "Please note that translations in the LOBSTER outputs are consistent with CONTCAR "
+    "(also with POSCAR.lobster.vasp or POSCAR.vasp : written by LOBSTER >=v5)."
 )
 
 
@@ -143,7 +144,9 @@ class Analysis:
             percentages below efermi. Defaults to None (i.e., all populations below efermi are included)
 
         """
-        if path_to_poscar and str(path_to_poscar).endswith("POSCAR"):
+        if (path_to_poscar and str(path_to_poscar).endswith("POSCAR")) or (
+            path_to_poscar and str(path_to_poscar).endswith("POSCAR.gz")
+        ):
             warnings.warn(POSCAR_WARNING)
         self.start = start
         self.completecohp_obj = completecohp_obj
