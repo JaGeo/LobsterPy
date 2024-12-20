@@ -29,6 +29,12 @@ from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
+POSCAR_WARNING = (
+    "Falling back to POSCAR, translations between individual atoms may differ from LOBSTER outputs. "
+    "Please note that translations in the LOBSTER outputs are consistent with CONTCAR "
+    "(also with POSCAR.lobster.vasp or POSCAR.vasp : written by LOBSTER >=v5)."
+)
+
 
 class Analysis:
     """
@@ -41,7 +47,7 @@ class Analysis:
     :param path_to_cohpcar: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
     :param path_to_charge: path to `CHARGE.lobster`.
     :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
-    :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
+    :param path_to_poscar: path to structure (e.g., `CONTCAR` (preferred), `POSCAR` or `POSCAR.lobster`)
     :param path_to_madelung: path to `MadelungEnergies.lobster`.
     :param charge_obj: pymatgen lobster.io.charge object
     :param completecohp_obj: pymatgen.electronic_structure.cohp.CompleteCohp object
@@ -115,7 +121,7 @@ class Analysis:
         :param path_to_cohpcar: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
         :param path_to_charge: path to `CHARGE.lobster`.
         :param path_to_icohplist: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
-        :param path_to_poscar: path to structure (e.g., `POSCAR` or `POSCAR.lobster`)
+        :param path_to_poscar: path to structure (e.g., `CONTCAR` (preferred), `POSCAR.lobster` or `POSCAR`)
         :param path_to_madelung: path to `MadelungEnergies.lobster`.
         :param charge_obj: pymatgen lobster.io.charge object (Optional)
         :param completecohp_obj: pymatgen.electronic_structure.cohp.CompleteCohp object
@@ -138,6 +144,10 @@ class Analysis:
             percentages below efermi. Defaults to None (i.e., all populations below efermi are included)
 
         """
+        if (path_to_poscar and str(path_to_poscar).endswith("POSCAR")) or (
+            path_to_poscar and str(path_to_poscar).endswith("POSCAR.gz")
+        ):
+            warnings.warn(POSCAR_WARNING)
         self.start = start
         self.completecohp_obj = completecohp_obj
         self.icohplist_obj = icohplist_obj
@@ -1424,15 +1434,15 @@ class Analysis:
 
     @staticmethod
     def get_lobster_calc_quality_summary(
-        path_to_poscar: str | None = None,
-        path_to_lobsterout: str | None = None,
-        path_to_lobsterin: str | None = None,
-        path_to_potcar: str | None = None,
+        path_to_poscar: str | Path | None = None,
+        path_to_lobsterout: str | Path | None = None,
+        path_to_lobsterin: str | Path | None = None,
+        path_to_potcar: str | Path | None = None,
         potcar_symbols: list | None = None,
-        path_to_charge: str | None = None,
-        path_to_bandoverlaps: str | None = None,
-        path_to_doscar: str | None = None,
-        path_to_vasprun: str | None = None,
+        path_to_charge: str | Path | None = None,
+        path_to_bandoverlaps: str | Path | None = None,
+        path_to_doscar: str | Path | None = None,
+        path_to_vasprun: str | Path | None = None,
         structure_obj: Structure | None = None,
         lobsterin_obj: Lobsterin | None = None,
         lobsterout_obj: Lobsterout | None = None,
@@ -1448,7 +1458,7 @@ class Analysis:
         """
         Analyze LOBSTER calculation quality.
 
-        :param path_to_poscar: path to structure file
+        :param path_to_poscar: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR` or `POSCAR.lobster`)
         :param path_to_lobsterout: path to lobsterout file
         :param path_to_lobsterin: path to lobsterin file
         :param path_to_potcar: path to VASP potcar file
@@ -1494,6 +1504,8 @@ class Analysis:
             )
 
         if path_to_poscar:
+            if str(path_to_poscar).endswith("POSCAR"):
+                warnings.warn(POSCAR_WARNING)
             struct = Structure.from_file(path_to_poscar)
         elif structure_obj:
             struct = structure_obj

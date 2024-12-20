@@ -8,8 +8,9 @@ from __future__ import annotations
 import gzip
 import json
 import warnings
+from itertools import combinations_with_replacement
 from pathlib import Path
-from typing import NamedTuple
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -21,10 +22,10 @@ from pymatgen.electronic_structure.core import Spin
 from pymatgen.io.lobster import Charge, Doscar, Icohplist, MadelungEnergies
 from scipy.integrate import trapezoid
 from scipy.signal import hilbert
+from scipy.stats import kurtosis, skew, wasserstein_distance
 
 from lobsterpy.cohp.analyze import Analysis
-
-from . import get_file_paths
+from lobsterpy.featurize.utils import CoxxFingerprint, get_file_paths
 
 warnings.filterwarnings("ignore")
 
@@ -37,6 +38,7 @@ class FeaturizeLobsterpy:
     :param path_to_json: path to lobster lightweight json
     :param bonds: "all" or "cation-anion" bonds
     :param orbital_resolved: bool indicating whether LobsterPy analysis is performed orbital wise
+    :param analysis_kwargs: optional keyword arguments to be passed to the Analysis class
     """
 
     def __init__(
@@ -44,13 +46,15 @@ class FeaturizeLobsterpy:
         path_to_lobster_calc: str | Path | None = None,
         path_to_json: str | Path | None = None,
         orbital_resolved: bool = False,
-        bonds: str = "all",
+        bonds: Literal["cation-anion", "all"] = "all",
+        **analysis_kwargs,
     ):
         """Initialize featurizer."""
         self.path_to_json = path_to_json
         self.path_to_lobster_calc = path_to_lobster_calc
         self.orbital_resolved = orbital_resolved
         self.bonds = bonds
+        self.analysis_kwargs = analysis_kwargs
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """
@@ -74,6 +78,7 @@ class FeaturizeLobsterpy:
                 path_to_lobster_calc=self.path_to_lobster_calc,
                 bonds=self.bonds,
                 orbital_resolved=self.orbital_resolved,
+                **self.analysis_kwargs,
             )
 
             if not ids:
@@ -257,13 +262,16 @@ class FeaturizeLobsterpy:
         return lobster_data
 
     @staticmethod
-    def get_lobsterpy_cba_dict(path_to_lobster_calc: str | Path, bonds: str, orbital_resolved: bool) -> dict:
+    def get_lobsterpy_cba_dict(
+        path_to_lobster_calc: str | Path, bonds: str, orbital_resolved: bool, **analysis_kwargs
+    ) -> dict:
         """
         Generate a Python dictionary object using the Analysis class with condensed bonding analysis data.
 
         :param path_to_lobster_calc: path to lobsterpy lightweight json file
         :param bonds: "all" or "cation-anion" bonds
         :param orbital_resolved:  bool indicating whether analysis is performed orbital wise
+        :param analysis_kwargs: optional keyword arguments to be passed to the Analysis class
 
         Returns:
             Returns a dictionary with lobster summarized bonding analysis data
@@ -282,10 +290,11 @@ class FeaturizeLobsterpy:
                 path_to_icohplist=str(file_paths.get("icohplist")),
                 path_to_cohpcar=str(file_paths.get("cohpcar")),
                 path_to_charge=str(file_paths.get("charge")),
-                summed_spins=False,  # we will always use spin polarization here
-                cutoff_icohp=0.10,
                 which_bonds=which_bonds,
                 orbital_resolved=orbital_resolved,
+                cutoff_icohp=analysis_kwargs.get("cutoff_icohp", 0.10),
+                noise_cutoff=analysis_kwargs.get("noise_cutoff", 0.1),
+                summed_spins=analysis_kwargs.get("summed_spins", False),
             )
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
@@ -319,36 +328,13 @@ class FeaturizeLobsterpy:
         return data
 
 
-class CoxxFingerprint(NamedTuple):
-    """
-    Represents a Coxx fingerprint.
-
-    This named tuple is used to store information related to a Coxx fingerprint, which
-    includes energies, Coxx values, fingerprint type, spin type, number of bins, and bin width.
-
-    :param energies: The energy values associated with the Coxx fingerprint.
-    :param coxx: The Coxx values corresponding to each energy.
-    :param fp_type: The type of the Coxx fingerprint.
-    :param spin_type: The spin type associated with the fingerprint.
-    :param n_bins: The number of bins used in the Coxx fingerprint.
-    :param bin_width: The width of each bin in the Coxx fingerprint.
-    """
-
-    energies: np.ndarray
-    coxx: np.ndarray
-    fp_type: str
-    spin_type: str
-    n_bins: int
-    bin_width: float
-
-
 class FeaturizeCOXX:
     """
     Class to featurize COHPCAR, COBICAR or COOPCAR data.
 
     :param path_to_coxxcar: path to COXXCAR.lobster (e.g., `COXXCAR.lobster`)
     :param path_to_icoxxlist: path to ICOXXLIST.lobster (e.g., `ICOXXLIST.lobster`)
-    :param path_to_structure: path to structure file (e.g., `POSCAR`)
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
     :param feature_type: set the feature type for moment features and fingerprints.
         Possible options are `bonding`, `antibonding` or `overall`.
     :param are_cobis: bool indicating if file contains COBI/ICOBI data.
@@ -361,7 +347,7 @@ class FeaturizeCOXX:
         path_to_coxxcar: str | Path,
         path_to_icoxxlist: str | Path,
         path_to_structure: str | Path,
-        feature_type: str,
+        feature_type: Literal["bonding", "antibonding", "overall"],
         e_range: list[float] = [-10.0, 0.0],
         are_cobis: bool = False,
         are_coops: bool = False,
@@ -371,7 +357,7 @@ class FeaturizeCOXX:
 
         :param path_to_coxxcar: path to COXXCAR.lobster (e.g., `COXXCAR.lobster`)
         :param path_to_icoxxlist: path to ICOXXLIST.lobster (e.g., `ICOXXLIST.lobster`)
-        :param path_to_structure: path to structure file (e.g., `POSCAR`)
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
         :param feature_type: set the feature type for moment features and fingerprints.
             Possible options are `bonding`, `antibonding` or `overall`.
         :param are_cobis: bool indicating if file contains COBI/ICOBI data
@@ -405,7 +391,7 @@ class FeaturizeCOXX:
         label_list: list[str] | None = None,
         orbital: str | None = None,
         per_bond: bool = True,
-        spin_type: str = "summed",
+        spin_type: Literal["up", "down", "summed"] = "summed",
         binning: bool = True,
         n_bins: int = 56,
         normalize: bool = True,
@@ -622,7 +608,7 @@ class FeaturizeCOXX:
     @staticmethod
     def _calc_moment_features(
         complete_coxx_obj: CompleteCohp,
-        feature_type: str,
+        feature_type: Literal["bonding", "antibonding", "overall"],
         e_range: list[float],
         label_list: list[str] | None = None,
         orbital: str | None = None,
@@ -891,9 +877,9 @@ class FeaturizeCOXX:
 
 class FeaturizeCharges:
     """
-    Class to compute ionicity from CHARGE.lobster data.
+    Class to compute Ionicity from CHARGE.lobster data.
 
-    :param path_to_structure: path to POSCAR
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
     :param path_to_charge: path to CHARGE.lobster (e.g., `CHARGE.lobster`)
     :param charge_type: set charge type used for computing ionicity.
         Possible options are `Mulliken` or `Loewdin`
@@ -903,15 +889,15 @@ class FeaturizeCharges:
         self,
         path_to_structure: str | Path,
         path_to_charge: str | Path,
-        charge_type: str,
+        charge_type: Literal["mulliken", "loewdin"],
     ):
         """
         Compute the Ionicity of the structure from CHARGE.lobster data.
 
-        :param path_to_structure: path to POSCAR
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
         :param path_to_charge: path to CHARGE.lobster (e.g., `CHARGE.lobster`)
         :param charge_type: set charge type used for computing ionicity.
-            Possible options are `Mulliken` or `Loewdin`
+            Possible options are `mulliken` or `loewdin`
         """
         self.path_to_structure = path_to_structure
         self.path_to_charge = path_to_charge
@@ -1013,7 +999,7 @@ class FeaturizeDoscar:
     """
     Class to compute DOS moments and fingerprints from DOSCAR.lobster / DOSCAR.LSO.lobster.
 
-    :param path_to_structure: path to POSCAR
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
     :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster
     :param e_range: range of energy relative to fermi for which moment features and
         features needs to be computed
@@ -1030,7 +1016,7 @@ class FeaturizeDoscar:
         """
         Featurize DOSCAR.lobster or DOSCAR.LSO.lobster data.
 
-        :param path_to_structure: path to POSCAR
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
         :param path_to_doscar: path to DOSCAR.lobster or DOSCAR.LSO.lobster
         :param e_range: range of energy relative to fermi for which moment features and
             features needs to be computed
@@ -1108,7 +1094,7 @@ class FeaturizeDoscar:
     def get_fingerprint_df(
         self,
         ids: str | None = None,
-        fp_type: str = "summed_pdos",
+        fp_type: Literal["s", "p", "d", "f", "summed_pdos", "tdos"] = "summed_pdos",
         binning: bool = True,
         n_bins: int = 256,
         normalize: bool = True,
@@ -1118,7 +1104,7 @@ class FeaturizeDoscar:
 
         :param ids: set index name in the pandas dataframe. Default is None.
             When None, LOBSTER calc directory name is used as index name.
-        :param fp_type: Specify fingerprint type to compute, can accept `s/p/d/f/summed_pdos`
+        :param fp_type: Specify fingerprint type to compute, can accept `s/p/d/f/tdos/summed_pdos`
             (default is summed_pdos)
         :param binning: If true, the DOS fingerprint is binned using np.linspace and n_bins.
             Default is True.
@@ -1146,3 +1132,564 @@ class FeaturizeDoscar:
         df.loc[ids, "DOS_FP"] = dos_fp
 
         return df
+
+
+class FeaturizeIcoxxlist:
+    """
+    Class to Featurize ICOXXLIST.lobster as Bond weighted distribution function (BWDF).
+
+    :param path_to_icoxxlist: path to ICOXXLIST.lobster
+    :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
+    :param bin_width: bin width for the BWDF
+    :param interactions_tol: tolerance for interactions
+    :param max_length: maximum bond length for BWDF computation
+    :param min_length: minimum bond length for BWDF computation
+    :param normalization: normalization strategy for BWDF
+    :param are_cobis: bool indicating if file contains COBI/ICOBI data
+    :param are_coops: bool indicating if file contains COOP/ICOOP data
+    """
+
+    def __init__(
+        self,
+        path_to_icoxxlist: str | Path,
+        path_to_structure: str | Path,
+        bin_width: float = 0.02,
+        interactions_tol: float = 1e-3,
+        max_length: float = 6.0,
+        min_length: float = 0.0,
+        normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
+        are_cobis: bool = False,
+        are_coops: bool = False,
+    ):
+        """
+        Initialize FeaturizeIcoxxlist class attributes.
+
+        :param path_to_icoxxlist: path to ICOXXLIST.lobster
+        :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
+        :param bin_width: bin width for the BWDF
+        :param interactions_tol: numerical tolerance considered for interactions to be insignificant
+        :param max_length: maximum bond length for BWDF computation
+        :param min_length: minimum bond length for BWDF computation
+        :param normalization: normalization strategy for BWDF
+        :param are_cobis: bool indicating if file contains COBI/ICOBI data
+        :param are_coops: bool indicating if file contains COOP/ICOOP data
+        """
+        self.path_to_icoxxlist = path_to_icoxxlist
+        self.path_to_structure = path_to_structure
+        self.bin_width = bin_width
+        self.are_cobis = are_cobis
+        self.are_coops = are_coops
+        self.icoxxlist = Icohplist(
+            filename=self.path_to_icoxxlist,
+            are_cobis=self.are_cobis,
+            are_coops=self.are_coops,
+        )
+        self.interactions_tol = interactions_tol
+        self.structure = Structure.from_file(self.path_to_structure)
+        self.max_length = max_length
+        self.min_length = min_length
+        self.normalization = normalization
+
+    def get_icoxx_neighbors_data(self, site_index: int | None = None) -> dict:
+        """
+        Get the neighbors data with icoxx values for a structure.
+
+        Uses distance based neighbor list as reference to map the neighbor's data.
+
+        Args:
+            site_index: index of the site for which neighbors data is returned. Default is None (All sites).
+
+        Returns:
+            dict:
+            Neighbors data as a dictionary with the following information
+
+            - "ref_rdf_data": radial distribution function (RDF) data
+            - "input_icoxx_list": complete ICOXXLIST.lobster data in the form of list of tuples
+            - "mapped_icoxx_data": ICOXX values mapped to RDF data
+            - "missing_interactions": list of interactions that are present in RDF data but not in ICOXX data
+            - "wasserstein_dist_to_rdf": wasserstein distance computed between ref_rdf_data and mapped_icoxx_data.
+        """
+        # Get all neighbors data in a single list using distance based algorithm
+        # This is used as a reference to map the icoxx data
+        rdf_nb_lst = self.structure.get_neighbor_list(r=self.max_length)
+
+        # Collect bond lengths, atom labels and bond strengths
+        if site_index is not None:
+            if site_index not in range(self.structure.num_sites):
+                raise ValueError(f"{site_index} is not a valid site index for the structure")
+            bond_labels = np.array(self.icoxxlist.icohpcollection._list_labels)
+            indices = np.where(
+                np.isin(
+                    bond_labels,
+                    list(
+                        self.icoxxlist.icohpcollection.get_icohp_dict_of_site(
+                            site_index, minbondlength=self.min_length, maxbondlength=self.max_length
+                        ).keys()
+                    ),
+                )
+            )[0]
+
+            bond_lengths = np.array(self.icoxxlist.icohpcollection._list_length)[indices].tolist()
+            atoms1 = np.array(self.icoxxlist.icohpcollection._list_atom1)[indices].tolist()
+            atoms2 = np.array(self.icoxxlist.icohpcollection._list_atom2)[indices].tolist()
+            icoxxs = np.array([sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp])[
+                indices
+            ].tolist()
+            trans = [list(item) for item in np.array(self.icoxxlist.icohpcollection._list_translation)[indices]]
+            pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
+
+            relevant_site_indices = [
+                ix
+                for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
+                if org == site_index or dest == site_index
+            ]
+            rdf_distances = [round(dist, 5) for ix, dist in enumerate(rdf_nb_lst[3]) if ix in relevant_site_indices]
+            rdf_trans = [[int(i) for i in img] for ix, img in enumerate(rdf_nb_lst[2]) if ix in relevant_site_indices]
+            rdf_pairs = [
+                [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
+                for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
+                if ix in relevant_site_indices
+            ]
+
+        else:  # complete structure
+            bond_lengths = self.icoxxlist.icohpcollection._list_length
+            atoms1 = self.icoxxlist.icohpcollection._list_atom1
+            atoms2 = self.icoxxlist.icohpcollection._list_atom2
+            icoxxs = [sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp]
+            trans = [list(item) for item in self.icoxxlist.icohpcollection._list_translation]
+            pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
+
+            rdf_distances = [round(dist, 5) for dist in rdf_nb_lst[3]]
+            rdf_trans = [[int(i) for i in img] for img in rdf_nb_lst[2]]
+            rdf_pairs = [
+                [self.structure[org].species_string + str(org + 1), self.structure[dest].species_string + str(dest + 1)]
+                for org, dest in zip(rdf_nb_lst[0], rdf_nb_lst[1])
+            ]
+
+        # Assimilate icoxx data in tuples
+        input_icoxx_list = list(zip(pairs, bond_lengths, trans))
+
+        # 0: pair, 1: bond length, 2: translation
+        ref_rdf_data = list(zip(rdf_pairs, rdf_distances, rdf_trans))
+
+        # Create a temp dict for faster lookup
+        icoxx_dict = {
+            (tuple(icoxx_p_d_t[0]), tuple(icoxx_p_d_t[2])): (icoxx_p_d_t[1], icoxxs[idx])
+            for idx, icoxx_p_d_t in enumerate(input_icoxx_list)
+        }
+        # Initialize an empty list to store the data that goes in BWDF computation
+        mapped_icoxx_data, missing_interactions = [], []
+
+        # Check if interaction exists in both rdf data / icoxx data, then add to complete data
+        for rdf_p_d_t in ref_rdf_data:
+            pair_translation_key = (tuple(rdf_p_d_t[0]), tuple(rdf_p_d_t[2]))
+            bond_length = rdf_p_d_t[1]
+            if pair_translation_key in icoxx_dict:
+                icoxx_bond_length, icoxx_value = icoxx_dict[pair_translation_key]
+                if round(np.absolute(bond_length - icoxx_bond_length), 5) <= 1e-5:
+                    complete_entry = (*rdf_p_d_t, icoxx_value)
+                    if complete_entry not in mapped_icoxx_data:
+                        mapped_icoxx_data.append(complete_entry)
+                else:
+                    missing_interactions.append(rdf_p_d_t)
+            else:
+                missing_interactions.append(rdf_p_d_t)
+
+        # Check if the missing interactions are reverse images in ref neighbours data which LOBSTER sometimes eliminates
+        for rdf_p_d_t in missing_interactions[:]:
+            reversed_translation = tuple(-1 * np.array(rdf_p_d_t[2]))
+            reversed_pair = tuple(reversed(rdf_p_d_t[0]))
+            reversed_key = (reversed_pair, reversed_translation)
+
+            if reversed_key in icoxx_dict:
+                icoxx_bond_length, icoxx_value = icoxx_dict[reversed_key]
+                if round(np.absolute(rdf_p_d_t[1] - icoxx_bond_length), 5) <= 1e-5:
+                    complete_entry = (*rdf_p_d_t, icoxx_value)
+                    if complete_entry not in mapped_icoxx_data:
+                        mapped_icoxx_data.append((*rdf_p_d_t, icoxx_value))
+                        missing_interactions.remove(rdf_p_d_t)
+
+        # Compute histogram of bond lengths from the reference rdf and
+        # icoxx data to get wasserstein distance
+        rdf_dist = [entry[1] for entry in ref_rdf_data]
+        icoxx_dist = [entry[1] for entry in mapped_icoxx_data]
+        rdf_hist, _ = np.histogram(
+            rdf_dist,
+            bins=np.arange(0, self.max_length + self.bin_width, self.bin_width),
+            density=False,
+        )
+        icoxx_hist, _ = np.histogram(
+            icoxx_dist,
+            bins=np.arange(0, self.max_length + self.bin_width, self.bin_width),
+            density=False,
+        )
+
+        return {
+            "ref_rdf_data": ref_rdf_data,
+            "input_icoxx_list": input_icoxx_list,
+            "mapped_icoxx_data": mapped_icoxx_data,
+            "missing_interactions": missing_interactions,
+            "wasserstein_dist_to_rdf": wasserstein_distance(rdf_hist, icoxx_hist),
+        }
+
+    def calc_bwdf(self) -> dict:
+        """
+        Compute BWDF from ICOXXLIST.lobster data.
+
+        Returns:
+            dict:
+            BWDF as a dictionary for each atom pair and entire structure
+
+            - "A-B": BWDF for atom pair A-B, e.g., "Na-Cl": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "summed": BWDF for entire structure, e.g., "summed": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "centers": bin centers for BWDF
+            - "edges": bin edges for BWDF
+            - "bin_width": bin width
+            - "wasserstein_dist_to_rdf": wasserstein distance between RDF and ICOXX data
+
+        """
+        # Get all neighbors data in a single list
+        icoxx_neighbors_data = self.get_icoxx_neighbors_data()
+
+        # Extract unique atomic species and create possible combinations
+        species_combinations = [sorted(item) for item in combinations_with_replacement(self.structure.symbol_set, 2)]
+
+        # Calculate number of bins
+        n_bins = int(np.ceil(((self.max_length + self.bin_width) - self.min_length) / self.bin_width))
+
+        # Get bin edges and centers
+        bin_edges = np.round(np.linspace(self.min_length, self.max_length, n_bins), 5)
+        bin_centers = bin_edges[:-1] + self.bin_width / 2
+
+        # Initialize dictionary for storing binned data by atom pair
+        bwdf_atom_pair = {
+            "-".join(atom_pair): {
+                "icoxx_binned": np.zeros(bin_centers.shape),
+                "icoxx_counts": np.zeros(bin_centers.shape),
+            }
+            for atom_pair in species_combinations
+        }
+
+        # Populate bins with corresponding icoxx values
+        for key in bwdf_atom_pair:
+            for interactions in icoxx_neighbors_data["mapped_icoxx_data"]:
+                sorted_entry = sorted([interactions[0][0].strip("0123456789"), interactions[0][1].strip("0123456789")])
+                if key == "-".join(sorted_entry):
+                    for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:], strict=False):
+                        if l1 <= interactions[1] < l2:
+                            # Add icoxx values to the corresponding bin
+                            bwdf_atom_pair[key]["icoxx_binned"][ii] += (
+                                interactions[3] if abs(interactions[3]) > self.interactions_tol else 0
+                            )
+                            bwdf_atom_pair[key]["icoxx_counts"][ii] += (
+                                1 if abs(interactions[3]) > self.interactions_tol else 0
+                            )
+
+        icoxx_binned_summed = np.sum(
+            [bwdf_atom_pair[atom_pair]["icoxx_binned"] for atom_pair in bwdf_atom_pair], axis=0
+        )
+        icoxx_counts_summed = np.sum(
+            [bwdf_atom_pair[atom_pair]["icoxx_counts"] for atom_pair in bwdf_atom_pair], axis=0
+        )
+
+        bwdf_atom_pair["summed"] = {"icoxx_binned": icoxx_binned_summed, "icoxx_counts": icoxx_counts_summed}
+        bwdf_atom_pair["centers"] = bin_centers
+        bwdf_atom_pair["edges"] = bin_edges
+        bwdf_atom_pair["bin_width"] = self.bin_width  # type: ignore[assignment]
+        bwdf_atom_pair["wasserstein_dist_to_rdf"] = icoxx_neighbors_data["wasserstein_dist_to_rdf"]
+
+        # Normalize BWDF data
+        return self._normalize_bwdf(bwdf=bwdf_atom_pair)
+
+    def calc_site_bwdf(self, site_index: int) -> dict:
+        """
+        Compute BWDF from ICOXXLIST.lobster data for a site.
+
+        Args:
+            site_index: index of the site for which BWDF needs to be computed
+
+        Returns:
+            dict:
+            BWDF as a dictionary for the site in the following format
+
+            - "X": BWDF for the site X, e.g., "0": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "centers": bin centers for BWDF
+            - "edges": bin edges for BWDF
+            - "bin_width": bin width
+            - "wasserstein_dist_to_rdf": wasserstein distance between RDF and ICOXX data
+
+        """
+        if site_index not in range(self.structure.num_sites):
+            raise ValueError(f"{site_index} is not a valid site index for the structure")
+
+        # Get all neighbors data in a single list
+        icoxx_neighbors_data = self.get_icoxx_neighbors_data(site_index=site_index)
+
+        # Calculate number of bins
+        n_bins = int(np.ceil(((self.max_length + self.bin_width) - self.min_length) / self.bin_width))
+
+        # Get bin edges and centers
+        bin_edges = np.round(np.linspace(self.min_length, self.max_length, n_bins), 5)
+        bin_centers = bin_edges[:-1] + self.bin_width / 2
+
+        # Initialize dictionary for storing binned data by atom pair
+        site_bwdf = {
+            f"{site_index}": {"icoxx_binned": np.zeros(bin_centers.shape), "icoxx_counts": np.zeros(bin_centers.shape)}
+        }
+
+        for interactions in icoxx_neighbors_data["mapped_icoxx_data"]:
+            for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
+                if l1 <= interactions[1] < l2:
+                    # Add icoxx values to the corresponding bin
+                    site_bwdf[f"{site_index}"]["icoxx_binned"][ii] += (
+                        interactions[3] if abs(interactions[3]) > self.interactions_tol else 0
+                    )
+                    site_bwdf[f"{site_index}"]["icoxx_counts"][ii] += (
+                        1 if abs(interactions[3]) > self.interactions_tol else 0
+                    )
+
+        site_bwdf["centers"] = bin_centers
+        site_bwdf["edges"] = bin_edges
+        site_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
+        site_bwdf["wasserstein_dist_to_rdf"] = icoxx_neighbors_data["wasserstein_dist_to_rdf"]  # type: ignore[assignment]
+
+        # Normalize BWDF data
+        return self._normalize_bwdf(bwdf=site_bwdf)
+
+    def calc_label_bwdf(self, bond_label: str) -> dict:
+        """
+        Compute BWDF from ICOXXLIST.lobster data for a bond label.
+
+        Args:
+            bond_label: bond label for which BWDF needs to be computed
+
+        Returns:
+            dict:
+            BWDF as a dictionary for the bond label in the following format
+
+            - "X": BWDF for the bond label, e.g., "20": {“icoxx_binned”: np.array, “icoxx_counts”: np.array}
+            - "centers": bin centers for BWDF
+            - "edges": bin edges for BWDF
+            - "bin_width": bin width
+            - "wasserstein_dist_to_rdf": wasserstein distance between RDF and ICOXX data
+        """
+        index = self.icoxxlist.icohpcollection._list_labels.index(bond_label)
+        bond_length = self.icoxxlist.icohpcollection._list_length[index]
+        atom1 = self.icoxxlist.icohpcollection._list_atom1[index]
+        atom2 = self.icoxxlist.icohpcollection._list_atom2[index]
+        icoxx = sum(self.icoxxlist.icohpcollection._list_icohp[index].values())
+        trans = self.icoxxlist.icohpcollection._list_translation[index]
+
+        # Complete data
+        complete_data = [(sorted([atom1, atom2]), bond_length, trans, icoxx)]
+
+        # Calculate number of bins
+        n_bins = int(np.ceil(((self.max_length + self.bin_width) - self.min_length) / self.bin_width))
+
+        # Get bin edges and centers
+        bin_edges = np.round(np.linspace(self.min_length, self.max_length, n_bins), 5)
+        bin_centers = bin_edges[:-1] + self.bin_width / 2
+
+        # Initialize dictionary for storing binned data by atom pair
+        label_bwdf = {
+            bond_label: {"icoxx_binned": np.zeros(bin_centers.shape), "icoxx_counts": np.zeros(bin_centers.shape)}
+        }
+
+        for interactions in complete_data:
+            for ii, l1, l2 in zip(range(len(bin_centers)), bin_edges[:-1], bin_edges[1:]):
+                if l1 <= interactions[1] < l2:
+                    # Add icoxx values to the corresponding bin
+                    label_bwdf[bond_label]["icoxx_binned"][ii] += (
+                        interactions[3] if abs(interactions[3]) > self.interactions_tol else 0
+                    )
+                    label_bwdf[bond_label]["icoxx_counts"][ii] += (
+                        1 if abs(interactions[3]) > self.interactions_tol else 0
+                    )
+        label_bwdf["centers"] = bin_centers
+        label_bwdf["edges"] = bin_edges
+        label_bwdf["bin_width"] = self.bin_width  # type: ignore[assignment]
+
+        # Normalize BWDF data
+        return self._normalize_bwdf(bwdf=label_bwdf)
+
+    @staticmethod
+    def _get_features_col_names(bwdf: dict) -> list[str]:
+        """
+        Get the names of the features that will be generated by the class.
+
+        Args:
+            bwdf: dictionary containing the BWDF data
+
+        Returns:
+            list of feature names
+        """
+        features = []
+        for edge_1, edge_2 in zip(bwdf["edges"][:-1], bwdf["edges"][1:]):
+            features.append(f"bwdf_{round(edge_1, 2)}-{round(edge_2, 2)}")
+
+        return features
+
+    def _normalize_bwdf(self, bwdf: dict) -> dict:
+        """
+        Normalize BWDF data based on the normalization strategy.
+
+        :param bwdf: BWDF data as a dictionary
+
+        Returns:
+            Normalized BWDF data as a dictionary
+        """
+        for bwdf_label, bwdf_value in bwdf.items():
+            if bwdf_label not in ("centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
+                if self.normalization == "area":
+                    total_area = np.sum(np.abs(bwdf_value["icoxx_binned"]) * self.bin_width)
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / total_area)
+                elif self.normalization == "formula_units":
+                    formula_units = self.structure.composition.get_reduced_formula_and_factor()[-1]
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(bwdf_value["icoxx_binned"] / formula_units)
+                elif self.normalization == "counts":
+                    bwdf[bwdf_label]["icoxx_binned"] = np.nan_to_num(
+                        bwdf_value["icoxx_binned"] / bwdf_value["icoxx_counts"]
+                    )
+
+        return bwdf
+
+    def get_binned_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with computed BWDF features as columns.
+
+        Args:
+            ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF as columns. Each column contains
+            sum of icoxx values corresponding to bins.
+        """
+        bwdf = self.calc_bwdf()
+        column_names = self._get_features_col_names(bwdf=bwdf)
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        for icoxx_weight, col in zip(bwdf["summed"]["icoxx_binned"], column_names):
+            df.loc[ids, col] = icoxx_weight
+
+        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
+
+        return df
+
+    def get_site_df(self, site_index: int, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with computed BWDF features for a site as columns.
+
+        Args:
+            site_index: index of the site in a structure for which BWDF needs to be computed
+            ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF as columns for a site. Each column contains
+            sum of icoxx values corresponding to bins.
+        """
+        site_bwdf = self.calc_site_bwdf(site_index=site_index)
+        column_names = [f"{feat_name}_site_{site_index}" for feat_name in self._get_features_col_names(bwdf=site_bwdf)]
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        for icoxx_weight, col in zip(site_bwdf[f"{site_index}"]["icoxx_binned"], column_names):
+            df.loc[ids, col] = icoxx_weight
+
+        df[f"wasserstein_dist_to_rdf_site_{site_index}"] = site_bwdf["wasserstein_dist_to_rdf"]
+
+        return df
+
+    def get_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with statical info from BWDF as columns.
+
+        Args:
+              ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical information as columns.
+            Columns include sum, mean, std, min, max, skew, kurtosis, weighted mean and weighted std.
+        """
+        bwdf = self.calc_bwdf()
+        bin_weights = np.abs(bwdf["summed"]["icoxx_binned"] / np.sum(bwdf["summed"]["icoxx_binned"]))
+        column_names = [
+            "bwdf_sum",
+            "bwdf_mean",
+            "bwdf_std",
+            "bwdf_min",
+            "bwdf_max",
+            "bwdf_skew",
+            "bwdf_kurtosis",
+            "bwdf_w_mean",
+            "bwdf_w_std",
+        ]
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        w_bwdf_mean = np.average(bwdf["summed"]["icoxx_binned"], weights=bin_weights)
+        w_bwdf_std = np.sqrt(np.average((bwdf["summed"]["icoxx_binned"] - w_bwdf_mean) ** 2, weights=bin_weights))
+
+        df.loc[ids, "bwdf_sum"] = np.sum(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_mean"] = np.mean(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_std"] = np.std(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_w_mean"] = w_bwdf_mean
+        df.loc[ids, "bwdf_w_std"] = w_bwdf_std
+        df.loc[ids, "bwdf_min"] = np.min(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_max"] = np.max(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_skew"] = skew(bwdf["summed"]["icoxx_binned"])
+        df.loc[ids, "bwdf_kurtosis"] = kurtosis(bwdf["summed"]["icoxx_binned"])
+        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
+
+        return df
+
+    def get_sorted_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with BWDF values sorted by distances, ascending.
+
+        Args:
+            ids: set index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with binned BWDF values sorted by distance.
+        """
+        if not ids:
+            ids = Path(self.path_to_icoxxlist).parent.name
+        icoxx = self.calc_bwdf()["summed"]["icoxx_binned"]
+        sorted_icoxx = icoxx[icoxx != 0.0]
+        column_names = [f"bwdf_at_dist{d}" for d in range(len(sorted_icoxx))]
+        return pd.DataFrame.from_dict({ids: dict(zip(column_names, sorted_icoxx))}).T
+
+    def get_sorted_dist_df(
+        self, ids: str | None = None, mode: Literal["positive", "negative"] = "negative"
+    ) -> pd.DataFrame:
+        """Return a pandas dataframe with distances sorted by BWDF values
+        (either only positive or negative),  sorted descending by absolute values.
+
+        Args:
+            ids: set index name in the pandas dataframe. Default is None
+            mode: must be in ("positive", "negative"), defines whether BWDF values above or
+                below zero are considered for distance featurization.
+
+        Returns:
+            A pandas dataframe object with binned distances sorted by BWDF values.
+        """
+        if mode not in ["positive", "negative"]:
+            raise ValueError("param mode must be in ('positive', 'negative')")
+        if not ids:
+            ids = Path(self.path_to_icoxxlist).parent.name
+        bwdf = self.calc_bwdf()
+        sorted_dist_ids = bwdf["summed"]["icoxx_binned"].argsort()
+
+        if mode == "negative":
+            sorted_dists = [bwdf["centers"][i] for i in sorted_dist_ids if bwdf["summed"]["icoxx_binned"][i] < 0]
+        else:
+            sorted_dists = [bwdf["centers"][i] for i in sorted_dist_ids[::-1] if bwdf["summed"]["icoxx_binned"][i] > 0]
+
+        column_names = [f"dist_at_{mode[:3]}_bwdf{d}" for d in range(len(sorted_dists))]
+        return pd.DataFrame.from_dict({ids: dict(zip(column_names, sorted_dists))}).T
