@@ -41,6 +41,7 @@ test_cases = [
     ["plot", "1", "--style", "dark_background"],
     ["plot", "1", "--sigma", "1.2"],
     ["plot", "1", "--fwhm", "1"],
+    ["plot-icohp-distance", "-cbonds"],
 ]
 
 error_test_cases = [
@@ -212,6 +213,21 @@ class TestCLI:
         args = ["ploticohpdistance", "--cobis"]
         test = get_parser().parse_args(args)
         run(test)
+
+        os.chdir(TestDir / "test_data/CdF_comp_range")
+        args = ["ploticohpdistance", "--cobis", "-cbonds", "-c", "red", "green", "blue", "yellow"]
+        test = get_parser().parse_args(args)
+        run(test)
+
+        expected_colors = [[[0.0, 0.0, 1.0, 0.4]], [[0.0, 0.5019607843137255, 0.0, 0.4]], [[1.0, 0.0, 0.0, 0.4]]]
+        handles, legends = plt.gca().get_legend_handles_labels()
+        marker_colors = []
+        for handle in handles:
+            colors = handle.get_facecolor().tolist()
+            if colors not in marker_colors:
+                marker_colors.append(colors)
+        np.testing.assert_array_almost_equal(sorted(marker_colors), expected_colors)
+        assert sorted(set(legends)) == ["Cd-Cd", "Cd-F", "F-F"]
 
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")

@@ -472,6 +472,65 @@ def get_parser() -> argparse.ArgumentParser:
         "If not set, plots consist of summed cohps.",
     )
 
+    # Specific to icohp distance plotter args
+    icohp_distance_plotter_args = argparse.ArgumentParser(add_help=False)
+    icohp_distance_plotter_group = icohp_distance_plotter_args.add_argument_group(
+        "Options specific to ICOHP distance plotter"
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-alpha",
+        type=float,
+        default=0.4,
+        dest="alpha",
+        help="Transparency of the markers in the plot.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-cbonds",
+        "--colorbonds",
+        "--color-bonds",
+        default=False,
+        dest="colorbonds",
+        action="store_true",
+        help="If set, will color ICOHPs based on atom types",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-c",
+        "--colors",
+        dest="colors",
+        nargs="+",
+        type=str,
+        default=None,
+        help="Custom list of colors for the plot. "
+        "Should be equal to the number of unique atom pairs in the structure.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-lprefix",
+        "--legendprefix",
+        "--legend-prefix",
+        type=str,
+        dest="legendprefix",
+        default="",
+        help="Prefix for the legend in the plot.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-msize",
+        "--markersize",
+        "--marker-size",
+        type=float,
+        default=50,
+        dest="markersize",
+        help="Size of the markers in the plot.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-mstyle",
+        "--markerstyle",
+        "--marker-style",
+        type=str,
+        default="o",
+        dest="markerstyle",
+        help="Marker style for the plot.",
+    )
+
     # Args specific to calc quality description dict and texts
     calc_quality_args = argparse.ArgumentParser(add_help=False)
     calc_quality_args_group = calc_quality_args.add_argument_group(
@@ -628,7 +687,7 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "plot-icohp-distance",
         aliases=["ploticohpdistance"],
-        parents=[icohplist_file, plotting_parent, analysis_switch],
+        parents=[icohplist_file, plotting_parent, analysis_switch, icohp_distance_plotter_args],
         help="Plot ICOHPs or ICOOPs or ICOBIs with respect to bond lengths",
     )
     # Mode for normal plotting (without automatic detection of relevant COHPs)
@@ -723,7 +782,6 @@ def _user_figsize(width, height, aspect=None):
     return {"figure.figsize": (width, width / aspect)}
 
 
-# TODO: add automatic functionality for COBIs, COOPs
 def run(args):
     """
     Run actions based on args.
@@ -1184,9 +1242,6 @@ def run(args):
                 "icobilist"
             )
             args.icohplist = filename
-            # filename = args.icohplist.parent / "ICOBILIST.lobster"
-            # if not filename.exists():
-            #     filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
             filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icooplist"]).get(
@@ -1204,9 +1259,19 @@ def run(args):
         icohpcollection = Icohplist(filename=args.icohplist, **options).icohpcollection
         icohp_plotter = IcohpDistancePlotter(**options)
 
-        icohp_plotter.add_icohps(icohpcollection=icohpcollection, label="")
+        icohp_plotter.add_icohps(icohpcollection=icohpcollection, label=args.legendprefix)
 
-        plt = icohp_plotter.get_plot(xlim=args.xlim, ylim=args.ylim)
+        get_plot_kwargs = {
+            "alpha": args.alpha,
+            "color_interactions": args.colorbonds,
+            "colors": args.colors,
+            "marker_size": args.markersize,
+            "marker_style": args.markerstyle,
+            "xlim": args.xlim,
+            "ylim": args.ylim,
+        }
+
+        plt = icohp_plotter.get_plot(**get_plot_kwargs)
 
         ax = plt.gca()
         ax.set_title(args.title)
