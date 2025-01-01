@@ -1208,6 +1208,7 @@ class IcohpDistancePlotter:
                 else:
                     y = data["icohps"]
                 for i, pair in enumerate(data["atom_types"]):
+                    legend_label = f"{pair}" if not label else f"{label}-({pair})"
                     ax.scatter(
                         x[i],
                         y[i],
@@ -1215,7 +1216,7 @@ class IcohpDistancePlotter:
                         s=marker_size,
                         alpha=alpha,
                         marker=marker_style,
-                        label=f"{label}-({pair})",
+                        label=legend_label,
                     )
 
             # Filter out duplicate labels and add only unique labels to the legend
