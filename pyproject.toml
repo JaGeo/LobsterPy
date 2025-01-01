@@ -143,6 +143,7 @@ isort.required-imports = ["from __future__ import annotations"]
 
 [tool.pytest.ini_options]
 addopts = "-x --durations=30 --quiet -rxXs --color=yes -p no:warnings"
+filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.coverage.report]
 exclude_lines = [
