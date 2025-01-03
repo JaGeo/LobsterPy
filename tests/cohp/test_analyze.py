@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import io
+import shutil
 import sys
+import warnings
 from pathlib import Path
 
 import pytest
@@ -145,14 +147,14 @@ class TestAnalyse:
         ) == pytest.approx(0.21)
         assert float(
             analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                "3px-3s"
+                "3p-3s"
             ]["ICOBI_sum"]
-        ) == pytest.approx(0.1069)
+        ) == pytest.approx(0.3206)
         assert float(
             analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                "3py-3s"
+                "3p-3s"
             ]["orb_contribution_perc_bonding"]
-        ) == pytest.approx(0.2)
+        ) == pytest.approx(0.6)
         assert analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
             "relevant_bonds"
         ] == [
@@ -166,11 +168,14 @@ class TestAnalyse:
         assert (
             float(
                 analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                    "3pz-3s"
+                    "3p-3s"
                 ]["bonding"]["perc"]
             )
             == 1.0
         )
+        assert analyse_nacl_comp_range_cobi_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
+            "3p-3s"
+        ]["relevant_sub_orbitals"] == ["3py-3s", "3pz-3s", "3px-3s"]
 
     def test_all_attributes_nacl_comp_range_orbital(self, analyse_nacl_comp_range_orb):
         assert analyse_nacl_comp_range_orb.condensed_bonding_analysis["number_of_considered_ions"] == pytest.approx(1)
@@ -191,20 +196,20 @@ class TestAnalyse:
             ]["integral"]
         ) == pytest.approx(0.23)
         assert float(
-            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3px-3s"][
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3p-3s"][
                 "ICOHP_sum"
             ]
-        ) == pytest.approx(-0.4828)
+        ) == pytest.approx(-1.4485)
         assert float(
-            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3py-3s"][
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3p-3s"][
                 "orb_contribution_perc_bonding"
             ]
-        ) == pytest.approx(0.13)
+        ) == pytest.approx(0.39)
         assert float(
-            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                "3px-2px"
-            ]["orb_contribution_perc_antibonding"]
-        ) == pytest.approx(0.11)
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"]["3p-2p"][
+                "orb_contribution_perc_antibonding"
+            ]
+        ) == pytest.approx(0.32)
         assert analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
             "relevant_bonds"
         ] == [
@@ -218,19 +223,32 @@ class TestAnalyse:
         assert (
             float(
                 analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                    "3pz-3s"
+                    "3p-3s"
                 ]["bonding"]["perc"]
             )
-            == 1.0
+            == 0.9932
         )
         assert (
             float(
                 analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
-                    "3pz-2pz"
+                    "3p-2p"
                 ]["antibonding"]["perc"]
             )
             == 0.5
         )
+        assert analyse_nacl_comp_range_orb.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["orbital_data"][
+            "3p-2p"
+        ]["relevant_sub_orbitals"] == [
+            "3py-2py",
+            "3pz-2py",
+            "3px-2py",
+            "3py-2pz",
+            "3pz-2pz",
+            "3px-2pz",
+            "3py-2px",
+            "3pz-2px",
+            "3px-2px",
+        ]
 
     def test_all_attributes_analyse_nacl_comp_range_cobi(self, analyse_nacl_comp_range_cobi):
         assert analyse_nacl_comp_range_cobi.condensed_bonding_analysis["formula"] == "NaCl"
@@ -736,25 +754,25 @@ class TestAnalyse:
             ]["integral"]
         ) == pytest.approx(0.02)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5px-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5p-4s"][
                 "ICOOP_sum"
             ]
-        ) == pytest.approx(0.0796)
+        ) == pytest.approx(0.2383)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5pz-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"]["5p-4s"][
                 "orb_contribution_perc_bonding"
             ]
-        ) == pytest.approx(0.22)
+        ) == pytest.approx(0.65)
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"][
             "relevant_bonds"
         ] == ["21", "22", "23", "24"]
         assert (
             float(
                 analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["orbital_data"][
-                    "5py-4s"
+                    "5p-4s"
                 ]["bonding"]["perc"]
             )
-            == 1.0
+            == 0.96
         )
         assert (
             float(
@@ -776,15 +794,15 @@ class TestAnalyse:
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["ion"] == "Sb"
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["charge"] == pytest.approx(-1.73)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5pz-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5p-4s"][
                 "orb_contribution_perc_bonding"
             ]
-        ) == pytest.approx(0.22)
+        ) == pytest.approx(0.66)
         assert float(
-            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5px-4s"][
+            analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5p-4s"][
                 "bonding"
             ]["integral"]
-        ) == pytest.approx(0.16)
+        ) == pytest.approx(0.49)
         assert float(
             analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["orbital_data"]["5s-4s"][
                 "bonding"
@@ -872,10 +890,15 @@ class TestAnalyse:
             abs=0.10,
         )
 
+    def test_analyse_aln_v51(self, analyse_aln_v51):
+        # Test if analyse module works with version 5.1 of lobster
+        assert analyse_aln_v51.condensed_bonding_analysis["formula"] == "AlN"
+        assert analyse_aln_v51.condensed_bonding_analysis["type_charges"] == "Mulliken"
+
     def test_exception(self):
         with pytest.raises(ValueError):  # noqa: PT011
             self.analyse_batao2n1 = Analysis(
-                path_to_poscar=TestDir / "test_data/BaTaO2N1/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/BaTaO2N1/CONTCAR.gz",
                 path_to_cohpcar=TestDir / "test_data/BaTaO2N1/COHPCAR.lobster.gz",
                 path_to_icohplist=TestDir / "test_data/BaTaO2N1/ICOHPLIST.lobster.gz",
                 path_to_charge=TestDir / "test_data/BaTaO2N1/CHARGE.lobster.gz",
@@ -884,7 +907,7 @@ class TestAnalyse:
             )
         with pytest.raises(ValueError) as err:  # noqa: PT011
             self.analyse_c = Analysis(
-                path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/C/CONTCAR.gz",
                 path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
                 path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
                 path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
@@ -896,12 +919,35 @@ class TestAnalyse:
             "It looks like no cations are detected."
         )
 
+    def test_warning(self, tmp_path):
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("once")
+            warnings.filterwarnings("ignore", module="pymatgen")
+            source_file = TestDir / "test_data/C/CONTCAR.gz"
+            temp_poscar_path = tmp_path / "POSCAR.gz"  # copy CONTCAR as POSCAR
+            shutil.copy(source_file, temp_poscar_path)
+            self.analyse_c = Analysis(
+                path_to_poscar=temp_poscar_path,
+                path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
+                path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
+                which_bonds="all",
+                cutoff_icohp=0.1,
+            )
+            assert (
+                str(w[0].message) == "Falling back to POSCAR, translations between individual "
+                "atoms may differ from LOBSTER outputs. Please note that "
+                "translations in the LOBSTER outputs are consistent with "
+                "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
+                "written by LOBSTER >=v5)."
+            )
+
 
 class TestAnalyseCalcQuality:
     def test_calc_quality_summary_with_objs(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
         bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
-        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz")
         vasprun_obj = Vasprun(
             filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
         )
@@ -927,7 +973,7 @@ class TestAnalyseCalcQuality:
         )
 
         calc_des_with_paths = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data" / "K3Sb" / "POSCAR.gz",
+            path_to_poscar=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz",
             potcar_symbols=["K_sv", "Sb"],
             path_to_charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
             path_to_doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
@@ -945,7 +991,7 @@ class TestAnalyseCalcQuality:
     def test_calc_quality_summary_exceptions(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
         bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
-        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "POSCAR.gz")
+        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz")
         vasprun_obj = Vasprun(
             filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
         )

@@ -9,76 +9,160 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: write
+  pull-requests: write
+
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.10"
           cache: pip
           cache-dependency-path: pyproject.toml
 
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@v3.0.1
 
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0} # enables conda/mamba env activation by reading bash profile
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-        split: [1, 2, 3, 4, 5, 6]
+        python-version: ["3.10", "3.11", "3.12"]
+        split: [1, 2, 3, 4, 5]
+
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Check out repo
+      uses: actions/checkout@v4
+
+    - name: Set up micromamba
+      uses: mamba-org/setup-micromamba@main
+
+    - name: Create mamba environment
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest pytest-mock pytest-split pytest-cov pytestify
-        python -m pip install types-setuptools
-        pip install .[featurizer]
+        micromamba create -n lobpy python=${{ matrix.python-version }} --yes
+
+    - name: Install uv
+      run: micromamba run -n lobpy pip install uv
+
+    - name: Install LobsterPy and dependencies
+      run: |
+        micromamba activate lobpy
+        uv pip install --upgrade pip
+        uv pip install --editable '.[tests,featurizer]'
+
     - name: Test with pytest and coverage
       # run this locally to update tests durations
       # pytest --cov=lobsterpy --cov-append --splits 1 --group 1 --durations-path ./tests/test_data/.pytest-split-durations --store-durations
+      env:
+        MPLBACKEND: Agg  # non-interactive backend for matplotlib
       run: |
-        pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 6 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
+        micromamba activate lobpy
+        pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 5 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
+
     - name: Upload coverage
-      uses: actions/upload-artifact@v3
+      if: matrix.python-version == '3.10'
+      uses: actions/upload-artifact@v4
       with:
-        name: coverage-${{ matrix.split }}
-        path: .coverage
+        name: coverage-${{ matrix.python-version }}-${{ matrix.split }}
+        include-hidden-files: true
+        overwrite: false
+        path: ./.coverage
+
+    - name: Upload test durations artifact
+      if: matrix.python-version == '3.10'
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-durations-${{ matrix.python-version }}-${{ matrix.split }}
+        include-hidden-files: true
+        path: ./tests/test_data/.pytest-split-durations
 
   coverage:
       needs: test
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
         - name: Set up Python 3.10
           uses: actions/setup-python@v4
           with:
             python-version: '3.10'
+
         - name: Install Coverage
           run: |
            python -m pip install coverage[toml]
+
         - name: Download coverage artifacts
           continue-on-error: true
-          uses: actions/download-artifact@v3
+          uses: actions/download-artifact@v4
+          with:
+           pattern: coverage-3.10-*
+
         - name: Run coverage
           continue-on-error: true
           run: |
             coverage combine coverage*/.coverage*
             coverage report --show-missing
+
         - name: Upload coverage reports to Codecov
           uses: codecov/codecov-action@v4.0.1
           with:
             token: ${{ secrets.CODECOV_TOKEN }}
             slug: JaGeo/LobsterPy
+
+  commit-durations:
+    if: github.repository_owner == 'JaGeo' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0} # enables conda/mamba env activation by reading bash profile
+
+    steps:
+
+    - name: Check out repo
+      uses: actions/checkout@v4
+    - name: Set up micromamba
+      uses: mamba-org/setup-micromamba@main
+    - name: Create mamba environment
+      run: |
+          micromamba create -n lobpy_test python=3.10 --yes
+    - name: Install uv
+      run: micromamba run -n lobpy_test pip install uv
+    - name: Install lobsterpy and dependencies
+      run: |
+          micromamba activate lobpy_test
+          uv pip install --upgrade pip
+          uv pip install -e .[tests,featurizer]
+
+    - name: Download test duration artifacts
+      uses: actions/download-artifact@v4
+      with:
+        pattern: test-durations-*
+
+    - name: Compute average of test durations
+      run: |
+        micromamba activate lobpy_test
+        python3 .github/scripts/average_test_durations.py
+        rm -rf test-durations-*
+
+    - name: Create Pull Request to push consolidated test durations
+      uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: update test durations
+        title: Update test durations file
+        body: Auto updated test durations file
+        branch: update-test-durations
+        delete-branch: true
+        base: main
 
   docs:
     runs-on: ubuntu-latest
@@ -88,7 +172,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.10"
           cache: pip
           cache-dependency-path: pyproject.toml
 

@@ -5,7 +5,8 @@ Creating input files
 --------------------
 
 .. note::
-   
+   Currently, the input set generated via pymatgen only supports PBE_54 standard POTCARS for identifying available basis sets for elements and adapting INCAR NBANDS.
+
    Important tags in INCAR of VASP to pay attention to before performing lobster runs are NBANDS, NSW, and ISYM. A VASP static run must be performed (no movements of atoms, NSW = 0) before running the LOBSTER program. LOBSTER can only deal with VASP WAVECAR that contains results for the entire mesh or only half of it.
    
    To do this, in the INCAR set, `ISYM = -1` (complete mesh/symmetry switched off) or `ISYM = 0` (half mesh/time-reversal). And to make sure WAVECAR is written, set `LWAVE = .TRUE`. For pCOHP analyses, one needs to have as many bands as there are orbitals on a local basis.
@@ -14,7 +15,7 @@ Creating input files
    
 
 With LobsterPy, these intricate details are handled with a single command. We need the standard VASP input files, i.e. 
-``INCAR, KPOINTS, POTCAR and POSCAR`` in the calculation directory. Once you have these files, one needs to run the following command:
+``INCAR, KPOINTS, POTCAR and CONTCAR`` in the calculation directory. Once you have these files, one needs to run the following command:
 
 ``lobsterpy create-inputs``
 
@@ -26,7 +27,7 @@ Simultaneously, ``lobsterin.lobsterpy`` files are created that are necessary for
 
 You can also change the names of output files and path where they are saved using following optional tags:
 
-``lobsterpy create-inputs --incar-out <path/to/incar>/INCAR --lobsterin-out <path/to/lobsterin>/lobsterin``
+``lobsterpy create-inputs --file-incar-out <path/to/incar>/INCAR --file-lobsterin <path/to/lobsterin>/lobsterin``
 
 
 For example if ``Cd`` element has two basis sets ``4d 5s`` ``4d 5s 5p``, thus following files are created:
@@ -43,7 +44,7 @@ The suffix “-0” & “-1” indicate input files corresponding to smaller and
 
 .. warning::
      
-         The ‘KPOINTS’ file is not adapted; the user must select the appropriate grid density before starting VASP computations. Usually, a factor of 50 x reciprocal lattice vectors is sufficient for reliable bonding analysis results.
+         The ‘KPOINTS’ file is not adapted; the user must select the appropriate grid density before starting VASP computations. Usually, a factor of 50 x crystallographic reciprocal lattice vectors (i.e., no factor of 2 * pi) is sufficient for reliable bonding analysis results.
 
 Running VASP and Lobster program
 --------------------------------
@@ -112,10 +113,7 @@ Lobster job submission script
 Analyze the lobster outputs with automation
 -------------------------------------------
 
-.. code:: python
-
-    import os
-    os.chdir('Basis_0/') # Navigate to directory containing the files of lobster runs
+Navigate to directory containing the files of lobster run and then one can use following commands:
 
 1. Automatic analysis and plotting of COHPs/ICOHPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,7 +122,7 @@ Analyze the lobster outputs with automation
 
 .. code:: bash
 
-   lobsterpy description --json description.json
+   lobsterpy description --file-json description.json
 
 .. code:: bash
    
@@ -181,15 +179,15 @@ Following is the json file produced.
   }
 
 
--  ``lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will automatically analyze your lobster calculation quality.
+-  ``lobsterpy description-quality --potcar-symbols "Na_pv Cl" --bvacomp --doscomp`` command will automatically analyze your lobster calculation quality.
    
 .. note::
-   The LOBSTER calculation directory need to have POTCAR, POSCAR, LOBSTER calculation input and output files to run the **lobsterpy calc-description** command successfully. 
+   The LOBSTER calculation directory need to have POTCAR, structure file (preferably CONTCAR), LOBSTER calculation input and output files to run the **lobsterpy description-quality** command successfully.
    If POTCAR is not available then you need to supply **--potcar-symbols** along with the command. Other optional files are vasprun.xml if **--doscomp** is switched on.
 
 .. code:: bash
 
-   lobsterpy calc-description --potcar-symbols "Na_pv Cl" --bvacomp --doscomp --calcqualityjson calc_quality_description.json
+   lobsterpy description-quality --potcar-symbols "Na_pv Cl" --bvacomp --doscomp --file-calc-quality-json calc_quality_description.json
 
 .. code:: bash
    
@@ -268,7 +266,7 @@ You can plot COHPs/COBIs/COOPs from the command line.
 
 .. code:: bash
 
-    lobsterpy plot-icohps-distances
+    lobsterpy plot-icohp-distance
 
 .. image:: tutorial_assets/ICOHPs_distance_example.png
 
@@ -289,10 +287,6 @@ either of these commands:
 
 .. code:: bash
 
-   lobsterpy calc-description -help
-
-.. code:: bash
-
    lobsterpy create-inputs --help
 
 .. code:: bash
@@ -301,11 +295,15 @@ either of these commands:
 
 .. code:: bash
 
+   lobsterpy description-quality --help
+
+.. code:: bash
+
    lobsterpy plot-dos --help
 
 .. code:: bash
 
-   lobsterpy plot-icohps-distances --help
+   lobsterpy plot-icohp-distance --help
 
 .. code:: bash
 

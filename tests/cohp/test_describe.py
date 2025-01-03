@@ -187,11 +187,6 @@ class TestDescribe:
             "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
             "44.26 percent antibonding interaction below EFermi) bonds.",
         ]
-        # assert describe_NaCl.text == [
-        #     "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-        #     "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, "
-        #     "3.448 percent antibonding interaction below EFermi) bonds.",
-        # ]
         assert describe_nacl.text == [
             "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
             "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,"
@@ -252,41 +247,39 @@ class TestDescribe:
             "Ti2 has an octahedral (CN=6) coordination environment. It has 6 Ti-O (mean ICOHP: -3.54 eV, "
             "1.092 percent antibonding interaction below EFermi) bonds.",
             "In the 6 Ti-O bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-            "from the Ti(3dz2)-O(2pz) orbital, contributing 14.0 percent, whereas the maximum "
-            "antibonding contribution is from the Ti(4s)-O(2s) orbital, contributing 20.0 percent.",
+            "from the Ti(3d)-O(2p) orbital, contributing 88.0 percent, whereas the maximum "
+            "antibonding contribution is from the Ti(3p)-O(2p) orbital, contributing 37.0 percent.",
         ]
         assert describe_c_orb.text == [
             "The compound C has 1 symmetry-independent atoms(s) with relevant bonds: C1.",
             "C1 has a tetrahedral (CN=4) coordination environment. "
             "It has 4 C-C (mean ICOHP: -9.59 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
             "In the 4 C-C bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-            "from the C(2s)-C(2s) orbital, contributing 10.0 percent, whereas no significant "
+            "from the C(2p)-C(2p) orbital, contributing 44.0 percent, whereas no significant "
             "antibonding contribution is found in this bond.",
         ]
         assert describe_nasbf6_orb.text == [
             "The compound NaSbF6 has 3 symmetry-independent atoms(s) with relevant bonds: Na1, Sb2, F3.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
-            "4.071 percent antibonding interaction below EFermi) bonds.",
-            "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-            "from the Na(3s)-F(2s) orbital, contributing 67.0 percent, whereas the maximum antibonding "
-            "contribution is from Na(2py)-F(2s), Na(2pz)-F(2s), and Na(2px)-F(2s) orbitals, "
-            "contributing 13.0, 13.0, and 13.0 percent, respectively.",
-            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
-            "0.0 percent antibonding interaction below EFermi) bonds.",
-            "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution "
-            "is from Sb(5py)-F(2s), Sb(5pz)-F(2s), and Sb(5px)-F(2s) orbitals, contributing 14.0, "
-            "14.0, and 14.0 percent, respectively, whereas no significant antibonding contribution is "
-            "found in this bond.",
-            "F3 has a linear (CN=2) coordination environment. It has 1 F-Na (mean ICOHP: -0.61 eV, "
-            "4.545 percent antibonding interaction below EFermi), and 1 F-Sb (mean ICOHP: -5.45 eV, "
-            "0.0 percent antibonding interaction below EFermi) bonds.",
-            "In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding contribution "
-            "is from the F(2s)-Na(3s) orbital, contributing 68.0 percent, whereas the maximum "
-            "antibonding contribution is from F(2s)-Na(2pz) and F(2pz)-Na(2pz) orbitals, "
-            "contributing 36.0 and 36.0 percent, respectively. In the 1 F-Sb bond, relative "
-            "to the summed ICOHPs, the maximum bonding contribution is from the "
-            "F(2s)-Sb(5pz) orbital, contributing 41.0 percent, whereas no significant "
-            "antibonding contribution is found in this bond.",
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 4.071 percent "
+            "antibonding interaction below EFermi) bonds.",
+            "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from "
+            "the Na(3s)-F(2s) orbital, "
+            "contributing 67.0 percent, whereas the maximum antibonding contribution is from the Na(2p)-F(2s) orbital, "
+            "contributing 38.0 percent.",
+            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, 0.0 percent "
+            "antibonding interaction below EFermi) bonds.",
+            "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from the "
+            "Sb(5p)-F(2s) orbital, contributing 42.0 percent, whereas "
+            "no significant antibonding contribution is found in this bond.",
+            "F3 has a linear (CN=2) coordination environment. It has 1 F-Na (mean ICOHP: -0.61 eV, 4.545 percent "
+            "antibonding interaction below EFermi), and 1 F-Sb (mean ICOHP: -5.45 eV, 0.0 percent antibonding "
+            "interaction below EFermi) bonds.",
+            "In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding contribution is from the "
+            "F(2s)-Na(3s) orbital, contributing 68.0 percent, whereas the maximum antibonding contribution is "
+            "from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals, contributing 36.0 and 36.0 percent, respectively. "
+            "In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution is from the "
+            "F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant antibonding contribution "
+            "is found in this bond.",
         ]
         assert describe_cdf_comp_range_coop.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
@@ -303,7 +296,7 @@ class TestDescribe:
 class TestCalcQualityDescribe:
     def test_calc_quality_description_text(self):
         calc_quality_K3Sb = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "test_data/K3Sb/lobsterout.gz",
             path_to_lobsterin=TestDir / "test_data/K3Sb/lobsterin.gz",
@@ -318,7 +311,7 @@ class TestCalcQualityDescribe:
         )
 
         calc_quality_CsH = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data/CsH/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/CsH/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/CsH/CHARGE.lobster.gz",
             path_to_lobsterout=TestDir / "test_data/CsH/lobsterout.gz",
             path_to_lobsterin=TestDir / "test_data/CsH/lobsterin.gz",
@@ -360,7 +353,7 @@ class TestCalcQualityDescribeWarnings:
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("once")
             calc_quality_warnings = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
                 path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "test_data/BaTe_low_quality/lobsterout.gz",
                 path_to_lobsterin=TestDir / "test_data/BaTe_low_quality/lobsterin.gz",
@@ -371,10 +364,27 @@ class TestCalcQualityDescribeWarnings:
                 dos_comparison=True,
                 bva_comp=False,
             )
-        assert "Consider using DOSCAR.LSO.lobster" in str(w[0].message)
-        assert "Minimum energy range requested" in str(w[1].message)
-        assert "Maximum energy range requested" in str(w[2].message)
-        assert "Input DOS files have very few points" in str(w[3].message)
+        messages = []
+        for warning in w:
+            messages.append(str(warning.message))
+        count0 = 0
+        count1 = 0
+        count2 = 0
+        count3 = 0
+        for msg in messages:
+            if "Consider using DOSCAR.LSO.lobster" in msg:
+                count0 += 1
+            if "Minimum energy range requested" in msg:
+                count1 += 1
+            if "Maximum energy range requested" in msg:
+                count2 += 1
+            if "Input DOS files have very few points" in msg:
+                count3 += 1
+
+        assert count0 == 1
+        assert count1 == 1
+        assert count2 == 1
+        assert count3 == 1
 
         calc_des = Description.get_calc_quality_description(calc_quality_warnings)
 
@@ -390,14 +400,14 @@ class TestCalcQualityDescribeWarnings:
         with warnings.catch_warnings(record=True) as w2:
             warnings.simplefilter("once")
             calc_quality_warnings2 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/C/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/C/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "test_data/C/lobsterout.gz",
                 path_to_lobsterin=TestDir / "test_data/C/lobsterin.gz",
                 potcar_symbols=["C"],
                 bva_comp=True,
             )
-        assert "Oxidation states from BVA analyzer cannot" in str(w2[0].message)
+        assert "Oxidation states from BVA analyzer cannot" in str(w2[-1].message)
 
         calc_des2 = Description.get_calc_quality_description(calc_quality_warnings2)
 
@@ -411,16 +421,20 @@ class TestCalcQualityDescribeWarnings:
 
         with warnings.catch_warnings(record=True) as w3:
             warnings.simplefilter("once")
+            warnings.filterwarnings("ignore", module="pymatgen")
             calc_quality_warnings3 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/BeTe/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/BeTe/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/BeTe/CHARGE.lobster.gz",
                 path_to_lobsterout=TestDir / "test_data/BeTe/lobsterout.gz",
                 path_to_lobsterin=TestDir / "test_data/BeTe/lobsterin.gz",
                 potcar_symbols=["Be_sv", "Te"],
                 bva_comp=True,
             )
-        assert "Consider rerunning the calc with the minimum basis" in str(w3[0].message)
-
+        assert (
+            str(w3[0].message) == "Consider rerunning the calc with the minimum basis as well. "
+            "Choosing is larger basis set is recommended if you see a significant "
+            "improvement of the charge spilling and material has non-zero band gap."
+        )
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
         assert calc_des3 == [

@@ -9,6 +9,7 @@ import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.style
 import numpy as np
@@ -50,14 +51,14 @@ error_test_cases = [
 
 
 class TestCLI:
-    @pytest.fixture()
-    def inject_mocks(self, mocker):  # noqa: PT004
+    @pytest.fixture
+    def inject_mocks(self, mocker):
         # Disable calls to show() so we can get the current figure using gcf()
         mocker.patch("matplotlib.pyplot.show")
         mocker.resetall()
 
-    @pytest.fixture()
-    def clean_plot(self):  # noqa: PT004
+    @pytest.fixture
+    def clean_plot(self):
         yield
         plt.close("all")
         matplotlib.style.use("default")
@@ -71,6 +72,9 @@ class TestCLI:
 
     @pytest.mark.parametrize("args", test_cases)
     def test_cli_results(self, args, capsys, inject_mocks, clean_plot):
+        # Use non-interactive Agg matplotlib backend to get consistent results across OS
+        mpl.use("Agg")
+
         test = get_parser().parse_args(args)
         run(test)
 
@@ -354,6 +358,8 @@ class TestCLI:
             "description-quality",
             "--potcar-symbols",
             "Na_pv Cl",
+            "--file-doscar",
+            "DOSCAR.LSO.lobster",
             "--bvacomp",
             "--doscomp",
             "--erange",
@@ -568,7 +574,7 @@ class TestCLI:
             run(test)
         assert (
             str(err1.value)
-            == "Files ['POSCAR', 'CHARGE.lobster', 'ICOHPLIST.lobster', 'COHPCAR.lobster'] not found in tests."
+            == "Files ['CONTCAR', 'CHARGE.lobster', 'ICOHPLIST.lobster', 'COHPCAR.lobster'] not found in tests."
         )
 
         with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
@@ -580,7 +586,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-        assert str(err2.value) == "Files ['POSCAR', 'lobsterin', 'lobsterout'] not found in tests."
+        assert str(err2.value) == "Files ['CONTCAR', 'lobsterin', 'lobsterout'] not found in tests."
         #
         # doscar comparison exceptions test
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
@@ -588,6 +594,8 @@ class TestCLI:
             args = [
                 "description-quality",
                 "--doscomp",
+                "-fdos",
+                "DOSCAR.LSO.lobster",
             ]
 
             test = get_parser().parse_args(args)
@@ -599,6 +607,8 @@ class TestCLI:
             os.chdir(TestDir / "test_data/CsH")
             args = [
                 "plot-dos",
+                "-fdos",
+                "DOSCAR.LSO.lobster",
             ]
 
             test = get_parser().parse_args(args)

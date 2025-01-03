@@ -1,7 +1,7 @@
 description-quality
 ===================
 
-Deliver a text description of the LOBSTER calc quality analysis. Mandatory required files: POSCAR, POTCAR or POTCAR symbols, lobsterout, lobsterin. Optional files (BVA comparison): CHARGE.lobster, (DOS comparison): DOSCAR.lobster/ DOSCAR.LSO.lobster, Vasprun.xml.
+Deliver a text description of the LOBSTER calc quality analysis. Mandatory required files: structure file (preferably CONTCAR), POTCAR or POTCAR symbols, lobsterout, lobsterin. Optional files (BVA comparison): CHARGE.lobster, (DOS comparison): DOSCAR.lobster/ DOSCAR.LSO.lobster, Vasprun.xml.
 
 .. argparse::
    :module: lobsterpy.cli

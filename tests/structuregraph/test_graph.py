@@ -11,7 +11,7 @@ TestDir = CurrentDir / "../"
 class TestGraph:
     def test_graph_nacl_all(self):
         graph_nacl_all = LobsterGraph(
-            path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
             path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
@@ -56,7 +56,7 @@ class TestGraph:
 
     def test_graph_nacl_cation_anion(self):
         graph_nacl_cation_anion = LobsterGraph(
-            path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
             path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
@@ -97,7 +97,7 @@ class TestGraph:
 
     def test_graph_nacl_without_add_data(self):
         graph_nacl_without_add_data = LobsterGraph(
-            path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
             path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
@@ -136,7 +136,7 @@ class TestGraph:
 
     def test_graph_nacl_close_fermi(self):
         graph_nacl_close_fermi = LobsterGraph(
-            path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
             path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
@@ -175,7 +175,7 @@ class TestGraph:
 
     def test_graph_cdf_all(self):
         graph_cdf_all = LobsterGraph(
-            path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/CdF_comp_range/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/CdF_comp_range/CHARGE.lobster.gz",
             path_to_cohpcar=TestDir / "test_data/CdF_comp_range/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "test_data/CdF_comp_range/ICOHPLIST.lobster.gz",
@@ -220,7 +220,7 @@ class TestGraph:
 
     def test_graph_cdf_close_fermi(self):
         graph_cdf_close_fermi = LobsterGraph(
-            path_to_poscar=TestDir / "test_data/CdF_comp_range/POSCAR.gz",
+            path_to_poscar=TestDir / "test_data/CdF_comp_range/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/CdF_comp_range/CHARGE.lobster.gz",
             path_to_cohpcar=TestDir / "test_data/CdF_comp_range/COHPCAR.lobster.gz",
             path_to_icohplist=TestDir / "test_data/CdF_comp_range/ICOHPLIST.lobster.gz",
@@ -258,7 +258,7 @@ class TestGraph:
     def test_graph_exceptions(self):
         with pytest.raises(ValueError) as err1:  # noqa: PT012, PT011
             _ = LobsterGraph(
-                path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
                 path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
                 path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",
@@ -277,7 +277,7 @@ class TestGraph:
 
         with pytest.raises(ValueError) as err2:  # noqa: PT012, PT011
             _ = LobsterGraph(
-                path_to_poscar=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+                path_to_poscar=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz",
                 path_to_cohpcar=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
                 path_to_icohplist=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz",

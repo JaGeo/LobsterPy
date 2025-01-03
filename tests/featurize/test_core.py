@@ -1,14 +1,16 @@
+import re
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
+from pymatgen.electronic_structure.dos import DosFingerprint
 
 from lobsterpy.featurize.core import (
-    DosFingerprint,
     FeaturizeCharges,
     FeaturizeCOXX,
     FeaturizeDoscar,
+    FeaturizeIcoxxlist,
     FeaturizeLobsterpy,
 )
 
@@ -241,11 +243,11 @@ class TestFeaturizeLobsterpy:
         # Here test now only orbital wise analysis column values
         assert df.loc["mp-463", "Icohp_bndg_orb_mean_avg"] == pytest.approx(-0.181250, abs=1e-05)
         assert df.loc["mp-463", "Icohp_bndg_orb_sum_max"] == pytest.approx(-1.430000, abs=1e-05)
-        assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.370000, abs=1e-05)
-        assert df.loc["mp-463", "Icohp_antibndg_orb_mean_std"] == pytest.approx(0.062050, abs=1e-05)
-        assert df.loc["mp-463", "Icohp_antibndg_orb_sum_avg"] == pytest.approx(-1.445000, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.230000, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.015000, abs=1e-05)
+        assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.380000, abs=1e-05)
+        assert df.loc["mp-463", "Icohp_antibndg_orb_mean_std"] == pytest.approx(0.059600, abs=1e-05)
+        assert df.loc["mp-463", "Icohp_antibndg_orb_sum_avg"] == pytest.approx(-0.714100, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.580000, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.169999, abs=1e-05)
 
     # Tests for new jsons from atomate2
     def test_featurize_mp66_json(self):
@@ -352,7 +354,7 @@ class TestFeaturizeCOXX:
         featurize_nacl_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
             path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
-            path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
             feature_type="overall",
             e_range=[-5, 0],
         )
@@ -431,7 +433,7 @@ class TestFeaturizeCOXX:
         featurize_cdf_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/CdF/COHPCAR.lobster.gz",
             path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
-            path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/CdF/CONTCAR.gz",
             feature_type="bonding",
             e_range=[-5, 0],
         )
@@ -511,7 +513,7 @@ class TestFeaturizeCOXX:
         featurize_k3sb_coxx = FeaturizeCOXX(
             path_to_coxxcar=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
             path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
-            path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/K3Sb/CONTCAR.gz",
             feature_type="antibonding",
             e_range=[None, None],
         )
@@ -584,7 +586,7 @@ class TestFeaturizeCOXX:
 class TestFeaturizeCharges:
     def test_featurize_c_charge(self):
         featurize_c_charge = FeaturizeCharges(
-            path_to_structure=TestDir / "test_data/C/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/C/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
             charge_type="mulliken",
         )
@@ -607,7 +609,7 @@ class TestFeaturizeCharges:
 
     def test_featurize_cdf_charge(self):
         featurize_cdf_charge = FeaturizeCharges(
-            path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/CdF/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
             charge_type="mulliken",
         )
@@ -630,7 +632,7 @@ class TestFeaturizeCharges:
 
     def test_featurize_k3sb_charge(self):
         featurize_k3sb_charge = FeaturizeCharges(
-            path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/K3Sb/CONTCAR.gz",
             path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
             charge_type="loewdin",
         )
@@ -669,7 +671,7 @@ class TestExceptions:
             _ = self.featurize_mp1249_json.get_df()
 
         assert (
-            str(err.value) == "Files ['POSCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster', 'CHARGE.lobster'] "
+            str(err.value) == "Files ['CONTCAR', 'COHPCAR.lobster', 'ICOHPLIST.lobster', 'CHARGE.lobster'] "
             "not found in ..."
         )
 
@@ -694,7 +696,7 @@ class TestExceptions:
     def test_featurize_charges(self):
         with pytest.raises(Exception) as err:  # noqa: PT012, PT011
             self.featurize_cdf_charge = FeaturizeCharges(
-                path_to_structure=TestDir / "test_data/CdF/POSCAR.gz",
+                path_to_structure=TestDir / "test_data/CdF/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
                 charge_type="Mull",
             )
@@ -708,7 +710,7 @@ class TestExceptions:
             self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
+                path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
                 feature_type="summed",
                 e_range=[None, None],
             )
@@ -724,7 +726,7 @@ class TestExceptions:
             self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
+                path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
                 feature_type="bonding",
                 e_range=[None, None],
             )
@@ -737,7 +739,7 @@ class TestExceptions:
             self.featurize_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
                 path_to_icoxxlist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
-                path_to_structure=TestDir / "test_data/NaSi/POSCAR.gz",
+                path_to_structure=TestDir / "test_data/NaSi/CONTCAR.gz",
                 feature_type="bonding",
                 e_range=[-5, 0],
                 are_cobis=True,
@@ -752,7 +754,7 @@ class TestExceptions:
             self.featurize_nacl_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
+                path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
                 feature_type="antibond",
                 e_range=[-5, 0],
             )
@@ -768,7 +770,7 @@ class TestExceptions:
             self.featurize_nacl_coxx = FeaturizeCOXX(
                 path_to_coxxcar=TestDir / "test_data/NaCl/COHPCAR.lobster.gz",
                 path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
-                path_to_structure=TestDir / "test_data/NaCl/POSCAR.gz",
+                path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
                 feature_type="antibonding",
                 e_range=[-5, 0],
             )
@@ -777,12 +779,41 @@ class TestExceptions:
 
         assert str(err.value) == "LOBSTER calculation is non-spin polarized. Please switch spin_type to `up`"
 
+    def test_featurize_icoxxlist(self):
+        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
+            self.featurize_cdf_icoxx = FeaturizeIcoxxlist(
+                path_to_structure=TestDir / "test_data/CdF/CONTCAR.gz",
+                path_to_icoxxlist=TestDir / "test_data/CdF/ICOHPLIST.lobster.gz",
+            )
+
+            _ = self.featurize_cdf_icoxx.get_site_df(site_index=5)
+
+        assert str(err.value) == "5 is not a valid site index for the structure"
+
+        with pytest.raises(Exception) as err2:  # noqa: PT012, PT011
+            self.featurize_k3Sb_icoxx = FeaturizeIcoxxlist(
+                path_to_structure=TestDir / "test_data/K3Sb/CONTCAR.gz",
+                path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz",
+            )
+
+            _ = self.featurize_k3Sb_icoxx.get_icoxx_neighbors_data(site_index=5)
+
+        assert str(err2.value) == "5 is not a valid site index for the structure"
+
+        with pytest.raises(ValueError, match=re.escape("param mode must be in ('positive', 'negative')")):  # noqa: PT012
+            featurize_nacl_icoxxlist = FeaturizeIcoxxlist(
+                path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+                path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
+                normalization="formula_units",
+            )
+            featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="invalid")
+
 
 class TestFeaturizeDoscar:
     def test_featurize_nacl_dos(self):
         feat_dos = FeaturizeDoscar(
             path_to_doscar=TestDir / "test_data/NaCl_comp_range/DOSCAR.LSO.lobster.gz",
-            path_to_structure=TestDir / "test_data/NaCl_comp_range/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
             e_range=[-10, 0],
         )
 
@@ -808,7 +839,7 @@ class TestFeaturizeDoscar:
     def test_featurize_k3sb_dos(self):
         feat_dos = FeaturizeDoscar(
             path_to_doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",
-            path_to_structure=TestDir / "test_data/K3Sb/POSCAR.gz",
+            path_to_structure=TestDir / "test_data/K3Sb/CONTCAR.gz",
             add_element_dos_moments=True,
             e_range=None,
         )
@@ -860,3 +891,161 @@ class TestFeaturizeDoscar:
         df_fp = feat_dos.get_fingerprint_df()
         assert isinstance(df_fp, pd.DataFrame)
         assert isinstance(df_fp.loc["K3Sb", "DOS_FP"], DosFingerprint)
+
+
+class TestFeaturizeIcoxxlist:
+    def test_featurize_nacl_icoxxlist_fu(self):
+        featurize_nacl_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
+            normalization="formula_units",
+        )
+        df = featurize_nacl_icoxxlist.get_binned_bwdf_df(ids="NaCl")
+        df_site = featurize_nacl_icoxxlist.get_site_df(ids="NaCl", site_index=0)
+        bwdf_dict_label = featurize_nacl_icoxxlist.calc_label_bwdf(bond_label="12")
+
+        df_sorted_bwdf = featurize_nacl_icoxxlist.get_sorted_bwdf_df(ids="NaCl")
+        df_sorted_dists_n = featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="negative")
+        df_sorted_dists_p = featurize_nacl_icoxxlist.get_sorted_dist_df(ids="NaCl", mode="positive")
+
+        # Test that the function returns a pandas DataFrame
+        for obj in df, df_site, df_sorted_bwdf, df_sorted_dists_n, df_sorted_dists_p:
+            assert isinstance(obj, pd.DataFrame)
+        assert isinstance(bwdf_dict_label, dict)
+
+        # check values
+        assert len(df.columns) == 301
+        assert np.sum(df.loc["NaCl"].to_numpy() * featurize_nacl_icoxxlist.bin_width) != 1
+        assert bwdf_dict_label["12"]["icoxx_binned"][201] == pytest.approx(-0.02923, abs=1e-05)
+
+        assert df.loc["NaCl", "bwdf_2.84-2.86"] == pytest.approx(-6.78468, abs=1e-05)
+        assert df.loc["NaCl", "bwdf_4.02-4.04"] == pytest.approx(-0.68946, abs=1e-05)
+        assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.05649, abs=1e-05)
+        assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998, abs=1e-05)
+        assert df.loc["NaCl", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
+
+        # check values for site
+        assert df_site.loc["NaCl", "bwdf_2.84-2.86_site_0"] == pytest.approx(-6.78468, abs=1e-05)
+        assert df_site.loc["NaCl", "bwdf_4.02-4.04_site_0"] == pytest.approx(-0.35076, abs=1e-05)
+        assert df_site.loc["NaCl", "bwdf_4.92-4.94_site_0"] == pytest.approx(-0.0565, abs=1e-05)
+        assert df_site.loc["NaCl", "wasserstein_dist_to_rdf_site_0"] == pytest.approx(0, abs=1e-05)
+
+        assert len(df_sorted_dists_n.columns) + len(df_sorted_dists_p.columns) == len(df_sorted_bwdf.columns)
+
+    def test_featurize_k3sb_icoxxlist_area(self):
+        featurize_k3sb_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOBILIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/K3Sb/CONTCAR.gz",
+            normalization="area",
+            bin_width=0.01,
+            are_cobis=True,
+        )
+        df = featurize_k3sb_icoxxlist.get_binned_bwdf_df(ids="K3Sb")
+        df_site = featurize_k3sb_icoxxlist.get_site_df(site_index=2)
+
+        # Test that the method returns a pandas DataFrame
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(df_site, pd.DataFrame)
+
+        # check values
+        assert len(df.columns) == 601
+        assert np.sum(df.loc["K3Sb"].to_numpy() * featurize_k3sb_icoxxlist.bin_width) == pytest.approx(1, abs=1e-05)
+        assert df.loc["K3Sb", "bwdf_3.7-3.71"] == pytest.approx(73.959533, abs=1e-05)
+        assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(26.040466, abs=1e-05)
+        assert df.loc["K3Sb", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
+
+        # check values for site
+        assert df_site.loc["K3Sb", "bwdf_3.7-3.71_site_2"] == pytest.approx(91.60298, abs=1e-05)
+        assert df_site.loc["K3Sb", "bwdf_4.28-4.29_site_2"] == pytest.approx(8.39702, abs=1e-05)
+        assert df_site.loc["K3Sb", "wasserstein_dist_to_rdf_site_2"] == pytest.approx(0, abs=1e-05)
+
+    def test_featurize_nasbf6_icoxxlist_none(self):
+        featurize_nasbf6_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/NaSbF6/CONTCAR.gz",
+            normalization="none",
+            bin_width=0.1,
+            are_cobis=False,
+        )
+        df = featurize_nasbf6_icoxxlist.get_binned_bwdf_df(ids="NaSbF6")
+        df_site = featurize_nasbf6_icoxxlist.get_site_df(ids="NaSbF6", site_index=6)
+
+        # Test that the method returns a pandas DataFrame
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(df_site, pd.DataFrame)
+
+        # check values (complete)
+        assert len(df.columns) == 61
+        assert df.loc["NaSbF6", "bwdf_1.9-2.0"] == pytest.approx(-65.42447, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_2.3-2.4"] == pytest.approx(-7.30296, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_2.7-2.8"] == pytest.approx(-1.46688, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_3.2-3.3"] == pytest.approx(-0.19631, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_3.8-3.9"] == pytest.approx(-0.61583, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_4.2-4.3"] == pytest.approx(-0.20135, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_4.6-4.7"] == pytest.approx(-0.30995, abs=1e-05)
+        assert df.loc["NaSbF6", "bwdf_4.8-4.9"] == pytest.approx(-0.11903, abs=1e-05)
+        assert df.loc["NaSbF6", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
+
+        # check values for site
+        assert df_site.loc["NaSbF6", "bwdf_1.9-2.0_site_6"] == pytest.approx(-10.90408, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_2.3-2.4_site_6"] == pytest.approx(-1.21716, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_2.7-2.8_site_6"] == pytest.approx(-0.48896, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_3.2-3.3_site_6"] == pytest.approx(-0.06544, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_3.8-3.9_site_6"] == pytest.approx(-0.20528, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_4.6-4.7_site_6"] == pytest.approx(-0.06028, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_4.8-4.9_site_6"] == pytest.approx(-0.01984, abs=1e-05)
+        assert df_site.loc["NaSbF6", "wasserstein_dist_to_rdf_site_6"] == pytest.approx(0, abs=1e-05)
+
+    def test_featurize_csh_icoxxlist_counts(self):
+        featurize_csh_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/CsH/ICOHPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/CsH/CONTCAR.gz",
+            normalization="counts",
+            bin_width=0.1,
+            are_cobis=False,
+        )
+        df = featurize_csh_icoxxlist.get_binned_bwdf_df()
+        df_stats = featurize_csh_icoxxlist.get_stats_df()
+
+        # Test that the method returns a pandas DataFrame
+        assert isinstance(df, pd.DataFrame)
+        assert isinstance(df_stats, pd.DataFrame)
+
+        # check values (complete)
+        assert len(df.columns) == 61
+        assert df.loc["CsH", "bwdf_3.3-3.4"] == pytest.approx(-0.080194, abs=1e-05)
+        assert df.loc["CsH", "bwdf_3.8-3.9"] == pytest.approx(-0.61476, abs=1e-05)
+        assert df.loc["CsH", "bwdf_5.4-5.5"] == pytest.approx(-0.0663, abs=1e-05)
+
+        # check values (stats)
+        assert df_stats.loc["CsH", "bwdf_sum"] == pytest.approx(-0.761254, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_mean"] == pytest.approx(-0.012688, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_std"] == pytest.approx(0.079488, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_min"] == pytest.approx(-0.61476, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_max"] == pytest.approx(0.0, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_skew"] == pytest.approx(-7.254058, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_kurtosis"] == pytest.approx(51.871112, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_w_mean"] == pytest.approx(-0.510679, abs=1e-05)
+        assert df_stats.loc["CsH", "bwdf_w_std"] == pytest.approx(0.213234, abs=1e-05)
+        assert df_stats.loc["CsH", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
+
+    def test_featurize_mp463_icoxxlist_sorting(self):  # Added to have both pos. and neg. BWDF values
+        featurize_mp463_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-463/ICOOPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/Featurizer_test_data/Lobster_calcs/mp-463/CONTCAR.gz",
+            normalization="formula_units",
+            bin_width=0.1,
+            are_coops=True,
+        )
+        df_sorted_bwdf = featurize_mp463_icoxxlist.get_sorted_bwdf_df(ids="mp-463")
+        df_sorted_dists_n = featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="negative")
+        df_sorted_dists_p = featurize_mp463_icoxxlist.get_sorted_dist_df(ids="mp-463", mode="positive")
+
+        # Test that the function returns a pandas DataFrame
+        for obj in df_sorted_bwdf, df_sorted_dists_n, df_sorted_dists_p:
+            assert isinstance(obj, pd.DataFrame)
+
+        assert len(df_sorted_dists_n.columns) + len(df_sorted_dists_p.columns) == len(df_sorted_bwdf.columns)
+        assert df_sorted_bwdf.loc["mp-463", "bwdf_at_dist0"] == pytest.approx(0.2748, abs=1e-04)
+        assert df_sorted_dists_n.loc["mp-463", "dist_at_neg_bwdf1"] == pytest.approx(4.65, abs=1e-02)
+        assert df_sorted_dists_p.loc["mp-463", "dist_at_pos_bwdf1"] == pytest.approx(2.75, abs=1e-02)
