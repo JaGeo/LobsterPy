@@ -1121,7 +1121,6 @@ class IcohpDistancePlotter:
 
         """
         # Keep only the BWDF data necessary for plotting
-
         excluded_keys = {"centers", "edges", "bin_width", "wasserstein_dist_to_rdf"}
 
         for pair, value in raw_bwdf.items():
