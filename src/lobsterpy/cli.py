@@ -18,6 +18,7 @@ from pymatgen.io.lobster import Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from lobsterpy.featurize.core import FeaturizeIcoxxlist
 from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
     IcohpDistancePlotter,
@@ -472,7 +473,7 @@ def get_parser() -> argparse.ArgumentParser:
         "If not set, plots consist of summed cohps.",
     )
 
-    # Specific to icohp distance plotter args
+    # Args specific to icohp distance plotter args
     icohp_distance_plotter_args = argparse.ArgumentParser(add_help=False)
     icohp_distance_plotter_group = icohp_distance_plotter_args.add_argument_group(
         "Options specific to ICOHP distance plotter"
@@ -529,6 +530,69 @@ def get_parser() -> argparse.ArgumentParser:
         default="o",
         dest="markerstyle",
         help="Marker style for the plot.",
+    )
+
+    # Args specific to plotting BWDFs
+    bwdf_plotting_args = argparse.ArgumentParser(add_help=False)
+    bwdf_plotting_group = bwdf_plotting_args.add_argument_group("Options specific to plotting BWDFs")
+    bwdf_plotting_group.add_argument(
+        "-atompairs",
+        "--atom-pairs",
+        dest="atompairs",
+        action="store_true",
+        default=False,
+        help="If True, will plot the BWDFs for all unique atom pairs. Default: False.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-binwidth",
+        "--bin-width",
+        type=float,
+        dest="binwidth",
+        default=0.02,
+        help="Bin width used for computing the BWDFs. Default: 0.1.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-interacttol",
+        "--interactions-tolerance",
+        type=float,
+        dest="interacttol",
+        default=1e-3,
+        help="Numerical tolerance considered for interactions to be insignificant. Default: 1e-3.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-maxlen",
+        "--maxlength",
+        "--max-length",
+        type=float,
+        dest="maxlen",
+        default=5,
+        help="Maximum bond length for the BWDFs in Angstroms. Default: 5.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-minlen",
+        "--minlength",
+        "--min-length",
+        type=float,
+        dest="minlen",
+        default=0,
+        help="Minimum bond length for the BWDFs in Angstroms. Default: 0.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-norm",
+        "--normalization",
+        type=str,
+        default="formula_units",
+        dest="norm",
+        help="Normalization of the BWDFs. Options: 'formula_units', 'area', 'counts' and 'none'. "
+        "Default: 'formula_units'.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-siteindex",
+        "--site-index",
+        type=int,
+        default=None,
+        dest="siteindex",
+        help="Site index for which the BWDFs are to be plotted. Default: None. If None, all sites are considered.",
     )
 
     # Args specific to calc quality description dict and texts
@@ -671,6 +735,18 @@ def get_parser() -> argparse.ArgumentParser:
             analysis_switch,
         ],
         help=("Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."),
+    )
+    subparsers.add_parser(
+        "plot-bwdf",
+        aliases=["plotbwdf"],
+        parents=[
+            icohplist_file,
+            structure_file,
+            bwdf_plotting_args,
+            plotting_parent,
+            analysis_switch,
+        ],
+        help="Plot bond-weighted distribution functions (BWDFs) from ICOXXLIST.lobster.",
     )
     subparsers.add_parser(
         "plot-dos",
@@ -865,6 +941,7 @@ def run(args):
         "plot",
         "plot-automatic",
         "plot-automatic-ia",
+        "plot-bwdf",
         "plot-dos",
         "plotdos",
         "plot-icohp-distance",
@@ -910,6 +987,67 @@ def run(args):
             label_resolved=args.labelresolved,
             orbital_resolved=args.orbitalresolved,
         )
+
+    if args.action == "plot-bwdf":
+        if args.cobis:
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icobilist"]).get(
+                "icobilist"
+            )
+            options = {"are_cobis": True, "are_coops": False}
+        elif args.coops:
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icooplist"]).get(
+                "icooplist"
+            )
+            options = {"are_cobis": False, "are_coops": True}
+        else:
+            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icohplist"]).get(
+                "icohplist"
+            )
+            options = {"are_cobis": False, "are_coops": False}
+
+        structure_filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure"]).get(
+            "structure"
+        )
+
+        feat_icoxx = FeaturizeIcoxxlist(
+            path_to_icoxxlist=filename,
+            path_to_structure=structure_filename,
+            interactions_tol=args.interacttol,
+            normalization=args.norm,
+            bin_width=args.binwidth,
+            min_length=args.minlen,
+            max_length=args.maxlen,
+            **options,
+        )
+
+        bwdf = feat_icoxx.calc_site_bwdf(site_index=args.siteindex) if args.siteindex else feat_icoxx.calc_bwdf()
+
+        formatted_bwdf = IcohpDistancePlotter.bwdf_data_to_plot(bwdf)
+        if args.siteindex:
+            site = feat_icoxx.structure.sites[args.siteindex]
+            label = site.species_string
+        else:
+            label = feat_icoxx.structure.composition.get_reduced_formula_and_factor()[0]
+
+        icohp_dist_plotter = IcohpDistancePlotter(are_coops=args.coops, are_cobis=args.cobis)
+
+        for pair, bwdf_data in formatted_bwdf.items():
+            bwdf_dict = {pair: bwdf_data}
+            if args.atompairs and pair != "summed":
+                icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
+                plt = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+                if not args.hideplot:
+                    plt.show()
+            elif not args.atompairs and pair == "summed":  # for only summed bwdf
+                icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
+                plt = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+                if not args.hideplot:
+                    plt.show()
+            elif not args.atompairs and pair == str(args.siteindex):  # for site specific bwdf
+                icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
+                plt = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+                if not args.hideplot:
+                    plt.show()
 
     if args.action == "plot":
         if args.cobis:

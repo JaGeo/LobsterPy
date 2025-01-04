@@ -1110,6 +1110,36 @@ class IcohpDistancePlotter:
         self.are_coops = are_coops
         self.are_cobis = are_cobis
         self._icohps = {}  # type: ignore
+        self._bwdfs = {}  # type: ignore
+
+    @staticmethod
+    def bwdf_data_to_plot(raw_bwdf: dict):
+        """
+        Restructure bond weighted distribution function (BWDF) data for plotting.
+
+        :param raw_bwdf: dict containing BWDF data as obtained from FeaturizeIcoxxlist.
+
+        """
+        # Keep only the BWDF data necessary for plotting
+        for pair in raw_bwdf:  # noqa: PLC0206
+            if pair not in ("centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
+                raw_bwdf[pair].update({"centers": raw_bwdf["centers"]})
+                del raw_bwdf[pair]["icoxx_counts"]
+        for key in ("centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
+            del raw_bwdf[key]
+
+        return raw_bwdf
+
+    def add_bwdf(self, label: str, bwdf: dict):
+        """
+        Add bond weighted distribution function (BWDF) for plotting.
+
+        :param label: Label for the BWDF. Must be unique.
+        :param bwdf: dict containing BWDF data formatted with
+            IcohpDistancePlotter.bwdf_data_to_plot.
+
+        """
+        self._bwdfs[label] = bwdf
 
     def add_icohps(self, label: str, icohpcollection: IcohpCollection):
         """
@@ -1233,5 +1263,71 @@ class IcohpDistancePlotter:
                     y = data["icohps"]
 
                 ax.scatter(x, y, s=marker_size, marker=marker_style, label=label)
+
+        return plt
+
+    def get_bwdf_plot(
+        self,
+        ax: mpl.axes.Axes | None = None,
+        colors: list[str] | None = None,
+        plot_negative: bool = True,
+        sigma: float | None = None,
+        xlim: tuple[float, float] | None = None,
+        ylim: tuple[float, float] | None = None,
+    ):
+        """
+        Get a matplotlib plot showing the bond weighted distribution function (BWDF).
+
+        :param ax: Existing Matplotlib Axes object to plot to.
+        :param colors: list of hex color codes to be used in plot
+        :param plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
+        :param sigma: Standard deviation of Gaussian broadening applied to
+            distribution data. If ,None no broadening will be
+            added.
+        :param xlim: Specifies the x-axis limits. Defaults to None for
+            automatic determination.
+        :param ylim: Specifies the y-axis limits. Defaults to None for
+            automatic determination.
+
+        Returns:
+            A matplotlib object.
+        """
+        if self.are_coops and not self.are_cobis:
+            cohp_label = "ICOOP"
+        elif self.are_cobis and not self.are_coops:
+            cohp_label = "ICOBI"
+        elif self.are_cobis and self.are_coops:
+            raise ValueError("Plot data should not contain ICOBI and ICOOP data at same time")
+        else:
+            cohp_label = "ICOHP (eV)"
+
+        if ax is None:
+            _, ax = plt.subplots()
+
+        if xlim:
+            ax.set_xlim(xlim)
+        if ylim:
+            ax.set_ylim(ylim)
+
+        palette = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
+        pal_iter = cycle(palette)
+
+        for label, bwdf in self._bwdfs.items():
+            for pair in bwdf:
+                legend_label = f"{pair}" if not label else f"{label}: {pair}"
+                if plot_negative and cohp_label == "ICOHP (eV)":
+                    icoxx_weights = PlainCohpPlotter._broaden(
+                        bwdf[pair]["centers"], -1 * bwdf[pair]["icoxx_binned"], sigma=sigma
+                    )
+                    ax.plot(bwdf[pair]["centers"], icoxx_weights, label=legend_label, c=next(pal_iter))
+                else:
+                    icoxx_weights = PlainCohpPlotter._broaden(
+                        bwdf[pair]["centers"], bwdf[pair]["icoxx_binned"], sigma=sigma
+                    )
+                    ax.plot(bwdf[pair]["centers"], icoxx_weights, label=legend_label, c=next(pal_iter))
+
+            ax.set_ylabel(f"BWDF-{cohp_label}")
+            ax.set_xlabel("Bond lengths (\u00c5)")
+            ax.legend()
 
         return plt
