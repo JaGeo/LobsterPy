@@ -1121,12 +1121,16 @@ class IcohpDistancePlotter:
 
         """
         # Keep only the BWDF data necessary for plotting
-        for pair in raw_bwdf:  # noqa: PLC0206
-            if pair not in ("centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
-                raw_bwdf[pair].update({"centers": raw_bwdf["centers"]})
-                del raw_bwdf[pair]["icoxx_counts"]
-        for key in ("centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
-            del raw_bwdf[key]
+
+        excluded_keys = {"centers", "edges", "bin_width", "wasserstein_dist_to_rdf"}
+
+        for pair, value in raw_bwdf.items():
+            if pair not in excluded_keys:
+                value.update({"centers": raw_bwdf.get("centers")})
+                value.pop("icoxx_counts")
+
+        for key in excluded_keys:
+            raw_bwdf.pop(key)
 
         return raw_bwdf
 
