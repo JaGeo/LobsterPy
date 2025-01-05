@@ -1051,14 +1051,19 @@ def run(args):
             plot = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
             title = f"{args.title} : {pair}" if args.title else ""
             plot.title(title)
+
+            if args.save_plot:
+                filename = Path(args.save_plot)
+                plot_filename = filename.parent / f"{pair.replace('-', '_')}_{filename.stem}{filename.suffix}"
+
             if not args.hideplot and not args.save_plot:
                 plot.show()
             elif args.save_plot and not args.hideplot:
                 fig = plot.gcf()
-                fig.savefig(f"{pair.replace('-', '_')}_{args.save_plot}")
+                fig.savefig(plot_filename)
                 plot.show()
             if args.save_plot and args.hideplot:
-                plot.savefig(f"{pair.replace('-', '_')}_{args.save_plot}")
+                plot.savefig(plot_filename)
 
     if args.action == "plot":
         if args.cobis:
