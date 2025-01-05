@@ -15,6 +15,8 @@ import matplotlib.style
 import numpy as np
 import pytest
 from matplotlib.figure import Figure
+from monty.serialization import loadfn
+from pymatgen.electronic_structure.cohp import Cohp
 
 from lobsterpy.cli import get_parser, run
 
@@ -186,7 +188,7 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-    def test_cli_interactive_plotter_coops(self):
+    def test_cli_interactive_plotter_coops(self, tmp_path):
         os.chdir(TestDir / "test_data/CdF_comp_range")
         # tests skip showing plots generated using automatic interactive plotter
         args = [
@@ -198,6 +200,75 @@ class TestCLI:
         ]
         test = get_parser().parse_args(args)
         run(test)
+
+    def test_cli_save_plot_data(self, tmp_path, inject_mocks, clean_plot):
+        os.chdir(TestDir / "test_data/NaCl")
+
+        # Interactive plotter
+        plot_data_path = tmp_path / "plotdata.json"
+        args = [
+            "auto-plot-ia",
+            "--orbitalresolved",
+            "--labelresolved",
+            "--hideplot",
+            "--allbonds",
+            "-spj",
+            str(plot_data_path),
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_data_path)
+        plot_data = loadfn(plot_data_path)
+        expected_labels = [
+            "Na1: 6 x Cl-Na",
+            "21:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "23:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "24:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "27:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "28:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "30:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "21:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "23:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "24:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "27:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "28:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "30:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "21:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "23:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "24:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "27:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "28:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "30:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "Cl2: 6 x Cl-Na",
+        ]
+        # test if saved json file contains valid Cohp objects
+        for label, data in plot_data.items():
+            assert isinstance(data, Cohp)
+            assert label in expected_labels
+
+        staitc_plot_data_path = tmp_path / "plotdata_static.json"
+        args = [
+            "auto-plot",
+            "--orbitalresolved",
+            "--allbonds",
+            "-spj",
+            str(staitc_plot_data_path),
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(staitc_plot_data_path)
+        plot_data = loadfn(staitc_plot_data_path)
+        # test if saved json file contains valid Cohp objects
+        expected_labels = [
+            "Na1: 6 x Cl-Na",
+            "6x Cl (3p)-Na (3s) (2.85 Å)",
+            "6x Cl (3s)-Na (3s) (2.85 Å)",
+            "6x Cl (3p)-Na (2p) (2.85 Å)",
+            "Cl2: 6 x Cl-Na",
+        ]
+        for label, data in plot_data.items():
+            assert isinstance(data, Cohp)
+            assert label in expected_labels
 
     def test_icoxxlist_plots(self, tmp_path, inject_mocks, clean_plot):
         os.chdir(TestDir / "test_data/NaCl")
@@ -261,7 +332,7 @@ class TestCLI:
         self.assert_is_finite_file(tmp_path / "2_bwdf.eps")
 
         # check for binwidth arg
-        args = ["plotbwdf", "-binwidth", "0.02"]
+        args = ["plotbwdf", "-binwidth", "0.02", "-minlen", "0", "-maxlen", "5"]
         test = get_parser().parse_args(args)
         run(test)
         ax = plt.gca()
@@ -274,17 +345,29 @@ class TestCLI:
 
         # check if icobis are read correctly
         os.chdir(TestDir / "test_data/K3Sb")
-        args = ["plotbwdf", "--cobis"]
+        args = ["plotbwdf", "--cobis", "-minlen", "2", "-maxlen", "6"]
         test = get_parser().parse_args(args)
         run(test)
         ax = plt.gca()
         lines = ax.get_lines()
         line = lines[0]
         y_data = line.get_ydata()
+        x_data = line.get_xdata()
+        assert pytest.approx(max(x_data)) == 5.99
+        assert pytest.approx(min(x_data)) == 2.01
         assert np.all(y_data >= 0)
 
         # icoops
-        args = ["plotbwdf", "--coops"]
+        args = [
+            "plotbwdf",
+            "--coops",
+            "-x",
+            "3",
+            "5",
+            "-y",
+            "-0.4",
+            "0.1",
+        ]
         test = get_parser().parse_args(args)
         run(test)
         ax = plt.gca()
@@ -293,6 +376,9 @@ class TestCLI:
         y_data = line.get_ydata()
         assert np.any(y_data >= 0)
         assert np.any(y_data <= 0)
+        # test for x-y axis limits on generated plots
+        assert ax.get_xlim() == (3, 5)
+        assert ax.get_ylim() == (-0.4, 0.1)
 
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
