@@ -942,6 +942,7 @@ def run(args):
         "plot-automatic",
         "plot-automatic-ia",
         "plot-bwdf",
+        "plotbwdf",
         "plot-dos",
         "plotdos",
         "plot-icohp-distance",
@@ -988,7 +989,7 @@ def run(args):
             orbital_resolved=args.orbitalresolved,
         )
 
-    if args.action == "plot-bwdf":
+    if args.action in ["plot-bwdf", "plotbwdf"]:
         if args.cobis:
             filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icobilist"]).get(
                 "icobilist"
@@ -1023,6 +1024,8 @@ def run(args):
         bwdf = feat_icoxx.calc_site_bwdf(site_index=args.siteindex) if args.siteindex else feat_icoxx.calc_bwdf()
 
         formatted_bwdf = IcohpDistancePlotter.bwdf_data_to_plot(bwdf)
+
+        # Set label for plot (legend)
         if args.siteindex:
             site = feat_icoxx.structure.sites[args.siteindex]
             label = site.species_string
@@ -1031,23 +1034,31 @@ def run(args):
 
         icohp_dist_plotter = IcohpDistancePlotter(are_coops=args.coops, are_cobis=args.cobis)
 
+        # Assimilate data for plotting
+        plot_data_dicts = {}
         for pair, bwdf_data in formatted_bwdf.items():
-            bwdf_dict = {pair: bwdf_data}
             if args.atompairs and pair != "summed":
-                icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
-                plt = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
-                if not args.hideplot:
-                    plt.show()
+                plot_data_dicts.update({pair: bwdf_data})
             elif not args.atompairs and pair == "summed":  # for only summed bwdf
-                icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
-                plt = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
-                if not args.hideplot:
-                    plt.show()
+                plot_data_dicts.update({pair: bwdf_data})
             elif not args.atompairs and pair == str(args.siteindex):  # for site specific bwdf
-                icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
-                plt = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
-                if not args.hideplot:
-                    plt.show()
+                plot_data_dicts.update({pair: bwdf_data})
+
+        # Iterate over all pairs and plot
+        for pair, bwdf_data in plot_data_dicts.items():
+            bwdf_dict = {pair: bwdf_data}
+            icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
+            plot = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+            title = f"{args.title} : {pair}" if args.title else ""
+            plot.title(title)
+            if not args.hideplot and not args.save_plot:
+                plot.show()
+            elif args.save_plot and not args.hideplot:
+                fig = plot.gcf()
+                fig.savefig(f"{pair.replace('-', '_')}_{args.save_plot}")
+                plot.show()
+            if args.save_plot and args.hideplot:
+                plot.savefig(f"{pair.replace('-', '_')}_{args.save_plot}")
 
     if args.action == "plot":
         if args.cobis:
