@@ -12,8 +12,10 @@ from math import log, sqrt
 from pathlib import Path
 
 import matplotlib.style
+from monty.json import jsanitize
 from monty.os.path import zpath
-from pymatgen.electronic_structure.cohp import CompleteCohp
+from monty.serialization import dumpfn
+from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp
 from pymatgen.io.lobster import Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
@@ -22,6 +24,7 @@ from lobsterpy.featurize.core import FeaturizeIcoxxlist
 from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
     IcohpDistancePlotter,
+    InteractiveCohpPlotter,
     PlainCohpPlotter,
     PlainDosPlotter,
     get_style_list,
@@ -438,6 +441,17 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="Sum COHP `Spin.up` and `Spin.down` populations for automatic analysis",
+    )
+    auto_group.add_argument(
+        "--save-plot-json",
+        "--saveplotjson",
+        "-spj",
+        nargs="?",
+        type=Path,
+        default=None,
+        metavar="FILENAME",
+        help="Write a JSON file with the plot data. "
+        "`monty.serialization.loadfn` or `json.load` can be used to load the data.",
     )
 
     # Argument that will help to switch automatic analysis
@@ -936,6 +950,22 @@ def run(args):
             analysedict = analyse.condensed_bonding_analysis
             with open(args.file_json, "w") as fd:
                 json.dump(analysedict, fd)
+
+        if args.save_plot_json is not None:
+            ic_plotter = InteractiveCohpPlotter(are_coops=args.coops, are_cobis=args.cobis)
+            if args.action in ["plot-automatic-ia"]:
+                ic_plotter.add_all_relevant_cohps(
+                    analyse=analyse, label_resolved=args.labelresolved, orbital_resolved=args.orbitalresolved
+                )
+            else:
+                ic_plotter.add_all_relevant_cohps(
+                    analyse=analyse, label_resolved=False, orbital_resolved=args.orbitalresolved
+                )
+            monty_encoded_doc = jsanitize(ic_plotter._cohps, allow_bson=True, strict=True, enum_values=True)
+            for bond_label, cohp_data in monty_encoded_doc["All"].items():
+                cohp_data.update({"are_coops": args.coops, "are_cobis": args.cobis})
+                monty_encoded_doc["All"][bond_label] = Cohp.from_dict(cohp_data)
+            dumpfn(monty_encoded_doc["All"], args.save_plot_json)
 
     if args.action in [
         "plot",
