@@ -270,6 +270,14 @@ You can plot COHPs/COBIs/COOPs from the command line.
 
 .. image:: tutorial_assets/ICOHPs_distance_example.png
 
+-  ``lobsterpy plot-bwdf`` will plot Bond Weighted Distribution function (BWDF) using ICOHPs as weights against bond lengths. Example output plot is shown below. For more details on BWDFs check the orignal publication : `https://doi.org/10.1002/anie.201404223 <https://doi.org/10.1002/anie.201404223>`_
+
+.. code:: bash
+
+    lobsterpy plot-bwdf
+
+.. image:: tutorial_assets/example_bwdf.png
+
 5. Additional Options
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -296,6 +304,10 @@ either of these commands:
 .. code:: bash
 
    lobsterpy description-quality --help
+
+.. code:: bash
+
+   lobsterpy plot-bwdf --help
 
 .. code:: bash
 
