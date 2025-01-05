@@ -42,6 +42,11 @@ test_cases = [
     ["plot", "1", "--sigma", "1.2"],
     ["plot", "1", "--fwhm", "1"],
     ["plot-icohp-distance", "-cbonds"],
+    ["plot-bwdf"],
+    ["plot-bwdf", "--sigma", "0.1"],
+    ["plot-bwdf", "-norm", "counts"],
+    ["plotbwdf", "-binwidth", "0.02"],
+    ["plotbwdf", "-siteindex", "0"],
 ]
 
 error_test_cases = [
@@ -725,7 +730,7 @@ class TestCLI:
         assert path.is_file()
         assert path.stat().st_size > 0
 
-    @pytest.mark.skip(reason="Only enable this test to regenerate test data")
+    @pytest.mark.skip(reason="Only enable this test to regenerate cli plots test data")
     def test_generate_ref_data(self, inject_mocks):
         json_data = {}
 
