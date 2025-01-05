@@ -9,6 +9,7 @@ CLI Reference
    cli_subcommands/descriptionquality
    cli_subcommands/plotauto
    cli_subcommands/plotautoia
+   cli_subcommands/plotbwdf
    cli_subcommands/plotdos
    cli_subcommands/ploticohpdistance
    cli_subcommands/plot
