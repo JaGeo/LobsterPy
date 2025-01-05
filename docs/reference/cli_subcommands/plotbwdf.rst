@@ -1,7 +1,7 @@
 plot-bwdf
 ==========
 
-Plot ICOHPs or ICOOPs or ICOBIs with respect to bond lengths.
+Plot BWDFs using ICOHPs or ICOOPs or ICOBIs with respect to bond lengths.
 
 .. hint:: Aliases available
 
