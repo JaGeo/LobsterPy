@@ -234,6 +234,66 @@ class TestCLI:
         np.testing.assert_array_almost_equal(sorted(marker_colors), expected_colors)
         assert sorted(set(legends)) == ["Cd-Cd", "Cd-F", "F-F"]
 
+    def test_plot_bwdf(self, tmp_path, inject_mocks, clean_plot):
+        # tests for checking if plots are saved
+        os.chdir(TestDir / "test_data/CdF_comp_range")
+        plot_path = tmp_path / "plot.png"
+        args = ["plotbwdf", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(tmp_path / "summed_plot.png")
+
+        # check for atompairs arg (multiple plots should be generated)
+        plot_path = tmp_path / "bwdf.pdf"
+        args = ["plotbwdf", "--hideplot", "-atompairs", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(tmp_path / "Cd_Cd_bwdf.pdf")
+        self.assert_is_finite_file(tmp_path / "Cd_F_bwdf.pdf")
+        self.assert_is_finite_file(tmp_path / "F_F_bwdf.pdf")
+
+        # check for siteindex arg (one plots with corresponding to
+        # siteindex should be generated)
+        plot_path = tmp_path / "bwdf.eps"
+        args = ["plotbwdf", "--hideplot", "-siteindex", "2", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(tmp_path / "2_bwdf.eps")
+
+        # check for binwidth arg
+        args = ["plotbwdf", "-binwidth", "0.02"]
+        test = get_parser().parse_args(args)
+        run(test)
+        ax = plt.gca()
+        lines = ax.get_lines()
+        line = lines[0]
+        x_data = line.get_xdata()
+        assert len(x_data) == 250
+        assert pytest.approx(max(x_data)) == 4.99
+        assert np.allclose(np.diff(x_data), 0.02, atol=1e-8)
+
+        # check if icobis are read correctly
+        os.chdir(TestDir / "test_data/K3Sb")
+        args = ["plotbwdf", "--cobis"]
+        test = get_parser().parse_args(args)
+        run(test)
+        ax = plt.gca()
+        lines = ax.get_lines()
+        line = lines[0]
+        y_data = line.get_ydata()
+        assert np.all(y_data >= 0)
+
+        # icoops
+        args = ["plotbwdf", "--coops"]
+        test = get_parser().parse_args(args)
+        run(test)
+        ax = plt.gca()
+        lines = ax.get_lines()
+        line = lines[0]
+        y_data = line.get_ydata()
+        assert np.any(y_data >= 0)
+        assert np.any(y_data <= 0)
+
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
         lobsterinpath = tmp_path / "lobsterin.lobsterpy"
