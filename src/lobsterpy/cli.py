@@ -563,7 +563,7 @@ def get_parser() -> argparse.ArgumentParser:
         type=float,
         dest="binwidth",
         default=0.02,
-        help="Bin width used for computing the BWDFs. Default: 0.1.",
+        help="Bin width used for computing the BWDFs. Default: 0.02.",
     )
     bwdf_plotting_group.add_argument(
         "-interacttol",
