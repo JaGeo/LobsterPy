@@ -458,7 +458,7 @@ def get_parser() -> argparse.ArgumentParser:
     analysis_switch = argparse.ArgumentParser(add_help=False)
     analysis_group = analysis_switch.add_argument_group(
         "Arguments to switch type of files analyzed during automatic analysis"
-        " (Also indicates file type for 'plot/plot-icohp-distance' action in cli)"
+        " (Also indicates file to be read for 'plot/plot-icohp-distance/plot-bwdf' action in cli)"
     )
     analysis_group.add_argument(
         "--cobis",
