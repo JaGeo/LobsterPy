@@ -1061,7 +1061,7 @@ def run(args):
         else:
             label = feat_icoxx.structure.composition.get_reduced_formula_and_factor()[0]
 
-        icohp_dist_plotter = BWDFPlotter(are_coops=args.coops, are_cobis=args.cobis)
+        bwdf_plotter = BWDFPlotter(are_coops=args.coops, are_cobis=args.cobis)
 
         # Assimilate data to get separate plots for each pair
         plot_data = []
@@ -1103,8 +1103,8 @@ def run(args):
         # Iterate over assimilated data and plot
         for bwdf_dict in plot_data:
             pair = next(iter(bwdf_dict.keys()))
-            icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
-            plot = icohp_dist_plotter.get_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+            bwdf_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
+            plot = bwdf_plotter.get_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
             title = f"{args.title} : {pair}" if args.title else ""
             plot.title(title)
 
