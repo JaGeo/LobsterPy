@@ -58,9 +58,9 @@ class PlainCohpPlotter(CohpPlotter):
     :param zero_at_efermi: Shift all populations to have zero
             energy at the Fermi level. Defaults to True.
     :param are_coops: Bool indicating that populations are COOPs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., COHPs are plotted.
     :param are_cobis: Bool indicating that populations are COBIs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., ICOHPs are plotted.
     """
 
     def get_plot(
@@ -519,9 +519,9 @@ class InteractiveCohpPlotter(CohpPlotter):
     :param zero_at_efermi: Shift all populations to have zero
             energy at the Fermi level. Defaults to True.
     :param are_coops: Bool indicating that populations are COOPs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., COHPs are plotted.
     :param are_cobis: Bool indicating that populations are COBIs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., COHPs are plotted.
     """
 
     COLOR_PALETTE = [
@@ -1088,9 +1088,9 @@ class IcohpDistancePlotter:
     Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots.
 
     :param are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
-                    Defaults to False for COHPs.
+                    Defaults to False, i.e., ICOHPs are plotted.
     :param are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
-            Defaults to False for COHPs.
+            Defaults to False, i.e., ICOHPs are plotted.
     """
 
     COLOR_PALETTE = [
@@ -1195,7 +1195,7 @@ class IcohpDistancePlotter:
         ax.set_xlabel("Bond lengths (\u00c5)")
 
         if color_interactions:
-            colors = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
+            colors = self.COLOR_PALETTE if colors is None else colors
             atom_types = []
             for data in self._icohps.values():
                 atom_types.extend(list(set(data["atom_types"])))
@@ -1242,9 +1242,9 @@ class BWDFPlotter:
     Plotter to generate Bond weighted distribution functions using ICOHP or ICOBI or ICOOP as weights.
 
     :param are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
-                    Defaults to False for COHPs.
+                    Defaults to False, i.e., ICOHPs are plotted.
     :param are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
-            Defaults to False for COHPs.
+            Defaults to False, i.e., ICOHPs are plotted.
     """
 
     COLOR_PALETTE = [
@@ -1338,7 +1338,7 @@ class BWDFPlotter:
         if ylim:
             ax.set_ylim(ylim)
 
-        palette = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
+        palette = self.COLOR_PALETTE if colors is None else colors
         pal_iter = cycle(palette)
 
         for label, bwdf in self._bwdfs.items():
