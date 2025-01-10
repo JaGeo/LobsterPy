@@ -44,7 +44,7 @@ test_cases = [
     ["plot", "1", "--sigma", "1.2"],
     ["plot", "1", "--fwhm", "1"],
     ["plot-icohp-distance", "-cbonds"],
-    ["plot-bwdf"],
+    ["plot-bwdf", "-maxlen", "5"],
     ["plot-bwdf", "--sigma", "0.1"],
     ["plot-bwdf", "-norm", "counts"],
     ["plotbwdf", "-binwidth", "0.02"],
