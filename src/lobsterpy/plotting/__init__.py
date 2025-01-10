@@ -1110,39 +1110,6 @@ class IcohpDistancePlotter:
         self.are_coops = are_coops
         self.are_cobis = are_cobis
         self._icohps = {}  # type: ignore
-        self._bwdfs = {}  # type: ignore
-
-    @staticmethod
-    def bwdf_data_to_plot(raw_bwdf: dict):
-        """
-        Restructure bond weighted distribution function (BWDF) data for plotting.
-
-        :param raw_bwdf: dict containing BWDF data as obtained from FeaturizeIcoxxlist.
-
-        """
-        # Keep only the BWDF data necessary for plotting
-        excluded_keys = {"centers", "edges", "bin_width", "wasserstein_dist_to_rdf"}
-
-        for pair, value in raw_bwdf.items():
-            if pair not in excluded_keys:
-                value.update({"centers": raw_bwdf.get("centers")})
-                value.pop("icoxx_counts")
-
-        for key in excluded_keys:
-            raw_bwdf.pop(key)
-
-        return raw_bwdf
-
-    def add_bwdf(self, label: str, bwdf: dict):
-        """
-        Add bond weighted distribution function (BWDF) for plotting.
-
-        :param label: Label for the BWDF. Must be unique.
-        :param bwdf: dict containing BWDF data formatted with
-            IcohpDistancePlotter.bwdf_data_to_plot.
-
-        """
-        self._bwdfs[label] = bwdf
 
     def add_icohps(self, label: str, icohpcollection: IcohpCollection):
         """
@@ -1269,7 +1236,66 @@ class IcohpDistancePlotter:
 
         return plt
 
-    def get_bwdf_plot(
+
+class BWDFPlotter:
+    """
+    Plotter to generate Bond weighted distribution functions using ICOHP or ICOBI or ICOOP as weights.
+
+    :param are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
+                    Defaults to False for COHPs.
+    :param are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
+            Defaults to False for COHPs.
+    """
+
+    COLOR_PALETTE = [
+        "#e41a1c",
+        "#377eb8",
+        "#4daf4a",
+        "#984ea3",
+        "#ff7f00",
+        "#ffff33",
+        "#a65628",
+        "#f781bf",
+        "#999999",
+    ]
+
+    def __init__(self, are_coops: bool = False, are_cobis: bool = False):
+        """Initialize ICOHPs or ICOBI or ICOOP vs bond lengths plotter."""
+        self.are_coops = are_coops
+        self.are_cobis = are_cobis
+        self._bwdfs = {}  # type: ignore
+
+    @staticmethod
+    def _bwdf_data_to_plot(raw_bwdf: dict):
+        """
+        Restructure bond weighted distribution function (BWDF) data for plotting.
+
+        :param raw_bwdf: dict containing BWDF data as obtained from
+        FeaturizeIcoxxlist.calc_bwdf() or FeaturizeIcoxxlist.calc_site_bwdf()
+
+        """
+        # Keep only the BWDF data necessary for plotting
+        excluded_keys = {"centers", "edges", "bin_width", "wasserstein_dist_to_rdf"}
+
+        formatted_bwdf = {}
+        for pair, value in raw_bwdf.items():
+            if pair not in excluded_keys:
+                formatted_bwdf[pair] = {"centers": raw_bwdf.get("centers"), "icoxx_binned": value.get("icoxx_binned")}
+
+        return formatted_bwdf
+
+    def add_bwdf(self, label: str, bwdf: dict):
+        """
+        Add bond weighted distribution function (BWDF) for plotting.
+
+        :param label: Label for the BWDF. Must be unique.
+        :param bwdf: dict containing BWDF data as obtained from
+            FeaturizeIcoxxlist.calc_bwdf() or FeaturizeIcoxxlist.calc_site_bwdf()
+
+        """
+        self._bwdfs[label] = self._bwdf_data_to_plot(bwdf)
+
+    def get_plot(
         self,
         ax: mpl.axes.Axes | None = None,
         colors: list[str] | None = None,

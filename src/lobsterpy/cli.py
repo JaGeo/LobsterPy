@@ -23,6 +23,7 @@ from lobsterpy.cohp.describe import Description
 from lobsterpy.featurize.core import FeaturizeIcoxxlist
 from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
+    BWDFPlotter,
     IcohpDistancePlotter,
     InteractiveCohpPlotter,
     PlainCohpPlotter,
@@ -1053,8 +1054,6 @@ def run(args):
 
         bwdf = feat_icoxx.calc_site_bwdf(site_index=args.siteindex) if args.siteindex else feat_icoxx.calc_bwdf()
 
-        formatted_bwdf = IcohpDistancePlotter.bwdf_data_to_plot(bwdf)
-
         # Set label for plot (legend)
         if args.siteindex:
             site = feat_icoxx.structure.sites[args.siteindex]
@@ -1062,23 +1061,50 @@ def run(args):
         else:
             label = feat_icoxx.structure.composition.get_reduced_formula_and_factor()[0]
 
-        icohp_dist_plotter = IcohpDistancePlotter(are_coops=args.coops, are_cobis=args.cobis)
+        icohp_dist_plotter = BWDFPlotter(are_coops=args.coops, are_cobis=args.cobis)
 
-        # Assimilate data for plotting
-        plot_data_dicts = {}
-        for pair, bwdf_data in formatted_bwdf.items():
-            if args.atompairs and pair != "summed":
-                plot_data_dicts.update({pair: bwdf_data})
-            elif not args.atompairs and pair == "summed":  # for only summed bwdf
-                plot_data_dicts.update({pair: bwdf_data})
-            elif not args.atompairs and pair == str(args.siteindex):  # for site specific bwdf
-                plot_data_dicts.update({pair: bwdf_data})
+        # Assimilate data to get separate plots for each pair
+        plot_data = []
+        for pair, value in bwdf.items():
+            if args.atompairs and pair not in ["summed", "centers", "edges", "bin_width", "wasserstein_dist_to_rdf"]:
+                data = {pair: value}
+                data.update(
+                    {
+                        "centers": bwdf["centers"],
+                        "edges": bwdf["edges"],
+                        "bin_width": bwdf["bin_width"],
+                        "wasserstein_dist_to_rdf": bwdf["wasserstein_dist_to_rdf"],
+                    }
+                )
+                plot_data.append(data)
+            elif not args.atompairs and pair == "summed":  # summed only
+                data = {pair: value}
+                data.update(
+                    {
+                        "centers": bwdf["centers"],
+                        "edges": bwdf["edges"],
+                        "bin_width": bwdf["bin_width"],
+                        "wasserstein_dist_to_rdf": bwdf["wasserstein_dist_to_rdf"],
+                    }
+                )
+                plot_data.append(data)
+            elif not args.atompairs and pair == str(args.siteindex):  # specific site
+                data = {pair: value}
+                data.update(
+                    {
+                        "centers": bwdf["centers"],
+                        "edges": bwdf["edges"],
+                        "bin_width": bwdf["bin_width"],
+                        "wasserstein_dist_to_rdf": bwdf["wasserstein_dist_to_rdf"],
+                    }
+                )
+                plot_data.append(data)
 
-        # Iterate over all pairs and plot
-        for pair, bwdf_data in plot_data_dicts.items():
-            bwdf_dict = {pair: bwdf_data}
+        # Iterate over assimilated data and plot
+        for bwdf_dict in plot_data:
+            pair = next(iter(bwdf_dict.keys()))
             icohp_dist_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
-            plot = icohp_dist_plotter.get_bwdf_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+            plot = icohp_dist_plotter.get_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
             title = f"{args.title} : {pair}" if args.title else ""
             plot.title(title)
 
