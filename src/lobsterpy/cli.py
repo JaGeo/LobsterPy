@@ -579,8 +579,8 @@ def get_parser() -> argparse.ArgumentParser:
         "--max-length",
         type=float,
         dest="maxlen",
-        default=5,
-        help="Maximum bond length for the BWDFs in Angstroms. Default: 5.",
+        default=6,
+        help="Maximum bond length for the BWDFs in Angstroms. Default: 6.",
     )
     bwdf_plotting_group.add_argument(
         "-minlen",
