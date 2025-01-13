@@ -7,20 +7,24 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from math import log, sqrt
 from pathlib import Path
 
 import matplotlib.style
+from monty.json import jsanitize
 from monty.os.path import zpath
-from pymatgen.electronic_structure.cohp import CompleteCohp
+from monty.serialization import dumpfn
+from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp
 from pymatgen.io.lobster import Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from lobsterpy.featurize.core import FeaturizeIcoxxlist
 from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
+    BWDFPlotter,
     IcohpDistancePlotter,
+    InteractiveCohpPlotter,
     PlainCohpPlotter,
     PlainDosPlotter,
     get_style_list,
@@ -438,12 +442,23 @@ def get_parser() -> argparse.ArgumentParser:
         default=False,
         help="Sum COHP `Spin.up` and `Spin.down` populations for automatic analysis",
     )
+    auto_group.add_argument(
+        "--save-plot-json",
+        "--saveplotjson",
+        "-spj",
+        nargs="?",
+        type=Path,
+        default=None,
+        metavar="FILENAME",
+        help="Write a JSON file with the plot data. "
+        "`monty.serialization.loadfn` or `json.load` can be used to load the data.",
+    )
 
     # Argument that will help to switch automatic analysis
     analysis_switch = argparse.ArgumentParser(add_help=False)
     analysis_group = analysis_switch.add_argument_group(
         "Arguments to switch type of files analyzed during automatic analysis"
-        " (Also indicates file type for 'plot/plot-icohp-distance' action in cli)"
+        " (Also indicates file to be read for 'plot/plot-icohp-distance/plot-bwdf' action in cli)"
     )
     analysis_group.add_argument(
         "--cobis",
@@ -470,6 +485,128 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Create automatic interactive plots with all relevant bond labels. "
         "If not set, plots consist of summed cohps.",
+    )
+
+    # Args specific to icohp distance plotter args
+    icohp_distance_plotter_args = argparse.ArgumentParser(add_help=False)
+    icohp_distance_plotter_group = icohp_distance_plotter_args.add_argument_group(
+        "Options specific to ICOHP distance plotter"
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-alpha",
+        type=float,
+        default=0.4,
+        dest="alpha",
+        help="Transparency of the markers in the plot.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-cbonds",
+        "--colorbonds",
+        "--color-bonds",
+        default=False,
+        dest="colorbonds",
+        action="store_true",
+        help="If set, will color ICOHPs based on atom types",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-c",
+        "--colors",
+        dest="colors",
+        nargs="+",
+        type=str,
+        default=None,
+        help="Custom list of colors for the plot. "
+        "Should be equal to the number of unique atom pairs in the structure.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-lprefix",
+        "--legendprefix",
+        "--legend-prefix",
+        type=str,
+        dest="legendprefix",
+        default="",
+        help="Prefix for the legend in the plot.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-msize",
+        "--markersize",
+        "--marker-size",
+        type=float,
+        default=50,
+        dest="markersize",
+        help="Size of the markers in the plot.",
+    )
+    icohp_distance_plotter_group.add_argument(
+        "-mstyle",
+        "--markerstyle",
+        "--marker-style",
+        type=str,
+        default="o",
+        dest="markerstyle",
+        help="Marker style for the plot.",
+    )
+
+    # Args specific to plotting BWDFs
+    bwdf_plotting_args = argparse.ArgumentParser(add_help=False)
+    bwdf_plotting_group = bwdf_plotting_args.add_argument_group("Options specific to plotting BWDFs")
+    bwdf_plotting_group.add_argument(
+        "-atompairs",
+        "--atom-pairs",
+        dest="atompairs",
+        action="store_true",
+        default=False,
+        help="If True, will plot the BWDFs for all unique atom pairs. Default: False.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-binwidth",
+        "--bin-width",
+        type=float,
+        dest="binwidth",
+        default=0.02,
+        help="Bin width used for computing the BWDFs. Default: 0.02.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-interacttol",
+        "--interactions-tolerance",
+        type=float,
+        dest="interacttol",
+        default=1e-3,
+        help="Numerical tolerance considered for interactions to be insignificant. Default: 1e-3.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-maxlen",
+        "--maxlength",
+        "--max-length",
+        type=float,
+        dest="maxlen",
+        default=6,
+        help="Maximum bond length for the BWDFs in Angstroms. Default: 6.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-minlen",
+        "--minlength",
+        "--min-length",
+        type=float,
+        dest="minlen",
+        default=0,
+        help="Minimum bond length for the BWDFs in Angstroms. Default: 0.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-norm",
+        "--normalization",
+        type=str,
+        default="formula_units",
+        dest="norm",
+        help="Normalization of the BWDFs. Options: 'formula_units', 'area', 'counts' and 'none'. "
+        "Default: 'formula_units'.",
+    )
+    bwdf_plotting_group.add_argument(
+        "-siteindex",
+        "--site-index",
+        type=int,
+        default=None,
+        dest="siteindex",
+        help="Site index for which the BWDFs are to be plotted. Default: None. If None, all sites are considered.",
     )
 
     # Args specific to calc quality description dict and texts
@@ -614,6 +751,18 @@ def get_parser() -> argparse.ArgumentParser:
         help=("Creates an interactive plot of most important COHPs or COBIs or COOPs automatically."),
     )
     subparsers.add_parser(
+        "plot-bwdf",
+        aliases=["plotbwdf"],
+        parents=[
+            icohplist_file,
+            structure_file,
+            bwdf_plotting_args,
+            plotting_parent,
+            analysis_switch,
+        ],
+        help="Plot bond-weighted distribution functions (BWDFs) from ICOXXLIST.lobster.",
+    )
+    subparsers.add_parser(
         "plot-dos",
         aliases=["plotdos"],
         parents=[
@@ -628,7 +777,7 @@ def get_parser() -> argparse.ArgumentParser:
     subparsers.add_parser(
         "plot-icohp-distance",
         aliases=["ploticohpdistance"],
-        parents=[icohplist_file, plotting_parent, analysis_switch],
+        parents=[icohplist_file, plotting_parent, analysis_switch, icohp_distance_plotter_args],
         help="Plot ICOHPs or ICOOPs or ICOBIs with respect to bond lengths",
     )
     # Mode for normal plotting (without automatic detection of relevant COHPs)
@@ -723,7 +872,6 @@ def _user_figsize(width, height, aspect=None):
     return {"figure.figsize": (width, width / aspect)}
 
 
-# TODO: add automatic functionality for COBIs, COOPs
 def run(args):
     """
     Run actions based on args.
@@ -755,21 +903,17 @@ def run(args):
         "plot-automatic-ia",
     ]:
         req_files = get_file_paths(
-            path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "charge", "icohplist", "cohpcar"]
+            path_to_lobster_calc=Path.cwd(), requested_files=["structure", "charge", "icohplist", "cohpcar"]
         )
 
         if args.coops:
-            req_files_coops = get_file_paths(
-                path_to_lobster_calc=Path(os.getcwd()), requested_files=["icooplist", "coopcar"]
-            )
+            req_files_coops = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icooplist", "coopcar"])
 
             req_files["icohplist"] = req_files_coops["icooplist"]
             req_files["cohpcar"] = req_files_coops["coopcar"]
 
         if args.cobis:
-            req_files_cobis = get_file_paths(
-                path_to_lobster_calc=Path(os.getcwd()), requested_files=["icobilist", "cobicar"]
-            )
+            req_files_cobis = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icobilist", "cobicar"])
 
             req_files["icohplist"] = req_files_cobis["icobilist"]
             req_files["cohpcar"] = req_files_cobis["cobicar"]
@@ -803,10 +947,28 @@ def run(args):
             with open(args.file_json, "w") as fd:
                 json.dump(analysedict, fd)
 
+        if args.save_plot_json is not None:
+            ic_plotter = InteractiveCohpPlotter(are_coops=args.coops, are_cobis=args.cobis)
+            if args.action in ["plot-automatic-ia"]:
+                ic_plotter.add_all_relevant_cohps(
+                    analyse=analyse, label_resolved=args.labelresolved, orbital_resolved=args.orbitalresolved
+                )
+            else:
+                ic_plotter.add_all_relevant_cohps(
+                    analyse=analyse, label_resolved=False, orbital_resolved=args.orbitalresolved
+                )
+            monty_encoded_doc = jsanitize(ic_plotter._cohps, allow_bson=True, strict=True, enum_values=True)
+            for bond_label, cohp_data in monty_encoded_doc["All"].items():
+                cohp_data.update({"are_coops": args.coops, "are_cobis": args.cobis})
+                monty_encoded_doc["All"][bond_label] = Cohp.from_dict(cohp_data)
+            dumpfn(monty_encoded_doc["All"], args.save_plot_json)
+
     if args.action in [
         "plot",
         "plot-automatic",
         "plot-automatic-ia",
+        "plot-bwdf",
+        "plotbwdf",
         "plot-dos",
         "plotdos",
         "plot-icohp-distance",
@@ -853,29 +1015,116 @@ def run(args):
             orbital_resolved=args.orbitalresolved,
         )
 
-    if args.action == "plot":
+    if args.action in ["plot-bwdf", "plotbwdf"]:
         if args.cobis:
-            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["cobicar"]).get(
-                "cobicar"
-            )
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icobilist"]).get("icobilist")
             options = {"are_cobis": True, "are_coops": False}
-        elif args.multi_cobis:
-            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["cobicar"]).get(
-                "cobicar"
-            )
-            options = {"are_cobis": False, "are_coops": False, "are_multi_center_cobis": True}
         elif args.coops:
-            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["coopcar"]).get(
-                "coopcar"
-            )
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icooplist"]).get("icooplist")
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["cohpcar"]).get(
-                "cohpcar"
-            )
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icohplist"]).get("icohplist")
             options = {"are_cobis": False, "are_coops": False}
 
-        structure_filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure"]).get(
+        structure_filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["structure"]).get(
+            "structure"
+        )
+
+        feat_icoxx = FeaturizeIcoxxlist(
+            path_to_icoxxlist=filename,
+            path_to_structure=structure_filename,
+            interactions_tol=args.interacttol,
+            normalization=args.norm,
+            bin_width=args.binwidth,
+            min_length=args.minlen,
+            max_length=args.maxlen,
+            **options,
+        )
+
+        bwdf = feat_icoxx.calc_site_bwdf(site_index=args.siteindex) if args.siteindex else feat_icoxx.calc_bwdf()
+
+        # Set label for plot (legend)
+        if args.siteindex:
+            site = feat_icoxx.structure.sites[args.siteindex]
+            label = site.species_string
+        else:
+            label = feat_icoxx.structure.composition.get_reduced_formula_and_factor()[0]
+
+        bwdf_plotter = BWDFPlotter(are_coops=args.coops, are_cobis=args.cobis)
+
+        # Assimilate data to get separate plots for each pair
+        plot_data = []
+        for pair, value in bwdf.items():
+            if args.atompairs and pair not in ["summed", "centers", "edges", "bin_width", "wasserstein_dist_to_rdf"]:
+                data = {pair: value}
+                data.update(
+                    {
+                        "centers": bwdf["centers"],
+                        "edges": bwdf["edges"],
+                        "bin_width": bwdf["bin_width"],
+                        "wasserstein_dist_to_rdf": bwdf["wasserstein_dist_to_rdf"],
+                    }
+                )
+                plot_data.append(data)
+            elif not args.atompairs and pair == "summed":  # summed only
+                data = {pair: value}
+                data.update(
+                    {
+                        "centers": bwdf["centers"],
+                        "edges": bwdf["edges"],
+                        "bin_width": bwdf["bin_width"],
+                        "wasserstein_dist_to_rdf": bwdf["wasserstein_dist_to_rdf"],
+                    }
+                )
+                plot_data.append(data)
+            elif not args.atompairs and pair == str(args.siteindex):  # specific site
+                data = {pair: value}
+                data.update(
+                    {
+                        "centers": bwdf["centers"],
+                        "edges": bwdf["edges"],
+                        "bin_width": bwdf["bin_width"],
+                        "wasserstein_dist_to_rdf": bwdf["wasserstein_dist_to_rdf"],
+                    }
+                )
+                plot_data.append(data)
+
+        # Iterate over assimilated data and plot
+        for bwdf_dict in plot_data:
+            pair = next(iter(bwdf_dict.keys()))
+            bwdf_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
+            plot = bwdf_plotter.get_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+            title = f"{args.title} : {pair}" if args.title else ""
+            plot.title(title)
+
+            if args.save_plot:
+                filename = Path(args.save_plot)
+                plot_filename = filename.parent / f"{pair.replace('-', '_')}_{filename.stem}{filename.suffix}"
+
+            if not args.hideplot and not args.save_plot:
+                plot.show()
+            elif args.save_plot and not args.hideplot:
+                fig = plot.gcf()
+                fig.savefig(plot_filename)
+                plot.show()
+            if args.save_plot and args.hideplot:
+                plot.savefig(plot_filename)
+
+    if args.action == "plot":
+        if args.cobis:
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["cobicar"]).get("cobicar")
+            options = {"are_cobis": True, "are_coops": False}
+        elif args.multi_cobis:
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["cobicar"]).get("cobicar")
+            options = {"are_cobis": False, "are_coops": False, "are_multi_center_cobis": True}
+        elif args.coops:
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["coopcar"]).get("coopcar")
+            options = {"are_cobis": False, "are_coops": True}
+        else:
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["cohpcar"]).get("cohpcar")
+            options = {"are_cobis": False, "are_coops": False}
+
+        structure_filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["structure"]).get(
             "structure"
         )
 
@@ -1039,7 +1288,7 @@ def run(args):
     if args.action in ["description-quality"]:
         # Check for .gz files exist for default values and update accordingly
         req_files = get_file_paths(
-            path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "lobsterin", "lobsterout"]
+            path_to_lobster_calc=Path.cwd(), requested_files=["structure", "lobsterin", "lobsterout"]
         )
         for arg_name in req_files:
             setattr(args, arg_name, req_files[arg_name])
@@ -1059,7 +1308,7 @@ def run(args):
         bva_comp = args.bvacomp
 
         if bva_comp:
-            bva_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["charge"])
+            bva_files = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["charge"])
             for arg_name in bva_files:
                 setattr(args, arg_name, bva_files[arg_name])
 
@@ -1068,11 +1317,11 @@ def run(args):
         if dos_comparison:
             if "DOSCAR.LSO.lobster" in args.doscar.name:
                 dos_files = get_file_paths(
-                    path_to_lobster_calc=Path(os.getcwd()), requested_files=["vasprun", "doscar"], use_lso_dos=True
+                    path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=True
                 )
             else:
                 dos_files = get_file_paths(
-                    path_to_lobster_calc=Path(os.getcwd()), requested_files=["vasprun", "doscar"], use_lso_dos=False
+                    path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=False
                 )
             for arg_name in dos_files:
                 setattr(args, arg_name, dos_files[arg_name])
@@ -1105,10 +1354,10 @@ def run(args):
     if args.action in ["plot-dos", "plotdos"]:
         if "DOSCAR.LSO.lobster" in args.doscar.name:
             req_files = get_file_paths(
-                path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "doscar"], use_lso_dos=True
+                path_to_lobster_calc=Path.cwd(), requested_files=["structure", "doscar"], use_lso_dos=True
             )
         else:
-            req_files = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["structure", "doscar"])
+            req_files = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["structure", "doscar"])
 
         for arg_name in req_files:
             setattr(args, arg_name, req_files[arg_name])
@@ -1180,33 +1429,34 @@ def run(args):
 
     if args.action in ["plot-icohp-distance", "ploticohpdistance"]:
         if args.cobis:
-            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icobilist"]).get(
-                "icobilist"
-            )
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icobilist"]).get("icobilist")
             args.icohplist = filename
-            # filename = args.icohplist.parent / "ICOBILIST.lobster"
-            # if not filename.exists():
-            #     filename = filename.with_name(zpath(filename.name))
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
-            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icooplist"]).get(
-                "icooplist"
-            )
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icooplist"]).get("icooplist")
             args.icohplist = filename
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = get_file_paths(path_to_lobster_calc=Path(os.getcwd()), requested_files=["icohplist"]).get(
-                "icohplist"
-            )
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icohplist"]).get("icohplist")
             args.icohplist = filename
             options = {"are_cobis": False, "are_coops": False}
 
         icohpcollection = Icohplist(filename=args.icohplist, **options).icohpcollection
         icohp_plotter = IcohpDistancePlotter(**options)
 
-        icohp_plotter.add_icohps(icohpcollection=icohpcollection, label="")
+        icohp_plotter.add_icohps(icohpcollection=icohpcollection, label=args.legendprefix)
 
-        plt = icohp_plotter.get_plot(xlim=args.xlim, ylim=args.ylim)
+        get_plot_kwargs = {
+            "alpha": args.alpha,
+            "color_interactions": args.colorbonds,
+            "colors": args.colors,
+            "marker_size": args.markersize,
+            "marker_style": args.markerstyle,
+            "xlim": args.xlim,
+            "ylim": args.ylim,
+        }
+
+        plt = icohp_plotter.get_plot(**get_plot_kwargs)
 
         ax = plt.gca()
         ax.set_title(args.title)

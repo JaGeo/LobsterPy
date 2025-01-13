@@ -15,6 +15,8 @@ import matplotlib.style
 import numpy as np
 import pytest
 from matplotlib.figure import Figure
+from monty.serialization import loadfn
+from pymatgen.electronic_structure.cohp import Cohp
 
 from lobsterpy.cli import get_parser, run
 
@@ -41,6 +43,12 @@ test_cases = [
     ["plot", "1", "--style", "dark_background"],
     ["plot", "1", "--sigma", "1.2"],
     ["plot", "1", "--fwhm", "1"],
+    ["plot-icohp-distance", "-cbonds"],
+    ["plot-bwdf", "-maxlen", "5"],
+    ["plot-bwdf", "--sigma", "0.1"],
+    ["plot-bwdf", "-norm", "counts"],
+    ["plotbwdf", "-binwidth", "0.02"],
+    ["plotbwdf", "-siteindex", "0"],
 ]
 
 error_test_cases = [
@@ -180,7 +188,7 @@ class TestCLI:
         test = get_parser().parse_args(args)
         run(test)
 
-    def test_cli_interactive_plotter_coops(self):
+    def test_cli_interactive_plotter_coops(self, tmp_path):
         os.chdir(TestDir / "test_data/CdF_comp_range")
         # tests skip showing plots generated using automatic interactive plotter
         args = [
@@ -192,6 +200,75 @@ class TestCLI:
         ]
         test = get_parser().parse_args(args)
         run(test)
+
+    def test_cli_save_plot_data(self, tmp_path, inject_mocks, clean_plot):
+        os.chdir(TestDir / "test_data/NaCl")
+
+        # Interactive plotter
+        plot_data_path = tmp_path / "plotdata.json"
+        args = [
+            "auto-plot-ia",
+            "--orbitalresolved",
+            "--labelresolved",
+            "--hideplot",
+            "--allbonds",
+            "-spj",
+            str(plot_data_path),
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(plot_data_path)
+        plot_data = loadfn(plot_data_path)
+        expected_labels = [
+            "Na1: 6 x Cl-Na",
+            "21:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "23:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "24:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "27:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "28:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "30:  Cl2 (3p)-Na1 (3s) (2.85 Å)",
+            "21:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "23:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "24:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "27:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "28:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "30:  Cl2 (3s)-Na1 (3s) (2.85 Å)",
+            "21:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "23:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "24:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "27:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "28:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "30:  Cl2 (3p)-Na1 (2p) (2.85 Å)",
+            "Cl2: 6 x Cl-Na",
+        ]
+        # test if saved json file contains valid Cohp objects
+        for label, data in plot_data.items():
+            assert isinstance(data, Cohp)
+            assert label in expected_labels
+
+        staitc_plot_data_path = tmp_path / "plotdata_static.json"
+        args = [
+            "auto-plot",
+            "--orbitalresolved",
+            "--allbonds",
+            "-spj",
+            str(staitc_plot_data_path),
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(staitc_plot_data_path)
+        plot_data = loadfn(staitc_plot_data_path)
+        # test if saved json file contains valid Cohp objects
+        expected_labels = [
+            "Na1: 6 x Cl-Na",
+            "6x Cl (3p)-Na (3s) (2.85 Å)",
+            "6x Cl (3s)-Na (3s) (2.85 Å)",
+            "6x Cl (3p)-Na (2p) (2.85 Å)",
+            "Cl2: 6 x Cl-Na",
+        ]
+        for label, data in plot_data.items():
+            assert isinstance(data, Cohp)
+            assert label in expected_labels
 
     def test_icoxxlist_plots(self, tmp_path, inject_mocks, clean_plot):
         os.chdir(TestDir / "test_data/NaCl")
@@ -212,6 +289,96 @@ class TestCLI:
         args = ["ploticohpdistance", "--cobis"]
         test = get_parser().parse_args(args)
         run(test)
+
+        os.chdir(TestDir / "test_data/CdF_comp_range")
+        args = ["ploticohpdistance", "--cobis", "-cbonds", "-c", "red", "green", "blue", "yellow"]
+        test = get_parser().parse_args(args)
+        run(test)
+
+        expected_colors = [[[0.0, 0.0, 1.0, 0.4]], [[0.0, 0.5019607843137255, 0.0, 0.4]], [[1.0, 0.0, 0.0, 0.4]]]
+        handles, legends = plt.gca().get_legend_handles_labels()
+        marker_colors = []
+        for handle in handles:
+            colors = handle.get_facecolor().tolist()
+            if colors not in marker_colors:
+                marker_colors.append(colors)
+        np.testing.assert_array_almost_equal(sorted(marker_colors), expected_colors)
+        assert sorted(set(legends)) == ["Cd-Cd", "Cd-F", "F-F"]
+
+    def test_plot_bwdf(self, tmp_path, inject_mocks, clean_plot):
+        # tests for checking if plots are saved
+        os.chdir(TestDir / "test_data/CdF_comp_range")
+        plot_path = tmp_path / "plot.png"
+        args = ["plotbwdf", "--hideplot", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(tmp_path / "summed_plot.png")
+
+        # check for atompairs arg (multiple plots should be generated)
+        plot_path = tmp_path / "bwdf.pdf"
+        args = ["plotbwdf", "--hideplot", "-atompairs", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(tmp_path / "Cd_Cd_bwdf.pdf")
+        self.assert_is_finite_file(tmp_path / "Cd_F_bwdf.pdf")
+        self.assert_is_finite_file(tmp_path / "F_F_bwdf.pdf")
+
+        # check for siteindex arg (one plots with corresponding to
+        # siteindex should be generated)
+        plot_path = tmp_path / "bwdf.eps"
+        args = ["plotbwdf", "--hideplot", "-siteindex", "2", "--saveplot", str(plot_path)]
+        test = get_parser().parse_args(args)
+        run(test)
+        self.assert_is_finite_file(tmp_path / "2_bwdf.eps")
+
+        # check for binwidth arg
+        args = ["plotbwdf", "-binwidth", "0.02", "-minlen", "0", "-maxlen", "5"]
+        test = get_parser().parse_args(args)
+        run(test)
+        ax = plt.gca()
+        lines = ax.get_lines()
+        line = lines[0]
+        x_data = line.get_xdata()
+        assert len(x_data) == 250
+        assert pytest.approx(max(x_data)) == 4.99
+        assert np.allclose(np.diff(x_data), 0.02, atol=1e-8)
+
+        # check if icobis are read correctly
+        os.chdir(TestDir / "test_data/K3Sb")
+        args = ["plotbwdf", "--cobis", "-minlen", "2", "-maxlen", "6"]
+        test = get_parser().parse_args(args)
+        run(test)
+        ax = plt.gca()
+        lines = ax.get_lines()
+        line = lines[0]
+        y_data = line.get_ydata()
+        x_data = line.get_xdata()
+        assert pytest.approx(max(x_data)) == 5.99
+        assert pytest.approx(min(x_data)) == 2.01
+        assert np.all(y_data >= 0)
+
+        # icoops
+        args = [
+            "plotbwdf",
+            "--coops",
+            "-x",
+            "3",
+            "5",
+            "-y",
+            "-0.4",
+            "0.1",
+        ]
+        test = get_parser().parse_args(args)
+        run(test)
+        ax = plt.gca()
+        lines = ax.get_lines()
+        line = lines[0]
+        y_data = line.get_ydata()
+        assert np.any(y_data >= 0)
+        assert np.any(y_data <= 0)
+        # test for x-y axis limits on generated plots
+        assert ax.get_xlim() == (3, 5)
+        assert ax.get_ylim() == (-0.4, 0.1)
 
     def test_lobsterin_generation(self, tmp_path):
         os.chdir(TestDir / "test_data/Test_Input_Generation_Empty")
@@ -709,7 +876,7 @@ class TestCLI:
         assert path.is_file()
         assert path.stat().st_size > 0
 
-    @pytest.mark.skip(reason="Only enable this test to regenerate test data")
+    @pytest.mark.skip(reason="Only enable this test to regenerate cli plots test data")
     def test_generate_ref_data(self, inject_mocks):
         json_data = {}
 

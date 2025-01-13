@@ -10,6 +10,7 @@ from pymatgen.electronic_structure.core import Spin
 
 from lobsterpy.cohp.describe import Description
 from lobsterpy.plotting import (
+    BWDFPlotter,
     IcohpDistancePlotter,
     InteractiveCohpPlotter,
     PlainCohpPlotter,
@@ -750,3 +751,102 @@ class TestPlainDosPlotter:
             str(err.value)
             == "Requested orbital is not available for this site, available orbitals are 3s, 2p_y, 2p_z, 2p_x"
         )
+
+
+class TestBWDFPlotter:
+    def test_bwdf_plotter_labels(self, bwdf_nacl, bwdf_cdf_coop, bwdf_cdf_cobi):
+        bwdf_plotter = BWDFPlotter()
+        bwdf_plotter.add_bwdf(bwdf=bwdf_nacl, label="NaCl")
+        fig = bwdf_plotter.get_plot().gca()
+
+        assert fig.get_xlabel() == "Bond lengths (Å)"
+        assert fig.get_ylabel() == "BWDF-ICOHP (eV)"
+
+        bwdf_plotter = BWDFPlotter(are_coops=True)
+        bwdf_plotter.add_bwdf(bwdf=bwdf_cdf_coop, label="CdF")
+        fig = bwdf_plotter.get_plot().gca()
+
+        assert fig.get_xlabel() == "Bond lengths (Å)"
+        assert fig.get_ylabel() == "BWDF-ICOOP"
+
+        bwdf_plotter = BWDFPlotter(are_cobis=True)
+        bwdf_plotter.add_bwdf(bwdf=bwdf_cdf_cobi, label="CdF")
+        fig = bwdf_plotter.get_plot().gca()
+
+        assert fig.get_xlabel() == "Bond lengths (Å)"
+        assert fig.get_ylabel() == "BWDF-ICOBI"
+
+    def test_bwdf_plot_data(self, bwdf_nacl, bwdf_cdf_coop, bwdf_cdf_cobi):
+        bwdf_plotter = BWDFPlotter()
+        bwdf_plotter.add_bwdf(bwdf=bwdf_nacl, label="NaCl")
+        fig = bwdf_plotter.get_plot().gcf()
+
+        assert len(fig.axes[0].get_lines()) == 4
+
+        ref_xdata = bwdf_nacl["centers"]
+        ref_legends = [f"NaCl: {legend}" for legend in bwdf_plotter._bwdfs["NaCl"]]
+        for bwdf_lines in fig.axes[0].get_lines():
+            pair = bwdf_lines._label.split(":")[-1].strip()
+            assert bwdf_lines._label in ref_legends
+            # Check x and y data
+            np.testing.assert_array_almost_equal(bwdf_lines.get_data()[0].tolist(), ref_xdata, decimal=4)
+            np.testing.assert_array_almost_equal(
+                bwdf_lines.get_data()[1], -1 * bwdf_nacl[pair]["icoxx_binned"], decimal=4
+            )
+
+        # test for plot negative
+        fig = bwdf_plotter.get_plot(plot_negative=False).gcf()
+
+        assert len(fig.axes[0].get_lines()) == 4
+
+        ref_xdata = bwdf_nacl["centers"]
+        ref_legends = [f"NaCl: {legend}" for legend in bwdf_plotter._bwdfs["NaCl"]]
+        for bwdf_lines in fig.axes[0].get_lines():
+            pair = bwdf_lines._label.split(":")[-1].strip()
+            assert bwdf_lines._label in ref_legends
+            # Check x and y data
+            np.testing.assert_array_almost_equal(bwdf_lines.get_data()[0].tolist(), ref_xdata, decimal=4)
+            np.testing.assert_array_almost_equal(bwdf_lines.get_data()[1], bwdf_nacl[pair]["icoxx_binned"], decimal=4)
+
+        # test for icobis
+        bwdf_plotter = BWDFPlotter(are_cobis=True)
+        bwdf_plotter.add_bwdf(bwdf=bwdf_cdf_cobi, label="CdF")
+        fig = bwdf_plotter.get_plot().gcf()
+
+        assert len(fig.axes[0].get_lines()) == 4
+
+        ref_xdata = bwdf_cdf_cobi["centers"]
+        ref_legends = [f"CdF: {legend}" for legend in bwdf_plotter._bwdfs["CdF"]]
+        for bwdf_lines in fig.axes[0].get_lines():
+            pair = bwdf_lines._label.split(":")[-1].strip()
+            assert bwdf_lines._label in ref_legends
+            # Check x and y data
+            np.testing.assert_array_almost_equal(bwdf_lines.get_data()[0].tolist(), ref_xdata, decimal=4)
+            np.testing.assert_array_almost_equal(
+                bwdf_lines.get_data()[1], bwdf_cdf_cobi[pair]["icoxx_binned"], decimal=4
+            )
+
+        # test for icoops
+        bwdf_plotter = BWDFPlotter(are_coops=True)
+        bwdf_plotter.add_bwdf(bwdf=bwdf_cdf_coop, label="CdF")
+        fig = bwdf_plotter.get_plot().gcf()
+
+        assert len(fig.axes[0].get_lines()) == 1
+
+        ref_xdata = bwdf_cdf_coop["centers"]
+        ref_legends = [f"CdF: {legend}" for legend in bwdf_plotter._bwdfs["CdF"]]
+        for bwdf_lines in fig.axes[0].get_lines():
+            pair = bwdf_lines._label.split(":")[-1].strip()
+            assert bwdf_lines._label in ref_legends
+            # Check x and y data
+            np.testing.assert_array_almost_equal(bwdf_lines.get_data()[0].tolist(), ref_xdata, decimal=4)
+            np.testing.assert_array_almost_equal(
+                bwdf_lines.get_data()[1], bwdf_cdf_coop[pair]["icoxx_binned"], decimal=4
+            )
+
+    def test_bwdf_plotter_exceptions(self, bwdf_nacl):
+        with pytest.raises(ValueError) as err:  # noqa: PT012, PT011
+            bwdf_plotter = BWDFPlotter(are_coops=True, are_cobis=True)
+            bwdf_plotter.add_bwdf(bwdf=bwdf_nacl, label="NaCl")
+            _ = bwdf_plotter.get_plot()
+        assert str(err.value) == "Plot data should not contain ICOBI and ICOOP data at same time"

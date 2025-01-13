@@ -10,6 +10,7 @@ from pymatgen.io.lobster import Charge, Doscar, Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
+from lobsterpy.featurize.core import FeaturizeIcoxxlist
 
 TestDir = Path(__file__).absolute().parent
 
@@ -580,6 +581,42 @@ def describe_nasbf6_orb():
 
 
 # Fixtures for plotting module tests
+
+
+@pytest.fixture
+def bwdf_nacl():
+    return FeaturizeIcoxxlist(
+        path_to_icoxxlist=TestDir / "test_data/NaCl/ICOHPLIST.lobster.gz",
+        path_to_structure=TestDir / "test_data/NaCl/CONTCAR.gz",
+        bin_width=0.1,
+        normalization="formula_units",
+        are_coops=False,
+        are_cobis=False,
+    ).calc_bwdf()
+
+
+@pytest.fixture
+def bwdf_cdf_cobi():
+    return FeaturizeIcoxxlist(
+        path_to_icoxxlist=TestDir / "test_data/CdF_comp_range/ICOBILIST.lobster.gz",
+        path_to_structure=TestDir / "test_data/CdF_comp_range/CONTCAR.gz",
+        bin_width=0.1,
+        normalization="none",
+        are_coops=False,
+        are_cobis=True,
+    ).calc_bwdf()
+
+
+@pytest.fixture
+def bwdf_cdf_coop():
+    return FeaturizeIcoxxlist(
+        path_to_icoxxlist=TestDir / "test_data/CdF_comp_range/ICOOPLIST.lobster.gz",
+        path_to_structure=TestDir / "test_data/CdF_comp_range/CONTCAR.gz",
+        bin_width=0.1,
+        normalization="counts",
+        are_coops=True,
+        are_cobis=False,
+    ).calc_site_bwdf(site_index=1)
 
 
 @pytest.fixture

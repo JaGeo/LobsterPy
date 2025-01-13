@@ -58,9 +58,9 @@ class PlainCohpPlotter(CohpPlotter):
     :param zero_at_efermi: Shift all populations to have zero
             energy at the Fermi level. Defaults to True.
     :param are_coops: Bool indicating that populations are COOPs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., COHPs are plotted.
     :param are_cobis: Bool indicating that populations are COBIs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., ICOHPs are plotted.
     """
 
     def get_plot(
@@ -519,9 +519,9 @@ class InteractiveCohpPlotter(CohpPlotter):
     :param zero_at_efermi: Shift all populations to have zero
             energy at the Fermi level. Defaults to True.
     :param are_coops: Bool indicating that populations are COOPs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., COHPs are plotted.
     :param are_cobis: Bool indicating that populations are COBIs, not COHPs.
-                Defaults to False for COHPs.
+                Defaults to False, i.e., COHPs are plotted.
     """
 
     COLOR_PALETTE = [
@@ -1088,9 +1088,9 @@ class IcohpDistancePlotter:
     Plotter to generate ICOHP or ICOBI or ICOOP vs bond lengths plots.
 
     :param are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
-                    Defaults to False for COHPs.
+                    Defaults to False, i.e., ICOHPs are plotted.
     :param are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
-            Defaults to False for COHPs.
+            Defaults to False, i.e., ICOHPs are plotted.
     """
 
     COLOR_PALETTE = [
@@ -1195,7 +1195,7 @@ class IcohpDistancePlotter:
         ax.set_xlabel("Bond lengths (\u00c5)")
 
         if color_interactions:
-            colors = InteractiveCohpPlotter.COLOR_PALETTE if colors is None else colors
+            colors = self.COLOR_PALETTE if colors is None else colors
             atom_types = []
             for data in self._icohps.values():
                 atom_types.extend(list(set(data["atom_types"])))
@@ -1208,6 +1208,7 @@ class IcohpDistancePlotter:
                 else:
                     y = data["icohps"]
                 for i, pair in enumerate(data["atom_types"]):
+                    legend_label = f"{pair}" if not label else f"{label}-({pair})"
                     ax.scatter(
                         x[i],
                         y[i],
@@ -1215,7 +1216,7 @@ class IcohpDistancePlotter:
                         s=marker_size,
                         alpha=alpha,
                         marker=marker_style,
-                        label=f"{label}-({pair})",
+                        label=legend_label,
                     )
 
             # Filter out duplicate labels and add only unique labels to the legend
@@ -1232,5 +1233,130 @@ class IcohpDistancePlotter:
                     y = data["icohps"]
 
                 ax.scatter(x, y, s=marker_size, marker=marker_style, label=label)
+
+        return plt
+
+
+class BWDFPlotter:
+    """
+    Plotter to generate Bond weighted distribution functions using ICOHP or ICOBI or ICOOP as weights.
+
+    :param are_coops: Bool indicating that populations are ICOOPs, not ICOHPs.
+                    Defaults to False, i.e., ICOHPs are plotted.
+    :param are_cobis: Bool indicating that populations are ICOBIs, not ICOHPs.
+            Defaults to False, i.e., ICOHPs are plotted.
+    """
+
+    COLOR_PALETTE = [
+        "#e41a1c",
+        "#377eb8",
+        "#4daf4a",
+        "#984ea3",
+        "#ff7f00",
+        "#ffff33",
+        "#a65628",
+        "#f781bf",
+        "#999999",
+    ]
+
+    def __init__(self, are_coops: bool = False, are_cobis: bool = False):
+        """Initialize ICOHPs or ICOBI or ICOOP vs bond lengths plotter."""
+        self.are_coops = are_coops
+        self.are_cobis = are_cobis
+        self._bwdfs = {}  # type: ignore
+
+    @staticmethod
+    def _bwdf_data_to_plot(raw_bwdf: dict):
+        """
+        Restructure bond weighted distribution function (BWDF) data for plotting.
+
+        :param raw_bwdf: dict containing BWDF data as obtained from
+        FeaturizeIcoxxlist.calc_bwdf() or FeaturizeIcoxxlist.calc_site_bwdf()
+
+        """
+        # Keep only the BWDF data necessary for plotting
+        excluded_keys = {"centers", "edges", "bin_width", "wasserstein_dist_to_rdf"}
+
+        formatted_bwdf = {}
+        for pair, value in raw_bwdf.items():
+            if pair not in excluded_keys:
+                formatted_bwdf[pair] = {"centers": raw_bwdf.get("centers"), "icoxx_binned": value.get("icoxx_binned")}
+
+        return formatted_bwdf
+
+    def add_bwdf(self, label: str, bwdf: dict):
+        """
+        Add bond weighted distribution function (BWDF) for plotting.
+
+        :param label: Label for the BWDF. Must be unique.
+        :param bwdf: dict containing BWDF data as obtained from
+            FeaturizeIcoxxlist.calc_bwdf() or FeaturizeIcoxxlist.calc_site_bwdf()
+
+        """
+        self._bwdfs[label] = self._bwdf_data_to_plot(bwdf)
+
+    def get_plot(
+        self,
+        ax: mpl.axes.Axes | None = None,
+        colors: list[str] | None = None,
+        plot_negative: bool = True,
+        sigma: float | None = None,
+        xlim: tuple[float, float] | None = None,
+        ylim: tuple[float, float] | None = None,
+    ):
+        """
+        Get a matplotlib plot showing the bond weighted distribution function (BWDF).
+
+        :param ax: Existing Matplotlib Axes object to plot to.
+        :param colors: list of hex color codes to be used in plot
+        :param plot_negative: Will plot -1*ICOHPs. Works only for ICOHPs
+        :param sigma: Standard deviation of Gaussian broadening applied to
+            distribution data. If ,None no broadening will be
+            added.
+        :param xlim: Specifies the x-axis limits. Defaults to None for
+            automatic determination.
+        :param ylim: Specifies the y-axis limits. Defaults to None for
+            automatic determination.
+
+        Returns:
+            A matplotlib object.
+        """
+        if self.are_coops and not self.are_cobis:
+            cohp_label = "ICOOP"
+        elif self.are_cobis and not self.are_coops:
+            cohp_label = "ICOBI"
+        elif self.are_cobis and self.are_coops:
+            raise ValueError("Plot data should not contain ICOBI and ICOOP data at same time")
+        else:
+            cohp_label = "ICOHP (eV)"
+
+        if ax is None:
+            _, ax = plt.subplots()
+
+        if xlim:
+            ax.set_xlim(xlim)
+        if ylim:
+            ax.set_ylim(ylim)
+
+        palette = self.COLOR_PALETTE if colors is None else colors
+        pal_iter = cycle(palette)
+
+        for label, bwdf in self._bwdfs.items():
+            for pair in bwdf:
+                legend_label = f"{pair}" if not label else f"{label}: {pair}"
+                if plot_negative and cohp_label == "ICOHP (eV)":
+                    icoxx_weights = PlainCohpPlotter._broaden(
+                        bwdf[pair]["centers"], -1 * bwdf[pair]["icoxx_binned"], sigma=sigma
+                    )
+                    ax.plot(bwdf[pair]["centers"], icoxx_weights, label=legend_label, c=next(pal_iter))
+                else:
+                    icoxx_weights = PlainCohpPlotter._broaden(
+                        bwdf[pair]["centers"], bwdf[pair]["icoxx_binned"], sigma=sigma
+                    )
+                    ax.plot(bwdf[pair]["centers"], icoxx_weights, label=legend_label, c=next(pal_iter))
+
+            ax.set_ylabel(f"BWDF-{cohp_label}")
+            ax.set_xlabel("Bond lengths (\u00c5)")
+            ax.legend()
 
         return plt
