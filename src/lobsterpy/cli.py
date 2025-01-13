@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from math import log, sqrt
 from pathlib import Path
 
@@ -904,17 +903,17 @@ def run(args):
         "plot-automatic-ia",
     ]:
         req_files = get_file_paths(
-            path_to_lobster_calc=os.getcwd(), requested_files=["structure", "charge", "icohplist", "cohpcar"]
+            path_to_lobster_calc=Path.cwd(), requested_files=["structure", "charge", "icohplist", "cohpcar"]
         )
 
         if args.coops:
-            req_files_coops = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icooplist", "coopcar"])
+            req_files_coops = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icooplist", "coopcar"])
 
             req_files["icohplist"] = req_files_coops["icooplist"]
             req_files["cohpcar"] = req_files_coops["coopcar"]
 
         if args.cobis:
-            req_files_cobis = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icobilist", "cobicar"])
+            req_files_cobis = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icobilist", "cobicar"])
 
             req_files["icohplist"] = req_files_cobis["icobilist"]
             req_files["cohpcar"] = req_files_cobis["cobicar"]
@@ -1018,16 +1017,16 @@ def run(args):
 
     if args.action in ["plot-bwdf", "plotbwdf"]:
         if args.cobis:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icobilist"]).get("icobilist")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icobilist"]).get("icobilist")
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icooplist"]).get("icooplist")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icooplist"]).get("icooplist")
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icohplist"]).get("icohplist")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icohplist"]).get("icohplist")
             options = {"are_cobis": False, "are_coops": False}
 
-        structure_filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["structure"]).get(
+        structure_filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["structure"]).get(
             "structure"
         )
 
@@ -1113,19 +1112,19 @@ def run(args):
 
     if args.action == "plot":
         if args.cobis:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["cobicar"]).get("cobicar")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["cobicar"]).get("cobicar")
             options = {"are_cobis": True, "are_coops": False}
         elif args.multi_cobis:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["cobicar"]).get("cobicar")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["cobicar"]).get("cobicar")
             options = {"are_cobis": False, "are_coops": False, "are_multi_center_cobis": True}
         elif args.coops:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["coopcar"]).get("coopcar")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["coopcar"]).get("coopcar")
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["cohpcar"]).get("cohpcar")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["cohpcar"]).get("cohpcar")
             options = {"are_cobis": False, "are_coops": False}
 
-        structure_filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["structure"]).get(
+        structure_filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["structure"]).get(
             "structure"
         )
 
@@ -1289,7 +1288,7 @@ def run(args):
     if args.action in ["description-quality"]:
         # Check for .gz files exist for default values and update accordingly
         req_files = get_file_paths(
-            path_to_lobster_calc=os.getcwd(), requested_files=["structure", "lobsterin", "lobsterout"]
+            path_to_lobster_calc=Path.cwd(), requested_files=["structure", "lobsterin", "lobsterout"]
         )
         for arg_name in req_files:
             setattr(args, arg_name, req_files[arg_name])
@@ -1309,7 +1308,7 @@ def run(args):
         bva_comp = args.bvacomp
 
         if bva_comp:
-            bva_files = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["charge"])
+            bva_files = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["charge"])
             for arg_name in bva_files:
                 setattr(args, arg_name, bva_files[arg_name])
 
@@ -1318,11 +1317,11 @@ def run(args):
         if dos_comparison:
             if "DOSCAR.LSO.lobster" in args.doscar.name:
                 dos_files = get_file_paths(
-                    path_to_lobster_calc=os.getcwd(), requested_files=["vasprun", "doscar"], use_lso_dos=True
+                    path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=True
                 )
             else:
                 dos_files = get_file_paths(
-                    path_to_lobster_calc=os.getcwd(), requested_files=["vasprun", "doscar"], use_lso_dos=False
+                    path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=False
                 )
             for arg_name in dos_files:
                 setattr(args, arg_name, dos_files[arg_name])
@@ -1355,10 +1354,10 @@ def run(args):
     if args.action in ["plot-dos", "plotdos"]:
         if "DOSCAR.LSO.lobster" in args.doscar.name:
             req_files = get_file_paths(
-                path_to_lobster_calc=os.getcwd(), requested_files=["structure", "doscar"], use_lso_dos=True
+                path_to_lobster_calc=Path.cwd(), requested_files=["structure", "doscar"], use_lso_dos=True
             )
         else:
-            req_files = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["structure", "doscar"])
+            req_files = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["structure", "doscar"])
 
         for arg_name in req_files:
             setattr(args, arg_name, req_files[arg_name])
@@ -1430,15 +1429,15 @@ def run(args):
 
     if args.action in ["plot-icohp-distance", "ploticohpdistance"]:
         if args.cobis:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icobilist"]).get("icobilist")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icobilist"]).get("icobilist")
             args.icohplist = filename
             options = {"are_cobis": True, "are_coops": False}
         elif args.coops:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icooplist"]).get("icooplist")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icooplist"]).get("icooplist")
             args.icohplist = filename
             options = {"are_cobis": False, "are_coops": True}
         else:
-            filename = get_file_paths(path_to_lobster_calc=os.getcwd(), requested_files=["icohplist"]).get("icohplist")
+            filename = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["icohplist"]).get("icohplist")
             args.icohplist = filename
             options = {"are_cobis": False, "are_coops": False}
 
