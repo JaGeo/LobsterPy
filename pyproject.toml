@@ -148,6 +148,8 @@ addopts = "-x --durations=30 --quiet -rxXs --color=yes -p no:warnings"
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
+    "def main()",
+    "main()",
     "if self.debug:",
     "if TYPE_CHECKING:",
     "if settings.DEBUG",
