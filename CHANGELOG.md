@@ -1,4 +1,13 @@
 # Changelog
+
+## v0.5.4
+Same as v0.5.3. with correct dependencies
+
+### What's Changed
+* Fix dependencies by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/364
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.5.3...v0.5.4
+
 ## v0.5.3
 Same as v0.5.1. Version number in 0.5.1 wasn't updated correctly
 
