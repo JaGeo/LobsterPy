@@ -1,4 +1,25 @@
 # Changelog
+## v0.5.1
+
+### What's Changed
+* Enhance icoxxlist plotter by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/343
+* Update README.md by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/345
+* pre-commit autoupdate by @pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/346
+* `matplotlib` use non-interactive agg backend by @DanielYang59 in https://github.com/JaGeo/LobsterPy/pull/349
+* Bump mendeleev from 0.18.1 to 0.19.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/347
+* Misc ci updates by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/350
+* fix artifacts version inconsistency by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/352
+* pre-commit autoupdate by @pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/353
+* Add new functions/methods to featurize module by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/330
+* Update test durations file by @github-actions in https://github.com/JaGeo/LobsterPy/pull/354
+* Bump mendeleev from 0.19.0 to 0.20.0 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/356
+* Bump mendeleev from 0.20.0 to 0.20.1 by @dependabot in https://github.com/JaGeo/LobsterPy/pull/358
+* pre-commit autoupdate by @pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/359
+* Cli updates by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/357
+* Fix codecov failure by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/361
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.5.0...v0.5.1
+
 
 ## v0.5.0
 ### What's Changed
