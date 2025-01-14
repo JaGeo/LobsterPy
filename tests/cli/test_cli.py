@@ -722,12 +722,16 @@ class TestCLI:
         run(test)
 
         os.chdir(TestDir / "test_data/NaCl_comp_range")
+        plot_path = tmp_path / "dos_plot.png"
         args = [
             "plot-dos",
+            "--saveplot",
+            str(plot_path),
         ]
 
         test = get_parser().parse_args(args)
         run(test)
+        self.assert_is_finite_file(plot_path)
 
     def test_cli_exceptions(self):
         # Calc files missing exception test
