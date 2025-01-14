@@ -1,4 +1,7 @@
 # Changelog
+## v0.5.3
+Same as v0.5.1. Version number in 0.5.1 wasn't updated correctly
+
 ## v0.5.1
 
 ### What's Changed
