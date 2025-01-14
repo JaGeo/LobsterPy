@@ -146,17 +146,18 @@ addopts = "-x --durations=30 --quiet -rxXs --color=yes -p no:warnings"
 
 [tool.coverage.report]
 exclude_lines = [
-  "pragma: no cover",
-  "def __repr__",
-  "if self.debug:",
-  "if settings.DEBUG",
-  "raise AssertionError",
-  "raise NotImplementedError",
-  "if 0:",
-  "if __name__ == .__main__.:",
-  "@deprecated",
-  "show_plot",
-  "if typing.TYPE_CHECKING:",
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if TYPE_CHECKING:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == __main__:",
+    "@deprecated",
+    "show_plot",
+    "if typing.TYPE_CHECKING:",
 ]
 
 [tool.coverage.run]
