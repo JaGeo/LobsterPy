@@ -37,7 +37,6 @@ dependencies = [
 [tool.setuptools.package-data]
 "lobsterpy.plotting" = ["lobsterpy_base.mplstyle"]
 
-
 [project.urls]
 homepage = "https://jageo.github.io/LobsterPy/"
 repository = "https://github.com/JaGeo/LobsterPy"
