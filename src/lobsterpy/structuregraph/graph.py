@@ -89,8 +89,7 @@ class LobsterGraph:
             self.additional_condition = 1
         else:
             raise ValueError(
-                "Only accepted values are 'all' and 'cation-anion'."
-                "Please check the input parameters of which_bonds arg"
+                "Only accepted values are 'all' and 'cation-anion'.Please check the input parameters of which_bonds arg"
             )
         self.start = start
 

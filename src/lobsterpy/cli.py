@@ -515,8 +515,7 @@ def get_parser() -> argparse.ArgumentParser:
         nargs="+",
         type=str,
         default=None,
-        help="Custom list of colors for the plot. "
-        "Should be equal to the number of unique atom pairs in the structure.",
+        help="Custom list of colors for the plot. Should be equal to the number of unique atom pairs in the structure.",
     )
     icohp_distance_plotter_group.add_argument(
         "-lprefix",

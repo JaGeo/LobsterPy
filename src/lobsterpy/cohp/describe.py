@@ -350,7 +350,7 @@ class Description:
                     + "-".join(atom_pair)
                     + f" {bonds}, relative to the summed I{type_pop}s, "
                     + f"no orbital has a bonding contribution greater than "
-                    f"{self.analysis_object.orbital_cutoff*100} percent"
+                    f"{self.analysis_object.orbital_cutoff * 100} percent"
                 )
             else:
                 num_bonds = len(orbital_resolved_data["orbital_data"]["relevant_bonds"])
@@ -779,8 +779,7 @@ class Description:
 
             elif key == "charge_spilling":
                 text_des.append(
-                    "The absolute and total charge spilling for the calculation is {} and {} %, "
-                    "respectively.".format(
+                    "The absolute and total charge spilling for the calculation is {} and {} %, respectively.".format(
                         quality_dict[key]["abs_charge_spilling"],
                         quality_dict[key]["abs_total_spilling"],
                     )
