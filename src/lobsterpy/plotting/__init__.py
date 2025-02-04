@@ -1124,14 +1124,14 @@ class IcohpDistancePlotter:
         atom_pairs = []
         atom_types = []
         orb_data = {}  # type: ignore
-        for indx, bond_label in enumerate(icohpcollection._list_labels):
+        for index, bond_label in enumerate(icohpcollection._list_labels):
             orb_data.update({bond_label: {}})
-            for k, v in icohpcollection._list_orb_icohp[indx].items():
+            for k, v in icohpcollection._list_orb_icohp[index].items():
                 orb_data[bond_label].update({k: sum(v["icohp"].values())})
-            icohps.append(sum(icohpcollection._list_icohp[indx].values()))
-            bond_len.append(icohpcollection._list_length[indx])
-            atom1 = icohpcollection._list_atom1[indx]
-            atom2 = icohpcollection._list_atom2[indx]
+            icohps.append(sum(icohpcollection._list_icohp[index].values()))
+            bond_len.append(icohpcollection._list_length[index])
+            atom1 = icohpcollection._list_atom1[index]
+            atom2 = icohpcollection._list_atom2[index]
             atom_pairs.append(atom1 + "-" + atom2)
             atom_types.append("-".join(sorted((atom1.strip("0123456789"), atom2.strip("0123456789")))))
 
