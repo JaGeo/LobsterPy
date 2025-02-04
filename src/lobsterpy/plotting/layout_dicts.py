@@ -25,7 +25,7 @@ layout_dict = {
 """
 General layout of Plotly figure.
 
-:param dict titlefont: Line style dictionary.
+:param dict title.font: Line style dictionary.
 :param bool showlegend: Legend hide or show.
 :param float title_x: x axis title size.
 :param float title_y: y axis title size.
@@ -52,7 +52,7 @@ cohp_axis_style_dict = {
 """
 COXX axis style.
 
-:param dict titlefont: axis title font style.
+:param dict title.font: axis title font style.
 :param dict tickfont: axis tick font style.
 :param str ticks: ticks style.
 :param float tickwidth: width of ticks.
@@ -84,7 +84,7 @@ energy_axis_style_dict = {
 """
 Energy axis style.
 
-:param dict titlefont: axis title font style.
+:param dict title.font: axis title font style.
 :param dict tickfont: axis tick font style.
 :param str ticks: ticks style.
 :param float tickwidth: width of ticks.
