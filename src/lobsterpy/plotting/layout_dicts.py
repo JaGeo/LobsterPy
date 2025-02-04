@@ -13,7 +13,7 @@ Contains dicts for
 """
 
 layout_dict = {
-    "titlefont": {"size": 18},
+    "title.font": {"size": 18},
     "showlegend": True,
     "title_x": 0.1,
     "title_y": 0.9,
@@ -25,7 +25,7 @@ layout_dict = {
 """
 General layout of Plotly figure.
 
-:param dict titlefont: Line style dictionary.
+:param dict title.font: Line style dictionary.
 :param bool showlegend: Legend hide or show.
 :param float title_x: x axis title size.
 :param float title_y: y axis title size.
@@ -35,7 +35,7 @@ General layout of Plotly figure.
 """
 
 cohp_axis_style_dict = {
-    "titlefont": {"size": 20},
+    "title.font": {"size": 20},
     "tickfont": {"size": 16},
     "ticks": "inside",
     "tickwidth": 2,
@@ -52,7 +52,7 @@ cohp_axis_style_dict = {
 """
 COXX axis style.
 
-:param dict titlefont: axis title font style.
+:param dict title.font: axis title font style.
 :param dict tickfont: axis tick font style.
 :param str ticks: ticks style.
 :param float tickwidth: width of ticks.
@@ -67,7 +67,7 @@ COXX axis style.
 """
 
 energy_axis_style_dict = {
-    "titlefont": {"size": 20},
+    "title.font": {"size": 20},
     "tickfont": {"size": 16},
     "ticks": "inside",
     "tickwidth": 2,
@@ -84,7 +84,7 @@ energy_axis_style_dict = {
 """
 Energy axis style.
 
-:param dict titlefont: axis title font style.
+:param dict title.font: axis title font style.
 :param dict tickfont: axis tick font style.
 :param str ticks: ticks style.
 :param float tickwidth: width of ticks.
