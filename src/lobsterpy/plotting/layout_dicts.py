@@ -13,7 +13,7 @@ Contains dicts for
 """
 
 layout_dict = {
-    "titlefont": {"size": 18},
+    "title.font": {"size": 18},
     "showlegend": True,
     "title_x": 0.1,
     "title_y": 0.9,
@@ -35,7 +35,7 @@ General layout of Plotly figure.
 """
 
 cohp_axis_style_dict = {
-    "titlefont": {"size": 20},
+    "title.font": {"size": 20},
     "tickfont": {"size": 16},
     "ticks": "inside",
     "tickwidth": 2,
@@ -67,7 +67,7 @@ COXX axis style.
 """
 
 energy_axis_style_dict = {
-    "titlefont": {"size": 20},
+    "title.font": {"size": 20},
     "tickfont": {"size": 16},
     "ticks": "inside",
     "tickwidth": 2,
