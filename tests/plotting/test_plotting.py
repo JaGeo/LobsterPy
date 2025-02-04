@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 from pathlib import Path
 
 import numpy as np
@@ -47,7 +48,7 @@ class TestInteractiveCohpPlotter:
             og_visible.append(og_trace.visible)
             ref_visible.append(ref_trace.visible)
             og_x.append(list(og_trace.x))
-            ref_x.append(list(ref_trace.x))
+            ref_x.append(list(np.frombuffer(base64.b64decode(ref_trace.x["bdata"]), dtype=np.float64)))
             og_y.append(list(og_trace.y))
             ref_y.append(list(ref_trace.y))
 
@@ -89,9 +90,9 @@ class TestInteractiveCohpPlotter:
             og_visible.append(og_trace.visible)
             ref_visible.append(ref_trace.visible)
             og_x.append(list(og_trace.x))
-            ref_x.append(list(ref_trace.x))
+            ref_x.append(list(np.frombuffer(base64.b64decode(ref_trace.x["bdata"]), dtype=np.float64)))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
@@ -132,7 +133,7 @@ class TestInteractiveCohpPlotter:
             og_x.append(list(og_trace.x))
             ref_x.append(list(ref_trace.x))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
@@ -172,7 +173,7 @@ class TestInteractiveCohpPlotter:
             og_x.append(list(og_trace.x))
             ref_x.append(list(ref_trace.x))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
@@ -207,9 +208,9 @@ class TestInteractiveCohpPlotter:
             og_visible.append(og_trace.visible)
             ref_visible.append(ref_trace.visible)
             og_x.append(list(og_trace.x))
-            ref_x.append(list(ref_trace.x))
+            ref_x.append(list(np.frombuffer(base64.b64decode(ref_trace.x["bdata"]), dtype=np.float64)))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
@@ -250,9 +251,9 @@ class TestInteractiveCohpPlotter:
             og_visible.append(og_trace.visible)
             ref_visible.append(ref_trace.visible)
             og_x.append(list(og_trace.x))
-            ref_x.append(list(ref_trace.x))
+            ref_x.append(list(np.frombuffer(base64.b64decode(ref_trace.x["bdata"]), dtype=np.float64)))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
@@ -288,7 +289,7 @@ class TestInteractiveCohpPlotter:
             og_x.append(list(og_trace.x))
             ref_x.append(list(ref_trace.x))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
@@ -321,7 +322,7 @@ class TestInteractiveCohpPlotter:
             og_x.append(list(og_trace.x))
             ref_x.append(list(ref_trace.x))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
@@ -359,7 +360,7 @@ class TestInteractiveCohpPlotter:
             og_x.append(list(og_trace.x))
             ref_x.append(list(ref_trace.x))
             og_y.append(og_trace.y.tolist())
-            ref_y.append(list(ref_trace.y))
+            ref_y.append(list(np.frombuffer(base64.b64decode(ref_trace.y["bdata"]), dtype=np.float64)))
 
         assert sorted(og_name) == sorted(ref_name)
         assert og_line == ref_line
