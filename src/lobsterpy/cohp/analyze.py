@@ -411,11 +411,11 @@ class Analysis:
                 labels[inx].append(bond_info.labels[ixx])
 
         label_data = {}
-        for indx, atom_pairs in enumerate(bonds):
+        for index, atom_pairs in enumerate(bonds):
             searched_atom_pairs = set(atom_pairs)
             for search_item in searched_atom_pairs:
                 indices = [i for i, pair in enumerate(atom_pairs) if pair == search_item]
-                filtered_bond_label_list = [labels[indx][i] for i in indices]
+                filtered_bond_label_list = [labels[index][i] for i in indices]
                 label_data.update({search_item: filtered_bond_label_list})
 
         return label_data
