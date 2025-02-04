@@ -10,7 +10,7 @@ default_language_version:
   python: python3
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.8.6
+  rev: v0.9.4
   hooks:
   - id: ruff
     args: [--fix]
@@ -46,13 +46,13 @@ repos:
     - types-pkg_resources==0.1.2
     - types-paramiko
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.3.0
+  rev: v2.4.1
   hooks:
   - id: codespell
     stages: [pre-commit, commit-msg]
     args: [--ignore-words-list, 'titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo']
     types_or: [python, rst, markdown]
 - repo: https://github.com/RobertCraigie/pyright-python
-  rev: v1.1.391
+  rev: v1.1.393
   hooks:
     - id: pyright

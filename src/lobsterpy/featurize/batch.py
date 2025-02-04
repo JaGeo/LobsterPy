@@ -87,8 +87,7 @@ class BatchSummaryFeaturizer:
         for param, param_string in zip([charge_type, bonds, feature_type], ["charge_type", "bonds", "feature_type"]):
             if param not in allowed_str_inputs[param_string]:
                 raise ValueError(
-                    f"Parameter {param_string} set to {param} but must be in "
-                    f"{list(allowed_str_inputs[param_string])}."
+                    f"Parameter {param_string} set to {param} but must be in {list(allowed_str_inputs[param_string])}."
                 )
 
         self.path_to_lobster_calcs = path_to_lobster_calcs
