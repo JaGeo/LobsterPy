@@ -1295,6 +1295,7 @@ def run(args):
         optional_files = {
             "bandoverlaps": "bandOverlaps.lobster",
             "potcar": "POTCAR",
+            "vasprun": "vasprun.xml",
         }
 
         for arg_name in optional_files:
