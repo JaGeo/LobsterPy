@@ -9,8 +9,13 @@ from pathlib import Path
 from typing import NamedTuple
 from warnings import warn
 
+try:
+    from mendeleev import element
+except ImportError:
+    element = None
+
 import numpy as np
-from mendeleev import element
+from monty.dev import requires
 from monty.os.path import zpath
 
 POSCAR_WARNING = (
@@ -130,6 +135,10 @@ def get_structure_path(lobster_path: Path) -> Path:
     raise Exception
 
 
+@requires(
+    element is not None,
+    "get_reduced_mass requires mendeleev. Reinstall package with `pip install lobsterpy[featurizer]`.",
+)
 def get_reduced_mass(atom_pair: list[str]) -> float:
     """
     Compute reduced mass between a pair of atoms.
@@ -143,6 +152,10 @@ def get_reduced_mass(atom_pair: list[str]) -> float:
     return (atom1.atomic_weight * atom2.atomic_weight) / (atom1.atomic_weight + atom2.atomic_weight)
 
 
+@requires(
+    element is not None,
+    "get_electronegativities requires mendeleev. Reinstall package with `pip install lobsterpy[featurizer]`.",
+)
 def get_electronegativities(atom_pair: list[str]) -> list[float]:
     """
     Get Allen electronegativities for a pair of atoms.
