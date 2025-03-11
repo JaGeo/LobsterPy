@@ -9,6 +9,11 @@ from pathlib import Path
 from typing import NamedTuple
 from warnings import warn
 
+try:
+    from mendeleev import element
+except ImportError:
+    element = None
+
 import numpy as np
 from monty.dev import requires
 from monty.os.path import zpath
@@ -131,7 +136,8 @@ def get_structure_path(lobster_path: Path) -> Path:
 
 
 @requires(
-    "mendeleev", "get_reduced_mass requires mendeleev. Reinstall package with `pip install lobsterpy[featurizer]`."
+    element is not None,
+    "get_reduced_mass requires mendeleev. Reinstall package with `pip install lobsterpy[featurizer]`.",
 )
 def get_reduced_mass(atom_pair: list[str]) -> float:
     """
@@ -141,15 +147,13 @@ def get_reduced_mass(atom_pair: list[str]) -> float:
 
     :return: reduced mass
     """
-    from mendeleev import element
-
     atom1 = element(atom_pair[0])
     atom2 = element(atom_pair[1])
     return (atom1.atomic_weight * atom2.atomic_weight) / (atom1.atomic_weight + atom2.atomic_weight)
 
 
 @requires(
-    "mendeleev",
+    element is not None,
     "get_electronegativities requires mendeleev. Reinstall package with `pip install lobsterpy[featurizer]`.",
 )
 def get_electronegativities(atom_pair: list[str]) -> list[float]:
@@ -160,8 +164,6 @@ def get_electronegativities(atom_pair: list[str]) -> list[float]:
 
     :return: list of Allen electronegativities
     """
-    from mendeleev import element
-
     atom1 = element(atom_pair[0])
     atom2 = element(atom_pair[1])
     return [atom1.electronegativity_allen(), atom2.electronegativity_allen()]

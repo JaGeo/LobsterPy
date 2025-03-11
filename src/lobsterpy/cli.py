@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import warnings
 from math import log, sqrt
 from pathlib import Path
 
@@ -20,20 +19,7 @@ from pymatgen.io.lobster import Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
-
-try:
-    from lobsterpy.featurize.core import FeaturizeIcoxxlist
-
-except ModuleNotFoundError:
-    FeaturizeIcoxxlist = None
-    warnings.warn(
-        "plot-bwdf action is not available as the "
-        "dependencies needed for the featurize module is not installed. "
-        "To enable this action reinstall the package with "
-        "`pip install lobsterpy[featurizer]` command.",
-        stacklevel=1,
-    )
-
+from lobsterpy.featurize.core import FeaturizeIcoxxlist
 from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
     BWDFPlotter,

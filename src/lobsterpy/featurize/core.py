@@ -14,7 +14,12 @@ from typing import Literal
 
 import numpy as np
 import pandas as pd
-from mendeleev import element
+
+try:
+    from mendeleev import element
+except ImportError:
+    element = None
+from monty.dev import requires
 from numpy import ndarray
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
@@ -875,6 +880,10 @@ class FeaturizeCOXX:
         return df
 
 
+@requires(
+    element is not None,
+    "FeaturizeCharges requires mendeleev. Reinstall package with `pip install lobsterpy[featurizer]`.",
+)
 class FeaturizeCharges:
     """
     Class to compute Ionicity from CHARGE.lobster data.
