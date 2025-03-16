@@ -61,14 +61,8 @@ jobs:
         python-version:  '3.10'
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install flake8 pytest pytest-mock
-        python -m pip install types-setuptools
-        python -m pip install coverage
-        pip install -e .[featurizer]
-        pip install build
-    - name: Build package
-      run: python -m build
+          pip install build
+          python -m build
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@v1.8.14
       with:
