@@ -8,8 +8,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["lobsterpy*"]
-#exclude = ["docs*", "tests*", "paper*"]
 
 [project]
 name = "lobsterpy"
