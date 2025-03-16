@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.5.5
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## What's Changed
+### 🐛 Bug Fixes
+* Update plotly test data by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/369
+* fix vasprun.xml gz file issue by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/376
+* Fix optional dependencies related errors by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/383
+### 🧹 House-Keeping
+* CI updates by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/377
+### 🔄 Other Changes
+* pre-commit autoupdate by @pre-commit-ci in https://github.com/JaGeo/LobsterPy/pull/366
+
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.5.4...v0.5.5
+
+
 ## v0.5.4
 Same as v0.5.3. with correct dependencies
 
