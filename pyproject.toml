@@ -6,10 +6,6 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["lobsterpy*"]
-#exclude = ["docs*", "tests*", "paper*"]
 
 [project]
 name = "lobsterpy"
@@ -33,6 +29,9 @@ dependencies = [
      "pymatgen>=2024.10.22",
      "numpy<3.0.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.package-data]
 "lobsterpy.plotting" = ["lobsterpy_base.mplstyle"]
