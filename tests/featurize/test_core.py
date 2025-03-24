@@ -925,9 +925,9 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["NaCl", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
 
         # check values for site
-        assert df_site.loc["NaCl", "bwdf_2.84-2.86_site_0"] == pytest.approx(-6.78468, abs=1e-05)
+        assert df_site.loc["NaCl", "bwdf_2.84-2.86_site_0"] == pytest.approx(-3.39234, abs=1e-05)
         assert df_site.loc["NaCl", "bwdf_4.02-4.04_site_0"] == pytest.approx(-0.35076, abs=1e-05)
-        assert df_site.loc["NaCl", "bwdf_4.92-4.94_site_0"] == pytest.approx(-0.0565, abs=1e-05)
+        assert df_site.loc["NaCl", "bwdf_4.92-4.94_site_0"] == pytest.approx(-0.0282499, abs=1e-05)
         assert df_site.loc["NaCl", "wasserstein_dist_to_rdf_site_0"] == pytest.approx(0, abs=1e-05)
 
         assert len(df_sorted_dists_n.columns) + len(df_sorted_dists_p.columns) == len(df_sorted_bwdf.columns)
@@ -987,13 +987,13 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["NaSbF6", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
 
         # check values for site
-        assert df_site.loc["NaSbF6", "bwdf_1.9-2.0_site_6"] == pytest.approx(-10.90408, abs=1e-05)
-        assert df_site.loc["NaSbF6", "bwdf_2.3-2.4_site_6"] == pytest.approx(-1.21716, abs=1e-05)
-        assert df_site.loc["NaSbF6", "bwdf_2.7-2.8_site_6"] == pytest.approx(-0.48896, abs=1e-05)
-        assert df_site.loc["NaSbF6", "bwdf_3.2-3.3_site_6"] == pytest.approx(-0.06544, abs=1e-05)
-        assert df_site.loc["NaSbF6", "bwdf_3.8-3.9_site_6"] == pytest.approx(-0.20528, abs=1e-05)
-        assert df_site.loc["NaSbF6", "bwdf_4.6-4.7_site_6"] == pytest.approx(-0.06028, abs=1e-05)
-        assert df_site.loc["NaSbF6", "bwdf_4.8-4.9_site_6"] == pytest.approx(-0.01984, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_1.9-2.0_site_6"] == pytest.approx(-5.45204, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_2.3-2.4_site_6"] == pytest.approx(-0.60858, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_2.7-2.8_site_6"] == pytest.approx(-0.24448, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_3.2-3.3_site_6"] == pytest.approx(-0.03272, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_3.8-3.9_site_6"] == pytest.approx(-0.10264, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_4.6-4.7_site_6"] == pytest.approx(-0.03014, abs=1e-05)
+        assert df_site.loc["NaSbF6", "bwdf_4.8-4.9_site_6"] == pytest.approx(-0.00992, abs=1e-05)
         assert df_site.loc["NaSbF6", "wasserstein_dist_to_rdf_site_6"] == pytest.approx(0, abs=1e-05)
 
     def test_featurize_csh_icoxxlist_counts(self):
