@@ -1248,9 +1248,7 @@ class FeaturizeIcoxxlist:
             pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
 
             relevant_site_indices = [
-                ix
-                for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
-                if org == site_index or dest == site_index
+                ix for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1])) if org == site_index
             ]
             rdf_distances = [round(dist, 5) for ix, dist in enumerate(rdf_nb_lst[3]) if ix in relevant_site_indices]
             rdf_trans = [[int(i) for i in img] for ix, img in enumerate(rdf_nb_lst[2]) if ix in relevant_site_indices]
