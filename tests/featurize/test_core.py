@@ -914,7 +914,7 @@ class TestFeaturizeIcoxxlist:
         assert isinstance(bwdf_dict_label, dict)
 
         # check values
-        assert len(df.columns) == 301
+        assert len(df.columns) == 300
         assert np.sum(df.loc["NaCl"].to_numpy() * featurize_nacl_icoxxlist.bin_width) != 1
         assert bwdf_dict_label["12"]["icoxx_binned"][201] == pytest.approx(-0.02923, abs=1e-05)
 
@@ -922,13 +922,11 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["NaCl", "bwdf_4.02-4.04"] == pytest.approx(-0.68946, abs=1e-05)
         assert df.loc["NaCl", "bwdf_4.92-4.94"] == pytest.approx(-0.05649, abs=1e-05)
         assert df.loc["NaCl", "bwdf_5.68-5.7"] == pytest.approx(-0.07998, abs=1e-05)
-        assert df.loc["NaCl", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
 
         # check values for site
         assert df_site.loc["NaCl", "bwdf_2.84-2.86_site_0"] == pytest.approx(-3.39234, abs=1e-05)
         assert df_site.loc["NaCl", "bwdf_4.02-4.04_site_0"] == pytest.approx(-0.35076, abs=1e-05)
         assert df_site.loc["NaCl", "bwdf_4.92-4.94_site_0"] == pytest.approx(-0.0282499, abs=1e-05)
-        assert df_site.loc["NaCl", "wasserstein_dist_to_rdf_site_0"] == pytest.approx(0, abs=1e-05)
 
         assert len(df_sorted_dists_n.columns) + len(df_sorted_dists_p.columns) == len(df_sorted_bwdf.columns)
 
@@ -948,16 +946,14 @@ class TestFeaturizeIcoxxlist:
         assert isinstance(df_site, pd.DataFrame)
 
         # check values
-        assert len(df.columns) == 601
+        assert len(df.columns) == 600
         assert np.sum(df.loc["K3Sb"].to_numpy() * featurize_k3sb_icoxxlist.bin_width) == pytest.approx(1, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_3.7-3.71"] == pytest.approx(73.959533, abs=1e-05)
         assert df.loc["K3Sb", "bwdf_4.28-4.29"] == pytest.approx(26.040466, abs=1e-05)
-        assert df.loc["K3Sb", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
 
         # check values for site
         assert df_site.loc["K3Sb", "bwdf_3.7-3.71_site_2"] == pytest.approx(91.60298, abs=1e-05)
         assert df_site.loc["K3Sb", "bwdf_4.28-4.29_site_2"] == pytest.approx(8.39702, abs=1e-05)
-        assert df_site.loc["K3Sb", "wasserstein_dist_to_rdf_site_2"] == pytest.approx(0, abs=1e-05)
 
     def test_featurize_nasbf6_icoxxlist_none(self):
         featurize_nasbf6_icoxxlist = FeaturizeIcoxxlist(
@@ -975,7 +971,7 @@ class TestFeaturizeIcoxxlist:
         assert isinstance(df_site, pd.DataFrame)
 
         # check values (complete)
-        assert len(df.columns) == 61
+        assert len(df.columns) == 60
         assert df.loc["NaSbF6", "bwdf_1.9-2.0"] == pytest.approx(-65.42447, abs=1e-05)
         assert df.loc["NaSbF6", "bwdf_2.3-2.4"] == pytest.approx(-7.30296, abs=1e-05)
         assert df.loc["NaSbF6", "bwdf_2.7-2.8"] == pytest.approx(-1.46688, abs=1e-05)
@@ -984,7 +980,6 @@ class TestFeaturizeIcoxxlist:
         assert df.loc["NaSbF6", "bwdf_4.2-4.3"] == pytest.approx(-0.20135, abs=1e-05)
         assert df.loc["NaSbF6", "bwdf_4.6-4.7"] == pytest.approx(-0.30995, abs=1e-05)
         assert df.loc["NaSbF6", "bwdf_4.8-4.9"] == pytest.approx(-0.11903, abs=1e-05)
-        assert df.loc["NaSbF6", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
 
         # check values for site
         assert df_site.loc["NaSbF6", "bwdf_1.9-2.0_site_6"] == pytest.approx(-5.45204, abs=1e-05)
@@ -994,7 +989,6 @@ class TestFeaturizeIcoxxlist:
         assert df_site.loc["NaSbF6", "bwdf_3.8-3.9_site_6"] == pytest.approx(-0.10264, abs=1e-05)
         assert df_site.loc["NaSbF6", "bwdf_4.6-4.7_site_6"] == pytest.approx(-0.03014, abs=1e-05)
         assert df_site.loc["NaSbF6", "bwdf_4.8-4.9_site_6"] == pytest.approx(-0.00992, abs=1e-05)
-        assert df_site.loc["NaSbF6", "wasserstein_dist_to_rdf_site_6"] == pytest.approx(0, abs=1e-05)
 
     def test_featurize_csh_icoxxlist_counts(self):
         featurize_csh_icoxxlist = FeaturizeIcoxxlist(
@@ -1012,7 +1006,7 @@ class TestFeaturizeIcoxxlist:
         assert isinstance(df_stats, pd.DataFrame)
 
         # check values (complete)
-        assert len(df.columns) == 61
+        assert len(df.columns) == 60
         assert df.loc["CsH", "bwdf_3.3-3.4"] == pytest.approx(-0.080194, abs=1e-05)
         assert df.loc["CsH", "bwdf_3.8-3.9"] == pytest.approx(-0.61476, abs=1e-05)
         assert df.loc["CsH", "bwdf_5.4-5.5"] == pytest.approx(-0.0663, abs=1e-05)
@@ -1027,7 +1021,6 @@ class TestFeaturizeIcoxxlist:
         assert df_stats.loc["CsH", "bwdf_kurtosis"] == pytest.approx(51.871112, abs=1e-05)
         assert df_stats.loc["CsH", "bwdf_w_mean"] == pytest.approx(-0.510679, abs=1e-05)
         assert df_stats.loc["CsH", "bwdf_w_std"] == pytest.approx(0.213234, abs=1e-05)
-        assert df_stats.loc["CsH", "wasserstein_dist_to_rdf"] == pytest.approx(0, abs=1e-05)
 
     def test_featurize_mp463_icoxxlist_sorting(self):  # Added to have both pos. and neg. BWDF values
         featurize_mp463_icoxxlist = FeaturizeIcoxxlist(
