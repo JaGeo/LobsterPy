@@ -1625,6 +1625,37 @@ class FeaturizeIcoxxlist:
 
         return bwdf
 
+    def get_asymmetry_index_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with asymmetry index statistical information as columns.
+
+        Args:
+              ids: set the index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with asymmetry index statistical information as columns.
+            Columns include sum, mean, std, min, and max.
+        """
+        asymmetry_indices = []
+
+        for site_index in range(self.structure.num_sites):
+            asymmetry_indices.append(self.calc_site_asymmetry_index(site_index))
+
+        column_names = ["asi_sum", "asi_mean", "asi_std", "asi_min", "asi_max"]
+
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        df.loc[ids, "asi_sum"] = np.sum(asymmetry_indices)
+        df.loc[ids, "asi_mean"] = np.mean(asymmetry_indices)
+        df.loc[ids, "asi_std"] = np.std(asymmetry_indices)
+        df.loc[ids, "asi_min"] = np.min(asymmetry_indices)
+        df.loc[ids, "asi_max"] = np.max(asymmetry_indices)
+
+        return df
+
     def get_binned_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
         """Return a pandas dataframe with computed BWDF features as columns.
 
