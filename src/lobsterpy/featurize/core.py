@@ -1203,7 +1203,7 @@ class FeaturizeIcoxxlist:
         """
         Get the neighbors data with icoxx values for a structure.
 
-        Uses distance based neighbor list as reference to map the neighbor's data.
+        Uses distance-based neighbor list as reference to map the neighbor's data.
 
         Args:
             site_index: index of the site for which neighbors data is returned. Default is None (All sites).
@@ -1408,6 +1408,39 @@ class FeaturizeIcoxxlist:
         # Normalize BWDF data
         return self._normalize_bwdf(bwdf=bwdf_atom_pair)
 
+    def calc_site_asymmetry_index(self, site_index: int) -> float:
+        """
+        Compute the asymmetry index for a site using bond strengths as weights.
+
+        Args:
+            site_index: index of the site for which the asymmetry index needs to be computed
+
+        References:
+            - F. Belli, E. Zurek, I. Errea, 2025, DOI 10.48550/arXiv.2501.14420
+
+        Returns:
+            float:
+            Asymmetry index for the site
+        """
+        if site_index not in range(self.structure.num_sites):
+            raise ValueError(f"{site_index} is not a valid site index for the structure")
+
+        # Get all neighbors data in a single list
+        icoxx_neighbors_data = self.get_icoxx_neighbors_data(site_index=site_index)["mapped_icoxx_data"]
+
+        # Calculate the asymmetry index
+        icoxxs_x_y_z = []
+        for pair in icoxx_neighbors_data:
+            src_dst = [int("".join(filter(str.isdigit, p))) - 1 for p in pair[0]]
+            src = src_dst[0]
+            dst = src_dst[1]
+            cart_dst = self.structure.lattice.get_cartesian_coords(self.structure[dst].frac_coords + np.array(pair[2]))
+            cart_src = self.structure[src].coords
+            unit_vec = (cart_dst - cart_src) / pair[1]
+            icoxxs_x_y_z.append(pair[-1] * unit_vec)
+
+        return np.linalg.norm(np.mean(icoxxs_x_y_z, axis=0))
+
     def calc_site_bwdf(self, site_index: int) -> dict:
         """
         Compute BWDF from ICOXXLIST.lobster data for a site.
@@ -1590,7 +1623,7 @@ class FeaturizeIcoxxlist:
 
         Args:
             site_index: index of the site in a structure for which BWDF needs to be computed
-            ids: set index name in the pandas dataframe. Default is None.
+            ids: set the index name in the pandas dataframe. Default is None.
 
         Returns:
             A pandas dataframe object with BWDF as columns for a site. Each column contains
@@ -1612,10 +1645,10 @@ class FeaturizeIcoxxlist:
         return df
 
     def get_stats_df(self, ids: str | None = None) -> pd.DataFrame:
-        """Return a pandas dataframe with statical info from BWDF as columns.
+        """Return a pandas dataframe with statistical info from BWDF as columns.
 
         Args:
-              ids: set index name in the pandas dataframe. Default is None.
+              ids: set the index name in the pandas dataframe. Default is None.
 
         Returns:
             A pandas dataframe object with BWDF statistical information as columns.
@@ -1660,7 +1693,7 @@ class FeaturizeIcoxxlist:
         """Return a pandas dataframe with BWDF values sorted by distances, ascending.
 
         Args:
-            ids: set index name in the pandas dataframe. Default is None.
+            ids: set the index name in the pandas dataframe. Default is None.
 
         Returns:
             A pandas dataframe object with binned BWDF values sorted by distance.
@@ -1679,7 +1712,7 @@ class FeaturizeIcoxxlist:
         (either only positive or negative),  sorted descending by absolute values.
 
         Args:
-            ids: set index name in the pandas dataframe. Default is None
+            ids: set the index name in the pandas dataframe. Default is None
             mode: must be in ("positive", "negative"), defines whether BWDF values above or
                 below zero are considered for distance featurization.
 
