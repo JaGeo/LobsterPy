@@ -24,7 +24,7 @@ from numpy import ndarray
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.io.lobster import Charge, Doscar, Icohplist, MadelungEnergies
+from pymatgen.io.lobster import Charge, Doscar, Grosspop, Icohplist, MadelungEnergies
 from scipy.integrate import trapezoid
 from scipy.signal import hilbert
 from scipy.stats import kurtosis, skew, wasserstein_distance
@@ -1149,10 +1149,12 @@ class FeaturizeIcoxxlist:
 
     :param path_to_icoxxlist: path to ICOXXLIST.lobster
     :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
+    :param path_to_grosspop : path to GROSSPOP.lobster
     :param bin_width: bin width for the BWDF
     :param interactions_tol: tolerance for interactions
     :param max_length: maximum bond length for BWDF computation
     :param min_length: minimum bond length for BWDF computation
+    :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons
     :param normalization: normalization strategy for BWDF
     :param are_cobis: bool indicating if file contains COBI/ICOBI data
     :param are_coops: bool indicating if file contains COOP/ICOOP data
@@ -1162,10 +1164,12 @@ class FeaturizeIcoxxlist:
         self,
         path_to_icoxxlist: str | Path,
         path_to_structure: str | Path,
+        path_to_grosspop: str | Path | None = None,
         bin_width: float = 0.02,
         interactions_tol: float = 1e-3,
         max_length: float = 6.0,
         min_length: float = 0.0,
+        n_electrons_scaling: bool = False,
         normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
         are_cobis: bool = False,
         are_coops: bool = False,
@@ -1175,16 +1179,19 @@ class FeaturizeIcoxxlist:
 
         :param path_to_icoxxlist: path to ICOXXLIST.lobster
         :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
+        :param path_to_grosspop: path to GROSSPOP.lobster
         :param bin_width: bin width for the BWDF
         :param interactions_tol: numerical tolerance considered for interactions to be insignificant
         :param max_length: maximum bond length for BWDF computation
         :param min_length: minimum bond length for BWDF computation
+        :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons
         :param normalization: normalization strategy for BWDF
         :param are_cobis: bool indicating if file contains COBI/ICOBI data
         :param are_coops: bool indicating if file contains COOP/ICOOP data
         """
         self.path_to_icoxxlist = path_to_icoxxlist
         self.path_to_structure = path_to_structure
+        self.path_to_grosspop = path_to_grosspop
         self.bin_width = bin_width
         self.are_cobis = are_cobis
         self.are_coops = are_coops
@@ -1193,17 +1200,19 @@ class FeaturizeIcoxxlist:
             are_cobis=self.are_cobis,
             are_coops=self.are_coops,
         )
+        self.grosspop = Grosspop(filename=self.path_to_grosspop) if self.path_to_grosspop else None
         self.interactions_tol = interactions_tol
         self.structure = Structure.from_file(self.path_to_structure)
         self.max_length = max_length
         self.min_length = min_length
+        self.n_electrons_scaling = n_electrons_scaling
         self.normalization = normalization
 
     def get_icoxx_neighbors_data(self, site_index: int | None = None) -> dict:
         """
         Get the neighbors data with icoxx values for a structure.
 
-        Uses distance-based neighbor list as reference to map the neighbor's data.
+        Uses a distance-based neighbor list as reference to map the neighbor's data.
 
         Args:
             site_index: index of the site for which neighbors data is returned. Default is None (All sites).
@@ -1247,6 +1256,18 @@ class FeaturizeIcoxxlist:
             trans = [list(item) for item in np.array(self.icoxxlist.icohpcollection._list_translation)[indices]]
             pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
 
+            if self.n_electrons_scaling and self.grosspop:
+                atom_1_index = np.array([int("".join(filter(str.isdigit, at1))) - 1 for at1 in atoms1])
+                atom_2_index = np.array([int("".join(filter(str.isdigit, at2))) - 1 for at2 in atoms2])
+                pair_n_electrons = np.array(
+                    [
+                        self.grosspop.list_dict_grosspop[at1]["Loewdin GP"]["total"]
+                        + self.grosspop.list_dict_grosspop[at2]["Loewdin GP"]["total"]
+                        for at1, at2 in zip(atom_1_index, atom_2_index)
+                    ]
+                )
+                icoxxs = (np.array(icoxxs) / pair_n_electrons).tolist()
+
             relevant_site_indices = [
                 ix for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1])) if org == site_index
             ]
@@ -1265,6 +1286,18 @@ class FeaturizeIcoxxlist:
             icoxxs = [sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp]
             trans = [list(item) for item in self.icoxxlist.icohpcollection._list_translation]
             pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
+
+            if self.n_electrons_scaling and self.grosspop:
+                atom_1_index = np.array([int("".join(filter(str.isdigit, at1))) - 1 for at1 in atoms1])
+                atom_2_index = np.array([int("".join(filter(str.isdigit, at2))) - 1 for at2 in atoms2])
+                pair_n_electrons = np.array(
+                    [
+                        self.grosspop.list_dict_grosspop[at1]["Loewdin GP"]["total"]
+                        + self.grosspop.list_dict_grosspop[at2]["Loewdin GP"]["total"]
+                        for at1, at2 in zip(atom_1_index, atom_2_index)
+                    ]
+                )
+                icoxxs = (np.array(icoxxs) / pair_n_electrons).tolist()
 
             rdf_distances = [round(dist, 5) for dist in rdf_nb_lst[3]]
             rdf_trans = [[int(i) for i in img] for img in rdf_nb_lst[2]]
@@ -1614,8 +1647,6 @@ class FeaturizeIcoxxlist:
         for icoxx_weight, col in zip(bwdf["summed"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
 
-        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
-
         return df
 
     def get_site_df(self, site_index: int, ids: str | None = None) -> pd.DataFrame:
@@ -1639,8 +1670,6 @@ class FeaturizeIcoxxlist:
 
         for icoxx_weight, col in zip(site_bwdf[f"{site_index}"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
-
-        df[f"wasserstein_dist_to_rdf_site_{site_index}"] = site_bwdf["wasserstein_dist_to_rdf"]
 
         return df
 
@@ -1685,7 +1714,6 @@ class FeaturizeIcoxxlist:
         df.loc[ids, "bwdf_max"] = np.max(bwdf["summed"]["icoxx_binned"])
         df.loc[ids, "bwdf_skew"] = skew(bwdf["summed"]["icoxx_binned"])
         df.loc[ids, "bwdf_kurtosis"] = kurtosis(bwdf["summed"]["icoxx_binned"])
-        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
 
         return df
 
