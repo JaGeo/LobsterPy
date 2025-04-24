@@ -1149,7 +1149,7 @@ class FeaturizeIcoxxlist:
 
     :param path_to_icoxxlist: path to ICOXXLIST.lobster
     :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
-    :param path_to_grosspop : path to GROSSPOP.lobster
+    :param path_to_grosspop: path to GROSSPOP.lobster
     :param bin_width: bin width for the BWDF
     :param interactions_tol: tolerance for interactions
     :param max_length: maximum bond length for BWDF computation
@@ -1212,7 +1212,7 @@ class FeaturizeIcoxxlist:
         """
         Get the neighbors data with icoxx values for a structure.
 
-        Uses a distance-based neighbor list as reference to map the neighbor's data.
+        Uses a distance based neighbor list as reference to map the neighbor's data.
 
         Args:
             site_index: index of the site for which neighbors data is returned. Default is None (All sites).
@@ -1452,7 +1452,6 @@ class FeaturizeIcoxxlist:
             - F. Belli, E. Zurek, I. Errea, 2025, DOI 10.48550/arXiv.2501.14420
 
         Returns:
-            float:
             Asymmetry index for the site
         """
         if site_index not in range(self.structure.num_sites):
