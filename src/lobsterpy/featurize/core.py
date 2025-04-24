@@ -1703,6 +1703,197 @@ class FeaturizeIcoxxlist:
 
         return df
 
+    def get_site_bwdf_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas datafram with mean and std from sitewise BWDFs.
+
+        Args:
+            ids: set the index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical information as columns.
+            The columns include the mean and standard deviation calculated from the
+            sitewise BWDFs stats (i.e., sum, mean, minimum, maximum, std, skewness, and kurtosis).
+        """
+        column_names = [
+            "site_bwdf_sum_mean",
+            "site_bwdf_mean_mean",
+            "site_bwdf_std_mean",
+            "site_bwdf_min_mean",
+            "site_bwdf_max_mean",
+            "site_bwdf_skew_mean",
+            "site_bwdf_kurtosis_mean",
+            "site_bwdf_sum_std",
+            "site_bwdf_mean_std",
+            "site_bwdf_std_std",
+            "site_bwdf_min_std",
+            "site_bwdf_max_std",
+            "site_bwdf_skew_std",
+            "site_bwdf_kurtosis_std",
+        ]
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        bwdf_sums = []
+        bwdf_means = []
+        bwdf_stds = []
+        bwdf_mins = []
+        bwdf_maxs = []
+        bwdf_skews = []
+        bwdf_kurtosis = []
+        for site_index in range(self.structure.num_sites):
+            site_bwdf = self.calc_site_bwdf(site_index=site_index)
+
+            bwdf_sums.append(
+                np.sum(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.sum(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_means.append(
+                np.mean(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.mean(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_stds.append(
+                np.std(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.std(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_mins.append(
+                np.min(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.min(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_maxs.append(
+                np.max(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.max(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_skews.append(
+                skew(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(skew(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_kurtosis.append(
+                kurtosis(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(kurtosis(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+
+        df.loc[ids, "site_bwdf_sum_mean"] = np.mean(bwdf_sums)
+        df.loc[ids, "site_bwdf_mean_mean"] = np.mean(bwdf_means)
+        df.loc[ids, "site_bwdf_std_mean"] = np.mean(bwdf_stds)
+        df.loc[ids, "site_bwdf_min_mean"] = np.mean(bwdf_mins)
+        df.loc[ids, "site_bwdf_max_mean"] = np.mean(bwdf_maxs)
+        df.loc[ids, "site_bwdf_skew_mean"] = np.mean(bwdf_skews)
+        df.loc[ids, "site_bwdf_kurtosis_mean"] = np.mean(bwdf_kurtosis)
+        df.loc[ids, "site_bwdf_sum_std"] = np.std(bwdf_sums)
+        df.loc[ids, "site_bwdf_mean_std"] = np.std(bwdf_means)
+        df.loc[ids, "site_bwdf_std_std"] = np.std(bwdf_stds)
+        df.loc[ids, "site_bwdf_min_std"] = np.std(bwdf_mins)
+        df.loc[ids, "site_bwdf_max_std"] = np.std(bwdf_maxs)
+        df.loc[ids, "site_bwdf_skew_std"] = np.std(bwdf_skews)
+        df.loc[ids, "site_bwdf_kurtosis_std"] = np.std(bwdf_kurtosis)
+
+        return df
+
+    def get_pair_bwdf_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with statistical info from pairwise BWDFs.
+
+        Args:
+            ids: set the index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical information as columns.
+            The columns include the mean and standard deviation calculated from the
+            pairwise BWDFs stats (i.e., sum, mean, minimum, maximum, std, skewness, and kurtosis).
+        """
+        column_names = [
+            "pair_bwdf_sum_mean",
+            "pair_bwdf_mean_mean",
+            "pair_bwdf_std_mean",
+            "pair_bwdf_min_mean",
+            "pair_bwdf_max_mean",
+            "pair_bwdf_skew_mean",
+            "pair_bwdf_kurtosis_mean",
+            "pair_bwdf_sum_std",
+            "pair_bwdf_mean_std",
+            "pair_bwdf_std_std",
+            "pair_bwdf_min_std",
+            "pair_bwdf_max_std",
+            "pair_bwdf_skew_std",
+            "pair_bwdf_kurtosis_std",
+        ]
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        bwdf_sums = []
+        bwdf_means = []
+        bwdf_stds = []
+        bwdf_mins = []
+        bwdf_maxs = []
+        bwdf_skews = []
+        bwdf_kurtosis = []
+
+        bwdf = self.calc_bwdf()
+        for atom_pair in bwdf:
+            if atom_pair not in ("summed", "centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
+                bwdf_sums.append(
+                    np.sum(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.sum(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_means.append(
+                    np.mean(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.mean(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_stds.append(
+                    np.std(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.std(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_mins.append(
+                    np.min(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.min(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_maxs.append(
+                    np.max(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.max(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_skews.append(
+                    skew(bwdf[atom_pair]["icoxx_binned"]) if not np.isnan(skew(bwdf[atom_pair]["icoxx_binned"])) else 0
+                )
+                bwdf_kurtosis.append(
+                    kurtosis(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(kurtosis(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+
+        df.loc[ids, "pair_bwdf_sum_mean"] = np.mean(bwdf_sums)
+        df.loc[ids, "pair_bwdf_mean_mean"] = np.mean(bwdf_means)
+        df.loc[ids, "pair_bwdf_std_mean"] = np.mean(bwdf_stds)
+        df.loc[ids, "pair_bwdf_min_mean"] = np.mean(bwdf_mins)
+        df.loc[ids, "pair_bwdf_max_mean"] = np.mean(bwdf_maxs)
+        df.loc[ids, "pair_bwdf_skew_mean"] = np.mean(bwdf_skews)
+        df.loc[ids, "pair_bwdf_kurtosis_mean"] = np.mean(bwdf_kurtosis)
+        df.loc[ids, "pair_bwdf_sum_std"] = np.std(bwdf_sums)
+        df.loc[ids, "pair_bwdf_mean_std"] = np.std(bwdf_means)
+        df.loc[ids, "pair_bwdf_std_std"] = np.std(bwdf_stds)
+        df.loc[ids, "pair_bwdf_min_std"] = np.std(bwdf_mins)
+        df.loc[ids, "pair_bwdf_max_std"] = np.std(bwdf_maxs)
+        df.loc[ids, "pair_bwdf_skew_std"] = np.std(bwdf_skews)
+        df.loc[ids, "pair_bwdf_kurtosis_std"] = np.std(bwdf_kurtosis)
+
+        return df
+
     def get_stats_df(self, ids: str | None = None) -> pd.DataFrame:
         """Return a pandas dataframe with statistical info from BWDF as columns.
 
