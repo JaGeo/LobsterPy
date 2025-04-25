@@ -1894,7 +1894,7 @@ class FeaturizeIcoxxlist:
 
         return df
 
-    def get_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+    def get_summed_bwdf_stats_df(self, ids: str | None = None) -> pd.DataFrame:
         """Return a pandas dataframe with statistical info from BWDF as columns.
 
         Args:
@@ -1936,6 +1936,39 @@ class FeaturizeIcoxxlist:
         df.loc[ids, "bwdf_skew"] = skew(bwdf["summed"]["icoxx_binned"])
         df.loc[ids, "bwdf_kurtosis"] = kurtosis(bwdf["summed"]["icoxx_binned"])
 
+        return df
+
+    def get_stats_df(
+        self, ids: str | None = None, stats_type: Literal["atompair", "site", "summed", "all"] = "summed"
+    ) -> pd.DataFrame:
+        """Convenience method to get a pandas dataframe with statistical info from BWDF as columns.
+
+        Args:
+              ids: set the index name in the pandas dataframe. Default is None.
+              stats_type: type of BWDF stats to be returned. Default is "summed".
+
+                - "atompair": compute stats from unique atom pairs BWDFs.
+                - "site": compute stats from site BWDFs.
+                - "summed": compute stats from structure BWDFs.
+                - "all": concatenated dataframe from `atompair`, `site` and `summed` options.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical information as columns.
+        """
+        if stats_type == "atompair":
+            df = self.get_pair_bwdf_stats_df(ids=ids)
+        elif stats_type == "site":
+            df = self.get_site_bwdf_stats_df(ids=ids)
+        elif stats_type == "summed":
+            df = self.get_summed_bwdf_stats_df(ids=ids)
+        else:
+            df = pd.concat(
+                [
+                    self.get_pair_bwdf_stats_df(ids=ids),
+                    self.get_site_bwdf_stats_df(ids=ids),
+                    self.get_summed_bwdf_stats_df(ids=ids),
+                ]
+            )
         return df
 
     def get_sorted_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
