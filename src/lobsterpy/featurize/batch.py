@@ -875,7 +875,7 @@ class BatchIcoxxlistFeaturizer:
         normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
         n_electrons_scaling: bool = False,
         bin_width: float = 0.02,
-        bwdf_df_type: Literal["binned", "stats", "sorted_bwdf", "sorted_dists"] = "stats",
+        bwdf_df_type: Literal["binned", "asymmetry_index_stats", "stats", "sorted_bwdf", "sorted_dists"] = "stats",
         sorted_dists_mode: Literal["positive", "negative"] = "negative",
         stats_type: Literal["atompair", "site", "summed", "all"] = "all",
         interactions_tol: float = 1e-3,
@@ -897,6 +897,7 @@ class BatchIcoxxlistFeaturizer:
         :param bwdf_df_type: Type of BWDF dataframe to generate
 
             - "binned": Binned BWDF function.
+            - "asymmetry_index_stats": Asymmetry index stats computed from neighbours using ICOXX.
             - "stats": Statistical features of BWDF function.
             - "sorted_bwdf": BWDF values sorted by distances, ascending.
             - "sorted_dists": Distances sorted by BWDF values (either only positive or negative),
@@ -1005,6 +1006,8 @@ class BatchIcoxxlistFeaturizer:
             return feat_icoxx.get_sorted_bwdf_df()
         if self.bwdf_df_type == "sorted_dists":
             return feat_icoxx.get_sorted_dist_df(mode=self.sorted_dists_mode)
+        if self.bwdf_df_type == "asymmetry_index_stats":
+            return feat_icoxx.get_asymmetry_index_stats_df()
         return feat_icoxx.get_stats_df(stats_type=self.stats_type)
 
     def get_df(self) -> pd.DataFrame:
