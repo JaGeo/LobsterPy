@@ -55240,7 +55240,7 @@
         },
         "stdout": ""
     },
-    "plot-bwdf --sigma 0.1": {
+    "plot-bwdf --sigma 0.1 -plotneg": {
         "plot": {
             "facecolor": [
                 1.0,
@@ -56459,7 +56459,7 @@
         },
         "stdout": ""
     },
-    "plot-bwdf -maxlen 5": {
+    "plot-bwdf -maxlen 5 -plotneg": {
         "plot": {
             "facecolor": [
                 1.0,
@@ -57478,7 +57478,7 @@
         },
         "stdout": ""
     },
-    "plot-bwdf -norm counts": {
+    "plot-bwdf -norm counts -plotneg": {
         "plot": {
             "facecolor": [
                 1.0,
@@ -58713,7 +58713,7 @@
         },
         "stdout": ""
     },
-    "plotbwdf -binwidth 0.02": {
+    "plotbwdf -binwidth 0.02 -plotneg": {
         "plot": {
             "facecolor": [
                 1.0,
@@ -59932,7 +59932,7 @@
         },
         "stdout": ""
     },
-    "plotbwdf -siteindex 0": {
+    "plotbwdf -siteindex 0 -plotneg": {
         "plot": {
             "facecolor": [
                 1.0,
