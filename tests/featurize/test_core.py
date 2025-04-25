@@ -999,7 +999,7 @@ class TestFeaturizeIcoxxlist:
             are_cobis=False,
         )
         df = featurize_csh_icoxxlist.get_binned_bwdf_df()
-        df_stats = featurize_csh_icoxxlist.get_stats_df()
+        df_stats = featurize_csh_icoxxlist.get_stats_df(stats_type="summed")
 
         # Test that the method returns a pandas DataFrame
         assert isinstance(df, pd.DataFrame)

@@ -697,6 +697,7 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
         df_icohp = batch_icohp.get_df()
@@ -769,6 +770,7 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
         df_icobi = batch_icobi.get_df()
@@ -845,6 +847,7 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
         df_icoop = batch_icoop.get_df()
