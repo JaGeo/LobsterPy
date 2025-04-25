@@ -1967,7 +1967,8 @@ class FeaturizeIcoxxlist:
                     self.get_pair_bwdf_stats_df(ids=ids),
                     self.get_site_bwdf_stats_df(ids=ids),
                     self.get_summed_bwdf_stats_df(ids=ids),
-                ]
+                ],
+                axis=1,
             )
         return df
 
