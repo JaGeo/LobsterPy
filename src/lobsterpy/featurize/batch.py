@@ -897,7 +897,6 @@ class BatchIcoxxlistFeaturizer:
         :param bwdf_df_type: Type of BWDF dataframe to generate
 
             - "binned": Binned BWDF function.
-            - "asymmetry_index_stats": Asymmetry index stats computed from neighbours using ICOXX.
             - "stats": Statistical features of BWDF function.
             - "sorted_bwdf": BWDF values sorted by distances, ascending.
             - "sorted_dists": Distances sorted by BWDF values (either only positive or negative),
@@ -930,14 +929,14 @@ class BatchIcoxxlistFeaturizer:
         self.read_icoops = read_icoops
         self.n_jobs = n_jobs
 
-    def _get_icoxxlist_bwdf_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
+    def _get_featurizer_obj(self, path_to_lobster_calc: str | Path) -> FeaturizeIcoxxlist:
         """
-        Featurize ICOXXLIST data using FeaturizeCOXX.
+        Set up the FeaturizeIcoxxlist object based on the provided parameters.
 
         :param path_to_lobster_calc: path to root LOBSTER calculation directory
 
         Returns:
-            A pandas dataframe with computed ICOXXLIST moment features
+            A FeaturizeIcoxxlist object
         """
         if self.read_icobis:
             file_paths = get_file_paths(
@@ -959,6 +958,7 @@ class BatchIcoxxlistFeaturizer:
                 are_cobis=self.read_icobis,
                 are_coops=self.read_icoops,
             )
+
         elif self.read_icoops:
             file_paths = get_file_paths(
                 path_to_lobster_calc=path_to_lobster_calc,
@@ -1000,17 +1000,41 @@ class BatchIcoxxlistFeaturizer:
                 are_coops=self.read_icoops,
             )
 
+        return feat_icoxx
+
+    def _get_icoxxlist_bwdf_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
+        """
+        Featurize ICOXXLIST data using FeaturizeCOXX.
+
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory
+
+        Returns:
+            A pandas dataframe with computed ICOXXLIST moment features
+        """
+        feat_icoxx = self._get_featurizer_obj(path_to_lobster_calc)
+
         if self.bwdf_df_type == "binned":
             return feat_icoxx.get_binned_bwdf_df()
         if self.bwdf_df_type == "sorted_bwdf":
             return feat_icoxx.get_sorted_bwdf_df()
         if self.bwdf_df_type == "sorted_dists":
             return feat_icoxx.get_sorted_dist_df(mode=self.sorted_dists_mode)
-        if self.bwdf_df_type == "asymmetry_index_stats":
-            return feat_icoxx.get_asymmetry_index_stats_df()
         return feat_icoxx.get_stats_df(stats_type=self.stats_type)
 
-    def get_df(self) -> pd.DataFrame:
+    def _get_asymmetry_index_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with asymmetry index stats features.
+
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory
+
+        Returns:
+            A pandas dataframe with asymmetry index stats features as columns.
+        """
+        feat_icoxx = self._get_featurizer_obj(path_to_lobster_calc)
+
+        return feat_icoxx.get_asymmetry_index_stats_df()
+
+    def get_bwdf_df(self) -> pd.DataFrame:
         """
         Generate a pandas dataframe with BWDF for all calcs.
 
@@ -1032,6 +1056,36 @@ class BatchIcoxxlistFeaturizer:
             tqdm(total=len(paths), desc="Generating BWDF from ICOXXLIST") as pbar,
         ):
             for _, result in enumerate(pool.imap_unordered(self._get_icoxxlist_bwdf_df, paths, chunksize=1)):
+                pbar.update()
+                row.append(result)
+
+        df_icoxxlist = pd.concat(row)
+        if self.bwdf_df_type in ["sorted_bwdf", "sorted_dists"]:
+            df_icoxxlist = df_icoxxlist.fillna(value=0.0)
+        df_icoxxlist.sort_index(inplace=True)  # noqa: PD002
+
+        return df_icoxxlist
+
+    def get_asymmetry_index_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with site asymmetry index stats for all calcs.
+
+        Returns:
+            A pandas dataframe with site asymmetry index stats as columns.
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(total=len(paths), desc="Generating ASI from ICOXXLIST") as pbar,
+        ):
+            for _, result in enumerate(pool.imap_unordered(self._get_asymmetry_index_df, paths, chunksize=1)):
                 pbar.update()
                 row.append(result)
 
