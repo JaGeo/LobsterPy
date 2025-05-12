@@ -76,6 +76,7 @@ def get_file_paths(
         "lobsterin": "lobsterin",
         "lobsterout": "lobsterout",
         "bandoverlaps": "bandOverlaps.lobster",
+        "grosspop": "GROSSPOP.lobster",
         "potcar": "POTCAR",
         "vasprun": "vasprun.xml",
         "incar": "INCAR",
