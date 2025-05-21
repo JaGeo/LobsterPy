@@ -697,9 +697,10 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
-        df_icohp = batch_icohp.get_df()
+        df_icohp = batch_icohp.get_bwdf_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
         assert isinstance(df_icohp, pd.DataFrame)
         assert sorted(df_icohp.index) == sorted(expected_index)
@@ -719,7 +720,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_4.5-5.0",
                 "bwdf_5.0-5.5",
                 "bwdf_5.5-6.0",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icohp.columns) == sorted(expected_cols)
 
@@ -734,7 +734,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icohp.columns) == sorted(stats_df_expected_columns)
 
@@ -771,9 +770,10 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
-        df_icobi = batch_icobi.get_df()
+        df_icobi = batch_icobi.get_bwdf_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
         # Test if all values are above zero > icobis are read
         assert (df_icobi >= 0).all().all()  # check if all values are above zero
@@ -794,7 +794,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_4.5-5.0",
                 "bwdf_5.0-5.5",
                 "bwdf_5.5-6.0",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icobi.columns) == sorted(expected_cols)
 
@@ -809,7 +808,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icobi.columns) == sorted(stats_df_expected_columns)
 
@@ -849,9 +847,10 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
-        df_icoop = batch_icoop.get_df()
+        df_icoop = batch_icoop.get_bwdf_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
         if bwdf_df_type != "sorted_dists":
             assert not (df_icoop >= 0).all().all()  # Test if all values are above zero > icobis are read
@@ -872,7 +871,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_4.5-5.0",
                 "bwdf_5.0-5.5",
                 "bwdf_5.5-6.0",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icoop.columns) == sorted(expected_cols)
 
@@ -887,7 +885,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icoop.columns) == sorted(stats_df_expected_columns)
 
@@ -1009,4 +1006,4 @@ class TestExceptions:
                 bwdf_df_type="sorted_dists",
                 sorted_dists_mode="invalid",
             )
-            _ = batch_icoop.get_df()
+            _ = batch_icoop.get_bwdf_df()

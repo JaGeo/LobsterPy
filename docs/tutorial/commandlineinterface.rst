@@ -274,7 +274,7 @@ You can plot COHPs/COBIs/COOPs from the command line.
 
 .. code:: bash
 
-    lobsterpy plot-bwdf
+    lobsterpy plot-bwdf --plot-negative --sigma 0.15
 
 .. image:: tutorial_assets/example_bwdf.png
 
