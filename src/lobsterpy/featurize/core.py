@@ -914,10 +914,10 @@ class FeaturizeCharges:
 
     def _calc_ionicity(self) -> float:
         r"""
-        Calculate ionicity of the crystal structure based on quantum chemical charges.
+        Calculate the ionicity of the crystal structure based on quantum chemical charges.
 
-        \\[I_{\text{{Charges}}} = \frac{1}{{N_{\text{{Atoms}}}}}\\sum_{i=1}^{N_{\text{{Atoms}}} }
-        \\left(\frac{q_i}{v_{\text{{eff}},i}}\right)\\]
+        References:
+            - R. Nelson, C. Ertural, P. C. Müller, R. Dronskowski, 2023, DOI 10.1016/B978-0-12-823144-9.00120-5
 
         Returns:
             Ionicity of the structure
