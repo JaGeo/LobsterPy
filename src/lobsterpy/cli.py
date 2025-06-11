@@ -1365,7 +1365,9 @@ def run(args):
                 path_to_lobster_calc=Path.cwd(), requested_files=["structure", "doscar"], use_lso_dos=True
             )
         else:
-            req_files = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["structure", "doscar"])
+            req_files = get_file_paths(
+                path_to_lobster_calc=Path.cwd(), requested_files=["structure", "doscar"], use_lso_dos=False
+            )
 
         for arg_name in req_files:
             setattr(args, arg_name, req_files[arg_name])
