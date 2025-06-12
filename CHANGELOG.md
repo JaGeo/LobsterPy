@@ -5,6 +5,22 @@
 <!-- Release notes generated using configuration in .github/release.yml at main -->
 
 ## What's Changed
+### 🐛 Bug Fixes
+* get full git history in CI by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/399
+### 🧹 House-Keeping
+* Fix bloated src distribution on pypi by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/385
+### 🔄 Other Changes
+* remove explicit reading of DOSCAR.LSO.lobster by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/397
+
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.5.5...v0.5.6
+
+
+## v0.5.6
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## What's Changed
 ### 🧹 House-Keeping
 * Fix bloated src distribution on pypi by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/385
 ### 🔄 Other Changes
