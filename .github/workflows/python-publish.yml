@@ -66,7 +66,7 @@ jobs:
           pip install build
           python -m build
     - name: Publish package
-      uses: pypa/gh-action-pypi-publish@v1.8.14
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
