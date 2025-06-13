@@ -44,11 +44,11 @@ test_cases = [
     ["plot", "1", "--sigma", "1.2"],
     ["plot", "1", "--fwhm", "1"],
     ["plot-icohp-distance", "-cbonds"],
-    ["plot-bwdf", "-maxlen", "5"],
-    ["plot-bwdf", "--sigma", "0.1"],
-    ["plot-bwdf", "-norm", "counts"],
-    ["plotbwdf", "-binwidth", "0.02"],
-    ["plotbwdf", "-siteindex", "0"],
+    ["plot-bwdf", "-maxlen", "5", "-plotneg"],
+    ["plot-bwdf", "--sigma", "0.1", "-plotneg"],
+    ["plot-bwdf", "-norm", "counts", "-plotneg"],
+    ["plotbwdf", "-binwidth", "0.02", "-plotneg"],
+    ["plotbwdf", "-siteindex", "0", "-plotneg"],
 ]
 
 error_test_cases = [
