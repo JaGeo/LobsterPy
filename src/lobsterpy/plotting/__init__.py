@@ -1126,8 +1126,9 @@ class IcohpDistancePlotter:
         orb_data = {}  # type: ignore
         for index, bond_label in enumerate(icohpcollection._list_labels):
             orb_data.update({bond_label: {}})
-            for k, v in icohpcollection._list_orb_icohp[index].items():
-                orb_data[bond_label].update({k: sum(v["icohp"].values())})
+            if icohpcollection._list_orb_icohp is not None:
+                for k, v in icohpcollection._list_orb_icohp[index].items():
+                    orb_data[bond_label].update({k: sum(v["icohp"].values())})
             icohps.append(sum(icohpcollection._list_icohp[index].values()))
             bond_len.append(icohpcollection._list_length[index])
             atom1 = icohpcollection._list_atom1[index]
