@@ -600,6 +600,14 @@ def get_parser() -> argparse.ArgumentParser:
         "Default: 'formula_units'.",
     )
     bwdf_plotting_group.add_argument(
+        "-plotneg",
+        "--plot-negative",
+        dest="plotneg",
+        action="store_true",
+        default=False,
+        help="If True, will plot -1*ICOHPs. Works only for ICOHPs. Default: True.",
+    )
+    bwdf_plotting_group.add_argument(
         "-siteindex",
         "--site-index",
         type=int,
@@ -1092,7 +1100,7 @@ def run(args):
         for bwdf_dict in plot_data:
             pair = next(iter(bwdf_dict.keys()))
             bwdf_plotter.add_bwdf(bwdf=bwdf_dict, label=label)
-            plot = bwdf_plotter.get_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim)
+            plot = bwdf_plotter.get_plot(sigma=args.sigma, xlim=args.xlim, ylim=args.ylim, plot_negative=args.plotneg)
             title = f"{args.title} : {pair}" if args.title else ""
             plot.title(title)
 

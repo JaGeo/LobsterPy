@@ -761,7 +761,7 @@ class TestBWDFPlotter:
         fig = bwdf_plotter.get_plot().gca()
 
         assert fig.get_xlabel() == "Bond lengths (Å)"
-        assert fig.get_ylabel() == "BWDF-ICOHP (eV)"
+        assert fig.get_ylabel() == "BWDF- $-$ICOHP (eV)"
 
         bwdf_plotter = BWDFPlotter(are_coops=True)
         bwdf_plotter.add_bwdf(bwdf=bwdf_cdf_coop, label="CdF")
