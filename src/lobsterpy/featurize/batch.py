@@ -863,6 +863,12 @@ class BatchIcoxxlistFeaturizer:
         Corresponds to the param "mode" of get_sorted_dist_df, defines whether BWDF values above or
         below zero are considered for distance featurization.
     :param stats_type: type of statistics to compute from BWDF.
+
+        - "atompair": compute stats from unique atom pairs BWDFs.
+        - "site": compute stats from site BWDFs.
+        - "summed": compute stats from structure BWDFs.
+        - "all": concatenated dataframe from `atompair`, `site` and `summed` options.
+
     :read_icobis: bool to state to read ICOBILIST.lobster from the path
     :read_icoops: bool to state to read ICOOPLIST.lobster from the path
     :param n_jobs: number of parallel processes to run
@@ -875,7 +881,7 @@ class BatchIcoxxlistFeaturizer:
         normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
         n_electrons_scaling: bool = False,
         bin_width: float = 0.02,
-        bwdf_df_type: Literal["binned", "asymmetry_index_stats", "stats", "sorted_bwdf", "sorted_dists"] = "stats",
+        bwdf_df_type: Literal["binned", "stats", "sorted_bwdf", "sorted_dists"] = "stats",
         sorted_dists_mode: Literal["positive", "negative"] = "negative",
         stats_type: Literal["atompair", "site", "summed", "all"] = "all",
         interactions_tol: float = 1e-3,
@@ -1090,8 +1096,7 @@ class BatchIcoxxlistFeaturizer:
                 row.append(result)
 
         df_icoxxlist = pd.concat(row)
-        if self.bwdf_df_type in ["sorted_bwdf", "sorted_dists"]:
-            df_icoxxlist = df_icoxxlist.fillna(value=0.0)
+
         df_icoxxlist.sort_index(inplace=True)  # noqa: PD002
 
         return df_icoxxlist
