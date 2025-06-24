@@ -24,7 +24,7 @@ from numpy import ndarray
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.io.lobster import Charge, Doscar, Icohplist, MadelungEnergies
+from pymatgen.io.lobster import Charge, Doscar, Grosspop, Icohplist, MadelungEnergies
 from scipy.integrate import trapezoid
 from scipy.signal import hilbert
 from scipy.stats import kurtosis, skew, wasserstein_distance
@@ -914,10 +914,10 @@ class FeaturizeCharges:
 
     def _calc_ionicity(self) -> float:
         r"""
-        Calculate ionicity of the crystal structure based on quantum chemical charges.
+        Calculate the ionicity of the crystal structure based on quantum chemical charges.
 
-        \\[I_{\text{{Charges}}} = \frac{1}{{N_{\text{{Atoms}}}}}\\sum_{i=1}^{N_{\text{{Atoms}}} }
-        \\left(\frac{q_i}{v_{\text{{eff}},i}}\right)\\]
+        References:
+            - R. Nelson, C. Ertural, P. C. Müller, R. Dronskowski, 2023, DOI 10.1016/B978-0-12-823144-9.00120-5
 
         Returns:
             Ionicity of the structure
@@ -1149,10 +1149,13 @@ class FeaturizeIcoxxlist:
 
     :param path_to_icoxxlist: path to ICOXXLIST.lobster
     :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
+    :param path_to_grosspop: path to GROSSPOP.lobster
     :param bin_width: bin width for the BWDF
     :param interactions_tol: tolerance for interactions
     :param max_length: maximum bond length for BWDF computation
     :param min_length: minimum bond length for BWDF computation
+    :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons.
+        Only for testing purposes. Should not affect the results in any meaningful way.
     :param normalization: normalization strategy for BWDF
     :param are_cobis: bool indicating if file contains COBI/ICOBI data
     :param are_coops: bool indicating if file contains COOP/ICOOP data
@@ -1162,10 +1165,12 @@ class FeaturizeIcoxxlist:
         self,
         path_to_icoxxlist: str | Path,
         path_to_structure: str | Path,
+        path_to_grosspop: str | Path | None = None,
         bin_width: float = 0.02,
         interactions_tol: float = 1e-3,
         max_length: float = 6.0,
         min_length: float = 0.0,
+        n_electrons_scaling: bool = False,
         normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
         are_cobis: bool = False,
         are_coops: bool = False,
@@ -1175,16 +1180,19 @@ class FeaturizeIcoxxlist:
 
         :param path_to_icoxxlist: path to ICOXXLIST.lobster
         :param path_to_structure: path to structure file (e.g., `CONTCAR` (preferred), `POSCAR`)
+        :param path_to_grosspop: path to GROSSPOP.lobster
         :param bin_width: bin width for the BWDF
         :param interactions_tol: numerical tolerance considered for interactions to be insignificant
         :param max_length: maximum bond length for BWDF computation
         :param min_length: minimum bond length for BWDF computation
+        :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons
         :param normalization: normalization strategy for BWDF
         :param are_cobis: bool indicating if file contains COBI/ICOBI data
         :param are_coops: bool indicating if file contains COOP/ICOOP data
         """
         self.path_to_icoxxlist = path_to_icoxxlist
         self.path_to_structure = path_to_structure
+        self.path_to_grosspop = path_to_grosspop
         self.bin_width = bin_width
         self.are_cobis = are_cobis
         self.are_coops = are_coops
@@ -1193,17 +1201,19 @@ class FeaturizeIcoxxlist:
             are_cobis=self.are_cobis,
             are_coops=self.are_coops,
         )
+        self.grosspop = Grosspop(filename=self.path_to_grosspop) if self.path_to_grosspop else None
         self.interactions_tol = interactions_tol
         self.structure = Structure.from_file(self.path_to_structure)
         self.max_length = max_length
         self.min_length = min_length
+        self.n_electrons_scaling = n_electrons_scaling
         self.normalization = normalization
 
     def get_icoxx_neighbors_data(self, site_index: int | None = None) -> dict:
         """
         Get the neighbors data with icoxx values for a structure.
 
-        Uses distance based neighbor list as reference to map the neighbor's data.
+        Uses a distance based neighbor list as reference to map the neighbor's data.
 
         Args:
             site_index: index of the site for which neighbors data is returned. Default is None (All sites).
@@ -1247,10 +1257,20 @@ class FeaturizeIcoxxlist:
             trans = [list(item) for item in np.array(self.icoxxlist.icohpcollection._list_translation)[indices]]
             pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
 
+            if self.n_electrons_scaling and self.grosspop:
+                atom_1_index = np.array([int("".join(filter(str.isdigit, at1))) - 1 for at1 in atoms1])
+                atom_2_index = np.array([int("".join(filter(str.isdigit, at2))) - 1 for at2 in atoms2])
+                pair_n_electrons = np.array(
+                    [
+                        self.grosspop.list_dict_grosspop[at1]["Loewdin GP"]["total"]
+                        + self.grosspop.list_dict_grosspop[at2]["Loewdin GP"]["total"]
+                        for at1, at2 in zip(atom_1_index, atom_2_index)
+                    ]
+                )
+                icoxxs = (np.array(icoxxs) / pair_n_electrons).tolist()
+
             relevant_site_indices = [
-                ix
-                for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1]))
-                if org == site_index or dest == site_index
+                ix for ix, (org, dest) in enumerate(zip(rdf_nb_lst[0], rdf_nb_lst[1])) if org == site_index
             ]
             rdf_distances = [round(dist, 5) for ix, dist in enumerate(rdf_nb_lst[3]) if ix in relevant_site_indices]
             rdf_trans = [[int(i) for i in img] for ix, img in enumerate(rdf_nb_lst[2]) if ix in relevant_site_indices]
@@ -1267,6 +1287,18 @@ class FeaturizeIcoxxlist:
             icoxxs = [sum(item.values()) for item in self.icoxxlist.icohpcollection._list_icohp]
             trans = [list(item) for item in self.icoxxlist.icohpcollection._list_translation]
             pairs = [[at1, at2] for at1, at2 in zip(atoms1, atoms2)]
+
+            if self.n_electrons_scaling and self.grosspop:
+                atom_1_index = np.array([int("".join(filter(str.isdigit, at1))) - 1 for at1 in atoms1])
+                atom_2_index = np.array([int("".join(filter(str.isdigit, at2))) - 1 for at2 in atoms2])
+                pair_n_electrons = np.array(
+                    [
+                        self.grosspop.list_dict_grosspop[at1]["Loewdin GP"]["total"]
+                        + self.grosspop.list_dict_grosspop[at2]["Loewdin GP"]["total"]
+                        for at1, at2 in zip(atom_1_index, atom_2_index)
+                    ]
+                )
+                icoxxs = (np.array(icoxxs) / pair_n_electrons).tolist()
 
             rdf_distances = [round(dist, 5) for dist in rdf_nb_lst[3]]
             rdf_trans = [[int(i) for i in img] for img in rdf_nb_lst[2]]
@@ -1409,6 +1441,38 @@ class FeaturizeIcoxxlist:
 
         # Normalize BWDF data
         return self._normalize_bwdf(bwdf=bwdf_atom_pair)
+
+    def calc_site_asymmetry_index(self, site_index: int) -> float:
+        """
+        Compute the asymmetry index for a site using bond strengths as weights.
+
+        Args:
+            site_index: index of the site for which the asymmetry index needs to be computed
+
+        References:
+            - F. Belli, E. Zurek, I. Errea, 2025, DOI 10.48550/arXiv.2501.14420
+
+        Returns:
+            Asymmetry index for the site
+        """
+        if site_index not in range(self.structure.num_sites):
+            raise ValueError(f"{site_index} is not a valid site index for the structure")
+
+        # Get all neighbors data in a single list
+        icoxx_neighbors_data = self.get_icoxx_neighbors_data(site_index=site_index)["mapped_icoxx_data"]
+
+        # Calculate the asymmetry index
+        icoxxs_x_y_z = []
+        for pair in icoxx_neighbors_data:
+            src_dst = [int("".join(filter(str.isdigit, p))) - 1 for p in pair[0]]
+            src = src_dst[0]
+            dst = src_dst[1]
+            cart_dst = self.structure.lattice.get_cartesian_coords(self.structure[dst].frac_coords + np.array(pair[2]))
+            cart_src = self.structure[src].coords
+            unit_vec = (cart_dst - cart_src) / pair[1]
+            icoxxs_x_y_z.append(pair[-1] * unit_vec)
+
+        return np.linalg.norm(np.mean(icoxxs_x_y_z, axis=0))
 
     def calc_site_bwdf(self, site_index: int) -> dict:
         """
@@ -1562,6 +1626,37 @@ class FeaturizeIcoxxlist:
 
         return bwdf
 
+    def get_asymmetry_index_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with asymmetry index statistical information as columns.
+
+        Args:
+              ids: set the index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with asymmetry index statistical information as columns.
+            Columns include sum, mean, std, min, and max.
+        """
+        asymmetry_indices = []
+
+        for site_index in range(self.structure.num_sites):
+            asymmetry_indices.append(self.calc_site_asymmetry_index(site_index))
+
+        column_names = ["asi_sum", "asi_mean", "asi_std", "asi_min", "asi_max"]
+
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        df.loc[ids, "asi_sum"] = np.sum(asymmetry_indices)
+        df.loc[ids, "asi_mean"] = np.mean(asymmetry_indices)
+        df.loc[ids, "asi_std"] = np.std(asymmetry_indices)
+        df.loc[ids, "asi_min"] = np.min(asymmetry_indices)
+        df.loc[ids, "asi_max"] = np.max(asymmetry_indices)
+
+        return df
+
     def get_binned_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
         """Return a pandas dataframe with computed BWDF features as columns.
 
@@ -1583,8 +1678,6 @@ class FeaturizeIcoxxlist:
         for icoxx_weight, col in zip(bwdf["summed"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
 
-        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
-
         return df
 
     def get_site_df(self, site_index: int, ids: str | None = None) -> pd.DataFrame:
@@ -1592,7 +1685,7 @@ class FeaturizeIcoxxlist:
 
         Args:
             site_index: index of the site in a structure for which BWDF needs to be computed
-            ids: set index name in the pandas dataframe. Default is None.
+            ids: set the index name in the pandas dataframe. Default is None.
 
         Returns:
             A pandas dataframe object with BWDF as columns for a site. Each column contains
@@ -1609,15 +1702,204 @@ class FeaturizeIcoxxlist:
         for icoxx_weight, col in zip(site_bwdf[f"{site_index}"]["icoxx_binned"], column_names):
             df.loc[ids, col] = icoxx_weight
 
-        df[f"wasserstein_dist_to_rdf_site_{site_index}"] = site_bwdf["wasserstein_dist_to_rdf"]
+        return df
+
+    def get_site_bwdf_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas datafram with mean and std from sitewise BWDFs.
+
+        Args:
+            ids: set the index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical information as columns.
+            The columns include the mean and standard deviation calculated from the
+            sitewise BWDFs stats (i.e., sum, mean, minimum, maximum, std, skewness, and kurtosis).
+        """
+        column_names = [
+            "site_bwdf_sum_mean",
+            "site_bwdf_mean_mean",
+            "site_bwdf_std_mean",
+            "site_bwdf_min_mean",
+            "site_bwdf_max_mean",
+            "site_bwdf_skew_mean",
+            "site_bwdf_kurtosis_mean",
+            "site_bwdf_sum_std",
+            "site_bwdf_mean_std",
+            "site_bwdf_std_std",
+            "site_bwdf_min_std",
+            "site_bwdf_max_std",
+            "site_bwdf_skew_std",
+            "site_bwdf_kurtosis_std",
+        ]
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        bwdf_sums = []
+        bwdf_means = []
+        bwdf_stds = []
+        bwdf_mins = []
+        bwdf_maxs = []
+        bwdf_skews = []
+        bwdf_kurtosis = []
+        for site_index in range(self.structure.num_sites):
+            site_bwdf = self.calc_site_bwdf(site_index=site_index)
+
+            bwdf_sums.append(
+                np.sum(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.sum(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_means.append(
+                np.mean(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.mean(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_stds.append(
+                np.std(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.std(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_mins.append(
+                np.min(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.min(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_maxs.append(
+                np.max(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(np.max(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_skews.append(
+                skew(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(skew(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+            bwdf_kurtosis.append(
+                kurtosis(site_bwdf[f"{site_index}"]["icoxx_binned"])
+                if not np.isnan(kurtosis(site_bwdf[f"{site_index}"]["icoxx_binned"]))
+                else 0
+            )
+
+        df.loc[ids, "site_bwdf_sum_mean"] = np.mean(bwdf_sums)
+        df.loc[ids, "site_bwdf_mean_mean"] = np.mean(bwdf_means)
+        df.loc[ids, "site_bwdf_std_mean"] = np.mean(bwdf_stds)
+        df.loc[ids, "site_bwdf_min_mean"] = np.mean(bwdf_mins)
+        df.loc[ids, "site_bwdf_max_mean"] = np.mean(bwdf_maxs)
+        df.loc[ids, "site_bwdf_skew_mean"] = np.mean(bwdf_skews)
+        df.loc[ids, "site_bwdf_kurtosis_mean"] = np.mean(bwdf_kurtosis)
+        df.loc[ids, "site_bwdf_sum_std"] = np.std(bwdf_sums)
+        df.loc[ids, "site_bwdf_mean_std"] = np.std(bwdf_means)
+        df.loc[ids, "site_bwdf_std_std"] = np.std(bwdf_stds)
+        df.loc[ids, "site_bwdf_min_std"] = np.std(bwdf_mins)
+        df.loc[ids, "site_bwdf_max_std"] = np.std(bwdf_maxs)
+        df.loc[ids, "site_bwdf_skew_std"] = np.std(bwdf_skews)
+        df.loc[ids, "site_bwdf_kurtosis_std"] = np.std(bwdf_kurtosis)
 
         return df
 
-    def get_stats_df(self, ids: str | None = None) -> pd.DataFrame:
-        """Return a pandas dataframe with statical info from BWDF as columns.
+    def get_pair_bwdf_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with statistical info from pairwise BWDFs.
 
         Args:
-              ids: set index name in the pandas dataframe. Default is None.
+            ids: set the index name in the pandas dataframe. Default is None.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical information as columns.
+            The columns include the mean and standard deviation calculated from the
+            pairwise BWDFs stats (i.e., sum, mean, minimum, maximum, std, skewness, and kurtosis).
+        """
+        column_names = [
+            "pair_bwdf_sum_mean",
+            "pair_bwdf_mean_mean",
+            "pair_bwdf_std_mean",
+            "pair_bwdf_min_mean",
+            "pair_bwdf_max_mean",
+            "pair_bwdf_skew_mean",
+            "pair_bwdf_kurtosis_mean",
+            "pair_bwdf_sum_std",
+            "pair_bwdf_mean_std",
+            "pair_bwdf_std_std",
+            "pair_bwdf_min_std",
+            "pair_bwdf_max_std",
+            "pair_bwdf_skew_std",
+            "pair_bwdf_kurtosis_std",
+        ]
+        if ids:
+            df = pd.DataFrame(index=[ids], columns=column_names)
+        else:
+            ids = Path(self.path_to_icoxxlist).parent.name
+            df = pd.DataFrame(index=[ids], columns=column_names)
+
+        bwdf_sums = []
+        bwdf_means = []
+        bwdf_stds = []
+        bwdf_mins = []
+        bwdf_maxs = []
+        bwdf_skews = []
+        bwdf_kurtosis = []
+
+        bwdf = self.calc_bwdf()
+        for atom_pair in bwdf:
+            if atom_pair not in ("summed", "centers", "edges", "bin_width", "wasserstein_dist_to_rdf"):
+                bwdf_sums.append(
+                    np.sum(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.sum(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_means.append(
+                    np.mean(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.mean(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_stds.append(
+                    np.std(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.std(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_mins.append(
+                    np.min(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.min(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_maxs.append(
+                    np.max(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(np.max(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+                bwdf_skews.append(
+                    skew(bwdf[atom_pair]["icoxx_binned"]) if not np.isnan(skew(bwdf[atom_pair]["icoxx_binned"])) else 0
+                )
+                bwdf_kurtosis.append(
+                    kurtosis(bwdf[atom_pair]["icoxx_binned"])
+                    if not np.isnan(kurtosis(bwdf[atom_pair]["icoxx_binned"]))
+                    else 0
+                )
+
+        df.loc[ids, "pair_bwdf_sum_mean"] = np.mean(bwdf_sums)
+        df.loc[ids, "pair_bwdf_mean_mean"] = np.mean(bwdf_means)
+        df.loc[ids, "pair_bwdf_std_mean"] = np.mean(bwdf_stds)
+        df.loc[ids, "pair_bwdf_min_mean"] = np.mean(bwdf_mins)
+        df.loc[ids, "pair_bwdf_max_mean"] = np.mean(bwdf_maxs)
+        df.loc[ids, "pair_bwdf_skew_mean"] = np.mean(bwdf_skews)
+        df.loc[ids, "pair_bwdf_kurtosis_mean"] = np.mean(bwdf_kurtosis)
+        df.loc[ids, "pair_bwdf_sum_std"] = np.std(bwdf_sums)
+        df.loc[ids, "pair_bwdf_mean_std"] = np.std(bwdf_means)
+        df.loc[ids, "pair_bwdf_std_std"] = np.std(bwdf_stds)
+        df.loc[ids, "pair_bwdf_min_std"] = np.std(bwdf_mins)
+        df.loc[ids, "pair_bwdf_max_std"] = np.std(bwdf_maxs)
+        df.loc[ids, "pair_bwdf_skew_std"] = np.std(bwdf_skews)
+        df.loc[ids, "pair_bwdf_kurtosis_std"] = np.std(bwdf_kurtosis)
+
+        return df
+
+    def get_summed_bwdf_stats_df(self, ids: str | None = None) -> pd.DataFrame:
+        """Return a pandas dataframe with statistical info from BWDF as columns.
+
+        Args:
+              ids: set the index name in the pandas dataframe. Default is None.
 
         Returns:
             A pandas dataframe object with BWDF statistical information as columns.
@@ -1654,15 +1936,48 @@ class FeaturizeIcoxxlist:
         df.loc[ids, "bwdf_max"] = np.max(bwdf["summed"]["icoxx_binned"])
         df.loc[ids, "bwdf_skew"] = skew(bwdf["summed"]["icoxx_binned"])
         df.loc[ids, "bwdf_kurtosis"] = kurtosis(bwdf["summed"]["icoxx_binned"])
-        df["wasserstein_dist_to_rdf"] = bwdf["wasserstein_dist_to_rdf"]
 
+        return df
+
+    def get_stats_df(
+        self, ids: str | None = None, stats_type: Literal["atompair", "site", "summed", "all"] = "summed"
+    ) -> pd.DataFrame:
+        """Convenience method to get a pandas dataframe with statistical info from BWDF as columns.
+
+        Args:
+              ids: set the index name in the pandas dataframe. Default is None.
+              stats_type: type of BWDF stats to be returned. Default is "summed".
+
+                - "atompair": compute stats from unique atom pairs BWDFs.
+                - "site": compute stats from site BWDFs.
+                - "summed": compute stats from structure BWDFs.
+                - "all": concatenated dataframe from `atompair`, `site` and `summed` options.
+
+        Returns:
+            A pandas dataframe object with BWDF statistical information as columns.
+        """
+        if stats_type == "atompair":
+            df = self.get_pair_bwdf_stats_df(ids=ids)
+        elif stats_type == "site":
+            df = self.get_site_bwdf_stats_df(ids=ids)
+        elif stats_type == "summed":
+            df = self.get_summed_bwdf_stats_df(ids=ids)
+        else:
+            df = pd.concat(
+                [
+                    self.get_pair_bwdf_stats_df(ids=ids),
+                    self.get_site_bwdf_stats_df(ids=ids),
+                    self.get_summed_bwdf_stats_df(ids=ids),
+                ],
+                axis=1,
+            )
         return df
 
     def get_sorted_bwdf_df(self, ids: str | None = None) -> pd.DataFrame:
         """Return a pandas dataframe with BWDF values sorted by distances, ascending.
 
         Args:
-            ids: set index name in the pandas dataframe. Default is None.
+            ids: set the index name in the pandas dataframe. Default is None.
 
         Returns:
             A pandas dataframe object with binned BWDF values sorted by distance.
@@ -1681,7 +1996,7 @@ class FeaturizeIcoxxlist:
         (either only positive or negative),  sorted descending by absolute values.
 
         Args:
-            ids: set index name in the pandas dataframe. Default is None
+            ids: set the index name in the pandas dataframe. Default is None
             mode: must be in ("positive", "negative"), defines whether BWDF values above or
                 below zero are considered for distance featurization.
 

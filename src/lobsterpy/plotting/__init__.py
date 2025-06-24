@@ -1331,6 +1331,9 @@ class BWDFPlotter:
         else:
             cohp_label = "ICOHP (eV)"
 
+        if plot_negative and cohp_label == "ICOHP (eV)":
+            cohp_label = f" $-${cohp_label}"
+
         if ax is None:
             _, ax = plt.subplots()
 
@@ -1345,7 +1348,7 @@ class BWDFPlotter:
         for label, bwdf in self._bwdfs.items():
             for pair in bwdf:
                 legend_label = f"{pair}" if not label else f"{label}: {pair}"
-                if plot_negative and cohp_label == "ICOHP (eV)":
+                if plot_negative and cohp_label == " $-$ICOHP (eV)":
                     icoxx_weights = PlainCohpPlotter._broaden(
                         bwdf[pair]["centers"], -1 * bwdf[pair]["icoxx_binned"], sigma=sigma
                     )

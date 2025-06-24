@@ -850,17 +850,25 @@ class BatchIcoxxlistFeaturizer:
     :param max_length: maximum bond length for BWDF computation
     :param min_length: minimum bond length for BWDF computation
     :param normalization: normalization strategy for BWDF
+    :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons
     :param bin_width: bin width for BWDF
     :param bwdf_df_type: Type of BWDF dataframe to generate
 
-        - "binned": Binned BWDF function.
-        - "stats": Statistical features of BWDF function.
+        - "binned": Binned BWDF.
+        - "stats": Statistical features of BWDF.
         - "sorted_bwdf": BWDF values sorted by distances, ascending.
         - "sorted_dists": Distances sorted by BWDF values (either only positive or negative),
           sorted descending by absolute values.
     :param sorted_dists_mode: only applies if bwdf_df_type=="sorted_dists".
-        Corresponds to param "mode" of get_sorted_dist_df, defines whether BWDF values above or
+        Corresponds to the param "mode" of get_sorted_dist_df, defines whether BWDF values above or
         below zero are considered for distance featurization.
+    :param stats_type: type of statistics to compute from BWDF.
+
+        - "atompair": compute stats from unique atom pairs BWDFs.
+        - "site": compute stats from site BWDFs.
+        - "summed": compute stats from structure BWDFs.
+        - "all": concatenated dataframe from `atompair`, `site` and `summed` options.
+
     :read_icobis: bool to state to read ICOBILIST.lobster from the path
     :read_icoops: bool to state to read ICOOPLIST.lobster from the path
     :param n_jobs: number of parallel processes to run
@@ -871,9 +879,11 @@ class BatchIcoxxlistFeaturizer:
         self,
         path_to_lobster_calcs: str | Path,
         normalization: Literal["formula_units", "area", "counts", "none"] = "formula_units",
+        n_electrons_scaling: bool = False,
         bin_width: float = 0.02,
         bwdf_df_type: Literal["binned", "stats", "sorted_bwdf", "sorted_dists"] = "stats",
         sorted_dists_mode: Literal["positive", "negative"] = "negative",
+        stats_type: Literal["atompair", "site", "summed", "all"] = "all",
         interactions_tol: float = 1e-3,
         max_length: float = 6.0,
         min_length: float = 0.0,
@@ -888,6 +898,8 @@ class BatchIcoxxlistFeaturizer:
         :param max_length: maximum bond length for BWDF computation
         :param min_length: minimum bond length for BWDF computation
         :param normalization: normalization strategy for BWDF
+        :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons.
+            Only for testing purposes. Should not affect the results in any meaningful way.
         :param bin_width: bin width for BWDF
         :param bwdf_df_type: Type of BWDF dataframe to generate
 
@@ -899,6 +911,12 @@ class BatchIcoxxlistFeaturizer:
         :param sorted_dists_mode: only applies if bwdf_df_type=="sorted_dists".
             Corresponds to param "mode" of get_sorted_dist_df, defines whether BWDF values above or
             below zero are considered for distance featurization.
+        :param stats_type: type of BWDF stats to be computed. Only applies if bwdf_df_type=="stats".
+
+            - "atompair": compute stats from unique atom pairs BWDFs.
+            - "site": compute stats from site BWDFs.
+            - "summed": compute stats from structure BWDFs.
+            - "all": concatenated dataframe from `atompair`, `site` and `summed` options.
         :param interactions_tol: tolerance for interactions
         :param read_icobis: bool to state to read ICOBILIST.lobster from the path
         :param read_icoops: bool to state to read ICOOPLIST.lobster from the path
@@ -906,52 +924,63 @@ class BatchIcoxxlistFeaturizer:
         """
         self.path_to_lobster_calcs = path_to_lobster_calcs
         self.normalization = normalization
+        self.n_electrons_scaling = n_electrons_scaling
         self.max_length = max_length
         self.min_length = min_length
         self.bin_width = bin_width
         self.interactions_tol = interactions_tol
         self.bwdf_df_type = bwdf_df_type
         self.sorted_dists_mode = sorted_dists_mode
+        self.stats_type = stats_type
         self.read_icobis = read_icobis
         self.read_icoops = read_icoops
         self.n_jobs = n_jobs
 
-    def _get_icoxxlist_bwdf_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
+    def _get_featurizer_obj(self, path_to_lobster_calc: str | Path) -> FeaturizeIcoxxlist:
         """
-        Featurize ICOXXLIST data using FeaturizeCOXX.
+        Set up the FeaturizeIcoxxlist object based on the provided parameters.
 
         :param path_to_lobster_calc: path to root LOBSTER calculation directory
 
         Returns:
-            A pandas dataframe with computed ICOXXLIST moment features
+            A FeaturizeIcoxxlist object
         """
         if self.read_icobis:
             file_paths = get_file_paths(
                 path_to_lobster_calc=path_to_lobster_calc,
-                requested_files=["structure", "icobilist"],
+                requested_files=["structure", "icobilist", "grosspop"]
+                if self.n_electrons_scaling
+                else ["structure", "icobilist"],
             )
             feat_icoxx = FeaturizeIcoxxlist(
                 path_to_icoxxlist=file_paths.get("icobilist"),
                 path_to_structure=file_paths.get("structure"),
+                path_to_grosspop=file_paths.get("grosspop", None),
                 bin_width=self.bin_width,
                 interactions_tol=self.interactions_tol,
                 normalization=self.normalization,
+                n_electrons_scaling=self.n_electrons_scaling,
                 max_length=self.max_length,
                 min_length=self.min_length,
                 are_cobis=self.read_icobis,
                 are_coops=self.read_icoops,
             )
+
         elif self.read_icoops:
             file_paths = get_file_paths(
                 path_to_lobster_calc=path_to_lobster_calc,
-                requested_files=["structure", "icooplist"],
+                requested_files=["structure", "icooplist", "grosspop"]
+                if self.n_electrons_scaling
+                else ["structure", "icooplist"],
             )
             feat_icoxx = FeaturizeIcoxxlist(
                 path_to_icoxxlist=file_paths.get("icooplist"),
                 path_to_structure=file_paths.get("structure"),
+                path_to_grosspop=file_paths.get("grosspop", None),
                 bin_width=self.bin_width,
                 interactions_tol=self.interactions_tol,
                 normalization=self.normalization,
+                n_electrons_scaling=self.n_electrons_scaling,
                 max_length=self.max_length,
                 min_length=self.min_length,
                 are_cobis=self.read_icobis,
@@ -960,19 +989,36 @@ class BatchIcoxxlistFeaturizer:
         else:
             file_paths = get_file_paths(
                 path_to_lobster_calc=path_to_lobster_calc,
-                requested_files=["structure", "icohplist"],
+                requested_files=["structure", "icohplist", "grosspop"]
+                if self.n_electrons_scaling
+                else ["structure", "icohplist"],
             )
             feat_icoxx = FeaturizeIcoxxlist(
                 path_to_icoxxlist=file_paths.get("icohplist"),
                 path_to_structure=file_paths.get("structure"),
+                path_to_grosspop=file_paths.get("grosspop", None),
                 bin_width=self.bin_width,
                 interactions_tol=self.interactions_tol,
                 normalization=self.normalization,
+                n_electrons_scaling=self.n_electrons_scaling,
                 max_length=self.max_length,
                 min_length=self.min_length,
                 are_cobis=self.read_icobis,
                 are_coops=self.read_icoops,
             )
+
+        return feat_icoxx
+
+    def _get_icoxxlist_bwdf_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
+        """
+        Featurize ICOXXLIST data using  FeaturizeIcoxxlist.
+
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory
+
+        Returns:
+            A pandas dataframe with computed ICOXXLIST moment features
+        """
+        feat_icoxx = self._get_featurizer_obj(path_to_lobster_calc)
 
         if self.bwdf_df_type == "binned":
             return feat_icoxx.get_binned_bwdf_df()
@@ -980,9 +1026,22 @@ class BatchIcoxxlistFeaturizer:
             return feat_icoxx.get_sorted_bwdf_df()
         if self.bwdf_df_type == "sorted_dists":
             return feat_icoxx.get_sorted_dist_df(mode=self.sorted_dists_mode)
-        return feat_icoxx.get_stats_df()
+        return feat_icoxx.get_stats_df(stats_type=self.stats_type)
 
-    def get_df(self) -> pd.DataFrame:
+    def _get_asymmetry_index_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with asymmetry index stats features.
+
+        :param path_to_lobster_calc: path to root LOBSTER calculation directory
+
+        Returns:
+            A pandas dataframe with asymmetry index stats features as columns.
+        """
+        feat_icoxx = self._get_featurizer_obj(path_to_lobster_calc)
+
+        return feat_icoxx.get_asymmetry_index_stats_df()
+
+    def get_bwdf_df(self) -> pd.DataFrame:
         """
         Generate a pandas dataframe with BWDF for all calcs.
 
@@ -1010,6 +1069,35 @@ class BatchIcoxxlistFeaturizer:
         df_icoxxlist = pd.concat(row)
         if self.bwdf_df_type in ["sorted_bwdf", "sorted_dists"]:
             df_icoxxlist = df_icoxxlist.fillna(value=0.0)
+        df_icoxxlist.sort_index(inplace=True)  # noqa: PD002
+
+        return df_icoxxlist
+
+    def get_asymmetry_index_df(self) -> pd.DataFrame:
+        """
+        Generate a pandas dataframe with site asymmetry index stats for all calcs.
+
+        Returns:
+            A pandas dataframe with site asymmetry index stats as columns.
+        """
+        paths = [
+            os.path.join(self.path_to_lobster_calcs, f)
+            for f in os.listdir(self.path_to_lobster_calcs)
+            if not f.startswith("t")
+            and not f.startswith(".")
+            and os.path.isdir(os.path.join(self.path_to_lobster_calcs, f))
+        ]
+        row = []
+        with (
+            mp.Pool(processes=self.n_jobs, maxtasksperchild=1) as pool,
+            tqdm(total=len(paths), desc="Generating ASI from ICOXXLIST") as pbar,
+        ):
+            for _, result in enumerate(pool.imap_unordered(self._get_asymmetry_index_df, paths, chunksize=1)):
+                pbar.update()
+                row.append(result)
+
+        df_icoxxlist = pd.concat(row)
+
         df_icoxxlist.sort_index(inplace=True)  # noqa: PD002
 
         return df_icoxxlist

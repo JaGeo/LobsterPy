@@ -697,9 +697,10 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
-        df_icohp = batch_icohp.get_df()
+        df_icohp = batch_icohp.get_bwdf_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
         assert isinstance(df_icohp, pd.DataFrame)
         assert sorted(df_icohp.index) == sorted(expected_index)
@@ -719,7 +720,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_4.5-5.0",
                 "bwdf_5.0-5.5",
                 "bwdf_5.5-6.0",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icohp.columns) == sorted(expected_cols)
 
@@ -734,7 +734,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icohp.columns) == sorted(stats_df_expected_columns)
 
@@ -771,9 +770,10 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
-        df_icobi = batch_icobi.get_df()
+        df_icobi = batch_icobi.get_bwdf_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
         # Test if all values are above zero > icobis are read
         assert (df_icobi >= 0).all().all()  # check if all values are above zero
@@ -794,7 +794,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_4.5-5.0",
                 "bwdf_5.0-5.5",
                 "bwdf_5.5-6.0",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icobi.columns) == sorted(expected_cols)
 
@@ -809,7 +808,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icobi.columns) == sorted(stats_df_expected_columns)
 
@@ -849,9 +847,10 @@ class TestBatchIcoxxlistFeaturizer:
             normalization=normalization,
             bwdf_df_type=bwdf_df_type,
             sorted_dists_mode=sorted_dists_mode,
+            stats_type="summed",
         )
 
-        df_icoop = batch_icoop.get_df()
+        df_icoop = batch_icoop.get_bwdf_df()
         expected_index = ["mp-1000", "mp-2176", "mp-463"]
         if bwdf_df_type != "sorted_dists":
             assert not (df_icoop >= 0).all().all()  # Test if all values are above zero > icobis are read
@@ -872,7 +871,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_4.5-5.0",
                 "bwdf_5.0-5.5",
                 "bwdf_5.5-6.0",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icoop.columns) == sorted(expected_cols)
 
@@ -887,7 +885,6 @@ class TestBatchIcoxxlistFeaturizer:
                 "bwdf_kurtosis",
                 "bwdf_w_mean",
                 "bwdf_w_std",
-                "wasserstein_dist_to_rdf",
             ]
             assert sorted(df_icoop.columns) == sorted(stats_df_expected_columns)
 
@@ -906,6 +903,166 @@ class TestBatchIcoxxlistFeaturizer:
             else:
                 assert non_zero == 5
                 assert set(df_icoop.columns) == {f"dist_at_{sorted_dists_mode[:3]}_bwdf{c_idx}" for c_idx in range(2)}
+
+    @pytest.mark.parametrize(
+        ("stats_type"),
+        [
+            ("atompair"),
+            ("site"),
+            ("summed"),
+            ("all"),
+        ],
+    )
+    def test_batch_icobilist_stats_featurizer(self, stats_type):
+        batch_icobi = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+            n_jobs=3,
+            bin_width=0.5,
+            read_icoops=False,
+            read_icobis=True,
+            normalization="counts",
+            bwdf_df_type="stats",
+            stats_type=stats_type,
+        )
+
+        df_icobi = batch_icobi.get_bwdf_df()
+
+        pair_expected_column_names = [
+            "pair_bwdf_sum_mean",
+            "pair_bwdf_mean_mean",
+            "pair_bwdf_std_mean",
+            "pair_bwdf_min_mean",
+            "pair_bwdf_max_mean",
+            "pair_bwdf_skew_mean",
+            "pair_bwdf_kurtosis_mean",
+            "pair_bwdf_sum_std",
+            "pair_bwdf_mean_std",
+            "pair_bwdf_std_std",
+            "pair_bwdf_min_std",
+            "pair_bwdf_max_std",
+            "pair_bwdf_skew_std",
+            "pair_bwdf_kurtosis_std",
+        ]
+
+        site_expected_column_names = [
+            "site_bwdf_sum_mean",
+            "site_bwdf_mean_mean",
+            "site_bwdf_std_mean",
+            "site_bwdf_min_mean",
+            "site_bwdf_max_mean",
+            "site_bwdf_skew_mean",
+            "site_bwdf_kurtosis_mean",
+            "site_bwdf_sum_std",
+            "site_bwdf_mean_std",
+            "site_bwdf_std_std",
+            "site_bwdf_min_std",
+            "site_bwdf_max_std",
+            "site_bwdf_skew_std",
+            "site_bwdf_kurtosis_std",
+        ]
+
+        summed_expected_column_names = [
+            "bwdf_sum",
+            "bwdf_mean",
+            "bwdf_std",
+            "bwdf_min",
+            "bwdf_max",
+            "bwdf_skew",
+            "bwdf_kurtosis",
+            "bwdf_w_mean",
+            "bwdf_w_std",
+        ]
+
+        if stats_type == "site":
+            assert sorted(site_expected_column_names) == sorted(df_icobi.columns)
+        elif stats_type == "atompair":
+            assert sorted(pair_expected_column_names) == sorted(df_icobi.columns)
+        elif stats_type == "summed":
+            assert sorted(summed_expected_column_names) == sorted(df_icobi.columns)
+        else:
+            assert sorted(
+                summed_expected_column_names + pair_expected_column_names + site_expected_column_names
+            ) == sorted(df_icobi.columns)
+
+    @pytest.mark.parametrize(
+        ("stats_type"),
+        [
+            ("atompair"),
+            ("site"),
+            ("summed"),
+            ("all"),
+        ],
+    )
+    def test_batch_icohplist_stats_featurizer(self, stats_type):
+        batch_icohps = BatchIcoxxlistFeaturizer(
+            path_to_lobster_calcs=TestDir / "test_data/Featurizer_test_data/Lobster_calcs",
+            n_jobs=3,
+            bin_width=0.5,
+            read_icoops=False,
+            read_icobis=False,
+            normalization="counts",
+            bwdf_df_type="stats",
+            stats_type=stats_type,
+        )
+
+        df_icohp = batch_icohps.get_bwdf_df()
+
+        pair_expected_column_names = [
+            "pair_bwdf_sum_mean",
+            "pair_bwdf_mean_mean",
+            "pair_bwdf_std_mean",
+            "pair_bwdf_min_mean",
+            "pair_bwdf_max_mean",
+            "pair_bwdf_skew_mean",
+            "pair_bwdf_kurtosis_mean",
+            "pair_bwdf_sum_std",
+            "pair_bwdf_mean_std",
+            "pair_bwdf_std_std",
+            "pair_bwdf_min_std",
+            "pair_bwdf_max_std",
+            "pair_bwdf_skew_std",
+            "pair_bwdf_kurtosis_std",
+        ]
+
+        site_expected_column_names = [
+            "site_bwdf_sum_mean",
+            "site_bwdf_mean_mean",
+            "site_bwdf_std_mean",
+            "site_bwdf_min_mean",
+            "site_bwdf_max_mean",
+            "site_bwdf_skew_mean",
+            "site_bwdf_kurtosis_mean",
+            "site_bwdf_sum_std",
+            "site_bwdf_mean_std",
+            "site_bwdf_std_std",
+            "site_bwdf_min_std",
+            "site_bwdf_max_std",
+            "site_bwdf_skew_std",
+            "site_bwdf_kurtosis_std",
+        ]
+
+        summed_expected_column_names = [
+            "bwdf_sum",
+            "bwdf_mean",
+            "bwdf_std",
+            "bwdf_min",
+            "bwdf_max",
+            "bwdf_skew",
+            "bwdf_kurtosis",
+            "bwdf_w_mean",
+            "bwdf_w_std",
+        ]
+
+        if stats_type == "site":
+            assert sorted(site_expected_column_names) == sorted(df_icohp.columns)
+        elif stats_type == "atompair":
+            assert sorted(pair_expected_column_names) == sorted(df_icohp.columns)
+        elif stats_type == "summed":
+            assert sorted(summed_expected_column_names) == sorted(df_icohp.columns)
+        else:
+            assert sorted(
+                summed_expected_column_names + pair_expected_column_names + site_expected_column_names
+            ) == sorted(df_icohp.columns)
 
 
 class TestExceptions:
@@ -1009,4 +1166,4 @@ class TestExceptions:
                 bwdf_df_type="sorted_dists",
                 sorted_dists_mode="invalid",
             )
-            _ = batch_icoop.get_df()
+            _ = batch_icoop.get_bwdf_df()
