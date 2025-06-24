@@ -1042,3 +1042,61 @@ class TestFeaturizeIcoxxlist:
         assert df_sorted_bwdf.loc["mp-463", "bwdf_at_dist0"] == pytest.approx(0.2748, abs=1e-04)
         assert df_sorted_dists_n.loc["mp-463", "dist_at_neg_bwdf1"] == pytest.approx(4.65, abs=1e-02)
         assert df_sorted_dists_p.loc["mp-463", "dist_at_pos_bwdf1"] == pytest.approx(2.75, abs=1e-02)
+
+    def test_featurize_k3sb_icoxxlist_asi(self):
+        featurize_k3sb_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/K3Sb/ICOBILIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/K3Sb/CONTCAR.gz",
+            normalization="area",
+            bin_width=0.01,
+            are_cobis=True,
+        )
+
+        asi_0 = featurize_k3sb_icoxxlist.calc_site_asymmetry_index(site_index=0)
+        asi_2 = featurize_k3sb_icoxxlist.calc_site_asymmetry_index(site_index=2)
+
+        # check site asi value
+        assert asi_0 == pytest.approx(1.73463e-05, abs=1e-05)
+        assert asi_2 == pytest.approx(0.0001966, abs=1e-05)
+
+        # check asi stats df
+        df_asi = featurize_k3sb_icoxxlist.get_asymmetry_index_stats_df(ids="K3Sb")
+
+        # Test that the method returns a pandas DataFrame
+        assert isinstance(df_asi, pd.DataFrame)
+
+        assert len(df_asi.columns) == 5
+        assert df_asi.loc["K3Sb", "asi_sum"] == pytest.approx(0.0004372, abs=1e-05)
+        assert df_asi.loc["K3Sb", "asi_mean"] == pytest.approx(0.0001093, abs=1e-05)
+        assert df_asi.loc["K3Sb", "asi_std"] == pytest.approx(9.6335337e-05, abs=1e-05)
+        assert df_asi.loc["K3Sb", "asi_min"] == pytest.approx(9.0836673e-06, abs=1e-05)
+        assert df_asi.loc["K3Sb", "asi_max"] == pytest.approx(0.00021418, abs=1e-05)
+
+    def test_featurize_nasbf6_icoxxlist_asi(self):
+        featurize_nasbf6_icoxxlist = FeaturizeIcoxxlist(
+            path_to_icoxxlist=TestDir / "test_data/NaSbF6/ICOHPLIST.lobster.gz",
+            path_to_structure=TestDir / "test_data/NaSbF6/CONTCAR.gz",
+            normalization="none",
+            bin_width=0.1,
+            are_cobis=False,
+        )
+
+        asi_0 = featurize_nasbf6_icoxxlist.calc_site_asymmetry_index(site_index=0)
+        asi_5 = featurize_nasbf6_icoxxlist.calc_site_asymmetry_index(site_index=5)
+
+        # check site asi value
+        assert asi_0 == pytest.approx(6.0108339e-19, abs=1e-05)
+        assert asi_5 == pytest.approx(0.09790500, abs=1e-05)
+
+        # check asi stats df
+        df_asi = featurize_nasbf6_icoxxlist.get_asymmetry_index_stats_df(ids="NaSbF6")
+
+        # Test that the method returns a pandas DataFrame
+        assert isinstance(df_asi, pd.DataFrame)
+
+        assert len(df_asi.columns) == 5
+        assert df_asi.loc["NaSbF6", "asi_sum"] == pytest.approx(0.5874300, abs=1e-05)
+        assert df_asi.loc["NaSbF6", "asi_mean"] == pytest.approx(0.073429, abs=1e-05)
+        assert df_asi.loc["NaSbF6", "asi_std"] == pytest.approx(0.042394, abs=1e-05)
+        assert df_asi.loc["NaSbF6", "asi_min"] == pytest.approx(0.0, abs=1e-05)
+        assert df_asi.loc["NaSbF6", "asi_max"] == pytest.approx(0.097905, abs=1e-05)
