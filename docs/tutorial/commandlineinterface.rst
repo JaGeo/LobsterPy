@@ -228,6 +228,10 @@ command. Below is an example and sample output using this command.
    :file: tutorial_assets/CdF2.html
 
 
+-  ``lobsterpy plot-auto-ia --save-plot-json auto_plot_data.json`` can be used to save underlying plot data from the automatic analysis as a json file. This json file can be then loaded using monty package via ``monty.serialization.loadfn`` function.
+
+Note that ``--save-plot-json`` also works in combination with  ``lobsterpy plot-auto`` subcommand.
+
 2. Plotting of COHPs/COBIs/COOPs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
