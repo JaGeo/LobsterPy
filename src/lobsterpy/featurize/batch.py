@@ -1010,7 +1010,7 @@ class BatchIcoxxlistFeaturizer:
 
     def _get_icoxxlist_bwdf_df(self, path_to_lobster_calc: str | Path) -> pd.DataFrame:
         """
-        Featurize ICOXXLIST data using FeaturizeCOXX.
+        Featurize ICOXXLIST data using  FeaturizeIcoxxlist.
 
         :param path_to_lobster_calc: path to root LOBSTER calculation directory
 
