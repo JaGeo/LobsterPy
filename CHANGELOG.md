@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.5.7
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## What's Changed
+### 🚀 New Features
+* fix sitewise bwdf by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/388
+### 🐛 Bug Fixes
+* Fix ICOHPDistance plotter  by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/401
+
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.5.6...v0.5.7
+
+
 ## v0.5.6
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
