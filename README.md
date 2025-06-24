@@ -92,6 +92,10 @@ If you use any of the following Featurizers, also cite the respective papers:
 * `FeaturizeCharges`: R. Nelson, C. Ertural, P. C. Müller, R. Dronskowski, in Comprehensive Inorganic Chemistry III, *Elsevier*, **2023**, pp. 141–201. [https://doi.org/10.1016/B978-0-12-823144-9.00120-5](https://doi.org/10.1016/B978-0-12-823144-9.00120-5)
 * `FeaturizeIcoxxlist`: V. L. Deringer, W. Zhang, M. Lumeij, S. Maintz, M. Wuttig, R. Mazzarello, R. Dronskowski, *Angewandte Chemie International Edition 2014*, *53*, 10817–10820. [https://doi.org/10.1002/anie.201404223](https://doi.org/10.1002/anie.201404223)
 
+Cite the following paper as well if using aysmmetry index:
+
+F. Belli, E. Zurek, I. Errea, 2025 [https://arxiv.org/abs/2501.14420](https://arxiv.org/abs/2501.14420).
+
 Please cite [pymatgen](https://github.com/materialsproject/pymatgen), [Lobster](https://schmeling.ac.rwth-aachen.de/cohp/index.php?menuID=1), and [ChemEnv](https://doi.org/10.1107/S2052520620007994) correctly as well.
 
 
