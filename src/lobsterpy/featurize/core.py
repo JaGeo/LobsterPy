@@ -1154,7 +1154,8 @@ class FeaturizeIcoxxlist:
     :param interactions_tol: tolerance for interactions
     :param max_length: maximum bond length for BWDF computation
     :param min_length: minimum bond length for BWDF computation
-    :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons
+    :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons.
+        Only for testing purposes. Should not affect the results in any meaningful way.
     :param normalization: normalization strategy for BWDF
     :param are_cobis: bool indicating if file contains COBI/ICOBI data
     :param are_coops: bool indicating if file contains COOP/ICOOP data

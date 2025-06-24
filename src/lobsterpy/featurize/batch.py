@@ -898,7 +898,8 @@ class BatchIcoxxlistFeaturizer:
         :param max_length: maximum bond length for BWDF computation
         :param min_length: minimum bond length for BWDF computation
         :param normalization: normalization strategy for BWDF
-        :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons
+        :param n_electrons_scaling: bool indicating if ICOXX values should be scaled by number of electrons.
+            Only for testing purposes. Should not affect the results in any meaningful way.
         :param bin_width: bin width for BWDF
         :param bwdf_df_type: Type of BWDF dataframe to generate
 
