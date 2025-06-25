@@ -15,7 +15,7 @@ from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.electronic_structure.dos import LobsterCompleteDos
+from pymatgen.electronic_structure.dos import CompleteDos, LobsterCompleteDos
 from pymatgen.io.lobster import (
     Bandoverlaps,
     Charge,
@@ -1450,6 +1450,7 @@ class Analysis:
         bandoverlaps_obj: Bandoverlaps | None = None,
         lobster_completedos_obj: LobsterCompleteDos | None = None,
         vasprun_obj: Vasprun | None = None,
+        ref_dos_obj: CompleteDos | None = None,
         dos_comparison: bool = False,
         e_range: list = [-5, 0],
         n_bins: int | None = None,
@@ -1474,6 +1475,7 @@ class Analysis:
         :param bandoverlaps_obj: pymatgen lobster.io.BandOverlaps object
         :param lobster_completedos_obj: pymatgen.electronic_structure.dos.LobsterCompleteDos object
         :param vasprun_obj: pymatgen vasp.io.Vasprun object
+        :param ref_dos_obj: pymatgen.electronic_structure.dos.CompleteDos object
         :param dos_comparison: will compare DOS from VASP and LOBSTER and return tanimoto index
         :param e_range: energy range for DOS comparisons
         :param n_bins: number of bins to discretize DOS for comparisons
@@ -1635,7 +1637,7 @@ class Analysis:
                     stacklevel=2,
                 )
         if dos_comparison:
-            if "LSO" not in str(path_to_doscar).split("."):
+            if "LSO" not in str(path_to_doscar).split(".") and lobster_completedos_obj is None:
                 warnings.warn(
                     "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values",
                     stacklevel=2,
@@ -1655,17 +1657,39 @@ class Analysis:
                     "Dos comparison is requested, so please provide either path_to_doscar or lobster_completedos_obj"
                 )
 
-            if path_to_vasprun:
-                vasprun = Vasprun(path_to_vasprun, parse_potcar_file=False, parse_eigen=False)
-            elif vasprun_obj:
-                vasprun = vasprun_obj
+            if path_to_vasprun and not ref_dos_obj:
+                dos_vasp = Vasprun(path_to_vasprun, parse_potcar_file=False, parse_eigen=False).complete_dos
+            elif vasprun_obj and not ref_dos_obj:
+                dos_vasp = vasprun_obj.complete_dos
+            elif ref_dos_obj:
+                dos_vasp = ref_dos_obj
             else:
                 raise ValueError(
-                    "Dos comparison is requested, so please provide either path to vasprun.xml or vasprun_obj"
+                    "Dos comparison is requested, so please provide either path to vasprun.xml or "
+                    "vasprun_obj or ref_dos_obj"
                 )
-            dos_vasp = vasprun.complete_dos
 
             quality_dict["dos_comparisons"] = {}  # type: ignore
+
+            if not n_bins:
+                n_bins = 56
+
+            # Sanity check for n_bins values for e_range used
+            n_dos_lobster = len(
+                dos_lobster.energies[(dos_lobster.energies >= e_range[0]) & (dos_lobster.energies <= e_range[1])]
+            )
+            n_dos_vasp = len(dos_vasp.energies[(dos_vasp.energies >= e_range[0]) & (dos_vasp.energies <= e_range[1])])
+
+            min_bin = min(n_dos_lobster, n_dos_vasp)
+            if n_bins > min_bin:
+                warnings.warn(
+                    f"The specified number of bins for DOS comparisons ({n_bins}) "
+                    "exceeds the number of available data points. "
+                    "The number of bins will be set to the minimum available "
+                    f"data points: {min_bin}.",
+                    stacklevel=2,
+                )
+                n_bins = min_bin
 
             for orb in dos_lobster.get_spd_dos():
                 if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(dos_lobster.energies):
@@ -1696,9 +1720,6 @@ class Analysis:
                         "calculations, respectively.",
                         stacklevel=2,
                     )
-
-                if not n_bins:
-                    n_bins = 56
 
                 fp_lobster_orb = dos_lobster.get_dos_fp(
                     min_e=min_e,
