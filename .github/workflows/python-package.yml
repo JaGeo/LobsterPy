@@ -67,7 +67,7 @@ jobs:
         MPLBACKEND: Agg  # non-interactive backend for matplotlib
       run: |
         micromamba activate lobpy
-        pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 5 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations
+        pytest --cov=lobsterpy --cov-report term-missing --cov-append --splits 5 --group ${{ matrix.split }} -vv --durations-path ./tests/test_data/.pytest-split-durations --store-durations
 
     - name: Upload coverage
       if: matrix.python-version == '3.10'
