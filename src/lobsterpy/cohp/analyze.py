@@ -1671,12 +1671,8 @@ class Analysis:
 
             quality_dict["dos_comparisons"] = {}  # type: ignore
 
-            min_e = max(
-                e_range[0], max(min(dos_vasp.energies), min(dos_lobster.energies))
-            )
-            max_e = min(
-                e_range[-1], min(max(dos_vasp.energies), max(dos_lobster.energies))
-            )
+            min_e = max(e_range[0], max(min(dos_vasp.energies), min(dos_lobster.energies)))
+            max_e = min(e_range[-1], min(max(dos_vasp.energies), max(dos_lobster.energies)))
 
             if min_e > e_range[0]:
                 warnings.warn(
@@ -1690,17 +1686,8 @@ class Analysis:
                 )
 
             minimum_n_bins = min(
-                len(
-                    dos_vasp.energies[
-                        (dos_vasp.energies >= min_e) & (dos_vasp.energies <= max_e)
-                    ]
-                ),
-                len(
-                    dos_lobster.energies[
-                        (dos_lobster.energies >= min_e)
-                        & (dos_lobster.energies <= max_e)
-                    ]
-                ),
+                len(dos_vasp.energies[(dos_vasp.energies >= min_e) & (dos_vasp.energies <= max_e)]),
+                len(dos_lobster.energies[(dos_lobster.energies >= min_e) & (dos_lobster.energies <= max_e)]),
             )
 
             n_bins = n_bins or minimum_n_bins
@@ -1721,7 +1708,6 @@ class Analysis:
             }
 
             for orb in dos_lobster.get_spd_dos():
-
                 fp_lobster_orb = dos_lobster.get_dos_fp(
                     **dos_fp_kwargs,
                     fp_type=orb.name,
@@ -1732,9 +1718,7 @@ class Analysis:
                 )
 
                 tani_orb = round(
-                    dos_vasp.get_dos_fp_similarity(
-                        fp_lobster_orb, fp_vasp_orb, metric="tanimoto"
-                    ),
+                    dos_vasp.get_dos_fp_similarity(fp_lobster_orb, fp_vasp_orb, metric="tanimoto"),
                     4,
                 )
                 quality_dict["dos_comparisons"][f"tanimoto_orb_{orb.name}"] = tani_orb  # type: ignore
