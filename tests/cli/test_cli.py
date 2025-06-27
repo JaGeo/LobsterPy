@@ -553,7 +553,7 @@ class TestCLI:
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
             "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
-            "are: 0.9935, 0.9983, 0.9822."
+            "are: 0.9795, 0.9864, 0.9628."
         )
 
         assert calc_quality_text == ref_text
@@ -595,7 +595,7 @@ class TestCLI:
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. "
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. "
             "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals "
-            "are: 0.8367, 0.9565, 0.9357."
+            "are: 0.7953, 0.8994, 0.8763."
         )
 
         assert calc_quality_text == ref_text

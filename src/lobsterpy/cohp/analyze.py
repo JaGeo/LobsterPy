@@ -15,7 +15,7 @@ from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
-from pymatgen.electronic_structure.dos import LobsterCompleteDos
+from pymatgen.electronic_structure.dos import CompleteDos, LobsterCompleteDos
 from pymatgen.io.lobster import (
     Bandoverlaps,
     Charge,
@@ -1450,6 +1450,7 @@ class Analysis:
         bandoverlaps_obj: Bandoverlaps | None = None,
         lobster_completedos_obj: LobsterCompleteDos | None = None,
         vasprun_obj: Vasprun | None = None,
+        ref_dos_obj: CompleteDos | None = None,
         dos_comparison: bool = False,
         e_range: list = [-5, 0],
         n_bins: int | None = None,
@@ -1474,6 +1475,7 @@ class Analysis:
         :param bandoverlaps_obj: pymatgen lobster.io.BandOverlaps object
         :param lobster_completedos_obj: pymatgen.electronic_structure.dos.LobsterCompleteDos object
         :param vasprun_obj: pymatgen vasp.io.Vasprun object
+        :param ref_dos_obj: pymatgen.electronic_structure.dos.CompleteDos object
         :param dos_comparison: will compare DOS from VASP and LOBSTER and return tanimoto index
         :param e_range: energy range for DOS comparisons
         :param n_bins: number of bins to discretize DOS for comparisons
@@ -1635,7 +1637,7 @@ class Analysis:
                     stacklevel=2,
                 )
         if dos_comparison:
-            if "LSO" not in str(path_to_doscar).split("."):
+            if "LSO" not in str(path_to_doscar).split(".") and lobster_completedos_obj is None:
                 warnings.warn(
                     "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values",
                     stacklevel=2,
@@ -1655,63 +1657,68 @@ class Analysis:
                     "Dos comparison is requested, so please provide either path_to_doscar or lobster_completedos_obj"
                 )
 
-            if path_to_vasprun:
-                vasprun = Vasprun(path_to_vasprun, parse_potcar_file=False, parse_eigen=False)
-            elif vasprun_obj:
-                vasprun = vasprun_obj
+            if path_to_vasprun and not ref_dos_obj:
+                dos_vasp = Vasprun(path_to_vasprun, parse_potcar_file=False, parse_eigen=False).complete_dos
+            elif vasprun_obj and not ref_dos_obj:
+                dos_vasp = vasprun_obj.complete_dos
+            elif ref_dos_obj:
+                dos_vasp = ref_dos_obj
             else:
                 raise ValueError(
-                    "Dos comparison is requested, so please provide either path to vasprun.xml or vasprun_obj"
+                    "Dos comparison is requested, so please provide either path to vasprun.xml or "
+                    "vasprun_obj or ref_dos_obj"
                 )
-            dos_vasp = vasprun.complete_dos
 
             quality_dict["dos_comparisons"] = {}  # type: ignore
 
+            min_e = int(max(e_range[0], min(dos_vasp.energies), min(dos_lobster.energies)))
+            max_e = int(min(e_range[-1], max(dos_vasp.energies), max(dos_lobster.energies)))
+
+            if min_e > e_range[0]:
+                warnings.warn(
+                    f"Minimum energy range requested for DOS comparisons is not available in "
+                    "VASP or LOBSTER calculation. "
+                    f"Thus, setting `min_e` to the minimum possible value of {min_e} eV",
+                    stacklevel=2,
+                )
+            if max_e < e_range[-1]:
+                warnings.warn(
+                    f"Maximum energy range requested for DOS comparisons is not available in "
+                    "VASP or LOBSTER calculation. "
+                    f"Thus, setting `max_e` to the maximum possible value of {max_e} eV",
+                    stacklevel=2,
+                )
+
+            minimum_n_bins = min(
+                len(dos_vasp.energies[(dos_vasp.energies >= min_e) & (dos_vasp.energies <= max_e)]),
+                len(dos_lobster.energies[(dos_lobster.energies >= min_e) & (dos_lobster.energies <= max_e)]),
+            )
+
+            n_bins = n_bins or minimum_n_bins
+
+            if n_bins > minimum_n_bins:
+                warnings.warn(
+                    f"Number of bins requested for DOS comparisons is larger than the "
+                    "number of points in the energy interval. Thus, setting "
+                    f"`n_bins` to {minimum_n_bins}.",
+                    stacklevel=2,
+                )
+                n_bins = minimum_n_bins
+
+            dos_fp_kwargs = {
+                "min_e": min_e,
+                "max_e": max_e,
+                "n_bins": n_bins,
+                "normalize": True,
+            }
+
             for orb in dos_lobster.get_spd_dos():
-                if e_range[0] >= min(dos_vasp.energies) and e_range[0] >= min(dos_lobster.energies):
-                    min_e = e_range[0]
-                else:
-                    warnings.warn(
-                        "Minimum energy range requested for DOS comparisons is not available "
-                        "in VASP or LOBSTER calculation. Thus, setting min_e to -5 eV",
-                        stacklevel=2,
-                    )
-                    min_e = -5
-
-                if e_range[-1] <= max(dos_vasp.energies) and e_range[-1] <= max(dos_lobster.energies):
-                    max_e = e_range[-1]
-                else:
-                    warnings.warn(
-                        "Maximum energy range requested for DOS comparisons is not available "
-                        "in VASP or LOBSTER calculation. Thus, setting max_e to 0 eV",
-                        stacklevel=2,
-                    )
-                    max_e = 0
-
-                if np.diff(dos_vasp.energies)[0] >= 0.1 or np.diff(dos_lobster.energies)[0] >= 0.1:
-                    warnings.warn(
-                        "Input DOS files have very few points in the energy interval and thus "
-                        "comparisons will not be reliable. Please rerun the calculations with "
-                        "higher number of DOS points. Set NEDOS and COHPSteps tags to >= 2000 in VASP and LOBSTER "
-                        "calculations, respectively.",
-                        stacklevel=2,
-                    )
-
-                if not n_bins:
-                    n_bins = 56
-
                 fp_lobster_orb = dos_lobster.get_dos_fp(
-                    min_e=min_e,
-                    max_e=max_e,
-                    n_bins=n_bins,
-                    normalize=True,
+                    **dos_fp_kwargs,
                     fp_type=orb.name,
                 )
                 fp_vasp_orb = dos_vasp.get_dos_fp(
-                    min_e=min_e,
-                    max_e=max_e,
-                    n_bins=n_bins,
-                    normalize=True,
+                    **dos_fp_kwargs,
                     fp_type=orb.name,
                 )
 
@@ -1722,17 +1729,11 @@ class Analysis:
                 quality_dict["dos_comparisons"][f"tanimoto_orb_{orb.name}"] = tani_orb  # type: ignore
 
             fp_lobster = dos_lobster.get_dos_fp(
-                min_e=min_e,
-                max_e=max_e,
-                n_bins=n_bins,
-                normalize=True,
+                **dos_fp_kwargs,
                 fp_type="summed_pdos",
             )
             fp_vasp = dos_vasp.get_dos_fp(
-                min_e=min_e,
-                max_e=max_e,
-                n_bins=n_bins,
-                normalize=True,
+                **dos_fp_kwargs,
                 fp_type="summed_pdos",
             )
 
