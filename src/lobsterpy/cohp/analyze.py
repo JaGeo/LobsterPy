@@ -1671,17 +1671,21 @@ class Analysis:
 
             quality_dict["dos_comparisons"] = {}  # type: ignore
 
-            min_e = max(e_range[0], max(min(dos_vasp.energies), min(dos_lobster.energies)))
-            max_e = min(e_range[-1], min(max(dos_vasp.energies), max(dos_lobster.energies)))
+            min_e = int(max(e_range[0], min(dos_vasp.energies), min(dos_lobster.energies)))
+            max_e = int(min(e_range[-1], max(dos_vasp.energies), max(dos_lobster.energies)))
 
             if min_e > e_range[0]:
                 warnings.warn(
-                    f"Minimum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. Thus, setting `min_e` to the minimum possible value of {min_e} eV",
+                    f"Minimum energy range requested for DOS comparisons is not available in "
+                    "VASP or LOBSTER calculation. "
+                    f"Thus, setting `min_e` to the minimum possible value of {min_e} eV",
                     stacklevel=2,
                 )
             if max_e < e_range[-1]:
                 warnings.warn(
-                    f"Maximum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. Thus, setting `max_e` to the maximum possible value of {max_e} eV",
+                    f"Maximum energy range requested for DOS comparisons is not available in "
+                    "VASP or LOBSTER calculation. "
+                    f"Thus, setting `max_e` to the maximum possible value of {max_e} eV",
                     stacklevel=2,
                 )
 
@@ -1694,8 +1698,9 @@ class Analysis:
 
             if n_bins > minimum_n_bins:
                 warnings.warn(
-                    f"Number of bins requested for DOS comparisons is larger than the number of points in the energy interval. "
-                    f"Thus, setting `n_bins` to {minimum_n_bins}.",
+                    f"Number of bins requested for DOS comparisons is larger than the "
+                    "number of points in the energy interval. Thus, setting "
+                    f"`n_bins` to {minimum_n_bins}.",
                     stacklevel=2,
                 )
                 n_bins = minimum_n_bins
