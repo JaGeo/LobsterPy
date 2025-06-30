@@ -362,28 +362,26 @@ class TestCalcQualityDescribeWarnings:
                 e_range=[-50, 60],
                 dos_comparison=True,
                 bva_comp=False,
+                n_bins=500,
             )
-        messages = []
-        for warning in w:
-            messages.append(str(warning.message))
-        count0 = 0
-        count1 = 0
-        count2 = 0
-        count3 = 0
-        for msg in messages:
-            if "Consider using DOSCAR.LSO.lobster" in msg:
-                count0 += 1
-            if "Minimum energy range requested" in msg:
-                count1 += 1
-            if "Maximum energy range requested" in msg:
-                count2 += 1
-            if "Input DOS files have very few points" in msg:
-                count3 += 1
+        # messages = []
+        actual_warnings = [str(warning.message) for warning in w]
 
-        assert count0 == 1
-        assert count1 == 1
-        assert count2 == 1
-        assert count3 == 1
+        expected_warnings = [
+            "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values",
+            "Minimum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. "
+            "Thus, setting `min_e` to the minimum possible value of -15 eV",
+            "Maximum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. "
+            "Thus, setting `max_e` to the maximum possible value of 5 eV",
+            "Number of bins requested for DOS comparisons is larger than the number of points in the energy interval. "
+            "Thus, setting `n_bins` to 107.",
+            "Input DOS files have very few points in the energy interval and thus comparisons will not be reliable. "
+            "Please rerun the calculations with higher number of DOS points. "
+            "Set NEDOS and COHPSteps tags to >= 2000 in VASP and LOBSTER calculations, respectively.",
+        ]
+
+        for actual, expected in zip(actual_warnings, expected_warnings):
+            assert actual == expected
 
         calc_des = Description.get_calc_quality_description(calc_quality_warnings)
 
@@ -392,8 +390,8 @@ class TestCalcQualityDescribeWarnings:
             "The absolute and total charge spilling for the calculation is 2.255 and 12.72 %, respectively.",
             "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
             "generated during the LOBSTER run.",
-            "The Tanimoto index from DOS comparisons in the energy range between -5, 0 eV for s, p, summed orbitals "
-            "are: 0.4057, 0.2831, 0.2762.",
+            "The Tanimoto index from DOS comparisons in the energy range between -15, 5 eV for s, p, summed orbitals "
+            "are: 0.6712, 0.8113, 0.8064.",
         ]
 
         with warnings.catch_warnings(record=True) as w2:
