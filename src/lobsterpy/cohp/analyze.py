@@ -109,7 +109,7 @@ class Analysis:
         orbital_resolved: bool = False,
         start: float | None = None,
         summed_spins: bool = True,
-        type_charge: str | None = None,
+        type_charge: str = "Mulliken",
         which_bonds: str = "cation-anion",
     ):
         """
@@ -135,8 +135,8 @@ class Analysis:
             Set it to 0 to get results of all orbitals in the detected relevant bonds. Default is to 0.05 i.e.
             only analyzes if orbital contribution is 5 % or more.
         :param orbital_resolved: bool indicating whether orbital wise analysis is performed
-        :param type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
-                Löwdin charges cannot be selected at the moment.
+        :param type_charge: If no path_to_charge or charge_obj is given, Valences will be used.
+            Otherwise, Mulliken charges by default.
         :param which_bonds: Selects kinds of bonds that are analyzed. `cation-anion` is the default.
             Alternatively, `all` bonds can also be selected. Support to other kinds of bonds will be
             added soon.
@@ -148,12 +148,12 @@ class Analysis:
         if (path_to_poscar and str(path_to_poscar).endswith("POSCAR")) or (
             path_to_poscar and str(path_to_poscar).endswith("POSCAR.gz")
         ):
-            warnings.warn(POSCAR_WARNING)
+            warnings.warn(POSCAR_WARNING, stacklevel=2)
         self.start = start
-        self.completecohp_obj = completecohp_obj
-        self.icohplist_obj = icohplist_obj
+        self._completecohp_obj = completecohp_obj
+        self._icohplist_obj = icohplist_obj
         # checks to ensure LobsterEnv inputs are not duplicated in case users provide both path and obj
-        if self.completecohp_obj is not None and self.icohplist_obj is not None:
+        if self._completecohp_obj is not None and self._icohplist_obj is not None:
             self.path_to_poscar = None
             self.path_to_cohpcar = None
             self.path_to_icohplist = None
@@ -165,30 +165,36 @@ class Analysis:
         self.cutoff_icohp = cutoff_icohp
         self.orbital_cutoff = orbital_cutoff
         self.path_to_charge = path_to_charge
-        self.charge_obj = charge_obj
+        self._charge_obj = charge_obj
         self.path_to_madelung = path_to_madelung
-        self.madelung_obj = madelung_obj
+        self._madelung_obj = madelung_obj
         self.are_cobis = are_cobis
         self.are_coops = are_coops
         self.noise_cutoff = noise_cutoff
-        self.setup_env()
-        self.get_information_all_bonds(summed_spins=summed_spins)
-        self.orbital_resolved = orbital_resolved
 
         # This determines how cations and anions
         if path_to_charge is None and charge_obj is None:
+            warnings.warn(
+                "Using Valences for chemical environment analysis as neither "
+                "'path_to_charge' or  'charge_obj' is provided. It is recommended to use "
+                " Mulliken/Loewdin. charges",
+                stacklevel=2,
+            )
             self.type_charge = "Valences"
         else:
-            if type_charge is None:
+            if type_charge.capitalize() == "Mulliken":
                 self.type_charge = "Mulliken"
-            elif type_charge == "Mulliken":
-                self.type_charge = "Mulliken"
-            elif type_charge == "Löwdin":
-                raise ValueError("Only Mulliken charges can be used here at the moment. Implementation will follow.")
+            elif type_charge.capitalize() == "Loewdin":
+                warnings.warn("Support for Loewdin charges is currently experimental. Use with caution!", stacklevel=2)
+                self.type_charge = "Loewdin"
             else:
-                self.type_charge = "Valences"
-                print("type_charge cannot be read! Please use Mulliken/Löwdin. Now, we will use valences")
+                raise ValueError(
+                    f"type_charge must be either 'Mulliken', 'Loewdin' or 'Valences'. Got {type_charge} instead."
+                )
 
+        self.setup_env()
+        self.get_information_all_bonds(summed_spins=summed_spins)
+        self.orbital_resolved = orbital_resolved
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
         self.path_to_madelung = path_to_madelung
@@ -202,7 +208,7 @@ class Analysis:
 
         """
         self.structure = (
-            Structure.from_file(self.path_to_poscar) if self.path_to_poscar else self.completecohp_obj.structure
+            Structure.from_file(self.path_to_poscar) if self.path_to_poscar else self._completecohp_obj.structure
         )
         sga = SpacegroupAnalyzer(structure=self.structure)
         symmetry_dataset = sga.get_symmetry_dataset()
@@ -215,18 +221,19 @@ class Analysis:
             try:
                 self.chemenv = LobsterNeighbors(
                     filename_icohp=self.path_to_icohplist,
-                    obj_icohp=self.icohplist_obj,
+                    obj_icohp=self._icohplist_obj,
                     structure=self.structure,
                     additional_condition=1,
                     perc_strength_icohp=self.cutoff_icohp,
                     filename_charge=self.path_to_charge,
-                    obj_charge=self.charge_obj,
+                    obj_charge=self._charge_obj,
                     valences=None,
-                    valences_from_charges=True,
+                    valences_from_charges=self.type_charge != "Valences",
                     adapt_extremum_to_add_cond=True,
                     are_cobis=self.are_cobis,
                     are_coops=self.are_coops,
                     noise_cutoff=self.noise_cutoff,
+                    which_charge=self.type_charge,
                 )
             except ValueError as err:
                 if (
@@ -242,17 +249,18 @@ class Analysis:
             # raise ValueError("only cation anion bonds implemented so far")
             self.chemenv = LobsterNeighbors(
                 filename_icohp=self.path_to_icohplist,
-                obj_icohp=self.icohplist_obj,
+                obj_icohp=self._icohplist_obj,
                 structure=self.structure,
                 additional_condition=0,
                 perc_strength_icohp=self.cutoff_icohp,
                 filename_charge=self.path_to_charge,
-                obj_charge=self.charge_obj,
-                valences_from_charges=True,
+                obj_charge=self._charge_obj,
+                valences_from_charges=self.type_charge != "Valences",
                 adapt_extremum_to_add_cond=True,
                 are_cobis=self.are_cobis,
                 are_coops=self.are_coops,
                 noise_cutoff=self.noise_cutoff,
+                which_charge=self.type_charge,
             )
 
         else:
@@ -334,7 +342,7 @@ class Analysis:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             path_to_cohpcar=self.path_to_cohpcar,
-                            obj_cohpcar=self.completecohp_obj,
+                            obj_cohpcar=self._completecohp_obj,
                             isites=[ice],
                             summed_spin_channels=summed_spins,
                             per_bond=False,
@@ -373,7 +381,7 @@ class Analysis:
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             path_to_cohpcar=self.path_to_cohpcar,
-                            obj_cohpcar=self.completecohp_obj,
+                            obj_cohpcar=self._completecohp_obj,
                             isites=[ice],
                             onlycation_isites=False,
                             summed_spin_channels=summed_spins,
@@ -427,14 +435,14 @@ class Analysis:
         return self.chemenv.valences
 
     @property
-    def icohpcollection(self) -> Icohplist:
-        """Pymatgen Icohplist object."""
-        return self.chemenv.ICOHP
-
-    @property
     def completecohp(self) -> CompleteCohp:
         """Pymatgen CompleteCohp object."""
         return self.chemenv.completecohp
+
+    @property
+    def icohpcollection(self) -> Icohplist:
+        """Pymatgen Icohplist object."""
+        return self.chemenv.ICOHP
 
     @property
     def lobsterneighbors(self) -> LobsterNeighbors:
@@ -1336,7 +1344,7 @@ class Analysis:
                     "relevant_bonds": bond_infos[3],
                 }
 
-        if self.path_to_madelung is None and self.madelung_obj is None:
+        if self.path_to_madelung is None and self._madelung_obj is None:
             if self.which_bonds == "cation-anion":
                 # This sets the dictionary including the most important information on the compound
                 self.condensed_bonding_analysis = {
@@ -1357,10 +1365,10 @@ class Analysis:
                     "type_charges": self.type_charge,
                 }
         else:
-            madelung = MadelungEnergies(self.path_to_madelung) if self.path_to_madelung else self.madelung_obj
+            madelung = MadelungEnergies(self.path_to_madelung) if self.path_to_madelung else self._madelung_obj
             if self.type_charge == "Mulliken":
                 madelung_energy = madelung.madelungenergies_mulliken
-            elif self.type_charge == "Löwdin":
+            elif self.type_charge == "Loewdin":
                 madelung_energy = madelung.madelungenergies_loewdin
             else:
                 madelung_energy = None

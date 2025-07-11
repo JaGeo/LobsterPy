@@ -454,6 +454,15 @@ def get_parser() -> argparse.ArgumentParser:
         help="Write a JSON file with the plot data. "
         "`monty.serialization.loadfn` or `json.load` can be used to load the data.",
     )
+    auto_group.add_argument(
+        "-tchg",
+        "--typecharge",
+        type=str,
+        dest="type_charge",
+        default="Mulliken",
+        help="Switch between different types of charges for automatic analysis. "
+        "Possible values are: 'Mulliken', 'Loewdin' or 'Valences'. ",
+    )
 
     # Argument that will help to switch automatic analysis
     analysis_switch = argparse.ArgumentParser(add_help=False)
@@ -945,6 +954,7 @@ def run(args):
             orbital_cutoff=args.orbitalcutoff,
             orbital_resolved=args.orbitalresolved,
             summed_spins=args.summedspins,
+            type_charge=args.type_charge,
         )
 
         describe = Description(analysis_object=analyse)
