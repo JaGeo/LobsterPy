@@ -41,6 +41,9 @@ class Analysis:
     """
     Class to automatically analyze COHP/COOP/COBI  populations from Lobster.
 
+    Can be initialized using either file paths or pymatgen objects.
+    Pymatgen objects will be preferred in case both are supplied.
+
     :param are_cobis: bool indicating if file contains COBI/ICOBI data
     :param are_coops: bool indicating if file contains COOP/ICOOP data
     :param cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
@@ -61,8 +64,8 @@ class Analysis:
         Set it to 0 to get results of all orbitals in the detected relevant bonds. Default is to 0.05 i.e.
         only analyzes if orbital contribution is 5 % or more.
     :param orbital_resolved: bool indicating whether orbital wise analysis is performed
-    :param type_charge: If no path_to_charge is given, Valences will be used. Otherwise, Mulliken charges.
-            Löwdin charges cannot be selected at the moment.
+    :param type_charge: If no path_to_charge or charge_obj is provided, Valences will be used (see pymatgen BVAnalyzer).
+            Otherwise, Mulliken charges from CHARGE.lobster are used by default.
     :param which_bonds: Selects kinds of bonds that are analyzed. `cation-anion` is the default.
         Alternatively, `all` bonds can also be selected. Support to other kinds of bonds will be
         added soon.
@@ -115,6 +118,9 @@ class Analysis:
         """
         Initialize automatic bonding analysis.
 
+        Can be initialized using either file paths or pymatgen objects.
+        Pymatgen objects will be preferred in case both are supplied.
+
         :param are_cobis: bool indicating if file contains COBI/ICOBI data
         :param are_coops: bool indicating if file contains COOP/ICOOP data
         :param cutoff_icohp: Cutoff in percentage for evaluating neighbors based on ICOHP values.
@@ -135,8 +141,8 @@ class Analysis:
             Set it to 0 to get results of all orbitals in the detected relevant bonds. Default is to 0.05 i.e.
             only analyzes if orbital contribution is 5 % or more.
         :param orbital_resolved: bool indicating whether orbital wise analysis is performed
-        :param type_charge: If no path_to_charge or charge_obj is given, Valences will be used.
-            Otherwise, Mulliken charges by default.
+        :param type_charge: If no path_to_charge or charge_obj is provided, Valences will be used
+             (see pymatgen BVAnalyzer). Otherwise, Mulliken charges from CHARGE.lobster are used by default.
         :param which_bonds: Selects kinds of bonds that are analyzed. `cation-anion` is the default.
             Alternatively, `all` bonds can also be selected. Support to other kinds of bonds will be
             added soon.
@@ -150,34 +156,37 @@ class Analysis:
         ):
             warnings.warn(POSCAR_WARNING, stacklevel=2)
         self.start = start
+
         self._completecohp_obj = completecohp_obj
         self._icohplist_obj = icohplist_obj
+        self._charge_obj = charge_obj
+        self._madelung_obj = madelung_obj
+
         # checks to ensure LobsterEnv inputs are not duplicated in case users provide both path and obj
-        if self._completecohp_obj is not None and self._icohplist_obj is not None:
-            self.path_to_poscar = None
-            self.path_to_cohpcar = None
-            self.path_to_icohplist = None
+        if all([self._completecohp_obj, self._icohplist_obj, self._charge_obj, self._madelung_obj]):
+            self.path_to_poscar = self.path_to_cohpcar = self.path_to_icohplist = self.path_to_charge = (
+                self.path_to_madelung
+            ) = None
         else:
             self.path_to_poscar = path_to_poscar
             self.path_to_icohplist = path_to_icohplist
             self.path_to_cohpcar = path_to_cohpcar
+            self.path_to_charge = path_to_charge
+            self.path_to_madelung = path_to_madelung
+
         self.which_bonds = which_bonds
         self.cutoff_icohp = cutoff_icohp
         self.orbital_cutoff = orbital_cutoff
-        self.path_to_charge = path_to_charge
-        self._charge_obj = charge_obj
-        self.path_to_madelung = path_to_madelung
-        self._madelung_obj = madelung_obj
         self.are_cobis = are_cobis
         self.are_coops = are_coops
         self.noise_cutoff = noise_cutoff
 
         # This determines how cations and anions
-        if path_to_charge is None and charge_obj is None:
+        if self.path_to_charge is None and self._charge_obj is None:
             warnings.warn(
                 "Using Valences for chemical environment analysis as neither "
                 "'path_to_charge' or  'charge_obj' is provided. It is recommended to use "
-                " Mulliken/Loewdin. charges",
+                " 'Mulliken' or 'Loewdin' charges",
                 stacklevel=2,
             )
             self.type_charge = "Valences"
