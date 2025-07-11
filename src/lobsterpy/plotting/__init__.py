@@ -19,6 +19,8 @@ from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp, IcohpCollecti
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.dos import LobsterCompleteDos
 from pymatgen.electronic_structure.plotter import CohpPlotter, DosPlotter
+from scipy.signal import convolve
+from scipy.stats import norm
 
 if TYPE_CHECKING:
     from lobsterpy.cohp.analyze import Analysis
@@ -214,9 +216,6 @@ class PlainCohpPlotter(CohpPlotter):
             Broadened population
 
         """
-        from scipy.signal import convolve
-        from scipy.stats import norm
-
         if sigma is None:
             return population
 
