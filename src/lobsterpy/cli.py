@@ -14,8 +14,9 @@ import matplotlib.style
 from monty.json import jsanitize
 from monty.os.path import zpath
 from monty.serialization import dumpfn
+from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp
-from pymatgen.io.lobster import Icohplist
+from pymatgen.io.lobster import Doscar, Icohplist, Lobsterin
 
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
@@ -1215,9 +1216,6 @@ def run(args):
             plt.savefig(args.save_plot)
 
     if args.action in ["create-inputs", "createinputs"]:
-        from pymatgen.core.structure import Structure
-        from pymatgen.io.lobster import Lobsterin
-
         # Check for .gz files exist for default values and update accordingly
         req_file_arg_names = ["structure", "potcar", "incar"]
 
@@ -1371,8 +1369,6 @@ def run(args):
 
         for arg_name in req_files:
             setattr(args, arg_name, req_files[arg_name])
-
-        from pymatgen.io.lobster import Doscar
 
         lobs_dos = Doscar(doscar=args.doscar, structure_file=args.structure).completedos
 

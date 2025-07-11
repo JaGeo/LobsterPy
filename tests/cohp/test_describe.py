@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import tempfile
 import warnings
 from pathlib import Path
 
@@ -114,8 +115,6 @@ class TestDescribe:
             assert Description._coordination_environment_to_text(key) == items
 
     def test_plot(self, describe_nacl, describe_nacl_spin, describe_nacl_all, describe_csh_all):
-        import tempfile
-
         with tempfile.TemporaryDirectory() as tmp0:
             filename_test = Path(tmp0) / "test.pdf"
             describe_nacl.plot_cohps(save=True, filename=filename_test, xlim=[-4, 4])
