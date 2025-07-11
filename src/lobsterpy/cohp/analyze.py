@@ -28,6 +28,7 @@ from pymatgen.io.lobster import (
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from scipy.integrate import trapezoid
 
 POSCAR_WARNING = (
     "Falling back to POSCAR, translations between individual atoms may differ from LOBSTER outputs. "
@@ -936,8 +937,6 @@ class Analysis:
             " absolute value of ICOHP_sum might not be equivalent to (bonding- antibonding) integral values.",
             stacklevel=2,
         )
-
-        from scipy.integrate import trapezoid
 
         def integrate_positive(y, x):
             """
