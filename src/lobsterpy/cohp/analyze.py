@@ -421,6 +421,26 @@ class Analysis:
 
         return label_data
 
+    @property
+    def charges(self) -> list[float]:
+        """Charges used for chemical environment analysis."""
+        return self.chemenv.valences
+
+    @property
+    def icohpcollection(self) -> Icohplist:
+        """Pymatgen Icohplist object."""
+        return self.chemenv.ICOHP
+
+    @property
+    def completecohp(self) -> CompleteCohp:
+        """Pymatgen CompleteCohp object."""
+        return self.chemenv.completecohp
+
+    @property
+    def lobsterneighbors(self) -> LobsterNeighbors:
+        """Pymatgen LobsterNeighbors object."""
+        return self.chemenv
+
     def _get_orbital_resolved_data(
         self,
         nameion: str,
