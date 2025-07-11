@@ -8,7 +8,9 @@ from pathlib import Path
 
 import pytest
 from pymatgen.core import Structure
-from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Lobsterin, Lobsterout
+from pymatgen.electronic_structure.cohp import CompleteCohp
+from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Icohplist, Lobsterin, Lobsterout
+from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.vasp import Vasprun
 
 from lobsterpy.cohp.analyze import Analysis
@@ -80,6 +82,10 @@ class TestAnalyse:
             "30",
         ]
         assert analyse_nacl_valences.condensed_bonding_analysis["type_charges"] == "Valences"
+        assert isinstance(analyse_nacl_valences.charges, list)
+        assert isinstance(analyse_nacl_valences.icohpcollection, Icohplist)
+        assert isinstance(analyse_nacl_valences.completecohp, CompleteCohp)
+        assert isinstance(analyse_nacl_valences.lobsterneighbors, LobsterNeighbors)
 
     def test_all_attributes_batio3(self, analyse_bati03):
         assert analyse_bati03.condensed_bonding_analysis["formula"] == "BaTiO3"
