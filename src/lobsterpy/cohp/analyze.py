@@ -431,17 +431,30 @@ class Analysis:
 
     @property
     def charges(self) -> list[float]:
-        """Charges used for chemical environment analysis."""
+        """Charges used for chemical environment analysis.
+
+        List of charges for each site in the structure.
+        """
         return self.chemenv.valences
 
     @property
     def completecohp(self) -> CompleteCohp:
-        """Pymatgen CompleteCohp object."""
+        """
+        Pymatgen CompleteCohp object.
+
+        Depending on the type of files read during Analyse class initialization,
+        it can contain COHP, COOP or COBI data.
+        """
         return self.chemenv.completecohp
 
     @property
-    def icohpcollection(self) -> Icohplist:
-        """Pymatgen Icohplist object."""
+    def icohplist(self) -> Icohplist:
+        """
+        Pymatgen Icohplist object.
+
+        Depending on the type of files read during Analyse class initialization,
+        it can contain ICOHP, ICOOP or ICOBI data.
+        """
         return self.chemenv.ICOHP
 
     @property
