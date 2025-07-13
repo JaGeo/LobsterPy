@@ -253,6 +253,7 @@ class TestFeaturizeLobsterpy:
         analysis_kwargs = {
             "type_charge": "Loewdin",
             "are_cobis": True,
+            "noise_cutoff": 0.001,
         }
 
         featurize_mp463 = FeaturizeLobsterpy(
@@ -323,6 +324,7 @@ class TestFeaturizeLobsterpy:
         analysis_kwargs = {
             "type_charge": "Loewdin",
             "are_coops": True,
+            "noise_cutoff": 0.001,
         }
 
         featurize_mp2176 = FeaturizeLobsterpy(
