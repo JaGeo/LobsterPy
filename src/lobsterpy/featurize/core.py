@@ -329,7 +329,6 @@ class FeaturizeLobsterpy:
                     "path_to_icohplist": str(file_paths.get("icobilist")),
                     "path_to_cohpcar": str(file_paths.get("cobicar")),
                     "path_to_charge": str(file_paths.get("charge")),
-                    "noise_cutoff": 0.001,
                 }
             )
 
@@ -344,7 +343,6 @@ class FeaturizeLobsterpy:
                     "path_to_icohplist": str(file_paths.get("icooplist")),
                     "path_to_cohpcar": str(file_paths.get("coopcar")),
                     "path_to_charge": str(file_paths.get("charge")),
-                    "noise_cutoff": 0.001,
                 }
             )
         else:
