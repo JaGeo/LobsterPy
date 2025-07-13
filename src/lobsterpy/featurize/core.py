@@ -74,12 +74,13 @@ class FeaturizeLobsterpy:
         if self.path_to_json and not self.path_to_lobster_calc:
             # read the lightweight lobster json files using read_lobster_lightweight_json method
             data = FeaturizeLobsterpy.read_lobster_lightweight_json(path_to_json=self.path_to_json)
+            type_pop = "COHP"
             if not ids:
                 ids = Path(self.path_to_json).name.split(".")[0]
 
         elif self.path_to_lobster_calc and not self.path_to_json:
             # get lobsterpy condensed bonding analysis data using get_lobsterpy_cba_dict method
-            data = FeaturizeLobsterpy.get_lobsterpy_cba_dict(
+            type_pop, data = FeaturizeLobsterpy.get_lobsterpy_cba_dict(
                 path_to_lobster_calc=self.path_to_lobster_calc,
                 bonds=self.bonds,
                 orbital_resolved=self.orbital_resolved,
@@ -128,8 +129,8 @@ class FeaturizeLobsterpy:
             for site_data in data[bond_type]["lobsterpy_data"]["sites"].values():
                 if site_data["bonds"]:
                     for bond_data in site_data["bonds"].values():
-                        icohp_mean.append(float(bond_data["ICOHP_mean"]))
-                        icohp_sum.append(float(bond_data["ICOHP_sum"]))
+                        icohp_mean.append(float(bond_data[f"I{type_pop}_mean"]))
+                        icohp_sum.append(float(bond_data[f"I{type_pop}_sum"]))
                         bond.append(bond_data["bonding"]["perc"])
                         antibond.append(bond_data["antibonding"]["perc"])
                         if self.orbital_resolved:
@@ -140,8 +141,8 @@ class FeaturizeLobsterpy:
                                 for orb_pair in bond_data["orbital_data"]["orbital_summary_stats"][
                                     "max_bonding_contribution"
                                 ]:
-                                    icohp_mean_orb_bndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_mean"])
-                                    icohp_sum_orb_bndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_sum"])
+                                    icohp_mean_orb_bndg.append(bond_data["orbital_data"][orb_pair][f"I{type_pop}_mean"])
+                                    icohp_sum_orb_bndg.append(bond_data["orbital_data"][orb_pair][f"I{type_pop}_sum"])
                                     bond_orb.append(
                                         bond_data["orbital_data"][orb_pair]["orb_contribution_perc_bonding"]
                                     )
@@ -152,23 +153,27 @@ class FeaturizeLobsterpy:
                                 for orb_pair in bond_data["orbital_data"]["orbital_summary_stats"][
                                     "max_antibonding_contribution"
                                 ]:
-                                    icohp_mean_orb_antibndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_mean"])
-                                    icohp_sum_orb_antibndg.append(bond_data["orbital_data"][orb_pair]["ICOHP_sum"])
+                                    icohp_mean_orb_antibndg.append(
+                                        bond_data["orbital_data"][orb_pair][f"I{type_pop}_mean"]
+                                    )
+                                    icohp_sum_orb_antibndg.append(
+                                        bond_data["orbital_data"][orb_pair][f"I{type_pop}_sum"]
+                                    )
                                     antibond_orb.append(
                                         bond_data["orbital_data"][orb_pair]["orb_contribution_perc_antibonding"]
                                     )
 
         # add ICOHP stats data (mean, min, max, standard deviation) as columns to the dataframe
 
-        df.loc[ids, "Icohp_mean_avg"] = 0 if len(icohp_mean) == 0 else np.mean(icohp_mean)
-        df.loc[ids, "Icohp_mean_max"] = 0 if len(icohp_mean) == 0 else np.max(icohp_mean)
-        df.loc[ids, "Icohp_mean_min"] = 0 if len(icohp_mean) == 0 else np.min(icohp_mean)
-        df.loc[ids, "Icohp_mean_std"] = 0 if len(icohp_mean) == 0 else np.std(icohp_mean)
+        df.loc[ids, f"I{type_pop}_mean_avg"] = 0 if len(icohp_mean) == 0 else np.mean(icohp_mean)
+        df.loc[ids, f"I{type_pop}_mean_max"] = 0 if len(icohp_mean) == 0 else np.max(icohp_mean)
+        df.loc[ids, f"I{type_pop}_mean_min"] = 0 if len(icohp_mean) == 0 else np.min(icohp_mean)
+        df.loc[ids, f"I{type_pop}_mean_std"] = 0 if len(icohp_mean) == 0 else np.std(icohp_mean)
 
-        df.loc[ids, "Icohp_sum_avg"] = 0 if len(icohp_sum) == 0 else np.mean(icohp_sum)
-        df.loc[ids, "Icohp_sum_max"] = 0 if len(icohp_sum) == 0 else np.max(icohp_sum)
-        df.loc[ids, "Icohp_sum_min"] = 0 if len(icohp_sum) == 0 else np.min(icohp_sum)
-        df.loc[ids, "Icohp_sum_std"] = 0 if len(icohp_sum) == 0 else np.std(icohp_sum)
+        df.loc[ids, f"I{type_pop}_sum_avg"] = 0 if len(icohp_sum) == 0 else np.mean(icohp_sum)
+        df.loc[ids, f"I{type_pop}_sum_max"] = 0 if len(icohp_sum) == 0 else np.max(icohp_sum)
+        df.loc[ids, f"I{type_pop}_sum_min"] = 0 if len(icohp_sum) == 0 else np.min(icohp_sum)
+        df.loc[ids, f"I{type_pop}_sum_std"] = 0 if len(icohp_sum) == 0 else np.std(icohp_sum)
 
         df.loc[ids, "bonding_perc_avg"] = 0 if len(bond) == 0 else np.mean(bond)
         df.loc[ids, "bonding_perc_max"] = 0 if len(bond) == 0 else np.max(bond)
@@ -182,17 +187,31 @@ class FeaturizeLobsterpy:
 
         if self.orbital_resolved:
             # bonding orbital
-            df.loc[ids, "Icohp_bndg_orb_mean_avg"] = (
+            df.loc[ids, f"I{type_pop}_bndg_orb_mean_avg"] = (
                 0 if len(icohp_mean_orb_bndg) == 0 else np.mean(icohp_mean_orb_bndg)
             )
-            df.loc[ids, "Icohp_bndg_orb_mean_max"] = 0 if len(icohp_mean_orb_bndg) == 0 else np.max(icohp_mean_orb_bndg)
-            df.loc[ids, "Icohp_bndg_orb_mean_min"] = 0 if len(icohp_mean_orb_bndg) == 0 else np.min(icohp_mean_orb_bndg)
-            df.loc[ids, "Icohp_bndg_orb_mean_std"] = 0 if len(icohp_mean_orb_bndg) == 0 else np.std(icohp_mean_orb_bndg)
+            df.loc[ids, f"I{type_pop}_bndg_orb_mean_max"] = (
+                0 if len(icohp_mean_orb_bndg) == 0 else np.max(icohp_mean_orb_bndg)
+            )
+            df.loc[ids, f"I{type_pop}_bndg_orb_mean_min"] = (
+                0 if len(icohp_mean_orb_bndg) == 0 else np.min(icohp_mean_orb_bndg)
+            )
+            df.loc[ids, f"I{type_pop}_bndg_orb_mean_std"] = (
+                0 if len(icohp_mean_orb_bndg) == 0 else np.std(icohp_mean_orb_bndg)
+            )
 
-            df.loc[ids, "Icohp_bndg_orb_sum_avg"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.mean(icohp_sum_orb_bndg)
-            df.loc[ids, "Icohp_bndg_orb_sum_max"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.max(icohp_sum_orb_bndg)
-            df.loc[ids, "Icohp_bndg_orb_sum_min"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.min(icohp_sum_orb_bndg)
-            df.loc[ids, "Icohp_bndg_orb_sum_std"] = 0 if len(icohp_sum_orb_bndg) == 0 else np.std(icohp_sum_orb_bndg)
+            df.loc[ids, f"I{type_pop}_bndg_orb_sum_avg"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.mean(icohp_sum_orb_bndg)
+            )
+            df.loc[ids, f"I{type_pop}_bndg_orb_sum_max"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.max(icohp_sum_orb_bndg)
+            )
+            df.loc[ids, f"I{type_pop}_bndg_orb_sum_min"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.min(icohp_sum_orb_bndg)
+            )
+            df.loc[ids, f"I{type_pop}_bndg_orb_sum_std"] = (
+                0 if len(icohp_sum_orb_bndg) == 0 else np.std(icohp_sum_orb_bndg)
+            )
 
             df.loc[ids, "bonding_orb_perc_avg"] = 0 if len(bond_orb) == 0 else np.mean(bond_orb)
             df.loc[ids, "bonding_orb_perc_max"] = 0 if len(bond_orb) == 0 else np.max(bond_orb)
@@ -200,29 +219,29 @@ class FeaturizeLobsterpy:
             df.loc[ids, "bonding_orb_perc_std"] = 0 if len(bond_orb) == 0 else np.std(bond_orb)
 
             # anti-bonding orbital
-            df.loc[ids, "Icohp_antibndg_orb_mean_avg"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_mean_avg"] = (
                 0 if len(icohp_mean_orb_antibndg) == 0 else np.mean(icohp_mean_orb_antibndg)
             )
-            df.loc[ids, "Icohp_antibndg_orb_mean_max"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_mean_max"] = (
                 0 if len(icohp_mean_orb_antibndg) == 0 else np.max(icohp_mean_orb_antibndg)
             )
-            df.loc[ids, "Icohp_antibndg_orb_mean_min"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_mean_min"] = (
                 0 if len(icohp_mean_orb_antibndg) == 0 else np.min(icohp_mean_orb_antibndg)
             )
-            df.loc[ids, "Icohp_antibndg_orb_mean_std"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_mean_std"] = (
                 0 if len(icohp_mean_orb_antibndg) == 0 else np.std(icohp_mean_orb_antibndg)
             )
 
-            df.loc[ids, "Icohp_antibndg_orb_sum_avg"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_sum_avg"] = (
                 0 if len(icohp_sum_orb_antibndg) == 0 else np.mean(icohp_sum_orb_antibndg)
             )
-            df.loc[ids, "Icohp_antibndg_orb_sum_max"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_sum_max"] = (
                 0 if len(icohp_sum_orb_antibndg) == 0 else np.max(icohp_sum_orb_antibndg)
             )
-            df.loc[ids, "Icohp_antibndg_orb_sum_min"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_sum_min"] = (
                 0 if len(icohp_sum_orb_antibndg) == 0 else np.min(icohp_sum_orb_antibndg)
             )
-            df.loc[ids, "Icohp_antibndg_orb_sum_std"] = (
+            df.loc[ids, f"I{type_pop}_antibndg_orb_sum_std"] = (
                 0 if len(icohp_sum_orb_antibndg) == 0 else np.std(icohp_sum_orb_antibndg)
             )
 
@@ -269,7 +288,7 @@ class FeaturizeLobsterpy:
     @staticmethod
     def get_lobsterpy_cba_dict(
         path_to_lobster_calc: str | Path, bonds: str, orbital_resolved: bool, **analysis_kwargs
-    ) -> dict:
+    ) -> tuple[str, dict]:
         """
         Generate a Python dictionary object using the Analysis class with condensed bonding analysis data.
 
@@ -279,32 +298,83 @@ class FeaturizeLobsterpy:
         :param analysis_kwargs: optional keyword arguments to be passed to the Analysis class
 
         Returns:
-            Returns a dictionary with lobster summarized bonding analysis data
+            Returns a string indicating type of population analyzed and a
+            dictionary with lobster summarized bonding analysis data
 
         """
-        file_paths = get_file_paths(
-            path_to_lobster_calc=path_to_lobster_calc, requested_files=["structure", "cohpcar", "icohplist", "charge"]
-        )
-
         which_bonds = bonds.replace("-", "_")
         bond_type = f"{which_bonds}_bonds"
 
-        try:
-            analyse = Analysis(
-                path_to_poscar=str(file_paths.get("structure")),
-                path_to_icohplist=str(file_paths.get("icohplist")),
-                path_to_cohpcar=str(file_paths.get("cohpcar")),
-                path_to_charge=str(file_paths.get("charge")),
-                which_bonds=which_bonds,
-                orbital_resolved=orbital_resolved,
-                cutoff_icohp=analysis_kwargs.get("cutoff_icohp", 0.10),
-                noise_cutoff=analysis_kwargs.get("noise_cutoff", 0.1),
-                summed_spins=analysis_kwargs.get("summed_spins", False),
+        # Initialize a set of default kwargs of Analysis class
+        args_analysis = {
+            "are_cobis": analysis_kwargs.get("are_cobis", False),
+            "are_coops": analysis_kwargs.get("are_coops", False),
+            "type_charge": analysis_kwargs.get("type_charge", "Mulliken"),
+            "cutoff_icohp": analysis_kwargs.get("cutoff_icohp", 0.10),
+            "noise_cutoff": analysis_kwargs.get("noise_cutoff", 0.1),
+            "orbital_resolved": orbital_resolved,
+            "start": analysis_kwargs.get("start"),
+            "summed_spins": analysis_kwargs.get("summed_spins", False),
+            "which_bonds": which_bonds,
+        }
+
+        if analysis_kwargs.get("are_cobis", False):
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc,
+                requested_files=["structure", "cobicar", "icobilist", "charge"],
             )
+            args_analysis.update(
+                {
+                    "path_to_poscar": str(file_paths.get("structure")),
+                    "path_to_icohplist": str(file_paths.get("icobilist")),
+                    "path_to_cohpcar": str(file_paths.get("cobicar")),
+                    "path_to_charge": str(file_paths.get("charge")),
+                    "noise_cutoff": 0.001,
+                }
+            )
+
+        elif analysis_kwargs.get("are_coops", False):
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc,
+                requested_files=["structure", "coopcar", "icooplist", "charge"],
+            )
+            args_analysis.update(
+                {
+                    "path_to_poscar": str(file_paths.get("structure")),
+                    "path_to_icohplist": str(file_paths.get("icooplist")),
+                    "path_to_cohpcar": str(file_paths.get("coopcar")),
+                    "path_to_charge": str(file_paths.get("charge")),
+                    "noise_cutoff": 0.001,
+                }
+            )
+        else:
+            file_paths = get_file_paths(
+                path_to_lobster_calc=path_to_lobster_calc,
+                requested_files=["structure", "cohpcar", "icohplist", "charge"],
+            )
+            args_analysis.update(
+                {
+                    "path_to_poscar": str(file_paths.get("structure")),
+                    "path_to_icohplist": str(file_paths.get("icohplist")),
+                    "path_to_cohpcar": str(file_paths.get("cohpcar")),
+                    "path_to_charge": str(file_paths.get("charge")),
+                }
+            )
+
+        try:
+            analyse = Analysis(**args_analysis)
+            type_pop = analyse._get_pop_type()
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
         except ValueError:
             data = {bond_type: {"lobsterpy_data": {}}}
+
+            if args_analysis.get("are_cobis"):
+                type_pop = "COBI"
+            elif args_analysis.get("are_coops"):
+                type_pop = "COOP"
+            else:
+                type_pop = "COHP"
 
         try:
             madelung_path = get_file_paths(path_to_lobster_calc=path_to_lobster_calc, requested_files=["madelung"])
@@ -330,7 +400,7 @@ class FeaturizeLobsterpy:
 
             data["madelung_energies"] = madelung_energies
 
-        return data
+        return type_pop, data
 
 
 class FeaturizeCOXX:
