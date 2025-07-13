@@ -30,14 +30,14 @@ class TestFeaturizeLobsterpy:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Icohp_mean_avg",
-            "Icohp_mean_max",
-            "Icohp_mean_min",
-            "Icohp_mean_std",
-            "Icohp_sum_avg",
-            "Icohp_sum_max",
-            "Icohp_sum_min",
-            "Icohp_sum_std",
+            "ICOHP_mean_avg",
+            "ICOHP_mean_max",
+            "ICOHP_mean_min",
+            "ICOHP_mean_std",
+            "ICOHP_sum_avg",
+            "ICOHP_sum_max",
+            "ICOHP_sum_min",
+            "ICOHP_sum_std",
             "bonding_perc_avg",
             "bonding_perc_max",
             "bonding_perc_min",
@@ -55,10 +55,10 @@ class TestFeaturizeLobsterpy:
         assert df.index[0] == "mp-1249"
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-1249", "Icohp_mean_avg"] == pytest.approx(-1.020000, abs=1e-05)
-        assert df.loc["mp-1249", "Icohp_mean_max"] == pytest.approx(-1.020000, abs=1e-05)
-        assert df.loc["mp-1249", "Icohp_mean_min"] == pytest.approx(-1.020000, abs=1e-05)
-        assert df.loc["mp-1249", "Icohp_mean_std"] == pytest.approx(0.000000, abs=1e-05)
+        assert df.loc["mp-1249", "ICOHP_mean_avg"] == pytest.approx(-1.020000, abs=1e-05)
+        assert df.loc["mp-1249", "ICOHP_mean_max"] == pytest.approx(-1.020000, abs=1e-05)
+        assert df.loc["mp-1249", "ICOHP_mean_min"] == pytest.approx(-1.020000, abs=1e-05)
+        assert df.loc["mp-1249", "ICOHP_mean_std"] == pytest.approx(0.000000, abs=1e-05)
         assert df.loc["mp-1249", "Madelung_Mull"] == pytest.approx(-52.000000, abs=1e-05)
         assert df.loc["mp-1249", "bonding_perc_avg"] == pytest.approx(0.978985, abs=1e-05)
 
@@ -74,14 +74,14 @@ class TestFeaturizeLobsterpy:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Icohp_mean_avg",
-            "Icohp_mean_max",
-            "Icohp_mean_min",
-            "Icohp_mean_std",
-            "Icohp_sum_avg",
-            "Icohp_sum_max",
-            "Icohp_sum_min",
-            "Icohp_sum_std",
+            "ICOHP_mean_avg",
+            "ICOHP_mean_max",
+            "ICOHP_mean_min",
+            "ICOHP_mean_std",
+            "ICOHP_sum_avg",
+            "ICOHP_sum_max",
+            "ICOHP_sum_min",
+            "ICOHP_sum_std",
             "bonding_perc_avg",
             "bonding_perc_max",
             "bonding_perc_min",
@@ -109,14 +109,14 @@ class TestFeaturizeLobsterpy:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Icohp_mean_avg",
-            "Icohp_mean_max",
-            "Icohp_mean_min",
-            "Icohp_mean_std",
-            "Icohp_sum_avg",
-            "Icohp_sum_max",
-            "Icohp_sum_min",
-            "Icohp_sum_std",
+            "ICOHP_mean_avg",
+            "ICOHP_mean_max",
+            "ICOHP_mean_min",
+            "ICOHP_mean_std",
+            "ICOHP_sum_avg",
+            "ICOHP_sum_max",
+            "ICOHP_sum_min",
+            "ICOHP_sum_std",
             "bonding_perc_avg",
             "bonding_perc_max",
             "bonding_perc_min",
@@ -134,10 +134,10 @@ class TestFeaturizeLobsterpy:
         assert df.index[0] == "mp-1958"
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-1958", "Icohp_sum_avg"] == pytest.approx(-2.96000, abs=1e-05)
-        assert df.loc["mp-1958", "Icohp_sum_max"] == pytest.approx(-2.96000, abs=1e-05)
-        assert df.loc["mp-1958", "Icohp_sum_min"] == pytest.approx(-2.96000, abs=1e-05)
-        assert df.loc["mp-1958", "Icohp_sum_std"] == pytest.approx(0.000000, abs=1e-05)
+        assert df.loc["mp-1958", "ICOHP_sum_avg"] == pytest.approx(-2.96000, abs=1e-05)
+        assert df.loc["mp-1958", "ICOHP_sum_max"] == pytest.approx(-2.96000, abs=1e-05)
+        assert df.loc["mp-1958", "ICOHP_sum_min"] == pytest.approx(-2.96000, abs=1e-05)
+        assert df.loc["mp-1958", "ICOHP_sum_std"] == pytest.approx(0.000000, abs=1e-05)
         assert df.loc["mp-1958", "Madelung_Loew"] == pytest.approx(-16.68000, abs=1e-05)
         assert df.loc["mp-1958", "antibonding_perc_avg"] == pytest.approx(0.14528, abs=1e-05)
 
@@ -152,14 +152,14 @@ class TestFeaturizeLobsterpy:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Icohp_mean_avg",
-            "Icohp_mean_max",
-            "Icohp_mean_min",
-            "Icohp_mean_std",
-            "Icohp_sum_avg",
-            "Icohp_sum_max",
-            "Icohp_sum_min",
-            "Icohp_sum_std",
+            "ICOHP_mean_avg",
+            "ICOHP_mean_max",
+            "ICOHP_mean_min",
+            "ICOHP_mean_std",
+            "ICOHP_sum_avg",
+            "ICOHP_sum_max",
+            "ICOHP_sum_min",
+            "ICOHP_sum_std",
             "bonding_perc_avg",
             "bonding_perc_max",
             "bonding_perc_min",
@@ -177,7 +177,7 @@ class TestFeaturizeLobsterpy:
         assert df.index[0] == "mp-14652"
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-14652", "Icohp_mean_std"] == pytest.approx(2.335070, abs=1e-05)
+        assert df.loc["mp-14652", "ICOHP_mean_std"] == pytest.approx(2.335070, abs=1e-05)
         assert df.loc["mp-14652", "bonding_perc_max"] == pytest.approx(0.889620, abs=1e-05)
         assert df.loc["mp-14652", "bonding_perc_min"] == pytest.approx(0.873420, abs=1e-05)
         assert df.loc["mp-14652", "bonding_perc_std"] == pytest.approx(0.006339, abs=1e-05)
@@ -194,14 +194,14 @@ class TestFeaturizeLobsterpy:
         df = featurize_mp463.get_df(ids="mp-463")
 
         expected_cols = [
-            "Icohp_mean_avg",
-            "Icohp_mean_max",
-            "Icohp_mean_min",
-            "Icohp_mean_std",
-            "Icohp_sum_avg",
-            "Icohp_sum_max",
-            "Icohp_sum_min",
-            "Icohp_sum_std",
+            "ICOHP_mean_avg",
+            "ICOHP_mean_max",
+            "ICOHP_mean_min",
+            "ICOHP_mean_std",
+            "ICOHP_sum_avg",
+            "ICOHP_sum_max",
+            "ICOHP_sum_min",
+            "ICOHP_sum_std",
             "bonding_perc_avg",
             "bonding_perc_max",
             "bonding_perc_min",
@@ -210,26 +210,26 @@ class TestFeaturizeLobsterpy:
             "antibonding_perc_min",
             "antibonding_perc_max",
             "antibonding_perc_std",
-            "Icohp_bndg_orb_mean_avg",
-            "Icohp_bndg_orb_mean_max",
-            "Icohp_bndg_orb_mean_min",
-            "Icohp_bndg_orb_mean_std",
-            "Icohp_bndg_orb_sum_avg",
-            "Icohp_bndg_orb_sum_max",
-            "Icohp_bndg_orb_sum_min",
-            "Icohp_bndg_orb_sum_std",
+            "ICOHP_bndg_orb_mean_avg",
+            "ICOHP_bndg_orb_mean_max",
+            "ICOHP_bndg_orb_mean_min",
+            "ICOHP_bndg_orb_mean_std",
+            "ICOHP_bndg_orb_sum_avg",
+            "ICOHP_bndg_orb_sum_max",
+            "ICOHP_bndg_orb_sum_min",
+            "ICOHP_bndg_orb_sum_std",
             "bonding_orb_perc_avg",
             "bonding_orb_perc_max",
             "bonding_orb_perc_min",
             "bonding_orb_perc_std",
-            "Icohp_antibndg_orb_mean_avg",
-            "Icohp_antibndg_orb_mean_max",
-            "Icohp_antibndg_orb_mean_min",
-            "Icohp_antibndg_orb_mean_std",
-            "Icohp_antibndg_orb_sum_avg",
-            "Icohp_antibndg_orb_sum_max",
-            "Icohp_antibndg_orb_sum_min",
-            "Icohp_antibndg_orb_sum_std",
+            "ICOHP_antibndg_orb_mean_avg",
+            "ICOHP_antibndg_orb_mean_max",
+            "ICOHP_antibndg_orb_mean_min",
+            "ICOHP_antibndg_orb_mean_std",
+            "ICOHP_antibndg_orb_sum_avg",
+            "ICOHP_antibndg_orb_sum_max",
+            "ICOHP_antibndg_orb_sum_min",
+            "ICOHP_antibndg_orb_sum_std",
             "antibonding_orb_perc_avg",
             "antibonding_orb_perc_max",
             "antibonding_orb_perc_min",
@@ -241,11 +241,11 @@ class TestFeaturizeLobsterpy:
         assert sorted(df.columns) == sorted(expected_cols)
 
         # Here test now only orbital wise analysis column values
-        assert df.loc["mp-463", "Icohp_bndg_orb_mean_avg"] == pytest.approx(-0.181250, abs=1e-05)
-        assert df.loc["mp-463", "Icohp_bndg_orb_sum_max"] == pytest.approx(-1.430000, abs=1e-05)
+        assert df.loc["mp-463", "ICOHP_bndg_orb_mean_avg"] == pytest.approx(-0.181250, abs=1e-05)
+        assert df.loc["mp-463", "ICOHP_bndg_orb_sum_max"] == pytest.approx(-1.430000, abs=1e-05)
         assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.380000, abs=1e-05)
-        assert df.loc["mp-463", "Icohp_antibndg_orb_mean_std"] == pytest.approx(0.059600, abs=1e-05)
-        assert df.loc["mp-463", "Icohp_antibndg_orb_sum_avg"] == pytest.approx(-0.714100, abs=1e-05)
+        assert df.loc["mp-463", "ICOHP_antibndg_orb_mean_std"] == pytest.approx(0.059600, abs=1e-05)
+        assert df.loc["mp-463", "ICOHP_antibndg_orb_sum_avg"] == pytest.approx(-0.714100, abs=1e-05)
         assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.580000, abs=1e-05)
         assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.169999, abs=1e-05)
 
@@ -262,14 +262,14 @@ class TestFeaturizeLobsterpy:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Icohp_mean_avg",
-            "Icohp_mean_max",
-            "Icohp_mean_min",
-            "Icohp_mean_std",
-            "Icohp_sum_avg",
-            "Icohp_sum_max",
-            "Icohp_sum_min",
-            "Icohp_sum_std",
+            "ICOHP_mean_avg",
+            "ICOHP_mean_max",
+            "ICOHP_mean_min",
+            "ICOHP_mean_std",
+            "ICOHP_sum_avg",
+            "ICOHP_sum_max",
+            "ICOHP_sum_min",
+            "ICOHP_sum_std",
             "bonding_perc_avg",
             "bonding_perc_max",
             "bonding_perc_min",
@@ -284,9 +284,9 @@ class TestFeaturizeLobsterpy:
         assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-66", "Icohp_mean_avg"] == pytest.approx(-9.59, abs=1e-05)
-        assert df.loc["mp-66", "Icohp_sum_max"] == pytest.approx(-38.34, abs=1e-05)
-        assert df.loc["mp-66", "Icohp_mean_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-66", "ICOHP_mean_avg"] == pytest.approx(-9.59, abs=1e-05)
+        assert df.loc["mp-66", "ICOHP_sum_max"] == pytest.approx(-38.34, abs=1e-05)
+        assert df.loc["mp-66", "ICOHP_mean_std"] == pytest.approx(0, abs=1e-05)
         assert df.loc["mp-66", "bonding_perc_max"] == pytest.approx(1, abs=1e-05)
         assert df.loc["mp-66", "bonding_perc_min"] == pytest.approx(1, abs=1e-05)
         assert df.loc["mp-66", "bonding_perc_std"] == pytest.approx(0, abs=1e-05)
@@ -307,14 +307,14 @@ class TestFeaturizeLobsterpy:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Icohp_mean_avg",
-            "Icohp_mean_max",
-            "Icohp_mean_min",
-            "Icohp_mean_std",
-            "Icohp_sum_avg",
-            "Icohp_sum_max",
-            "Icohp_sum_min",
-            "Icohp_sum_std",
+            "ICOHP_mean_avg",
+            "ICOHP_mean_max",
+            "ICOHP_mean_min",
+            "ICOHP_mean_std",
+            "ICOHP_sum_avg",
+            "ICOHP_sum_max",
+            "ICOHP_sum_min",
+            "ICOHP_sum_std",
             "bonding_perc_avg",
             "bonding_perc_max",
             "bonding_perc_min",
@@ -329,9 +329,9 @@ class TestFeaturizeLobsterpy:
         assert sorted(df.columns) == sorted(expected_cols)
 
         # Test that all the values in the DataFrame
-        assert df.loc["mp-7000", "Icohp_mean_avg"] == pytest.approx(-7.98, abs=1e-05)
-        assert df.loc["mp-7000", "Icohp_sum_max"] == pytest.approx(-31.90, abs=1e-05)
-        assert df.loc["mp-7000", "Icohp_mean_std"] == pytest.approx(0, abs=1e-05)
+        assert df.loc["mp-7000", "ICOHP_mean_avg"] == pytest.approx(-7.98, abs=1e-05)
+        assert df.loc["mp-7000", "ICOHP_sum_max"] == pytest.approx(-31.90, abs=1e-05)
+        assert df.loc["mp-7000", "ICOHP_mean_std"] == pytest.approx(0, abs=1e-05)
         assert df.loc["mp-7000", "bonding_perc_max"] == pytest.approx(1, abs=1e-05)
         assert df.loc["mp-7000", "bonding_perc_min"] == pytest.approx(1, abs=1e-05)
         assert df.loc["mp-7000", "bonding_perc_std"] == pytest.approx(0, abs=1e-05)
