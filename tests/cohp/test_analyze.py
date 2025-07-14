@@ -83,8 +83,8 @@ class TestAnalyse:
         ]
         assert analyse_nacl_valences.condensed_bonding_analysis["type_charges"] == "Valences"
         assert isinstance(analyse_nacl_valences.charges, list)
-        assert isinstance(analyse_nacl_valences.icohplist, Icohplist)
-        assert isinstance(analyse_nacl_valences.completecohp, CompleteCohp)
+        assert isinstance(analyse_nacl_valences.icoxxlist, Icohplist)
+        assert isinstance(analyse_nacl_valences.completecoxx, CompleteCohp)
         assert isinstance(analyse_nacl_valences.lobsterneighbors, LobsterNeighbors)
 
     def test_all_attributes_batio3(self, analyse_bati03):
