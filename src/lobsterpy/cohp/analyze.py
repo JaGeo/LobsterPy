@@ -154,40 +154,77 @@ class Analysis:
         if (path_to_poscar and str(path_to_poscar).endswith("POSCAR")) or (
             path_to_poscar and str(path_to_poscar).endswith("POSCAR.gz")
         ):
-            warnings.warn(POSCAR_WARNING, stacklevel=2)
+            warnings.warn(POSCAR_WARNING)
+
         self.start = start
 
-        self.path_to_poscar = path_to_poscar
-        self.path_to_icohplist = path_to_icohplist
-        self.path_to_cohpcar = path_to_cohpcar
-        self.path_to_charge = path_to_charge
-        self.path_to_madelung = path_to_madelung
+        # This determines how atoms are labelled as cations and anions
+        if type_charge.capitalize() == "Mulliken":
+            self.type_charge = "Mulliken"
+        elif type_charge.capitalize() == "Loewdin":
+            warnings.warn("Support for Loewdin charges is currently experimental. Use with caution!")
+            self.type_charge = "Loewdin"
+        elif type_charge.capitalize() == "Valences":
+            warnings.warn(
+                "Using Valences for chemical environment analysis. It is recommended to use "
+                " 'Mulliken' or 'Loewdin' charges",
+            )
+            self.type_charge = "Valences"
+        else:
+            raise ValueError(
+                f"type_charge must be either 'Mulliken', 'Loewdin' or 'Valences'. Got {type_charge} instead."
+            )
 
-        self._completecohp_obj = completecohp_obj
-        self._icohplist_obj = icohplist_obj
-        self._charge_obj = charge_obj
-        self._madelung_obj = madelung_obj
-
-        # Ensure LobsterNeighbors inputs are not duplicated in case users provide both path and obj
+        # Checks to ensure LobsterNeighbors inputs are not duplicated
+        # for the case users provide both path and obj
         if all(
             [
-                self._completecohp_obj,
-                self._icohplist_obj,
-                self._charge_obj,
-                self._madelung_obj,
-                self.path_to_poscar,
-                self.path_to_cohpcar,
-                self.path_to_icohplist,
-                self.path_to_charge,
-                self.path_to_madelung,
+                completecohp_obj,
+                icohplist_obj,
+                path_to_poscar,
+                path_to_cohpcar,
+                path_to_icohplist,
             ]
         ):
             warnings.warn(
-                "Both file paths and pymatgen objects provided; prioritizing objects and ignoring file paths.",
+                "Both file paths and pymatgen objects for Icohplist, CompleteCohp and structure provided; "
+                "prioritizing corresponding objects and ignoring file paths.",
             )
-            self.path_to_poscar = self.path_to_cohpcar = self.path_to_icohplist = self.path_to_charge = (
-                self.path_to_madelung
-            ) = None
+            self.path_to_poscar = self.path_to_cohpcar = self.path_to_icohplist = None
+
+            self._completecohp_obj = completecohp_obj
+            self._icohplist_obj = icohplist_obj
+
+        # Separate checks for optional args of Analysis class
+        if all([madelung_obj, path_to_madelung]):
+            warnings.warn(
+                "Both file path and pymatgen object for MadelungEnergies provided; "
+                "prioritizing object and ignoring file path.",
+            )
+            self._madelung_obj = madelung_obj
+            self.path_to_madelung = None
+        else:
+            self._madelung_obj = None
+            self.path_to_madelung = path_to_madelung
+
+        if all([charge_obj, path_to_charge]) and self.type_charge != "Valences":
+            warnings.warn(
+                "Both file path and pymatgen object for Charge provided; prioritizing object and ignoring file path.",
+            )
+            self._charge_obj = charge_obj
+            self.path_to_charge = None
+        elif not any([charge_obj, path_to_charge]) and self.type_charge != "Valences":
+            warnings.warn(
+                f"No file path or pymatgen object provided for Charge. "
+                f"Using '{self.type_charge}' charges for chemical environment analysis is not possible. "
+                "Falling back to Valence charges instead."
+            )
+            self.type_charge = "Valences"
+            self._charge_obj = None
+            self.path_to_charge = None
+        else:
+            self._charge_obj = None
+            self.path_to_charge = path_to_charge
 
         self.which_bonds = which_bonds
         self.cutoff_icohp = cutoff_icohp
@@ -196,31 +233,11 @@ class Analysis:
         self.are_coops = are_coops
         self.noise_cutoff = noise_cutoff
 
-        # This determines how cations and anions
-        if self.path_to_charge is None and self._charge_obj is None:
-            warnings.warn(
-                "Using Valences for chemical environment analysis as neither "
-                "'path_to_charge' or  'charge_obj' is provided. It is recommended to use "
-                " 'Mulliken' or 'Loewdin' charges",
-            )
-            self.type_charge = "Valences"
-        else:
-            if type_charge.capitalize() == "Mulliken":
-                self.type_charge = "Mulliken"
-            elif type_charge.capitalize() == "Loewdin":
-                warnings.warn("Support for Loewdin charges is currently experimental. Use with caution!")
-                self.type_charge = "Loewdin"
-            else:
-                raise ValueError(
-                    f"type_charge must be either 'Mulliken', 'Loewdin' or 'Valences'. Got {type_charge} instead."
-                )
-
         self.setup_env()
         self.get_information_all_bonds(summed_spins=summed_spins)
         self.orbital_resolved = orbital_resolved
         self.set_condensed_bonding_analysis()
         self.set_summary_dicts()
-        self.path_to_madelung = path_to_madelung
 
     def setup_env(self):
         """
