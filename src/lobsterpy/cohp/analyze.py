@@ -167,7 +167,7 @@ class Analysis:
         elif type_charge.capitalize() == "Valences":
             warnings.warn(
                 "Using Valences for chemical environment analysis. It is recommended to use "
-                " 'Mulliken' or 'Loewdin' charges",
+                " 'Mulliken' or 'Loewdin' charges.",
             )
             self.type_charge = "Valences"
         else:

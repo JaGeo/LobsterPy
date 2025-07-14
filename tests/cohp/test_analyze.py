@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from pymatgen.core import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Icohplist, Lobsterin, Lobsterout
+from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Icohplist, Lobsterin, Lobsterout, MadelungEnergies
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.vasp import Vasprun
 
@@ -925,7 +925,8 @@ class TestAnalyse:
             "It looks like no cations are detected."
         )
 
-    def test_warning(self, tmp_path):
+    def test_analysis_init_warnings(self, tmp_path):
+        # test for warning when using POSCAR
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("once")
             warnings.filterwarnings("ignore", module="pymatgen")
@@ -946,6 +947,89 @@ class TestAnalyse:
                 "translations in the LOBSTER outputs are consistent with "
                 "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
                 "written by LOBSTER >=v5)."
+            )
+
+        # test for warnings using both objects and paths
+        with warnings.catch_warnings(record=True) as w1:
+            warnings.simplefilter("once")
+            self.analyse_nasi_w1 = Analysis(
+                path_to_poscar=TestDir / "test_data/NaSi/CONTCAR.gz",
+                path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
+                path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster.gz",
+                path_to_madelung=TestDir / "test_data/NaSi/MadelungEnergies.lobster.gz",
+                which_bonds="all",
+                type_charge="Mulliken",
+                cutoff_icohp=0.1,
+                charge_obj=Charge(filename=TestDir / "test_data/NaSi/CHARGE.lobster.gz"),
+                madelung_obj=MadelungEnergies(filename=TestDir / "test_data/NaSi/MadelungEnergies.lobster.gz"),
+                icohplist_obj=Icohplist(filename=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz"),
+                completecohp_obj=CompleteCohp.from_file(
+                    filename=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
+                    structure_file=TestDir / "test_data/NaSi/CONTCAR.gz",
+                    fmt="LOBSTER",
+                ),
+            )
+            assert (
+                str(w1[0].message) == "Both file paths and pymatgen objects for Icohplist, CompleteCohp "
+                "and structure provided; prioritizing corresponding objects and ignoring file paths."
+            )
+            assert (
+                str(w1[1].message) == "Both file path and pymatgen object for MadelungEnergies provided; "
+                "prioritizing object and ignoring file path."
+            )
+            assert (
+                str(w1[2].message) == "Both file path and pymatgen object for Charge provided; "
+                "prioritizing object and ignoring file path."
+            )
+
+        # test for warning using Valences
+        with warnings.catch_warnings(record=True) as w2:
+            warnings.simplefilter("once")
+            self.analyse_batio3_w = Analysis(
+                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
+                path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
+                path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
+                which_bonds="all",
+                type_charge="Valences",
+                cutoff_icohp=0.1,
+            )
+            assert (
+                str(w2[0].message) == "Using Valences for chemical environment analysis. "
+                "It is recommended to use  'Mulliken' or 'Loewdin' charges."
+            )
+
+        # test for warning using Loewdin
+        with warnings.catch_warnings(record=True) as w3:
+            warnings.simplefilter("once")
+            self.analyse_batio3_w = Analysis(
+                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
+                path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
+                path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
+                which_bonds="all",
+                type_charge="Loewdin",
+                cutoff_icohp=0.1,
+            )
+            assert str(w3[0].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
+
+        # test for warning fallback to Valences when charge is None
+        with warnings.catch_warnings(record=True) as w4:
+            warnings.simplefilter("once")
+            self.analyse_c = Analysis(
+                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
+                path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
+                path_to_icohplist=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
+                path_to_charge=None,
+                which_bonds="all",
+                type_charge="Loewdin",
+                cutoff_icohp=0.1,
+            )
+            assert (
+                str(w4[1].message) == "No file path or pymatgen object provided for Charge. "
+                "Using 'Loewdin' charges for chemical environment analysis is not possible. "
+                "Falling back to Valence charges instead."
             )
 
 
