@@ -194,6 +194,13 @@ class Analysis:
 
             self._completecohp_obj = completecohp_obj
             self._icohplist_obj = icohplist_obj
+        else:
+            self.path_to_poscar = path_to_poscar
+            self.path_to_cohpcar = path_to_cohpcar
+            self.path_to_icohplist = path_to_icohplist
+
+            self._completecohp_obj = completecohp_obj
+            self._icohplist_obj = icohplist_obj
 
         # Separate checks for optional args of Analysis class
         if all([madelung_obj, path_to_madelung]):
@@ -204,7 +211,7 @@ class Analysis:
             self._madelung_obj = madelung_obj
             self.path_to_madelung = None
         else:
-            self._madelung_obj = None
+            self._madelung_obj = madelung_obj
             self.path_to_madelung = path_to_madelung
 
         if all([charge_obj, path_to_charge]) and self.type_charge != "Valences":
@@ -223,7 +230,7 @@ class Analysis:
             self._charge_obj = None
             self.path_to_charge = None
         else:
-            self._charge_obj = None
+            self._charge_obj = charge_obj
             self.path_to_charge = path_to_charge
 
         self.which_bonds = which_bonds
