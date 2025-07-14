@@ -157,22 +157,37 @@ class Analysis:
             warnings.warn(POSCAR_WARNING, stacklevel=2)
         self.start = start
 
+        self.path_to_poscar = path_to_poscar
+        self.path_to_icohplist = path_to_icohplist
+        self.path_to_cohpcar = path_to_cohpcar
+        self.path_to_charge = path_to_charge
+        self.path_to_madelung = path_to_madelung
+
         self._completecohp_obj = completecohp_obj
         self._icohplist_obj = icohplist_obj
         self._charge_obj = charge_obj
         self._madelung_obj = madelung_obj
 
-        # checks to ensure LobsterEnv inputs are not duplicated in case users provide both path and obj
-        if all([self._completecohp_obj, self._icohplist_obj, self._charge_obj, self._madelung_obj]):
+        # Ensure LobsterNeighbors inputs are not duplicated in case users provide both path and obj
+        if all(
+            [
+                self._completecohp_obj,
+                self._icohplist_obj,
+                self._charge_obj,
+                self._madelung_obj,
+                self.path_to_poscar,
+                self.path_to_cohpcar,
+                self.path_to_icohplist,
+                self.path_to_charge,
+                self.path_to_madelung,
+            ]
+        ):
+            warnings.warn(
+                "Both file paths and pymatgen objects provided; prioritizing objects and ignoring file paths.",
+            )
             self.path_to_poscar = self.path_to_cohpcar = self.path_to_icohplist = self.path_to_charge = (
                 self.path_to_madelung
             ) = None
-        else:
-            self.path_to_poscar = path_to_poscar
-            self.path_to_icohplist = path_to_icohplist
-            self.path_to_cohpcar = path_to_cohpcar
-            self.path_to_charge = path_to_charge
-            self.path_to_madelung = path_to_madelung
 
         self.which_bonds = which_bonds
         self.cutoff_icohp = cutoff_icohp
@@ -187,14 +202,13 @@ class Analysis:
                 "Using Valences for chemical environment analysis as neither "
                 "'path_to_charge' or  'charge_obj' is provided. It is recommended to use "
                 " 'Mulliken' or 'Loewdin' charges",
-                stacklevel=2,
             )
             self.type_charge = "Valences"
         else:
             if type_charge.capitalize() == "Mulliken":
                 self.type_charge = "Mulliken"
             elif type_charge.capitalize() == "Loewdin":
-                warnings.warn("Support for Loewdin charges is currently experimental. Use with caution!", stacklevel=2)
+                warnings.warn("Support for Loewdin charges is currently experimental. Use with caution!")
                 self.type_charge = "Loewdin"
             else:
                 raise ValueError(
@@ -221,10 +235,10 @@ class Analysis:
         )
         sga = SpacegroupAnalyzer(structure=self.structure)
         symmetry_dataset = sga.get_symmetry_dataset()
-        equivalent_sites = symmetry_dataset["equivalent_atoms"]
+        equivalent_sites = symmetry_dataset.equivalent_atoms
         self.list_equivalent_sites = equivalent_sites
         self.seq_equivalent_sites = list(set(equivalent_sites))
-        self.spg = symmetry_dataset["international"]
+        self.spg = symmetry_dataset.international
 
         if self.which_bonds == "cation-anion":
             try:
@@ -447,7 +461,7 @@ class Analysis:
         return self.chemenv.valences
 
     @property
-    def completecohp(self) -> CompleteCohp:
+    def completecoxx(self) -> CompleteCohp:
         """
         Pymatgen CompleteCohp object.
 
@@ -457,7 +471,7 @@ class Analysis:
         return self.chemenv.completecohp
 
     @property
-    def icohplist(self) -> Icohplist:
+    def icoxxlist(self) -> Icohplist:
         """
         Pymatgen Icohplist object.
 
