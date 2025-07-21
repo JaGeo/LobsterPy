@@ -306,7 +306,7 @@ class FeaturizeLobsterpy:
         bond_type = f"{which_bonds}_bonds"
 
         # Initialize a set of default kwargs of Analysis class
-        args_analysis = {
+        default_kwargs = {
             "are_cobis": analysis_kwargs.get("are_cobis", False),
             "are_coops": analysis_kwargs.get("are_coops", False),
             "type_charge": analysis_kwargs.get("type_charge", "Mulliken"),
@@ -318,12 +318,12 @@ class FeaturizeLobsterpy:
             "which_bonds": which_bonds,
         }
 
-        if analysis_kwargs.get("are_cobis", False):
+        if default_kwargs.get("are_cobis", False):
             file_paths = get_file_paths(
                 path_to_lobster_calc=path_to_lobster_calc,
                 requested_files=["structure", "cobicar", "icobilist", "charge"],
             )
-            args_analysis.update(
+            default_kwargs.update(
                 {
                     "path_to_poscar": str(file_paths.get("structure")),
                     "path_to_icohplist": str(file_paths.get("icobilist")),
@@ -332,12 +332,12 @@ class FeaturizeLobsterpy:
                 }
             )
 
-        elif analysis_kwargs.get("are_coops", False):
+        elif default_kwargs.get("are_coops", False):
             file_paths = get_file_paths(
                 path_to_lobster_calc=path_to_lobster_calc,
                 requested_files=["structure", "coopcar", "icooplist", "charge"],
             )
-            args_analysis.update(
+            default_kwargs.update(
                 {
                     "path_to_poscar": str(file_paths.get("structure")),
                     "path_to_icohplist": str(file_paths.get("icooplist")),
@@ -350,7 +350,7 @@ class FeaturizeLobsterpy:
                 path_to_lobster_calc=path_to_lobster_calc,
                 requested_files=["structure", "cohpcar", "icohplist", "charge"],
             )
-            args_analysis.update(
+            default_kwargs.update(
                 {
                     "path_to_poscar": str(file_paths.get("structure")),
                     "path_to_icohplist": str(file_paths.get("icohplist")),
@@ -360,16 +360,16 @@ class FeaturizeLobsterpy:
             )
 
         try:
-            analyse = Analysis(**args_analysis)
+            analyse = Analysis(**default_kwargs)
             type_pop = analyse._get_pop_type()
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}
         except ValueError:
             data = {bond_type: {"lobsterpy_data": {}}}
 
-            if args_analysis.get("are_cobis"):
+            if default_kwargs.get("are_cobis"):
                 type_pop = "COBI"
-            elif args_analysis.get("are_coops"):
+            elif default_kwargs.get("are_coops"):
                 type_pop = "COOP"
             else:
                 type_pop = "COHP"
