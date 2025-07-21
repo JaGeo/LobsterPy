@@ -45,6 +45,7 @@ class BatchSummaryFeaturizer:
     :param include_coop_data: bool stating to include COOPCAR.lobster features
     :param e_range: range of energy relative to fermi for which moment features needs to be computed
     :param n_jobs: parallel processes to run
+    :param analysis_kwargs: keyword arguments for Analysis class of Lobsterpy
     """
 
     def __init__(
