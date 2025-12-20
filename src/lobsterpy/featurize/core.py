@@ -1046,7 +1046,7 @@ class FeaturizeCharges:
                 ch_veff.append(val)
 
         return sum(ch_veff) / structure.num_sites
-    
+
     def _calc_stats(self, ids: str | None = None) -> dict[str, float]:
         """
         Calculate standard statistics of the atomic-charges in CHARGE.lobster.
@@ -1057,7 +1057,6 @@ class FeaturizeCharges:
         Returns:
             A dictionary with charge statistics
         """
-        
         chargeobj = Charge(filename=self.path_to_charge)
         charges = getattr(chargeobj, self.charge_type.capitalize())
         stats = {
@@ -1087,11 +1086,10 @@ class FeaturizeCharges:
 
         data = self._calc_stats(ids=ids)
 
-        if self.charge_type.lower() == "mulliken":            
+        if self.charge_type.lower() == "mulliken":
             data["Ionicity_Mull"] = self._calc_ionicity()
         else:
             data["Ionicity_Loew"] = self._calc_ionicity()
-        
 
         return pd.DataFrame(index=[ids], data=data)
 

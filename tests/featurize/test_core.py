@@ -739,8 +739,8 @@ class TestFeaturizeCharges:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Mulliken_mean", 
-            "Mulliken_min", 
+            "Mulliken_mean",
+            "Mulliken_min",
             "Mulliken_max",
             "Mulliken_std",
             "Ionicity_Mull",
@@ -770,8 +770,8 @@ class TestFeaturizeCharges:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Mulliken_mean", 
-            "Mulliken_min", 
+            "Mulliken_mean",
+            "Mulliken_min",
             "Mulliken_max",
             "Mulliken_std",
             "Ionicity_Mull",
@@ -801,8 +801,8 @@ class TestFeaturizeCharges:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
-            "Loewdin_mean", 
-            "Loewdin_min", 
+            "Loewdin_mean",
+            "Loewdin_min",
             "Loewdin_max",
             "Loewdin_std",
             "Ionicity_Loew",
@@ -860,7 +860,7 @@ class TestExceptions:
         assert str(err.value) == "No cation-anion bonds detected for C structure. Please switch to `all` bonds mode"
 
     def test_featurize_charges(self):
-        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err:  # noqa: PT011
             self.featurize_cdf_charge = FeaturizeCharges(
                 path_to_structure=TestDir / "test_data/CdF/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
