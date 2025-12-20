@@ -739,6 +739,10 @@ class TestFeaturizeCharges:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
             "Ionicity_Mull",
         ]
         assert sorted(df.columns) == sorted(expected_cols)
@@ -748,6 +752,10 @@ class TestFeaturizeCharges:
 
         # Test that all the values in the DataFrame
         assert df.loc["C", "Ionicity_Mull"] == pytest.approx(0.0, abs=1e-05)
+        assert df.loc["C", "Mulliken_mean"] == pytest.approx(0.0, abs=1e-05)
+        assert df.loc["C", "Mulliken_min"] == pytest.approx(0.0, abs=1e-05)
+        assert df.loc["C", "Mulliken_max"] == pytest.approx(0.0, abs=1e-05)
+        assert df.loc["C", "Mulliken_std"] == pytest.approx(0.0, abs=1e-05)
 
     def test_featurize_cdf_charge(self):
         featurize_cdf_charge = FeaturizeCharges(
@@ -762,6 +770,10 @@ class TestFeaturizeCharges:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
             "Ionicity_Mull",
         ]
         assert sorted(df.columns) == sorted(expected_cols)
@@ -771,6 +783,10 @@ class TestFeaturizeCharges:
 
         # Test that all the values in the DataFrame
         assert df.loc["CdF", "Ionicity_Mull"] == pytest.approx(0.788333, abs=1e-05)
+        assert df.loc["CdF", "Mulliken_mean"] == pytest.approx(-0.003333, abs=1e-05)
+        assert df.loc["CdF", "Mulliken_min"] == pytest.approx(-0.79, abs=1e-05)
+        assert df.loc["CdF", "Mulliken_max"] == pytest.approx(1.57, abs=1e-05)
+        assert df.loc["CdF", "Mulliken_std"] == pytest.approx(1.112515, abs=1e-05)
 
     def test_featurize_k3sb_charge(self):
         featurize_k3sb_charge = FeaturizeCharges(
@@ -785,6 +801,10 @@ class TestFeaturizeCharges:
 
         # Test that the DataFrame has the expected columns
         expected_cols = [
+            "Loewdin_mean",
+            "Loewdin_min",
+            "Loewdin_max",
+            "Loewdin_std",
             "Ionicity_Loew",
         ]
         assert sorted(df.columns) == sorted(expected_cols)
@@ -794,6 +814,10 @@ class TestFeaturizeCharges:
 
         # Test that all the values in the DataFrame
         assert df.loc["K3Sb", "Ionicity_Loew"] == pytest.approx(0.563333, abs=1e-05)
+        assert df.loc["K3Sb", "Loewdin_mean"] == pytest.approx(5.551115e-17, abs=1e-05)
+        assert df.loc["K3Sb", "Loewdin_min"] == pytest.approx(-1.69, abs=1e-05)
+        assert df.loc["K3Sb", "Loewdin_max"] == pytest.approx(0.63, abs=1e-05)
+        assert df.loc["K3Sb", "Loewdin_std"] == pytest.approx(0.976576, abs=1e-05)
 
 
 class TestExceptions:
@@ -836,14 +860,12 @@ class TestExceptions:
         assert str(err.value) == "No cation-anion bonds detected for C structure. Please switch to `all` bonds mode"
 
     def test_featurize_charges(self):
-        with pytest.raises(Exception) as err:  # noqa: PT012, PT011
+        with pytest.raises(Exception) as err:  # noqa: PT011
             self.featurize_cdf_charge = FeaturizeCharges(
                 path_to_structure=TestDir / "test_data/CdF/CONTCAR.gz",
                 path_to_charge=TestDir / "test_data/CdF/CHARGE.lobster.gz",
                 charge_type="Mull",
             )
-
-            _ = self.featurize_cdf_charge.get_df()
 
         assert str(err.value) == "Please check the requested charge_type. Possible options are `mulliken` or `loewdin`"
 

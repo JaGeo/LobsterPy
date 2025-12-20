@@ -66,6 +66,14 @@ class TestBatchSummaryFeaturizer:
             "edge_COHP",
             "Ionicity_Mull",
             "Ionicity_Loew",
+            "Loewdin_mean",
+            "Loewdin_min",
+            "Loewdin_max",
+            "Loewdin_std",
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
         ]
 
         assert sorted(df.columns) == sorted(expected_cols)
@@ -120,6 +128,14 @@ class TestBatchSummaryFeaturizer:
             "edge_COHP",
             "Ionicity_Mull",
             "Ionicity_Loew",
+            "Loewdin_mean",
+            "Loewdin_min",
+            "Loewdin_max",
+            "Loewdin_std",
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
         ]
 
         assert sorted(df.columns) == sorted(expected_cols)
@@ -197,6 +213,14 @@ class TestBatchSummaryFeaturizer:
             "edge_COHP",
             "Ionicity_Mull",
             "Ionicity_Loew",
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
+            "Loewdin_mean",
+            "Loewdin_min",
+            "Loewdin_max",
+            "Loewdin_std",
         ]
 
         assert sorted(df.columns) == sorted(expected_cols)
@@ -249,6 +273,14 @@ class TestBatchSummaryFeaturizer:
             "edge_COHP",
             "Ionicity_Mull",
             "Ionicity_Loew",
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
+            "Loewdin_mean",
+            "Loewdin_min",
+            "Loewdin_max",
+            "Loewdin_std",
         ]
 
         assert sorted(df.columns) == sorted(expected_cols)
@@ -321,6 +353,14 @@ class TestBatchSummaryFeaturizer:
             "edge_COOP",
             "Ionicity_Mull",
             "Ionicity_Loew",
+            "Loewdin_mean",
+            "Loewdin_min",
+            "Loewdin_max",
+            "Loewdin_std",
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
         ]
 
         assert sorted(df.columns) == sorted(expected_cols)
@@ -375,6 +415,10 @@ class TestBatchSummaryFeaturizer:
             "kurtosis_COHP",
             "edge_COHP",
             "Ionicity_Mull",
+            "Mulliken_mean",
+            "Mulliken_min",
+            "Mulliken_max",
+            "Mulliken_std",
         ]
 
         assert sorted(df.columns) == sorted(expected_cols)
@@ -425,6 +469,10 @@ class TestBatchSummaryFeaturizer:
             "kurtosis_COHP",
             "edge_COHP",
             "Ionicity_Loew",
+            "Loewdin_mean",
+            "Loewdin_min",
+            "Loewdin_max",
+            "Loewdin_std",
         ]
 
         assert sorted(df.columns) == sorted(expected_cols)
