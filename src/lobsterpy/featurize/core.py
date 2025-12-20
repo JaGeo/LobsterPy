@@ -1047,25 +1047,21 @@ class FeaturizeCharges:
 
         return sum(ch_veff) / structure.num_sites
 
-    def _calc_stats(self, ids: str | None = None) -> dict[str, float]:
+    def _calc_stats(self) -> dict[str, float]:
         """
         Calculate standard statistics of the atomic-charges in CHARGE.lobster.
-
-        :param ids: set index name in the pandas dataframe. Default is None.
-            When None, LOBSTER calc directory name is used as index name.
 
         Returns:
             A dictionary with charge statistics
         """
         chargeobj = Charge(filename=self.path_to_charge)
         charges = getattr(chargeobj, self.charge_type.capitalize())
-        stats = {
+        return {
             f"{self.charge_type.capitalize()}_mean": np.mean(charges),
             f"{self.charge_type.capitalize()}_min": np.min(charges),
             f"{self.charge_type.capitalize()}_max": np.max(charges),
             f"{self.charge_type.capitalize()}_std": np.std(charges),
         }
-        return stats
 
     def get_df(self, ids: str | None = None) -> pd.DataFrame:
         """
@@ -1078,13 +1074,10 @@ class FeaturizeCharges:
             Returns a pandas dataframe with ionicity and charge statistics as columns.
 
         """
-        if ids:
-            df = pd.DataFrame(index=[ids])
-        else:
+        if not ids:
             ids = Path(self.path_to_charge).parent.name
-            df = pd.DataFrame(index=[ids])
 
-        data = self._calc_stats(ids=ids)
+        data = self._calc_stats()
 
         if self.charge_type.lower() == "mulliken":
             data["Ionicity_Mull"] = self._calc_ionicity()
