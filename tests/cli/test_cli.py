@@ -191,15 +191,7 @@ class TestCLI:
     def test_cli_interactive_plotter_coops(self, tmp_path):
         os.chdir(TestDir / "test_data/CdF_comp_range")
         # tests skip showing plots generated using automatic interactive plotter
-        args = [
-            "auto-plot-ia",
-            "--orbitalresolved",
-            "--hideplot",
-            "--coops",
-            "--allbonds",
-            "--noisecutoff",
-            "0.001"
-        ]
+        args = ["auto-plot-ia", "--orbitalresolved", "--hideplot", "--coops", "--allbonds", "--noisecutoff", "0.001"]
         test = get_parser().parse_args(args)
         run(test)
 
