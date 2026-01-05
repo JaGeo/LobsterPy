@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.5.8
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## What's Changed
+### 🚀 New Features
+* Improve calc quality analysis implementation by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/406
+* Expose chemenv attributes and misc cli, featurizer enhancements by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/409
+* Update featurizer by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/420
+### 🐛 Bug Fixes
+* update test durations by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/405
+* Fix cli inconsistency by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/423
+### 🧹 House-Keeping
+* Update pre-commit config and address ruff import errors by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/408
+### 🔄 Other Changes
+* Bump myst-nb from 1.2.0 to 1.3.0 by @dependabot[bot] in https://github.com/JaGeo/LobsterPy/pull/411
+* Bump sphinx-toolbox from 4.1.0 to 4.1.1 by @dependabot[bot] in https://github.com/JaGeo/LobsterPy/pull/422
+
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.5.7...v0.5.8
+
+
 ## v0.5.7
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
