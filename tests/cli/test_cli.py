@@ -197,6 +197,8 @@ class TestCLI:
             "--hideplot",
             "--coops",
             "--allbonds",
+            "--noisecutoff",
+            "0.001"
         ]
         test = get_parser().parse_args(args)
         run(test)
