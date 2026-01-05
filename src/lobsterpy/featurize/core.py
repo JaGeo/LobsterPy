@@ -843,7 +843,7 @@ class FeaturizeCOXX:
         else:
             p = energies
 
-        return np.trapz(p**n * coxx, x=energies) / np.trapz(coxx, x=energies)
+        return np.trapezoid(p**n * coxx, x=energies) / np.trapezoid(coxx, x=energies)
 
     @staticmethod
     def get_cohp_edge(
