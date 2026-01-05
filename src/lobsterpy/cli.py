@@ -413,7 +413,7 @@ def get_parser() -> argparse.ArgumentParser:
     auto_group.add_argument(
         "--noisecutoff",
         type=float,
-        default=None,
+        default=0.1,
         help="Sets the lower limit of icohps or icoops or icobis considered in automatic analysis",
     )
     auto_group.add_argument(
