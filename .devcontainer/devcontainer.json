@@ -2,7 +2,8 @@
 	"name": "LobsterPy",
 	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 	"features": {
-		"ghcr.io/devcontainers/features/git:1": {}
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/git-lfs:1": {}
 	},
 	"containerEnv": {
 		"MAMBA_ROOT_PREFIX": "/opt/micromamba"
