@@ -941,8 +941,14 @@ class TestAnalyse:
                 which_bonds="all",
                 cutoff_icohp=0.1,
             )
+            assert len(w) == 3
             assert (
-                str(w[0].message) == "Falling back to POSCAR, translations between individual "
+                str(w[0].message) == "Initialization via path_to_* arguments is being deprecated and will be "
+                "removed on 30-03-2026. Please use Analysis.from_files() or "
+                "Analysis.from_directory() instead."
+            )
+            assert (
+                str(w[1].message) == "Falling back to POSCAR, translations between individual "
                 "atoms may differ from LOBSTER outputs. Please note that "
                 "translations in the LOBSTER outputs are consistent with "
                 "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
@@ -971,15 +977,15 @@ class TestAnalyse:
                 ),
             )
             assert (
-                str(w1[0].message) == "Both file paths and pymatgen objects for Icohplist, CompleteCohp "
+                str(w1[1].message) == "Both file paths and pymatgen objects for Icohplist, CompleteCohp "
                 "and structure provided; prioritizing corresponding objects and ignoring file paths."
             )
             assert (
-                str(w1[1].message) == "Both file path and pymatgen object for MadelungEnergies provided; "
+                str(w1[2].message) == "Both file path and pymatgen object for MadelungEnergies provided; "
                 "prioritizing object and ignoring file path."
             )
             assert (
-                str(w1[2].message) == "Both file path and pymatgen object for Charge provided; "
+                str(w1[3].message) == "Both file path and pymatgen object for Charge provided; "
                 "prioritizing object and ignoring file path."
             )
 
@@ -996,7 +1002,7 @@ class TestAnalyse:
                 cutoff_icohp=0.1,
             )
             assert (
-                str(w2[0].message) == "Using Valences for chemical environment analysis. "
+                str(w2[1].message) == "Using Valences for chemical environment analysis. "
                 "It is recommended to use  'Mulliken' or 'Loewdin' charges."
             )
 
@@ -1012,7 +1018,7 @@ class TestAnalyse:
                 type_charge="Loewdin",
                 cutoff_icohp=0.1,
             )
-            assert str(w3[0].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
+            assert str(w3[1].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
 
         # test for warning fallback to Valences when charge is None
         with warnings.catch_warnings(record=True) as w4:
@@ -1027,7 +1033,7 @@ class TestAnalyse:
                 cutoff_icohp=0.1,
             )
             assert (
-                str(w4[1].message) == "No file path or pymatgen object provided for Charge. "
+                str(w4[2].message) == "No file path or pymatgen object provided for Charge. "
                 "Using 'Loewdin' charges for chemical environment analysis is not possible. "
                 "Falling back to Valence charges instead."
             )
