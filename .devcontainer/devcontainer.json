@@ -1,0 +1,28 @@
+{
+	"name": "LobsterPy",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+	"containerEnv": {
+		"MAMBA_ROOT_PREFIX": "/opt/micromamba"
+	},
+	"remoteUser": "vscode",
+	"postCreateCommand": "bash -c 'set -euo pipefail; curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba; sudo mv bin/micromamba /usr/local/bin/; rm -rf bin; sudo mkdir -p /opt/micromamba; sudo chown -R vscode:vscode /opt/micromamba; micromamba shell init -s bash -r /opt/micromamba; source ~/.bashrc; micromamba create -y -n lobsterpy python=3.11 pip; micromamba run -n lobsterpy pip install -e \"./[tests,docs,dev,featurizer]\"'",
+	"postAttachCommand": "echo 'micromamba activate lobsterpy' >> ~/.bashrc",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "/opt/micromamba/envs/lobsterpy/bin/python",
+				"python.terminal.activateEnvironment": true,
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "bash",
+						"args": ["-l"]
+					}
+				},
+				"terminal.integrated.defaultProfile.linux": "bash"
+			}
+		}
+	}
+}
