@@ -9,6 +9,7 @@ import warnings
 from collections import Counter
 from itertools import combinations_with_replacement, permutations
 from pathlib import Path
+from typing import Literal
 
 import numpy as np
 from pymatgen.analysis.bond_valence import BVAnalyzer
@@ -112,8 +113,8 @@ class Analysis:
         orbital_resolved: bool = False,
         start: float | None = None,
         summed_spins: bool = True,
-        type_charge: str = "Mulliken",
-        which_bonds: str = "cation-anion",
+        type_charge: Literal["Mulliken", "Loewdin", "Valences"] = "Mulliken",
+        which_bonds: Literal["cation-anion", "all"] = "cation-anion",
     ):
         """
         Initialize automatic bonding analysis.

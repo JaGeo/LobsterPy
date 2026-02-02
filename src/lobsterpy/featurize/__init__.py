@@ -3,4 +3,4 @@
 
 """This package provides the modules for featurzing Lobster data ready for ML studies."""
 
-from .utils import get_electronegativities, get_file_paths, get_reduced_mass, get_structure_path, sort_dict_by_value
+from .utils import get_electronegativities, get_reduced_mass, sort_dict_by_value

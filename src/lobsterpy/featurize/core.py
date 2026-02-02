@@ -30,7 +30,8 @@ from scipy.signal import hilbert
 from scipy.stats import kurtosis, skew, wasserstein_distance
 
 from lobsterpy.cohp.analyze import Analysis
-from lobsterpy.featurize.utils import CoxxFingerprint, get_file_paths
+from lobsterpy.featurize.utils import CoxxFingerprint
+from lobsterpy.utils import get_file_paths
 
 warnings.filterwarnings("ignore")
 

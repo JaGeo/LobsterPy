@@ -21,7 +21,6 @@ from pymatgen.io.lobster import Doscar, Icohplist, Lobsterin
 from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.cohp.describe import Description
 from lobsterpy.featurize.core import FeaturizeIcoxxlist
-from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
     BWDFPlotter,
     IcohpDistancePlotter,
@@ -30,6 +29,7 @@ from lobsterpy.plotting import (
     PlainDosPlotter,
     get_style_list,
 )
+from lobsterpy.utils import get_file_paths
 
 
 def main() -> None:
