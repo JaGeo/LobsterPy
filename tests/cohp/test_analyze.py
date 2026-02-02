@@ -930,6 +930,7 @@ class TestAnalyse:
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("once")
             warnings.filterwarnings("ignore", module="pymatgen")
+            warnings.filterwarnings("ignore", module="spglib")
             source_file = TestDir / "test_data/C/CONTCAR.gz"
             temp_poscar_path = tmp_path / "POSCAR.gz"  # copy CONTCAR as POSCAR
             shutil.copy(source_file, temp_poscar_path)
