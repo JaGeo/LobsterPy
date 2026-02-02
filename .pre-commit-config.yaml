@@ -10,7 +10,7 @@ default_language_version:
   python: python3
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.10
+  rev: v0.14.14
   hooks:
   - id: ruff
     args: [--fix]
@@ -55,6 +55,6 @@ repos:
     args: [--ignore-words-list, 'titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo']
     types_or: [python, rst, markdown]
 - repo: https://github.com/RobertCraigie/pyright-python
-  rev: v1.1.407
+  rev: v1.1.408
   hooks:
     - id: pyright
