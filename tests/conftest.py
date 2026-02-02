@@ -130,6 +130,7 @@ def analyse_nacl_valences():
         path_to_charge=None,
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
+        type_charge="Valences",
     )
 
 
