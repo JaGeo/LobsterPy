@@ -23,7 +23,7 @@ from scipy.signal import convolve
 from scipy.stats import norm
 
 if TYPE_CHECKING:
-    from lobsterpy.cohp.analyze import Analysis
+    from lobsterpy.coxx.analyze import Analysis
 from lobsterpy.plotting import layout_dicts as ld
 
 
