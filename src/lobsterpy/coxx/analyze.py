@@ -1,7 +1,7 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""This module defines classes to analyze the COHPs automatically."""
+"""This module defines classes to analyze the COOPs/COHPs or COBIs automatically."""
 
 from __future__ import annotations
 
@@ -322,8 +322,21 @@ class Analysis(MSONable):
         charge_path: str | Path | None = None,
         madelung_path: str | Path | None = None,
         **kwargs,
-    ):
-        """Create Analysis from explicit file paths."""
+    ) -> Analysis:
+        """
+        Create Analysis from explicit file paths.
+
+        :param structure_path: path to structure (e.g., `CONTCAR` (preferred), `POSCAR.lobster` or `POSCAR`)
+        :param icoxxlist_path: path to `ICOHPLIST.lobster` or `ICOBILIST.lobster` or `ICOOPLIST.lobster`.
+        :param coxxcar_path: path to `COHPCAR.lobster` or `COBICAR.lobster` or `COOPCAR.lobster` .
+        :param charge_path: path to `CHARGE.lobster`.
+        :param madelung_path: path to `MadelungEnergies.lobster`.
+        :param kwargs: Additional arguments passed to Analysis constructor
+
+        Returns:
+            Analysis object
+
+        """
         are_cobis = kwargs.get("are_cobis")
         are_coops = kwargs.get("are_coops")
 
@@ -372,8 +385,21 @@ class Analysis(MSONable):
         analyze_cobis: bool = False,
         type_charge: Literal["Mulliken", "Loewdin", "Valences"] = "Mulliken",
         **kwargs,
-    ):
-        """Create Analysis from a directory containing LOBSTER calculation files."""
+    ) -> Analysis:
+        """
+        Create Analysis from a directory containing LOBSTER calculation files.
+
+        :param path_to_lobster_calc: Path to directory with LOBSTER calculation files
+        :param read_madelung_energies: Whether to read Madelung energies from file
+        :param analyze_coops: Whether to analyze COOPs instead of COHPs
+        :param analyze_cobis: Whether to analyze COBIs instead of COHPs
+        :param type_charge: If no charge file is provided, Valences will be used (see pymatgen BVAnalyzer).
+            Otherwise, Mulliken charges from CHARGE.lobster are used by default.
+        :param kwargs: Additional arguments passed to Analysis constructor
+
+        Returns:
+            Analysis object
+        """
         if analyze_coops:
             requested_files = ["structure", "icooplist", "coopcar"]
         elif analyze_cobis:
@@ -1636,6 +1662,14 @@ class Analysis(MSONable):
             BVA charge comparisons
 
         """
+        warnings.warn(
+            "This method is being deprecated and will be "
+            "removed on 30-03-2026. Please use `lobsterpy.quality.LobsterCalcQuality.from_files()` or "
+            "`lobsterpy.quality.LobsterCalcQuality.from_directory()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         quality_dict = {}
 
         if path_to_potcar and not potcar_symbols and not path_to_vasprun and not vasprun_obj:

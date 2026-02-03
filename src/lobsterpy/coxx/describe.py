@@ -1,17 +1,87 @@
 # Copyright (c) lobsterpy development team
 # Distributed under the terms of a BSD 3-Clause "New" or "Revised" License
 
-"""This module defines classes to describe the COHPs automatically."""
+"""This module defines classes to describe the COOPs/COHPs or COBIs automatically."""
 
 from __future__ import annotations
 
 import warnings
 from pathlib import Path
 
+from monty.json import MSONable
+
 from lobsterpy.plotting import InteractiveCohpPlotter, PlainCohpPlotter
 
+_CE_TO_TEXT = {
+    "S:1": "single (CN=1)",
+    "L:2": "linear (CN=2)",
+    "A:2": "angular (CN=2)",
+    "TL:3": "trigonal planar (CN=3)",
+    "TY:3": "triangular non-coplanar (CN=3)",
+    "TS:3": "t-shaped (CN=3)",
+    "T:4": "tetrahedral (CN=4)",
+    "S:4": "square planar (CN=4)",
+    "SY:4": "square non-coplanar (CN=4)",
+    "SS:4": "see-saw like (CN=4)",
+    "PP:5": "pentagonal (CN=5)",
+    "S:5": "square pyramidal (CN=5)",
+    "T:5": "trigonal bipyramidal (CN=5)",
+    "O:6": "octahedral (CN=6)",
+    "T:6": "trigonal prismatic (CN=6)",
+    "PP:6": "pentagonal pyramidal (CN=6)",
+    "PB:7": "pentagonal bipyramidal (CN=7)",
+    "ST:7": "square-face capped trigonal prismatic (CN=7)",
+    "ET:7": "end-trigonal-face capped trigonal prismatic (CN=7)",
+    "FO:7": "face-capped octahedron (CN=7)",
+    "C:8": "cubic (CN=8)",
+    "SA:8": "square antiprismatic (CN=8)",
+    "SBT:8": "square-face bicapped trigonal prismatic (CN=8)",
+    "TBT:8": "triangular-face bicapped trigonal prismatic (CN=8)",
+    "DD:8": "dodecahedronal (with triangular faces) (CN=8)",
+    "DDPN:8": "dodecahedronal (with triangular faces - p2345 plane normalized) (CN=8)",
+    "HB:8": "hexagonal bipyramidal (CN=8)",
+    "BO_1:8": "bicapped octahedral (opposed cap faces) (CN=8)",
+    "BO_2:8": "bicapped octahedral (cap faces with one atom in common) (CN=8)",
+    "BO_3:8": "bicapped octahedral (cap faces with one edge in common) (CN=8)",
+    "TC:9": "triangular cupola (CN=9)",
+    "TT_1:9": "Tricapped triangular prismatic (three square - face caps) (CN=9)",
+    "TT_2:9": "Tricapped triangular prismatic (two square - face caps and one triangular - face cap) (CN=9)",
+    "TT_3:9": "Tricapped triangular prism (one square - face cap and two triangular - face caps) (CN=9)",
+    "HD:9": "Heptagonal dipyramidal (CN=9)",
+    "TI:9": "tridiminished icosohedral (CN=9)",
+    "SMA:9": "Square-face monocapped antiprism (CN=9)",
+    "SS:9": "Square-face capped square prismatic (CN=9)",
+    "TO_1:9": "Tricapped octahedral (all 3 cap faces share one atom) (CN=9)",
+    "TO_2:9": "Tricapped octahedral (cap faces are aligned) (CN=9)",
+    "TO_3:9": "Tricapped octahedron (all 3 cap faces are sharing one edge of a face) (CN=9)",
+    "PP:10": "Pentagonal prismatic (CN=10)",
+    "PA:10": "Pentagonal antiprismatic (CN=10)",
+    "SBSA:10": "Square-face bicapped square antiprismatic (CN=10)",
+    "MI:10": "Metabidiminished icosahedral (CN=10)",
+    "S:10": "sphenocoronal (CN=10)",
+    "H:10": "Hexadecahedral (CN=10)",
+    "BS_1:10": "Bicapped square prismatic (opposite faces) (CN=10)",
+    "BS_2:10": "Bicapped square prism (adjacent faces) (CN=10)",
+    "TBSA:10": "Trigonal-face bicapped square antiprismatic (CN=10)",
+    "PCPA:11": "Pentagonal-face capped pentagonal antiprismatic (CN=11)",
+    "H:11": "Hendecahedral (CN=11)",
+    "SH:11": "Sphenoid hendecahedral (CN=11)",
+    "CO:11": "Cs - octahedral (CN=11)",
+    "DI:11": "Diminished icosahedral (CN=12)",
+    "I:12": "Icosahedral (CN=12)",
+    "PBP:12": "Pentagonal-face bicapped pentagonal prismatic (CN=12)",
+    "TT:12": "Truncated tetrahedral (CN=12)",
+    "C:12": "Cuboctahedral (CN=12)",
+    "AC:12": "Anticuboctahedral (CN=12)",
+    "SC:12": "Square cupola (CN=12)",
+    "S:12": "Sphenomegacorona (CN=12)",
+    "HP:12": "Hexagonal prismatic (CN=12)",
+    "HA:12": "Hexagonal antiprismatic (CN=12)",
+    "SH:13": "Square-face capped hexagonal prismatic (CN=13)",
+}
 
-class Description:
+
+class Description(MSONable):
     """
     Base class that will write generate a text description for all relevant bonds.
 
@@ -558,198 +628,12 @@ class Description:
         Returns:
             A text description of coordination environment
         """
-        if ce == "S:1":
-            return "single (CN=1)"
-        if ce == "L:2":
-            return "linear (CN=2)"
-        if ce == "A:2":
-            return "angular (CN=2)"
-        if ce == "TL:3":
-            return "trigonal planar (CN=3)"
-        if ce == "TY:3":
-            return "triangular non-coplanar (CN=3)"
-        if ce == "TS:3":
-            return "t-shaped (CN=3)"
-        if ce == "T:4":
-            return "tetrahedral (CN=4)"
-        if ce == "S:4":
-            return "square planar (CN=4)"
-        if ce == "SY:4":
-            return "square non-coplanar (CN=4)"
-        if ce == "SS:4":
-            return "see-saw like (CN=4)"
-        if ce == "PP:5":
-            return "pentagonal (CN=5)"
-        if ce == "S:5":
-            return "square pyramidal (CN=5)"
-        if ce == "T:5":
-            return "trigonal bipyramidal (CN=5)"
-        if ce == "O:6":
-            return "octahedral (CN=6)"
-        if ce == "T:6":
-            return "trigonal prismatic (CN=6)"
-        if ce == "PP:6":
-            return "pentagonal pyramidal (CN=6)"
-        if ce == "PB:7":
-            return "pentagonal bipyramidal (CN=7)"
-        if ce == "ST:7":
-            return "square-face capped trigonal prismatic (CN=7)"
-        if ce == "ET:7":
-            return "end-trigonal-face capped trigonal prismatic (CN=7)"
-        if ce == "FO:7":
-            return "face-capped octahedron (CN=7)"
-        if ce == "C:8":
-            return "cubic (CN=8)"
-        if ce == "SA:8":
-            return "square antiprismatic (CN=8)"
-        if ce == "SBT:8":
-            return "square-face bicapped trigonal prismatic (CN=8)"
-        if ce == "TBT:8":
-            return "triangular-face bicapped trigonal prismatic (CN=8)"
-        if ce == "DD:8":
-            return "dodecahedronal (with triangular faces) (CN=8)"
-        if ce == "DDPN:8":
-            return "dodecahedronal (with triangular faces - p2345 plane normalized) (CN=8)"
-        if ce == "HB:8":
-            return "hexagonal bipyramidal (CN=8)"
-        if ce == "BO_1:8":
-            return "bicapped octahedral (opposed cap faces) (CN=8)"
-        if ce == "BO_2:8":
-            return "bicapped octahedral (cap faces with one atom in common) (CN=8)"
-        if ce == "BO_3:8":
-            return "bicapped octahedral (cap faces with one edge in common) (CN=8)"
-        if ce == "TC:9":
-            return "triangular cupola (CN=9)"
-        if ce == "TT_1:9":
-            return "Tricapped triangular prismatic (three square - face caps) (CN=9)"
-        if ce == "TT_2:9":
-            return "Tricapped triangular prismatic (two square - face caps and one triangular - face cap) (CN=9)"
-        if ce == "TT_3:9":
-            return "Tricapped triangular prism (one square - face cap and two triangular - face caps) (CN=9)"
-        if ce == "HD:9":
-            return "Heptagonal dipyramidal (CN=9)"
-        if ce == "TI:9":
-            return "tridiminished icosohedral (CN=9)"
-        if ce == "SMA:9":
-            return "Square-face monocapped antiprism (CN=9)"
-        if ce == "SS:9":
-            return "Square-face capped square prismatic (CN=9)"
-        if ce == "TO_1:9":
-            return "Tricapped octahedral (all 3 cap faces share one atom) (CN=9)"
-        if ce == "TO_2:9":
-            return "Tricapped octahedral (cap faces are aligned) (CN=9)"
-        if ce == "TO_3:9":
-            return "Tricapped octahedron (all 3 cap faces are sharing one edge of a face) (CN=9)"
-        if ce == "PP:10":
-            return "Pentagonal prismatic (CN=10)"
-        if ce == "PA:10":
-            return "Pentagonal antiprismatic (CN=10)"
-        if ce == "SBSA:10":
-            return "Square-face bicapped square antiprismatic (CN=10)"
-        if ce == "MI:10":
-            return "Metabidiminished icosahedral (CN=10)"
-        if ce == "S:10":
-            return "sphenocoronal (CN=10)"
-        if ce == "H:10":
-            return "Hexadecahedral (CN=10)"
-        if ce == "BS_1:10":
-            return "Bicapped square prismatic (opposite faces) (CN=10)"
-        if ce == "BS_1:10":
-            return "Bicapped square prismatic (opposite faces) (CN=10)"
-        if ce == "BS_2:10":
-            return "Bicapped square prism(adjacent faces) (CN=10)"
-        if ce == "TBSA:10":
-            return "Trigonal-face bicapped square antiprismatic (CN=10)"
-        if ce == "PCPA:11":
-            return "Pentagonal - face capped pentagonal antiprismatic (CN=11)"
-        if ce == "H:11":
-            return "Hendecahedral (CN=11)"
-        if ce == "SH:11":
-            return "Sphenoid hendecahedral (CN=11)"
-        if ce == "CO:11":
-            return "Cs - octahedral (CN=11)"
-        if ce == "DI:11":
-            return "Diminished icosahedral (CN=12)"
-        if ce == "I:12":
-            return "Icosahedral (CN=12)"
-        if ce == "PBP: 12":
-            return "Pentagonal - face bicapped pentagonal prismatic (CN=12)"
-        if ce == "TT:12":
-            return "Truncated tetrahedral (CN=12)"
-        if ce == "C:12":
-            return "Cuboctahedral (CN=12)"
-        if ce == "AC:12":
-            return "Anticuboctahedral (CN=12)"
-        if ce == "SC:12":
-            return "Square cupola (CN=12)"
-        if ce == "S:12":
-            return "Sphenomegacorona (CN=12)"
-        if ce == "HP:12":
-            return "Hexagonal prismatic (CN=12)"
-        if ce == "HA:12":
-            return "Hexagonal antiprismatic (CN=12)"
-        if ce == "SH:13":
-            return "Square-face capped hexagonal prismatic (CN=13)"
-        if ce == "1":
-            return "1-fold"
-        if ce == "2":
-            return "2-fold"
-        if ce == "3":
-            return "3-fold"
-        if ce == "4":
-            return "4-fold"
-        if ce == "5":
-            return "5-fold"
-        if ce == "6":
-            return "6-fold"
-        if ce == "7":
-            return "7-fold"
-        if ce == "8":
-            return "8-fold"
-        if ce == "9":
-            return "9-fold"
-        if ce == "10":
-            return "10-fold"
-        if ce == "11":
-            return "11-fold"
-        if ce == "12":
-            return "12-fold"
-        if ce == "13":
-            return "13-fold"
-        if ce == "14":
-            return "14-fold"
-        if ce == "15":
-            return "15-fold"
-        if ce == "16":
-            return "16-fold"
-        if ce == "17":
-            return "17-fold"
-        if ce == "18":
-            return "18-fold"
-        if ce == "19":
-            return "19-fold"
-        if ce == "20":
-            return "20-fold"
-        if ce == "21":
-            return "21-fold"
-        if ce == "22":
-            return "22-fold"
-        if ce == "23":
-            return "23-fold"
-        if ce == "24":
-            return "24-fold"
-        if ce == "25":
-            return "25-fold"
-        if ce == "26":
-            return "26-fold"
-        if ce == "27":
-            return "27-fold"
-        if ce == "28":
-            return "28-fold"
-        if ce == "29":
-            return "29-fold"
-        if ce == "30":
-            return "30-fold"
+        if ce in _CE_TO_TEXT:
+            return _CE_TO_TEXT[ce]
+
+        if ce.isdigit():
+            return f"{ce}-fold"
+
         return ce
 
     def write_description(self):
@@ -764,6 +648,13 @@ class Description:
 
         :param quality_dict: python dictionary from lobsterpy.analysis.get_lobster_calc_quality_summary
         """
+        warnings.warn(
+            "This method is being deprecated and will be "
+            "removed on 30-03-2026. Please use `lobsterpy.quality.LobsterCalcQuality.describe()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         text_des = []
 
         for key, val in quality_dict.items():
@@ -853,4 +744,10 @@ class Description:
     @staticmethod
     def write_calc_quality_description(calc_quality_text):
         """Print the calculation quality description to the screen."""
+        warnings.warn(
+            "This method is being deprecated and will be "
+            "removed on 30-03-2026. Please use `lobsterpy.quality.LobsterCalcQuality.print_description()` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         print(" ".join(calc_quality_text))
