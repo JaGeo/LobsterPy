@@ -14,7 +14,7 @@ from pymatgen.core.structure import Structure
 from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.lobster.outputs import Charge
 
-from lobsterpy.cohp.analyze import Analysis
+from lobsterpy.coxx.analyze import Analysis
 
 
 class LobsterGraph:
