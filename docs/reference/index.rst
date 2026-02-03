@@ -12,4 +12,5 @@ Python API reference
     coxx
     featurize
     plotting
+    quality
     structuregraph
