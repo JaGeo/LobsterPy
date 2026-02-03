@@ -62,15 +62,15 @@ class TestDescribe:
             "S:10": "sphenocoronal (CN=10)",
             "H:10": "Hexadecahedral (CN=10)",
             "BS_1:10": "Bicapped square prismatic (opposite faces) (CN=10)",
-            "BS_2:10": "Bicapped square prism(adjacent faces) (CN=10)",
+            "BS_2:10": "Bicapped square prism (adjacent faces) (CN=10)",
             "TBSA:10": "Trigonal-face bicapped square antiprismatic (CN=10)",
-            "PCPA:11": "Pentagonal - face capped pentagonal antiprismatic (CN=11)",
+            "PCPA:11": "Pentagonal-face capped pentagonal antiprismatic (CN=11)",
             "H:11": "Hendecahedral (CN=11)",
             "SH:11": "Sphenoid hendecahedral (CN=11)",
             "CO:11": "Cs - octahedral (CN=11)",
             "DI:11": "Diminished icosahedral (CN=12)",
             "I:12": "Icosahedral (CN=12)",
-            "PBP: 12": "Pentagonal - face bicapped pentagonal prismatic (CN=12)",
+            "PBP:12": "Pentagonal-face bicapped pentagonal prismatic (CN=12)",
             "TT:12": "Truncated tetrahedral (CN=12)",
             "C:12": "Cuboctahedral (CN=12)",
             "AC:12": "Anticuboctahedral (CN=12)",
@@ -79,7 +79,6 @@ class TestDescribe:
             "HP:12": "Hexagonal prismatic (CN=12)",
             "HA:12": "Hexagonal antiprismatic (CN=12)",
             "SH:13": "Square-face capped hexagonal prismatic (CN=13)",
-            "H:5": "H:5",
             "1": "1-fold",
             "2": "2-fold",
             "3": "3-fold",
@@ -367,6 +366,9 @@ class TestCalcQualityDescribeWarnings:
         actual_warnings = [str(warning.message) for warning in w]
 
         expected_warnings = [
+            "This method is being deprecated and will be removed on 30-03-2026. "
+            "Please use `lobsterpy.quality.LobsterCalcQuality.from_files()` or "
+            "`lobsterpy.quality.LobsterCalcQuality.from_directory()` instead.",
             "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values",
             "Minimum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. "
             "Thus, setting `min_e` to the minimum possible value of -15 eV",
@@ -427,7 +429,7 @@ class TestCalcQualityDescribeWarnings:
                 bva_comp=True,
             )
         assert (
-            str(w3[0].message) == "Consider rerunning the calc with the minimum basis as well. "
+            str(w3[1].message) == "Consider rerunning the calc with the minimum basis as well. "
             "Choosing is larger basis set is recommended if you see a significant "
             "improvement of the charge spilling and material has non-zero band gap."
         )

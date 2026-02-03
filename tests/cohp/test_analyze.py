@@ -14,6 +14,7 @@ from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
 from pymatgen.io.vasp import Vasprun
 
 from lobsterpy.cohp.analyze import Analysis
+from lobsterpy.quality.analyze import LobsterCalcQuality
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -1034,6 +1035,13 @@ class TestAnalyseCalcQuality:
         )
 
         assert calc_des_with_objs == calc_des_with_paths
+
+        # Test new LobsterCalcQuality class method
+        calc_des_from_dir = LobsterCalcQuality.from_directory(
+            path_to_lobster_calc=TestDir / "test_data" / "K3Sb"
+        ).get_calculation_quality_summary(dos_comparison=True, bva_comp=True, n_bins=256)
+
+        assert calc_des_with_objs == calc_des_from_dir
 
     def test_calc_quality_summary_exceptions(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
