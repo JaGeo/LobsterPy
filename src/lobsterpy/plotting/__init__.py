@@ -1192,7 +1192,7 @@ class IcohpDistancePlotter:
             ax.set_ylim(ylim)
 
         ax.set_ylabel(cohp_label)
-        ax.set_xlabel("Bond lengths (\u00c5)")
+        ax.set_xlabel("Interatomic distances (\u00c5)")
 
         if color_interactions:
             colors = self.COLOR_PALETTE if colors is None else colors
@@ -1359,7 +1359,7 @@ class BWDFPlotter:
                     ax.plot(bwdf[pair]["centers"], icoxx_weights, label=legend_label, c=next(pal_iter))
 
             ax.set_ylabel(f"BWDF-{cohp_label}")
-            ax.set_xlabel("Bond lengths (\u00c5)")
+            ax.set_xlabel("Interatomic distances (\u00c5)")
             ax.legend()
 
         return plt

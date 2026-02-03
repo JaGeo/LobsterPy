@@ -470,7 +470,7 @@ class TestIcohpDistancePlotter:
         icohp_plotter.add_icohps(label="NaCl_icoop", icohpcollection=icooplist_nacl.icohpcollection)
         fig = icohp_plotter.get_plot().gca()
         assert fig.get_ylabel() == "ICOOP"
-        assert fig.get_xlabel() == "Bond lengths (Å)"
+        assert fig.get_xlabel() == "Interatomic distances (Å)"
 
     def test_plot_data(self, icohplist_nacl, icobilist_nacl, icooplist_nacl):
         icohp_plotter = IcohpDistancePlotter()
@@ -760,21 +760,21 @@ class TestBWDFPlotter:
         bwdf_plotter.add_bwdf(bwdf=bwdf_nacl, label="NaCl")
         fig = bwdf_plotter.get_plot().gca()
 
-        assert fig.get_xlabel() == "Bond lengths (Å)"
+        assert fig.get_xlabel() == "Interatomic distances (Å)"
         assert fig.get_ylabel() == "BWDF- $-$ICOHP (eV)"
 
         bwdf_plotter = BWDFPlotter(are_coops=True)
         bwdf_plotter.add_bwdf(bwdf=bwdf_cdf_coop, label="CdF")
         fig = bwdf_plotter.get_plot().gca()
 
-        assert fig.get_xlabel() == "Bond lengths (Å)"
+        assert fig.get_xlabel() == "Interatomic distances (Å)"
         assert fig.get_ylabel() == "BWDF-ICOOP"
 
         bwdf_plotter = BWDFPlotter(are_cobis=True)
         bwdf_plotter.add_bwdf(bwdf=bwdf_cdf_cobi, label="CdF")
         fig = bwdf_plotter.get_plot().gca()
 
-        assert fig.get_xlabel() == "Bond lengths (Å)"
+        assert fig.get_xlabel() == "Interatomic distances (Å)"
         assert fig.get_ylabel() == "BWDF-ICOBI"
 
     def test_bwdf_plot_data(self, bwdf_nacl, bwdf_cdf_coop, bwdf_cdf_cobi):
