@@ -57,20 +57,20 @@ def analyse_nacl_comp_range_orb():
 @pytest.fixture
 def analyse_nacl_comp_range_orb_with_objs():
     charge_obj = Charge(filename=TestDir / "test_data/NaCl_comp_range/CHARGE.lobster.gz")
-    completecohp_obj = CompleteCohp.from_file(
+    completecoxx_obj = CompleteCohp.from_file(
         filename=TestDir / "test_data/NaCl_comp_range/COHPCAR.lobster.gz",
         fmt="LOBSTER",
         structure_file=TestDir / "test_data/NaCl_comp_range/CONTCAR.gz",
     )
-    icohplist_obj = Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz")
+    icoxxlist_obj = Icohplist(filename=TestDir / "test_data/NaCl_comp_range/ICOHPLIST.lobster.gz")
 
     return Analysis(
         path_to_poscar=None,
         path_to_cohpcar=None,
         path_to_charge=None,
         path_to_icohplist=None,
-        completecohp_obj=completecohp_obj,
-        icohplist_obj=icohplist_obj,
+        completecoxx_obj=completecoxx_obj,
+        icoxxlist_obj=icoxxlist_obj,
         charge_obj=charge_obj,
         which_bonds="cation-anion",
         cutoff_icohp=0.1,
@@ -348,20 +348,20 @@ def analyse_k3sb_all():
 @pytest.fixture
 def analyse_k3sb_all_objs():
     charge_obj = Charge(filename=TestDir / "test_data/K3Sb/CHARGE.lobster.gz")
-    completecohp_obj = CompleteCohp.from_file(
+    completecoxx_obj = CompleteCohp.from_file(
         filename=TestDir / "test_data/K3Sb/COHPCAR.lobster.gz",
         fmt="LOBSTER",
         structure_file=TestDir / "test_data/K3Sb/CONTCAR.gz",
     )
-    icohplist_obj = Icohplist(filename=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz")
+    icoxxlist_obj = Icohplist(filename=TestDir / "test_data/K3Sb/ICOHPLIST.lobster.gz")
     return Analysis(
         path_to_poscar=None,
         path_to_cohpcar=None,
         path_to_icohplist=None,
         path_to_charge=None,
-        completecohp_obj=completecohp_obj,
+        completecoxx_obj=completecoxx_obj,
         charge_obj=charge_obj,
-        icohplist_obj=icohplist_obj,
+        icoxxlist_obj=icoxxlist_obj,
         which_bonds="all",
         cutoff_icohp=0.1,
     )
