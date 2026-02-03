@@ -29,7 +29,7 @@ from scipy.integrate import trapezoid
 from scipy.signal import hilbert
 from scipy.stats import kurtosis, skew, wasserstein_distance
 
-from lobsterpy.cohp.analyze import Analysis
+from lobsterpy.coxx.analyze import Analysis
 from lobsterpy.featurize.utils import CoxxFingerprint
 from lobsterpy.utils import get_file_paths
 
