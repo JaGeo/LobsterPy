@@ -9,7 +9,8 @@ Python API reference
     :toctree:
     :nosignatures:
     
-    cohp
+    coxx
     featurize
     plotting
+    quality
     structuregraph
