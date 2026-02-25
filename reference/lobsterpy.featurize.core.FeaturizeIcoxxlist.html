@@ -1,0 +1,949 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>FeaturizeIcoxxlist &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=55384d60" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/lobsterpy.featurize.core.FeaturizeIcoxxlist';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FeaturizeLobsterpy" href="lobsterpy.featurize.core.FeaturizeLobsterpy.html" />
+    <link rel="prev" title="FeaturizeDoscar" href="lobsterpy.featurize.core.FeaturizeDoscar.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="lobsterpy - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/index.html">Fundamental Aspects</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/tutorial.html">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Python API reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.cohp.analyze.POSCAR_WARNING.html">POSCAR_WARNING</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="lobsterpy.featurize.html">lobsterpy.featurize</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.batch.BatchIcoxxlistFeaturizer.html">BatchIcoxxlistFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">FeaturizeIcoxxlist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.utils.get_electronegativities.html">get_electronegativities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.utils.get_reduced_mass.html">get_reduced_mass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.utils.sort_dict_by_value.html">sort_dict_by_value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.utils.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.featurize.utils.POSCAR_WARNING.html">POSCAR_WARNING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lobsterpy.plotting.BWDFPlotter.html">BWDFPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/plotbwdf.html">plot-bwdf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2Freference/lobsterpy.featurize.core.FeaturizeIcoxxlist.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/reference/lobsterpy.featurize.core.FeaturizeIcoxxlist.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>FeaturizeIcoxxlist</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_icoxx_neighbors_data"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_icoxx_neighbors_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_bwdf"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_bwdf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_asymmetry_index"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_site_asymmetry_index()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_bwdf"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_site_bwdf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_label_bwdf"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_label_bwdf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_asymmetry_index_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_asymmetry_index_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_binned_bwdf_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_binned_bwdf_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_site_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_bwdf_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_site_bwdf_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_pair_bwdf_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_pair_bwdf_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_summed_bwdf_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_summed_bwdf_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_bwdf_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_sorted_bwdf_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_dist_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_sorted_dist_df()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="featurizeicoxxlist">
+<h1>FeaturizeIcoxxlist<a class="headerlink" href="#featurizeicoxxlist" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lobsterpy.featurize.core.</span></span><span class="sig-name descname"><span class="pre">FeaturizeIcoxxlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_to_icoxxlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_structure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_grosspop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactions_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_electrons_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'formula_units'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">are_cobis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">are_coops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to Featurize ICOXXLIST.lobster as Bond weighted distribution function (BWDF).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_to_icoxxlist</strong> (<em>str</em><em> | </em><em>Path</em>) – path to ICOXXLIST.lobster</p></li>
+<li><p><strong>path_to_structure</strong> (<em>str</em><em> | </em><em>Path</em>) – path to structure file (e.g., <cite>CONTCAR</cite> (preferred), <cite>POSCAR</cite>)</p></li>
+<li><p><strong>path_to_grosspop</strong> (<em>str</em><em> | </em><em>Path</em><em> | </em><em>None</em>) – path to GROSSPOP.lobster</p></li>
+<li><p><strong>bin_width</strong> (<em>float</em>) – bin width for the BWDF</p></li>
+<li><p><strong>interactions_tol</strong> (<em>float</em>) – tolerance for interactions</p></li>
+<li><p><strong>max_length</strong> (<em>float</em>) – maximum bond length for BWDF computation</p></li>
+<li><p><strong>min_length</strong> (<em>float</em>) – minimum bond length for BWDF computation</p></li>
+<li><p><strong>n_electrons_scaling</strong> (<em>bool</em>) – bool indicating if ICOXX values should be scaled by number of electrons.
+Only for testing purposes. Should not affect the results in any meaningful way.</p></li>
+<li><p><strong>normalization</strong> (<em>Literal</em><em>[</em><em>'formula_units'</em><em>, </em><em>'area'</em><em>, </em><em>'counts'</em><em>, </em><em>'none'</em><em>]</em>) – normalization strategy for BWDF</p></li>
+<li><p><strong>are_cobis</strong> (<em>bool</em>) – bool indicating if file contains COBI/ICOBI data</p></li>
+<li><p><strong>are_coops</strong> (<em>bool</em>) – bool indicating if file contains COOP/ICOOP data</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_icoxx_neighbors_data">
+<span class="sig-name descname"><span class="pre">get_icoxx_neighbors_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_icoxx_neighbors_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_icoxx_neighbors_data" title="Link to this definition">#</a></dt>
+<dd><p>Get the neighbors data with icoxx values for a structure.</p>
+<p>Uses a distance based neighbor list as reference to map the neighbor’s data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>site_index</strong> (<em>int</em><em> | </em><em>None</em>) – index of the site for which neighbors data is returned. Default is None (All sites).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Neighbors data as a dictionary with the following information</p>
+<ul class="simple">
+<li><p>”ref_rdf_data”: radial distribution function (RDF) data</p></li>
+<li><p>”input_icoxx_list”: complete ICOXXLIST.lobster data in the form of list of tuples</p></li>
+<li><p>”mapped_icoxx_data”: ICOXX values mapped to RDF data</p></li>
+<li><p>”missing_interactions”: list of interactions that are present in RDF data but not in ICOXX data</p></li>
+<li><p>”wasserstein_dist_to_rdf”: wasserstein distance computed between ref_rdf_data and mapped_icoxx_data.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_bwdf">
+<span class="sig-name descname"><span class="pre">calc_bwdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.calc_bwdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_bwdf" title="Link to this definition">#</a></dt>
+<dd><p>Compute BWDF from ICOXXLIST.lobster data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>BWDF as a dictionary for each atom pair and entire structure</p>
+<ul class="simple">
+<li><p>”A-B”: BWDF for atom pair A-B, e.g., “Na-Cl”: {“icoxx_binned”: np.array, “icoxx_counts”: np.array}</p></li>
+<li><p>”summed”: BWDF for entire structure, e.g., “summed”: {“icoxx_binned”: np.array, “icoxx_counts”: np.array}</p></li>
+<li><p>”centers”: bin centers for BWDF</p></li>
+<li><p>”edges”: bin edges for BWDF</p></li>
+<li><p>”bin_width”: bin width</p></li>
+<li><p>”wasserstein_dist_to_rdf”: wasserstein distance between RDF and ICOXX data</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_asymmetry_index">
+<span class="sig-name descname"><span class="pre">calc_site_asymmetry_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.calc_site_asymmetry_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_asymmetry_index" title="Link to this definition">#</a></dt>
+<dd><p>Compute the asymmetry index for a site using bond strengths as weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>site_index</strong> (<em>int</em>) – index of the site for which the asymmetry index needs to be computed</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><ol class="upperalpha simple" start="6">
+<li><p>Belli, E. Zurek, I. Errea, 2025, DOI 10.48550/arXiv.2501.14420</p></li>
+</ol>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Asymmetry index for the site</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>site_index</strong> (<em>int</em>)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_bwdf">
+<span class="sig-name descname"><span class="pre">calc_site_bwdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.calc_site_bwdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_bwdf" title="Link to this definition">#</a></dt>
+<dd><p>Compute BWDF from ICOXXLIST.lobster data for a site.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>site_index</strong> (<em>int</em>) – index of the site for which BWDF needs to be computed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>BWDF as a dictionary for the site in the following format</p>
+<ul class="simple">
+<li><p>”X”: BWDF for the site X, e.g., “0”: {“icoxx_binned”: np.array, “icoxx_counts”: np.array}</p></li>
+<li><p>”centers”: bin centers for BWDF</p></li>
+<li><p>”edges”: bin edges for BWDF</p></li>
+<li><p>”bin_width”: bin width</p></li>
+<li><p>”wasserstein_dist_to_rdf”: wasserstein distance between RDF and ICOXX data</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_label_bwdf">
+<span class="sig-name descname"><span class="pre">calc_label_bwdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bond_label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.calc_label_bwdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_label_bwdf" title="Link to this definition">#</a></dt>
+<dd><p>Compute BWDF from ICOXXLIST.lobster data for a bond label.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bond_label</strong> (<em>str</em>) – bond label for which BWDF needs to be computed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>BWDF as a dictionary for the bond label in the following format</p>
+<ul class="simple">
+<li><p>”X”: BWDF for the bond label, e.g., “20”: {“icoxx_binned”: np.array, “icoxx_counts”: np.array}</p></li>
+<li><p>”centers”: bin centers for BWDF</p></li>
+<li><p>”edges”: bin edges for BWDF</p></li>
+<li><p>”bin_width”: bin width</p></li>
+<li><p>”wasserstein_dist_to_rdf”: wasserstein distance between RDF and ICOXX data</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_asymmetry_index_stats_df">
+<span class="sig-name descname"><span class="pre">get_asymmetry_index_stats_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_asymmetry_index_stats_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_asymmetry_index_stats_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas dataframe with asymmetry index statistical information as columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with asymmetry index statistical information as columns.
+Columns include sum, mean, std, min, and max.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_binned_bwdf_df">
+<span class="sig-name descname"><span class="pre">get_binned_bwdf_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_binned_bwdf_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_binned_bwdf_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas dataframe with computed BWDF features as columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set index name in the pandas dataframe. Default is None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with BWDF as columns. Each column contains
+sum of icoxx values corresponding to bins.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_df">
+<span class="sig-name descname"><span class="pre">get_site_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_site_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas dataframe with computed BWDF features for a site as columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>site_index</strong> (<em>int</em>) – index of the site in a structure for which BWDF needs to be computed</p></li>
+<li><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with BWDF as columns for a site. Each column contains
+sum of icoxx values corresponding to bins.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_bwdf_stats_df">
+<span class="sig-name descname"><span class="pre">get_site_bwdf_stats_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_site_bwdf_stats_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_bwdf_stats_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas datafram with mean and std from sitewise BWDFs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with BWDF statistical information as columns.
+The columns include the mean and standard deviation calculated from the
+sitewise BWDFs stats (i.e., sum, mean, minimum, maximum, std, skewness, and kurtosis).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_pair_bwdf_stats_df">
+<span class="sig-name descname"><span class="pre">get_pair_bwdf_stats_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_pair_bwdf_stats_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_pair_bwdf_stats_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas dataframe with statistical info from pairwise BWDFs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with BWDF statistical information as columns.
+The columns include the mean and standard deviation calculated from the
+pairwise BWDFs stats (i.e., sum, mean, minimum, maximum, std, skewness, and kurtosis).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_summed_bwdf_stats_df">
+<span class="sig-name descname"><span class="pre">get_summed_bwdf_stats_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_summed_bwdf_stats_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_summed_bwdf_stats_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas dataframe with statistical info from BWDF as columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with BWDF statistical information as columns.
+Columns include sum, mean, std, min, max, skew, kurtosis, weighted mean and weighted std.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_stats_df">
+<span class="sig-name descname"><span class="pre">get_stats_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'summed'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_stats_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_stats_df" title="Link to this definition">#</a></dt>
+<dd><p>Convenience method to get a pandas dataframe with statistical info from BWDF as columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None.</p></li>
+<li><p><strong>stats_type</strong> (<em>Literal</em><em>[</em><em>'atompair'</em><em>, </em><em>'site'</em><em>, </em><em>'summed'</em><em>, </em><em>'all'</em><em>]</em>) – <p>type of BWDF stats to be returned. Default is “summed”.</p>
+<ul>
+<li><p>”atompair”: compute stats from unique atom pairs BWDFs.</p></li>
+<li><p>”site”: compute stats from site BWDFs.</p></li>
+<li><p>”summed”: compute stats from structure BWDFs.</p></li>
+<li><p>”all”: concatenated dataframe from <cite>atompair</cite>, <cite>site</cite> and <cite>summed</cite> options.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with BWDF statistical information as columns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_bwdf_df">
+<span class="sig-name descname"><span class="pre">get_sorted_bwdf_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_sorted_bwdf_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_bwdf_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas dataframe with BWDF values sorted by distances, ascending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with binned BWDF values sorted by distance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_dist_df">
+<span class="sig-name descname"><span class="pre">get_sorted_dist_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'negative'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lobsterpy/featurize/core.html#FeaturizeIcoxxlist.get_sorted_dist_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_dist_df" title="Link to this definition">#</a></dt>
+<dd><p>Return a pandas dataframe with distances sorted by BWDF values
+(either only positive or negative),  sorted descending by absolute values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<em>str</em><em> | </em><em>None</em>) – set the index name in the pandas dataframe. Default is None</p></li>
+<li><p><strong>mode</strong> (<em>Literal</em><em>[</em><em>'positive'</em><em>, </em><em>'negative'</em><em>]</em>) – must be in (“positive”, “negative”), defines whether BWDF values above or
+below zero are considered for distance featurization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pandas dataframe object with binned distances sorted by BWDF values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>DataFrame</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="lobsterpy.featurize.core.FeaturizeDoscar.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">FeaturizeDoscar</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="lobsterpy.featurize.core.FeaturizeLobsterpy.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">FeaturizeLobsterpy</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_icoxx_neighbors_data"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_icoxx_neighbors_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_bwdf"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_bwdf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_asymmetry_index"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_site_asymmetry_index()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_site_bwdf"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_site_bwdf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.calc_label_bwdf"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.calc_label_bwdf()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_asymmetry_index_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_asymmetry_index_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_binned_bwdf_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_binned_bwdf_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_site_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_site_bwdf_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_site_bwdf_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_pair_bwdf_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_pair_bwdf_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_summed_bwdf_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_summed_bwdf_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_stats_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_stats_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_bwdf_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_sorted_bwdf_df()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lobsterpy.featurize.core.FeaturizeIcoxxlist.get_sorted_dist_df"><code class="docutils literal notranslate"><span class="pre">FeaturizeIcoxxlist.get_sorted_dist_df()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

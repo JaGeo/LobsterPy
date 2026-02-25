@@ -1,0 +1,2039 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Python interface &#8212; lobsterpy</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=55384d60" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/tutorial';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Command line interface" href="commandlineinterface.html" />
+    <link rel="prev" title="Tutorial" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="lobsterpy - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="lobsterpy - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fundamentals/index.html">Fundamental Aspects</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Tutorial</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Python interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commandlineinterface.html">Command line interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atomateauto.html">High-throughput LOBSTER calcs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="computingtimes.html">Computing times</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Python API reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.html">lobsterpy.cohp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.html">lobsterpy.cohp.analyze</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.Analysis.html">Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.analyze.POSCAR_WARNING.html">POSCAR_WARNING</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.html">lobsterpy.cohp.describe</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.cohp.describe.Description.html">Description</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.html">lobsterpy.featurize</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.html">lobsterpy.featurize.batch</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchCoxxFingerprint.html">BatchCoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchDosFeaturizer.html">BatchDosFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchIcoxxlistFeaturizer.html">BatchIcoxxlistFeaturizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchStructureGraphs.html">BatchStructureGraphs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.batch.BatchSummaryFeaturizer.html">BatchSummaryFeaturizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.core.html">lobsterpy.featurize.core</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCharges.html">FeaturizeCharges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeCOXX.html">FeaturizeCOXX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeDoscar.html">FeaturizeDoscar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeIcoxxlist.html">FeaturizeIcoxxlist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.core.FeaturizeLobsterpy.html">FeaturizeLobsterpy</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.html">lobsterpy.featurize.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_electronegativities.html">get_electronegativities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_file_paths.html">get_file_paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_reduced_mass.html">get_reduced_mass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.get_structure_path.html">get_structure_path</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.sort_dict_by_value.html">sort_dict_by_value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.CoxxFingerprint.html">CoxxFingerprint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.featurize.utils.POSCAR_WARNING.html">POSCAR_WARNING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.html">lobsterpy.plotting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.get_style_list.html">get_style_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.BWDFPlotter.html">BWDFPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.IcohpDistancePlotter.html">IcohpDistancePlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.InteractiveCohpPlotter.html">InteractiveCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainCohpPlotter.html">PlainCohpPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.PlainDosPlotter.html">PlainDosPlotter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/lobsterpy.plotting.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.html">lobsterpy.plotting.layout_dicts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.layout_dict.html">layout_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.cohp_axis_style_dict.html">cohp_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.energy_axis_style_dict.html">energy_axis_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_up_trace_style_dict.html">spin_up_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.spin_down_trace_style_dict.html">spin_down_trace_style_dict</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.plotting.layout_dicts.legend_style_dict.html">legend_style_dict</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.html">lobsterpy.structuregraph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.html">lobsterpy.structuregraph.graph</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.LobsterGraph.html">LobsterGraph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/lobsterpy.structuregraph.graph.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/cli.html">CLI Reference</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/createinputs.html">create-inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/description.html">description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/descriptionquality.html">description-quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotauto.html">plot-automatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotautoia.html">plot-automatic-ia</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotbwdf.html">plot-bwdf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plotdos.html">plot-dos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/ploticohpdistance.html">plot-icohp-distance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/cli_subcommands/plot.html">plot</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/contributing.html">Contributing to LobsterPy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/dev_installation.html">Developer Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">About</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about/changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about/license.html">License</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/JaGeo/LobsterPy/issues/new?title=Issue%20on%20page%20%2Ftutorial/tutorial.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/tutorial/tutorial.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Python interface</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-of-analysis-description-class-and-automatic-plotting">Usage of Analysis, Description class and automatic plotting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage-analysis-description">Basic usage : Analysis, Description</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-usage-analysis-description">Advanced usage : Analysis, Description</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-lobster-calculation-quality-and-description">Get LOBSTER calculation quality and description</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-plotting-utilities">Using plotting utilities</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-cohps-cobis-coops-from-analysis-object">Plot COHPs / COBIS / COOPs from Analysis object</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-icohps-icobis-icoops-againsts-bond-lengths">Plot ICOHPs / ICOBIS / ICOOPs Againsts bond-lengths</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-dos-from-lobster">Plot DOS from Lobster</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-structure-graph-objects-with-lobster-data">Generate structure graph objects with LOBSTER data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#featurizer-usage-examples-generates-features-from-lobster-data-for-ml-studies">Featurizer usage examples (Generates features from LOBSTER data for ML studies)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchcoxxfingerprint">BatchCoxxFingerprint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchicoxxlistfeaturizer">BatchIcoxxlistFeaturizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchdosfeaturizer">BatchDosFeaturizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchsummaryfeaturizer">BatchSummaryFeaturizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchstructuregraphs">BatchStructureGraphs</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="python-interface">
+<h1>Python interface<a class="headerlink" href="#python-interface" title="Link to this heading">#</a></h1>
+<p>For this tutorial, we will use the <a class="reference external" href="https://github.com/JaGeo/LobsterPy/tests/test_data">test data</a> that can be downloaded from our git repository using the following commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--filter<span class="o">=</span>blob:none<span class="w"> </span>--no-checkout<span class="w"> </span>https://github.com/JaGeo/LobsterPy.git
+<span class="nb">cd</span><span class="w"> </span>LobsterPy
+git<span class="w"> </span>sparse-checkout<span class="w"> </span><span class="nb">set</span><span class="w"> </span>tests/test_data
+git<span class="w"> </span>read-tree<span class="w"> </span>-mu<span class="w"> </span>HEAD
+</pre></div>
+</div>
+<section id="usage-of-analysis-description-class-and-automatic-plotting">
+<h2>Usage of Analysis, Description class and automatic plotting<a class="headerlink" href="#usage-of-analysis-description-class-and-automatic-plotting" title="Link to this heading">#</a></h2>
+<section id="basic-usage-analysis-description">
+<h3>Basic usage : Analysis, Description<a class="headerlink" href="#basic-usage-analysis-description" title="Link to this heading">#</a></h3>
+<p>Lets first import the necessary modules</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pexpect.replwrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">python</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">lobsterpy.cohp.analyze</span><span class="w"> </span><span class="kn">import</span> <span class="n">Analysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lobsterpy.cohp.describe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Description</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Change directory to your Lobster computations (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;LobsterPy&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;CdF_comp_range&quot;</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize Analysis object</span>
+<span class="n">analyse</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span>
+    <span class="n">path_to_poscar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CONTCAR.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_icohplist</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOHPLIST.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_cohpcar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;COHPCAR.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_charge</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CHARGE.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">which_bonds</span><span class="o">=</span><span class="s2">&quot;cation-anion&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize Description object and to get text description of the analysis</span>
+<span class="n">describe</span> <span class="o">=</span> <span class="n">Description</span><span class="p">(</span><span class="n">analysis_object</span><span class="o">=</span><span class="n">analyse</span><span class="p">)</span>
+<span class="n">describe</span><span class="o">.</span><span class="n">write_description</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
+Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, 26.944 percent antibonding interaction below EFermi) bonds.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get static plots for detected relevant bonds</span>
+<span class="n">describe</span><span class="o">.</span><span class="n">plot_cohps</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c5beac730715e19319a62a90a1b1307f50e5f7b331ece78c63c7c6c147b526e3.png" src="../_images/c5beac730715e19319a62a90a1b1307f50e5f7b331ece78c63c7c6c147b526e3.png" />
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get interactive plots of relevant bonds, </span>
+
+<span class="c1"># Setting label_resolved arg to True will plot each COHP curve separately, alongside summed COHP for the bonds.</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">describe</span><span class="o">.</span><span class="n">plot_interactive_cohps</span><span class="p">(</span><span class="n">label_resolved</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="s1">&#39;notebook&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Due to sphinx rendering limitations for Plotly figures, the output is not directly visible within the notebook; please use the link to see the <a class="reference download internal" download="" href="../_downloads/8f717a44707c0b40f1d30cb8055189c3/CdF2.html"><span class="xref download myst">interactive label resolved plot</span></a></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dict summarizing the automatic analysis results</span>
+<span class="n">analyse</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;formula&#39;: &#39;CdF2&#39;,
+ &#39;max_considered_bond_length&#39;: 5.98538,
+ &#39;limit_icohp&#39;: (-inf, -0.1),
+ &#39;number_of_considered_ions&#39;: 1,
+ &#39;sites&#39;: {0: {&#39;env&#39;: &#39;C:8&#39;,
+   &#39;bonds&#39;: {&#39;F&#39;: {&#39;ICOHP_mean&#39;: &#39;-0.62&#39;,
+     &#39;ICOHP_sum&#39;: &#39;-4.97&#39;,
+     &#39;has_antibdg_states_below_Efermi&#39;: True,
+     &#39;number_of_bonds&#39;: 8,
+     &#39;bonding&#39;: {&#39;integral&#39;: np.float64(7.89), &#39;perc&#39;: np.float64(0.73056)},
+     &#39;antibonding&#39;: {&#39;integral&#39;: np.float64(2.91),
+      &#39;perc&#39;: np.float64(0.26944)}}},
+   &#39;ion&#39;: &#39;Cd&#39;,
+   &#39;charge&#39;: 1.57,
+   &#39;relevant_bonds&#39;: [&#39;29&#39;, &#39;30&#39;, &#39;33&#39;, &#39;40&#39;, &#39;53&#39;, &#39;60&#39;, &#39;63&#39;, &#39;64&#39;]}},
+ &#39;type_charges&#39;: &#39;Mulliken&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dict with bonds identified</span>
+<span class="n">analyse</span><span class="o">.</span><span class="n">final_dict_bonds</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Cd-F&#39;: {&#39;ICOHP_mean&#39;: -0.62125, &#39;has_antbdg&#39;: True}}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dict with ions and their co-ordination environments</span>
+<span class="n">analyse</span><span class="o">.</span><span class="n">final_dict_ions</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;Cd&#39;: {&#39;C:8&#39;: 1}}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can also perform automatic analysis using <code class="docutils literal notranslate"><span class="pre">COBICAR(ICOBILIST.lobster)</span></code> or <code class="docutils literal notranslate"><span class="pre">COOPCAR(ICOOPLIST.lobster)</span></code>. You would need to set <code class="docutils literal notranslate"><span class="pre">are_cobis</span></code>/<code class="docutils literal notranslate"><span class="pre">are_coops</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> depending on the type of file you decide to analyze when you initialize the Analysis object. Change the default <code class="docutils literal notranslate"><span class="pre">noise_cutoff</span></code> value to 0.001 or lower, as ICOOP and ICOBI typically have smaller values and different units than ICOHP. Below is an example code snippet.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analyse</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span>
+    <span class="n">path_to_poscar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CONTCAR.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_icohplist</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOBILIST.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_cohpcar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;COBICAR.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_charge</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CHARGE.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">which_bonds</span><span class="o">=</span><span class="s2">&quot;cation-anion&quot;</span><span class="p">,</span>
+    <span class="n">are_cobis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">noise_cutoff</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Accessing other results is the same as the above.</p>
+</section>
+<section id="advanced-usage-analysis-description">
+<h3>Advanced usage : Analysis, Description<a class="headerlink" href="#advanced-usage-analysis-description" title="Link to this heading">#</a></h3>
+<p>LobsterPy now also allows for automatic orbital-wise analysis and plotting of COHPs, COBIs, and COOPs. To switch on orbital-wise analysis, one must set <code class="docutils literal notranslate"><span class="pre">orbital_resolved</span></code> arg to <code class="docutils literal notranslate"><span class="pre">True</span></code>. By default, orbitals contributing 5% or more relative to summed ICOHPs are considered in the analysis. One can change this default threshold using the <code class="docutils literal notranslate"><span class="pre">orbital_cutoff</span></code> argument. Here, we will set this cutoff value to 3%.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">analyse</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span>
+    <span class="n">path_to_poscar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CONTCAR.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_icohplist</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOHPLIST.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_cohpcar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;COHPCAR.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_charge</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CHARGE.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">which_bonds</span><span class="o">=</span><span class="s2">&quot;cation-anion&quot;</span><span class="p">,</span>
+    <span class="n">orbital_resolved</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">orbital_cutoff</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access the dict summarizing the results including orbital-wise analysis data </span>
+<span class="n">analyse</span><span class="o">.</span><span class="n">condensed_bonding_analysis</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;formula&#39;: &#39;CdF2&#39;,
+ &#39;max_considered_bond_length&#39;: 5.98538,
+ &#39;limit_icohp&#39;: (-inf, -0.1),
+ &#39;number_of_considered_ions&#39;: 1,
+ &#39;sites&#39;: {0: {&#39;env&#39;: &#39;C:8&#39;,
+   &#39;bonds&#39;: {&#39;F&#39;: {&#39;ICOHP_mean&#39;: &#39;-0.62&#39;,
+     &#39;ICOHP_sum&#39;: &#39;-4.97&#39;,
+     &#39;has_antibdg_states_below_Efermi&#39;: True,
+     &#39;number_of_bonds&#39;: 8,
+     &#39;bonding&#39;: {&#39;integral&#39;: np.float64(7.89), &#39;perc&#39;: np.float64(0.73056)},
+     &#39;antibonding&#39;: {&#39;integral&#39;: np.float64(2.91),
+      &#39;perc&#39;: np.float64(0.26944)},
+     &#39;orbital_data&#39;: {&#39;2s-5s&#39;: {&#39;ICOHP_mean&#39;: np.float64(-0.2775),
+       &#39;ICOHP_sum&#39;: np.float64(-2.2202),
+       &#39;orb_contribution_perc_bonding&#39;: np.float64(0.31),
+       &#39;bonding&#39;: {&#39;integral&#39;: np.float64(2.8), &#39;perc&#39;: np.float64(0.8284)},
+       &#39;relevant_sub_orbitals&#39;: [&#39;2s-5s&#39;],
+       &#39;orb_contribution_perc_antibonding&#39;: np.float64(0.14),
+       &#39;antibonding&#39;: {&#39;integral&#39;: np.float64(0.58),
+        &#39;perc&#39;: np.float64(0.1716)}},
+      &#39;2p-5s&#39;: {&#39;ICOHP_mean&#39;: np.float64(-0.1147),
+       &#39;ICOHP_sum&#39;: np.float64(-2.7518),
+       &#39;orb_contribution_perc_bonding&#39;: np.float64(0.3),
+       &#39;bonding&#39;: {&#39;integral&#39;: np.float64(2.75), &#39;perc&#39;: np.float64(1.0)},
+       &#39;relevant_sub_orbitals&#39;: [&#39;2py-5s&#39;, &#39;2pz-5s&#39;, &#39;2px-5s&#39;]},
+      &#39;2s-4d&#39;: {&#39;ICOHP_mean&#39;: np.float64(0.0003),
+       &#39;ICOHP_sum&#39;: np.float64(0.0106),
+       &#39;orb_contribution_perc_bonding&#39;: np.float64(0.04),
+       &#39;bonding&#39;: {&#39;integral&#39;: np.float64(0.38), &#39;perc&#39;: np.float64(0.49351)},
+       &#39;relevant_sub_orbitals&#39;: [&#39;2s-4dxy&#39;,
+        &#39;2s-4dyz&#39;,
+        &#39;2s-4dz2&#39;,
+        &#39;2s-4dxz&#39;,
+        &#39;2s-4dx2&#39;],
+       &#39;orb_contribution_perc_antibonding&#39;: np.float64(0.09),
+       &#39;antibonding&#39;: {&#39;integral&#39;: np.float64(0.39),
+        &#39;perc&#39;: np.float64(0.50649)}},
+      &#39;2p-4d&#39;: {&#39;ICOHP_mean&#39;: np.float64(-0.0001),
+       &#39;ICOHP_sum&#39;: np.float64(-0.012),
+       &#39;orb_contribution_perc_bonding&#39;: np.float64(0.35),
+       &#39;bonding&#39;: {&#39;integral&#39;: np.float64(3.2), &#39;perc&#39;: np.float64(0.50157)},
+       &#39;relevant_sub_orbitals&#39;: [&#39;2py-4dxy&#39;,
+        &#39;2pz-4dxy&#39;,
+        &#39;2px-4dxy&#39;,
+        &#39;2py-4dyz&#39;,
+        &#39;2pz-4dyz&#39;,
+        &#39;2px-4dyz&#39;,
+        &#39;2py-4dz2&#39;,
+        &#39;2pz-4dz2&#39;,
+        &#39;2px-4dz2&#39;,
+        &#39;2py-4dxz&#39;,
+        &#39;2pz-4dxz&#39;,
+        &#39;2px-4dxz&#39;,
+        &#39;2py-4dx2&#39;,
+        &#39;2pz-4dx2&#39;,
+        &#39;2px-4dx2&#39;],
+       &#39;orb_contribution_perc_antibonding&#39;: np.float64(0.77),
+       &#39;antibonding&#39;: {&#39;integral&#39;: np.float64(3.18),
+        &#39;perc&#39;: np.float64(0.49843)}},
+      &#39;relevant_bonds&#39;: [&#39;29&#39;, &#39;30&#39;, &#39;33&#39;, &#39;40&#39;, &#39;53&#39;, &#39;60&#39;, &#39;63&#39;, &#39;64&#39;],
+      &#39;orbital_summary_stats&#39;: {&#39;max_bonding_contribution&#39;: {&#39;2p-4d&#39;: np.float64(0.35)},
+       &#39;max_antibonding_contribution&#39;: {&#39;2p-4d&#39;: np.float64(0.77)}}}}},
+   &#39;ion&#39;: &#39;Cd&#39;,
+   &#39;charge&#39;: 1.57,
+   &#39;relevant_bonds&#39;: [&#39;29&#39;, &#39;30&#39;, &#39;33&#39;, &#39;40&#39;, &#39;53&#39;, &#39;60&#39;, &#39;63&#39;, &#39;64&#39;]}},
+ &#39;type_charges&#39;: &#39;Mulliken&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the above output, you will now see a key named <code class="docutils literal notranslate"><span class="pre">orbital_data</span></code> associated with each relevant bond identified. The <code class="docutils literal notranslate"><span class="pre">orbital_summary_stats</span></code> key contains the orbitals that contribute the most to the bonding and antibonding interactions, and values are reported there in percent.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can get plots from orbital resolved analysis only when <code class="docutils literal notranslate"><span class="pre">orbital_resolved</span></code> arg to <code class="docutils literal notranslate"><span class="pre">True</span></code> when initializing the Analysis object. If this is not done, you will run into errors. Also, only the interactive plotter will plot the results of orbital resolved analysis, as static plots will not be much readable. In any case, you can generate static plots if you need to. You will learn how to use the plotters available in LobsterPy further in the Plotter usage section of the tutorial.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize the Description object</span>
+<span class="n">describe</span> <span class="o">=</span> <span class="n">Description</span><span class="p">(</span><span class="n">analysis_object</span><span class="o">=</span><span class="n">analyse</span><span class="p">)</span>
+<span class="n">describe</span><span class="o">.</span><span class="n">write_description</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.
+Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, 26.944 percent antibonding interaction below EFermi) bonds.
+In the 8 Cd-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from the Cd(4d)-F(2p) orbital, contributing 35.0 percent, whereas the maximum antibonding contribution is from the Cd(4d)-F(2p) orbital, contributing 77.0 percent.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Automatic interactive plots</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">describe</span><span class="o">.</span><span class="n">plot_interactive_cohps</span><span class="p">(</span><span class="n">orbital_resolved</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">hide</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="s1">&#39;notebook&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Due to sphinx rendering limitations for Plotly figures, the output is not directly visible within the notebook; please use the link to see the <a class="reference download internal" download="" href="../_downloads/bdff33f4f22a5d2dc65348c72950861a/CdF2_orb.html"><span class="xref download myst">interactive orbital resolved plot</span></a></p>
+</section>
+<section id="get-lobster-calculation-quality-and-description">
+<h3>Get LOBSTER calculation quality and description<a class="headerlink" href="#get-lobster-calculation-quality-and-description" title="Link to this heading">#</a></h3>
+<p>This utility provides a quick overview of your LOBSTER calculation quality by reading the charge spilling and band overlaps file (if these are generated during LOBSTER runs). Optionally, one can obtain atom charge classification comparisons with the BVA method and a comparison between DOS from LOBSTER and VASP.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The DOS comparisons and basis set utilized analysis are now limited to VASP calculations only. Support for other code output will be added in the future.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Change directory to your Lobster computations (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;LobsterPy&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;K3Sb&quot;</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get calculation quality summary dict</span>
+<span class="n">calc_quality_K3Sb</span> <span class="o">=</span> <span class="n">Analysis</span><span class="o">.</span><span class="n">get_lobster_calc_quality_summary</span><span class="p">(</span>
+            <span class="n">path_to_poscar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CONTCAR.gz&quot;</span><span class="p">,</span>
+            <span class="n">path_to_charge</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CHARGE.lobster.gz&quot;</span><span class="p">,</span>
+            <span class="n">path_to_lobsterin</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;lobsterin.gz&quot;</span><span class="p">,</span>
+            <span class="n">path_to_lobsterout</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;lobsterout.gz&quot;</span><span class="p">,</span>
+            <span class="n">potcar_symbols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;K_sv&quot;</span><span class="p">,</span> <span class="s2">&quot;Sb&quot;</span><span class="p">],</span> <span class="c1"># if POTCAR exists, then provide path_to_potcar and set this to None </span>
+            <span class="n">path_to_bandoverlaps</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;bandOverlaps.lobster.gz&quot;</span><span class="p">,</span>
+            <span class="n">dos_comparison</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># set to false to disable DOS comparisons </span>
+            <span class="n">bva_comp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># set to false to disable LOBSTER charge classification comparisons with BVA method</span>
+            <span class="n">path_to_doscar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;DOSCAR.LSO.lobster.gz&quot;</span><span class="p">,</span>
+            <span class="n">e_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">path_to_vasprun</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;vasprun.xml.gz&quot;</span><span class="p">,</span>
+            <span class="n">n_bins</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="n">calc_quality_K3Sb</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;minimal_basis&#39;: True,
+ &#39;charge_spilling&#39;: {&#39;abs_charge_spilling&#39;: 0.83, &#39;abs_total_spilling&#39;: 6.36},
+ &#39;band_overlaps_analysis&#39;: {&#39;file_exists&#39;: True,
+  &#39;limit_maxDeviation&#39;: 0.1,
+  &#39;has_good_quality_maxDeviation&#39;: True,
+  &#39;max_deviation&#39;: 0.0583,
+  &#39;percent_kpoints_abv_limit&#39;: 0.0},
+ &#39;charge_comparisons&#39;: {&#39;bva_mulliken_agree&#39;: True, &#39;bva_loewdin_agree&#39;: True},
+ &#39;dos_comparisons&#39;: {&#39;tanimoto_orb_s&#39;: np.float64(0.8532),
+  &#39;tanimoto_orb_p&#39;: np.float64(0.9481),
+  &#39;tanimoto_summed&#39;: np.float64(0.9275),
+  &#39;e_range&#39;: [-20, 0],
+  &#39;n_bins&#39;: 256}}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a text description from calculation quality summary dictionary</span>
+<span class="n">calc_quality_k3sb_des</span> <span class="o">=</span> <span class="n">Description</span><span class="o">.</span><span class="n">get_calc_quality_description</span><span class="p">(</span>
+            <span class="n">calc_quality_K3Sb</span>
+        <span class="p">)</span>
+<span class="n">Description</span><span class="o">.</span><span class="n">write_calc_quality_description</span><span class="p">(</span><span class="n">calc_quality_k3sb_des</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The LOBSTER calculation used minimal basis. The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively. The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected wave function is not completely orthonormalized; however, the maximal deviation values observed compared to the identity matrix is below the threshold of 0.1. The atomic charge signs from Mulliken population analysis agree with the bond valence analysis. The atomic charge signs from Loewdin population analysis agree with the bond valence analysis. The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p, summed orbitals are: 0.8532, 0.9481, 0.9275.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="using-plotting-utilities">
+<h2>Using plotting utilities<a class="headerlink" href="#using-plotting-utilities" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">style</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymatgen.io.lobster</span><span class="w"> </span><span class="kn">import</span> <span class="n">Doscar</span><span class="p">,</span> <span class="n">Icohplist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lobsterpy.featurize.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">FeaturizeIcoxxlist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lobsterpy.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">BWDFPlotter</span><span class="p">,</span> <span class="n">InteractiveCohpPlotter</span><span class="p">,</span> <span class="n">IcohpDistancePlotter</span><span class="p">,</span> <span class="n">PlainCohpPlotter</span><span class="p">,</span> <span class="n">PlainDosPlotter</span><span class="p">,</span> <span class="n">get_style_list</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>You can alter the appearance of the static plots using the style sheet that comes with LobsterPy or use any of the readily available matplotlib style sheets.</p>
+<section id="plot-cohps-cobis-coops-from-analysis-object">
+<h3>Plot COHPs / COBIS / COOPs from Analysis object<a class="headerlink" href="#plot-cohps-cobis-coops-from-analysis-object" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">are_cobis</span></code>/<code class="docutils literal notranslate"><span class="pre">are_coops</span></code> arg must be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> in the plotter depending on the type of files you analyze or want to plot. Here, we will keep them false as we are plotting COHPs.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using PlainCohpPlotter to get static plots of relevant bonds from Analysis object</span>
+
+<span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">get_style_list</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># Use the LobsterPy style sheet for the generated plots</span>
+
+<span class="n">cohp_plot_static</span> <span class="o">=</span> <span class="n">PlainCohpPlotter</span><span class="p">(</span><span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">plot_label</span><span class="p">,</span> <span class="n">label_list</span> <span class="ow">in</span> <span class="n">analyse</span><span class="o">.</span><span class="n">get_site_bond_resolved_labels</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">cohp</span> <span class="o">=</span> <span class="n">analyse</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">completecohp</span><span class="o">.</span><span class="n">get_summed_cohp_by_label_list</span><span class="p">(</span><span class="n">label_list</span><span class="o">=</span><span class="n">label_list</span><span class="p">)</span>
+    <span class="n">cohp_plot_static</span><span class="o">.</span><span class="n">add_cohp</span><span class="p">(</span><span class="n">plot_label</span><span class="p">,</span> <span class="n">cohp</span><span class="p">)</span>
+<span class="n">cohp_plot_static</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span><span class="mi">2</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c790854d085f376f90046fa4e57ba2ca741f8ef029573ce3d4a317ea8eb46479.png" src="../_images/c790854d085f376f90046fa4e57ba2ca741f8ef029573ce3d4a317ea8eb46479.png" />
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can get plots from orbital resolved analysis only when <code class="docutils literal notranslate"><span class="pre">orbital_resolved</span></code> arg is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> when initializing the Analysis object.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">label_list</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;29&#39;, &#39;30&#39;, &#39;33&#39;, &#39;40&#39;, &#39;53&#39;, &#39;60&#39;, &#39;63&#39;, &#39;64&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using PlainCohpPlotter to get static plots of relevant orbitals COHPs from Analysis object</span>
+
+<span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span> <span class="c1"># Complete reset the matplotlib figure style</span>
+<span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-v0_8-ticks&#39;</span><span class="p">)</span> <span class="c1"># use one of the existing matplotlib style sheet</span>
+
+<span class="n">cohp_plot_static</span> <span class="o">=</span> <span class="n">PlainCohpPlotter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">plot_label</span> <span class="p">,</span> <span class="n">orb_data</span> <span class="ow">in</span> <span class="n">analyse</span><span class="o">.</span><span class="n">get_site_orbital_resolved_labels</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">orb</span><span class="p">,</span> <span class="n">plot_data</span> <span class="ow">in</span> <span class="n">orb_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">mapped_bond_labels</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">plot_data</span><span class="p">[</span><span class="s2">&quot;bond_labels&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="s2">&quot;relevant_sub_orbitals&quot;</span><span class="p">]))</span>
+                    <span class="p">]</span>
+        <span class="n">cohp</span> <span class="o">=</span> <span class="n">analyse</span><span class="o">.</span><span class="n">chemenv</span><span class="o">.</span><span class="n">completecohp</span><span class="o">.</span><span class="n">get_summed_cohp_by_label_and_orbital_list</span><span class="p">(</span><span class="n">label_list</span><span class="o">=</span><span class="n">mapped_bond_labels</span><span class="p">,</span> 
+                                                                                      <span class="n">orbital_list</span><span class="o">=</span><span class="n">plot_data</span><span class="p">[</span><span class="s2">&quot;relevant_sub_orbitals&quot;</span><span class="p">]</span> <span class="o">*</span> 
+                                                                                      <span class="nb">len</span><span class="p">(</span><span class="n">plot_data</span><span class="p">[</span><span class="s2">&quot;bond_labels&quot;</span><span class="p">]))</span>
+        <span class="n">cohp_plot_static</span><span class="o">.</span><span class="n">add_cohp</span><span class="p">(</span><span class="n">orb</span><span class="p">,</span> <span class="n">cohp</span><span class="p">)</span>
+<span class="n">cohp_plot_static</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span><span class="mi">2</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/1fa9c0ed03bfac30f16fb2bac00a6989aa60496f61acca211b0e024ac4e085e5.png" src="../_images/1fa9c0ed03bfac30f16fb2bac00a6989aa60496f61acca211b0e024ac4e085e5.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using interactive plotter to add relevant cohps</span>
+<span class="n">interactive_cohp_plot</span> <span class="o">=</span> <span class="n">InteractiveCohpPlotter</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">interactive_cohp_plot</span><span class="o">.</span><span class="n">add_all_relevant_cohps</span><span class="p">(</span><span class="n">analyse</span><span class="o">=</span><span class="n">analyse</span><span class="p">,</span> <span class="n">label_resolved</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">orbital_resolved</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_remove-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">interactive_cohp_plot</span><span class="o">.</span><span class="n">get_plot</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="s1">&#39;notebook&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Due to sphinx rendering limitations for Plotly figures, the output is not directly visible within the notebook; please use the link to see the <a class="reference download internal" download="" href="../_downloads/bdff33f4f22a5d2dc65348c72950861a/CdF2_orb.html"><span class="xref download myst">interactive orbital resolved plot</span></a></p>
+</section>
+<section id="plot-icohps-icobis-icoops-againsts-bond-lengths">
+<h3>Plot ICOHPs / ICOBIS / ICOOPs Againsts bond-lengths<a class="headerlink" href="#plot-icohps-icobis-icoops-againsts-bond-lengths" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#### Change directory to your Lobster computations (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;LobsterPy&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;CdF_comp_range&quot;</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plotting ICOHPs against distance</span>
+
+<span class="n">icohp_plotter</span> <span class="o">=</span> <span class="n">IcohpDistancePlotter</span><span class="p">(</span><span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># If reading and plotting ICOBIs or ICOOPs set args accordingly</span>
+<span class="n">icohplist</span> <span class="o">=</span> <span class="n">Icohplist</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOHPLIST.lobster.gz&quot;</span><span class="p">,</span> <span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">icohp_plotter</span><span class="o">.</span><span class="n">add_icohps</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;CdF2&quot;</span><span class="p">,</span> <span class="n">icohpcollection</span><span class="o">=</span><span class="n">icohplist</span><span class="o">.</span><span class="n">icohpcollection</span><span class="p">)</span>
+
+<span class="c1"># color_interactions=False, will disable datapoints colouring based on atom pair types</span>
+<span class="n">icohp_plotter</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">color_interactions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">marker_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e00dae3cc033e35e51c986da1f12cc752805e2d52438d0f01f72e0b68c77bc5d.png" src="../_images/e00dae3cc033e35e51c986da1f12cc752805e2d52438d0f01f72e0b68c77bc5d.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computing and Plotting BWDFs from ICOHPs</span>
+
+<span class="c1">## We will use the featurizer to compute the BWDF </span>
+<span class="n">feat_icoxx</span> <span class="o">=</span> <span class="n">FeaturizeIcoxxlist</span><span class="p">(</span><span class="n">path_to_icoxxlist</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOHPLIST.lobster.gz&quot;</span><span class="p">,</span>
+                               <span class="n">path_to_structure</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CONTCAR.gz&quot;</span><span class="p">,</span>
+                               <span class="n">normalization</span><span class="o">=</span><span class="s2">&quot;counts&quot;</span><span class="p">,</span>
+                               <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+                               <span class="n">min_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                               <span class="n">bin_width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                               <span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                               <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">bwdf</span> <span class="o">=</span> <span class="n">feat_icoxx</span><span class="o">.</span><span class="n">calc_bwdf</span><span class="p">()</span> <span class="c1"># this method will compute the BWDF for the entire structure and all unique atom pairs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plotting</span>
+<span class="n">bwdf_plotter</span> <span class="o">=</span> <span class="n">BWDFPlotter</span><span class="p">(</span><span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># If reading and plotting ICOBIs or ICOOPs set args accordingly</span>
+<span class="n">bwdf_plotter</span><span class="o">.</span><span class="n">add_bwdf</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;CdF2&quot;</span><span class="p">,</span> <span class="n">bwdf</span><span class="o">=</span><span class="n">bwdf</span><span class="p">)</span> <span class="c1"># Add the BWDF data</span>
+<span class="n">bwdf_plotter</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">sigma</span><span class="o">=</span><span class="mf">0.3</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ff9fa164d67c684098687be24823efc27e7d655ab05602ce51bfbf61941c883e.png" src="../_images/ff9fa164d67c684098687be24823efc27e7d655ab05602ce51bfbf61941c883e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># One can also compute and plot BWDF for a single site of the structure</span>
+<span class="n">bwdf</span> <span class="o">=</span> <span class="n">feat_icoxx</span><span class="o">.</span><span class="n">calc_site_bwdf</span><span class="p">(</span><span class="n">site_index</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Plotting</span>
+<span class="n">bwdf_plotter</span> <span class="o">=</span> <span class="n">BWDFPlotter</span><span class="p">(</span><span class="n">are_cobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">are_coops</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># If reading and plotting ICOBIs or ICOOPs set args accordingly</span>
+<span class="n">bwdf_plotter</span><span class="o">.</span><span class="n">add_bwdf</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;CdF2&quot;</span><span class="p">,</span> <span class="n">bwdf</span><span class="o">=</span><span class="n">bwdf</span><span class="p">)</span> <span class="c1"># Add the BWDF data</span>
+<span class="n">bwdf_plotter</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">sigma</span><span class="o">=</span><span class="mf">0.3</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/7109e4acd0a9339fe3ddb99a29f1fa437693f06decd41c421c98a64ab9ffc81b.png" src="../_images/7109e4acd0a9339fe3ddb99a29f1fa437693f06decd41c421c98a64ab9ffc81b.png" />
+</div>
+</div>
+</section>
+<section id="plot-dos-from-lobster">
+<h3>Plot DOS from Lobster<a class="headerlink" href="#plot-dos-from-lobster" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Lobster DOS (Change this cell block type to Code when executing locally)</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;LobsterPy&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;tests&quot;</span> <span class="o">/</span> <span class="s2">&quot;test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;NaCl_comp_range&quot;</span>
+<span class="n">dos</span> <span class="o">=</span> <span class="n">Doscar</span><span class="p">(</span><span class="n">doscar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s1">&#39;DOSCAR.lobster.gz&#39;</span><span class="p">,</span>
+             <span class="n">structure_file</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s1">&#39;CONTCAR.gz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot total, element and spd dos</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span> <span class="c1"># Complete reset the matplotlib figure style</span>
+<span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">get_style_list</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># Use the LobsterPy style sheet for the generated plots</span>
+
+<span class="n">dos_plotter</span> <span class="o">=</span> <span class="n">PlainDosPlotter</span><span class="p">(</span><span class="n">summed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">dos_plotter</span><span class="o">.</span><span class="n">add_dos</span><span class="p">(</span><span class="n">dos</span><span class="o">=</span><span class="n">dos</span><span class="o">.</span><span class="n">completedos</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Total DOS&#39;</span><span class="p">)</span>
+<span class="n">dos_plotter</span><span class="o">.</span><span class="n">add_dos_dict</span><span class="p">(</span><span class="n">dos_dict</span><span class="o">=</span><span class="n">dos</span><span class="o">.</span><span class="n">completedos</span><span class="o">.</span><span class="n">get_element_dos</span><span class="p">())</span> <span class="c1"># Add element dos</span>
+<span class="n">dos_plotter</span><span class="o">.</span><span class="n">add_dos_dict</span><span class="p">(</span><span class="n">dos_dict</span><span class="o">=</span><span class="n">dos</span><span class="o">.</span><span class="n">completedos</span><span class="o">.</span><span class="n">get_spd_dos</span><span class="p">())</span> <span class="c1"># add spd dos</span>
+<span class="n">dos_plotter</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/07991f2d384a418c1f7084a7d5e759be9291c082a11a7007c65d94d67cf98d1c.png" src="../_images/07991f2d384a418c1f7084a7d5e759be9291c082a11a7007c65d94d67cf98d1c.png" />
+</div>
+</div>
+<p>Plotting DOS at particular site and orbital</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dos_plotter</span> <span class="o">=</span> <span class="n">PlainDosPlotter</span><span class="p">(</span><span class="n">summed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.03</span><span class="p">)</span>
+<span class="n">dos_plotter</span><span class="o">.</span><span class="n">add_site_orbital_dos</span><span class="p">(</span><span class="n">dos</span> <span class="o">=</span> <span class="n">dos</span><span class="o">.</span><span class="n">completedos</span><span class="p">,</span> <span class="n">site_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">orbital</span><span class="o">=</span><span class="s1">&#39;3s&#39;</span><span class="p">)</span>
+<span class="n">dos_plotter</span><span class="o">.</span><span class="n">get_plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ac2bb53d075eba38718490b0e1dbea80dd012f2ae6b656be7b10bced9a96c7df.png" src="../_images/ac2bb53d075eba38718490b0e1dbea80dd012f2ae6b656be7b10bced9a96c7df.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="generate-structure-graph-objects-with-lobster-data">
+<h2>Generate structure graph objects with LOBSTER data<a class="headerlink" href="#generate-structure-graph-objects-with-lobster-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lobsterpy.structuregraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">LobsterGraph</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Below code snippet will generate a networkx graph object with ICOHP, ICOOP, and ICOBI data as edge properties and charges as node properties.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#### (Change this cell block type to Code or copy it from here when executing locally)</span>
+<span class="n">graph_NaCl_all</span> <span class="o">=</span> <span class="n">LobsterGraph</span><span class="p">(</span>
+    <span class="n">path_to_poscar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CONTCAR.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_charge</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;CHARGE.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_cohpcar</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;COHPCAR.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_icohplist</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOHPLIST.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">add_additional_data_sg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">path_to_icooplist</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOOPLIST.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_icobilist</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;ICOBILIST.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">path_to_madelung</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;MadelungEnergies.lobster.gz&quot;</span><span class="p">,</span>
+    <span class="n">which_bonds</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+    <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graph_NaCl_all</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="c1"># view node data</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NodeDataView({0: {&#39;specie&#39;: &#39;Na&#39;, &#39;coords&#39;: array([0., 0., 0.]), &#39;properties&#39;: {&#39;Mulliken Charges&#39;: 0.78, &#39;Loewdin Charges&#39;: 0.67, &#39;order_parameters&#39;: {&#39;hexagonal planar&#39;: 8.492830879170379e-05, &#39;octahedral&#39;: 1.0, &#39;pentagonal pyramidal&#39;: 0.5000000000000001}, &#39;env&#39;: &#39;O:6&#39;}}, 1: {&#39;specie&#39;: &#39;Cl&#39;, &#39;coords&#39;: array([2.845847, 2.845847, 2.845847]), &#39;properties&#39;: {&#39;Mulliken Charges&#39;: -0.78, &#39;Loewdin Charges&#39;: -0.67, &#39;order_parameters&#39;: {&#39;hexagonal planar&#39;: 8.492830879170379e-05, &#39;octahedral&#39;: 1.0, &#39;pentagonal pyramidal&#39;: 0.5000000000000001}, &#39;env&#39;: &#39;O:6&#39;}}})
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graph_NaCl_all</span><span class="o">.</span><span class="n">sg</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="c1"># view edge data</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OutMultiEdgeDataView([(0, 1, {&#39;to_jimage&#39;: (0, -1, -1), &#39;weight&#39;: 1, &#39;ICOHP&#39;: -0.5661700000000001, &#39;bond_length&#39;: 2.84585, &#39;bond_label&#39;: &#39;21&#39;, &#39;ICOBI&#39;: 0.08484, &#39;ICOOP&#39;: 0.02826, &#39;ICOHP_bonding_perc&#39;: np.float64(1.0), &#39;ICOHP_antibonding_perc&#39;: np.float64(0.0)}), (0, 1, {&#39;to_jimage&#39;: (-1, 0, -1), &#39;weight&#39;: 1, &#39;ICOHP&#39;: -0.5661700000000001, &#39;bond_length&#39;: 2.84585, &#39;bond_label&#39;: &#39;23&#39;, &#39;ICOBI&#39;: 0.08484, &#39;ICOOP&#39;: 0.02826, &#39;ICOHP_bonding_perc&#39;: np.float64(1.0), &#39;ICOHP_antibonding_perc&#39;: np.float64(0.0)}), (0, 1, {&#39;to_jimage&#39;: (-1, -1, 0), &#39;weight&#39;: 1, &#39;ICOHP&#39;: -0.56614, &#39;bond_length&#39;: 2.84585, &#39;bond_label&#39;: &#39;24&#39;, &#39;ICOBI&#39;: 0.08482, &#39;ICOOP&#39;: 0.02824, &#39;ICOHP_bonding_perc&#39;: np.float64(1.0), &#39;ICOHP_antibonding_perc&#39;: np.float64(0.0)}), (0, 1, {&#39;to_jimage&#39;: (0, 0, -1), &#39;weight&#39;: 1, &#39;ICOHP&#39;: -0.56616, &#39;bond_length&#39;: 2.84585, &#39;bond_label&#39;: &#39;27&#39;, &#39;ICOBI&#39;: 0.08484, &#39;ICOOP&#39;: 0.02826, &#39;ICOHP_bonding_perc&#39;: np.float64(1.0), &#39;ICOHP_antibonding_perc&#39;: np.float64(0.0)}), (0, 1, {&#39;to_jimage&#39;: (0, -1, 0), &#39;weight&#39;: 1, &#39;ICOHP&#39;: -0.56614, &#39;bond_length&#39;: 2.84585, &#39;bond_label&#39;: &#39;28&#39;, &#39;ICOBI&#39;: 0.08482, &#39;ICOOP&#39;: 0.02824, &#39;ICOHP_bonding_perc&#39;: np.float64(1.0), &#39;ICOHP_antibonding_perc&#39;: np.float64(0.0)}), (0, 1, {&#39;to_jimage&#39;: (-1, 0, 0), &#39;weight&#39;: 1, &#39;ICOHP&#39;: -0.56614, &#39;bond_length&#39;: 2.84585, &#39;bond_label&#39;: &#39;30&#39;, &#39;ICOBI&#39;: 0.08482, &#39;ICOOP&#39;: 0.02824, &#39;ICOHP_bonding_perc&#39;: np.float64(1.0), &#39;ICOHP_antibonding_perc&#39;: np.float64(0.0)})])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="featurizer-usage-examples-generates-features-from-lobster-data-for-ml-studies">
+<h2>Featurizer usage examples (Generates features from LOBSTER data for ML studies)<a class="headerlink" href="#featurizer-usage-examples-generates-features-from-lobster-data-for-ml-studies" title="Link to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To use the batch featurizers, the path to the parent directory containing LOBSTER calculation outputs needs to be provided. For example, your directory structure needs to be like this:</p>
+<p>parent_dir/lobster_calc_output_dir_for_compound_1/
+parent_dir/lobster_calc_output_dir_for_compound_2/
+parent_dir/lobster_calc_output_dir_for_compound_3/</p>
+<p>the <code class="docutils literal notranslate"><span class="pre">lobster_calc_output_dir_for_compound_*</span></code> directory should contain all your LOBSTER outputs and POSCAR file.</p>
+<p>In such a case <code class="docutils literal notranslate"><span class="pre">path_to_lobster_calcs=&quot;parent_dir&quot;</span></code> needs to be set</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lobsterpy.featurize.batch</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">BatchCoxxFingerprint</span><span class="p">,</span> <span class="n">BatchIcoxxlistFeaturizer</span><span class="p">,</span> <span class="n">BatchDosFeaturizer</span><span class="p">,</span>
+                                       <span class="n">BatchSummaryFeaturizer</span><span class="p">,</span> <span class="n">BatchStructureGraphs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="batchcoxxfingerprint">
+<h3>BatchCoxxFingerprint<a class="headerlink" href="#batchcoxxfingerprint" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">BatchCoxxFingerprint</span></code> provides a convenient way to directly generate fingerprint objects from COHP / COBI/ COOPCAR.lobster data. Generating fingerprints specifically for <code class="docutils literal notranslate"><span class="pre">bonding</span></code>, <code class="docutils literal notranslate"><span class="pre">antibonding</span></code>, and <code class="docutils literal notranslate"><span class="pre">overall</span></code> interactions is feasible.</p>
+<p>One can also generate a pair-wise fingerprint similarity matrix dataframe (currently, only simple vector dot product or Tanimoto index are implemented)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## Initialize batch COXX featurizer (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">fp_cohp_bonding</span> <span class="o">=</span> <span class="n">BatchCoxxFingerprint</span><span class="p">(</span>
+    <span class="n">path_to_lobster_calcs</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;..&quot;</span> <span class="o">/</span> <span class="s2">&quot;Featurizer_test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Lobster_calcs&quot;</span><span class="p">,</span>
+    <span class="n">e_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> 
+    <span class="n">feature_type</span><span class="o">=</span><span class="s2">&quot;bonding&quot;</span><span class="p">,</span>
+    <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># affects only the fingerprint similarity matrix computation</span>
+    <span class="n">tanimoto</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># affects only the fingerprint similarity matrix computation</span>
+    <span class="n">n_jobs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">fingerprint_for</span><span class="o">=</span><span class="s1">&#39;cohp&#39;</span> <span class="c1"># changing this to cobi/coop will result in reading cobicar/coopcar file</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Access the fingerprints dataframe</span>
+<span class="n">fp_cohp_bonding</span><span class="o">.</span><span class="n">fingerprint_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>COXX_FP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mp-1000</th>
+      <td>([[-14.866071428571429, -14.598214285714286, -...</td>
+    </tr>
+    <tr>
+      <th>mp-2176</th>
+      <td>([[-14.866071428571429, -14.598214285714286, -...</td>
+    </tr>
+    <tr>
+      <th>mp-463</th>
+      <td>([[-14.866071428571429, -14.598214285714286, -...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the fingerprints similarity matrix</span>
+<span class="n">fp_cohp_bonding</span><span class="o">.</span><span class="n">get_similarity_matrix_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mp-1000</th>
+      <th>mp-2176</th>
+      <th>mp-463</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mp-1000</th>
+      <td>1.000000</td>
+      <td>0.001488</td>
+      <td>0.000036</td>
+    </tr>
+    <tr>
+      <th>mp-2176</th>
+      <td>0.001488</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>mp-463</th>
+      <td>0.000036</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="batchicoxxlistfeaturizer">
+<h3>BatchIcoxxlistFeaturizer<a class="headerlink" href="#batchicoxxlistfeaturizer" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">BatchIcoxxlistFeaturizer</span></code> provides a convenient way to extract BWDF as features from the LOBSTER calculation directory. The extracted features consist of the following:</p>
+<ol class="arabic simple">
+<li><p>BWDF mean, standard deviation , skewness, kurtosis, weighted mean, and weighted standard deviation</p></li>
+<li><p>Complete BWDF as columns in the dataframe</p></li>
+<li><p>BWDF values sorted by bond distances as columns in the dataframe</p></li>
+<li><p>Bond distances sorted by BWDF values as columns in the dataframe</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize the batch ICOXXLIST featurizer</span>
+<span class="n">batch_icohp</span> <span class="o">=</span> <span class="n">BatchIcoxxlistFeaturizer</span><span class="p">(</span><span class="n">path_to_lobster_calcs</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;..&quot;</span> <span class="o">/</span> <span class="s2">&quot;Featurizer_test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Lobster_calcs&quot;</span><span class="p">,</span> <span class="c1"># path to parent lobster calcs</span>
+            <span class="n">normalization</span><span class="o">=</span><span class="s2">&quot;formula_units&quot;</span><span class="p">,</span> <span class="c1"># will normalize the BWDF values by formula units</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="c1"># maximum bond length for BWDF computation</span>
+            <span class="n">bin_width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="c1"># sets number for bins</span>
+            <span class="n">bwdf_df_type</span><span class="o">=</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="c1"># Type of BWDF dataframe to generate (stats, binned, sorted_bwdf, sorted_dists)</span>
+            <span class="n">read_icobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># set to true to read ICOBI data</span>
+            <span class="n">read_icoops</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># set to true to read ICOOP data</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="mi">3</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## Initialize batch ICOXXLIST featurizer (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">batch_icohp</span> <span class="o">=</span> <span class="n">BatchIcoxxlistFeaturizer</span><span class="p">(</span><span class="n">path_to_lobster_calcs</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;..&quot;</span> <span class="o">/</span> <span class="s2">&quot;Featurizer_test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Lobster_calcs&quot;</span><span class="p">,</span> <span class="c1"># path to parent lobster calcs</span>
+            <span class="n">normalization</span><span class="o">=</span><span class="s2">&quot;formula_units&quot;</span><span class="p">,</span> <span class="c1"># will normalize the BWDF values by formula units</span>
+            <span class="n">max_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="c1"># maximum bond length for BWDF computation</span>
+            <span class="n">bin_width</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="c1"># sets number for bins</span>
+            <span class="n">bwdf_df_type</span><span class="o">=</span><span class="s2">&quot;stats&quot;</span><span class="p">,</span> <span class="c1"># Type of BWDF dataframe to generate (stats, binned, sorted_bwdf, sorted_dists)</span>
+            <span class="n">read_icobis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># set to true to read ICOBI data</span>
+            <span class="n">read_icoops</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># set to true to read ICOOP data</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="mi">3</span><span class="p">,)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the BWDF stats df</span>
+<span class="n">batch_icohp</span><span class="o">.</span><span class="n">get_bwdf_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating BWDF from ICOXXLIST:   0%|          | 0/3 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating BWDF from ICOXXLIST: 100%|██████████| 3/3 [00:00&lt;00:00, 36.69it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pair_bwdf_sum_mean</th>
+      <th>pair_bwdf_mean_mean</th>
+      <th>pair_bwdf_std_mean</th>
+      <th>pair_bwdf_min_mean</th>
+      <th>pair_bwdf_max_mean</th>
+      <th>pair_bwdf_skew_mean</th>
+      <th>pair_bwdf_kurtosis_mean</th>
+      <th>pair_bwdf_sum_std</th>
+      <th>pair_bwdf_mean_std</th>
+      <th>pair_bwdf_std_std</th>
+      <th>...</th>
+      <th>site_bwdf_kurtosis_std</th>
+      <th>bwdf_sum</th>
+      <th>bwdf_mean</th>
+      <th>bwdf_std</th>
+      <th>bwdf_min</th>
+      <th>bwdf_max</th>
+      <th>bwdf_skew</th>
+      <th>bwdf_kurtosis</th>
+      <th>bwdf_w_mean</th>
+      <th>bwdf_w_std</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mp-1000</th>
+      <td>-2.38024</td>
+      <td>-0.039671</td>
+      <td>0.304716</td>
+      <td>-2.38024</td>
+      <td>0.0</td>
+      <td>-7.550957</td>
+      <td>55.016949</td>
+      <td>2.177023</td>
+      <td>0.036284</td>
+      <td>0.278701</td>
+      <td>...</td>
+      <td>9.351353</td>
+      <td>-7.14072</td>
+      <td>-0.119012</td>
+      <td>0.722113</td>
+      <td>-5.39268</td>
+      <td>0.0</td>
+      <td>-6.678922</td>
+      <td>44.843451</td>
+      <td>-4.500476</td>
+      <td>1.567078</td>
+    </tr>
+    <tr>
+      <th>mp-2176</th>
+      <td>-3.123867</td>
+      <td>-0.052064</td>
+      <td>0.398376</td>
+      <td>-3.112027</td>
+      <td>0.0</td>
+      <td>-7.55089</td>
+      <td>55.016285</td>
+      <td>3.882109</td>
+      <td>0.064702</td>
+      <td>0.494814</td>
+      <td>...</td>
+      <td>1.525129</td>
+      <td>-9.3716</td>
+      <td>-0.156193</td>
+      <td>1.099228</td>
+      <td>-8.56544</td>
+      <td>0.0</td>
+      <td>-7.462189</td>
+      <td>54.087545</td>
+      <td>-7.892133</td>
+      <td>2.195158</td>
+    </tr>
+    <tr>
+      <th>mp-463</th>
+      <td>-2.87552</td>
+      <td>-0.047925</td>
+      <td>0.359435</td>
+      <td>-2.80776</td>
+      <td>0.0</td>
+      <td>-7.501752</td>
+      <td>54.497132</td>
+      <td>1.989998</td>
+      <td>0.033167</td>
+      <td>0.249226</td>
+      <td>...</td>
+      <td>12.605783</td>
+      <td>-8.62656</td>
+      <td>-0.143776</td>
+      <td>0.762068</td>
+      <td>-4.75344</td>
+      <td>0.0</td>
+      <td>-5.333404</td>
+      <td>26.952803</td>
+      <td>-4.183028</td>
+      <td>0.826071</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 37 columns</p>
+</div></div></div>
+</div>
+</section>
+<section id="batchdosfeaturizer">
+<h3>BatchDosFeaturizer<a class="headerlink" href="#batchdosfeaturizer" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">BatchDosFeaturizer</span></code> provides a convenient way to extract LOBSTER DOS moment features and fingerprints in the form of pandas dataframe from the LOBSTER calculation directory. The extracted features consist of the following:</p>
+<ol class="arabic simple">
+<li><p>Element and PDOS center, width, skewness, kurtosis, and edges</p></li>
+<li><p>PDOS or total DOS fingerprint objects</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## Initialize batch DOS featurizer (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">batch_dos</span> <span class="o">=</span> <span class="n">BatchDosFeaturizer</span><span class="p">(</span><span class="n">path_to_lobster_calcs</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;..&quot;</span> <span class="o">/</span> <span class="s2">&quot;Featurizer_test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Lobster_calcs&quot;</span><span class="p">,</span> <span class="c1"># path to parent lobster calcs</span>
+            <span class="n">use_lso_dos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># will enforce using DOSCAR.LSO.lobster</span>
+            <span class="n">add_element_dos_moments</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># set to false to not have element moments dos features </span>
+            <span class="n">e_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="c1"># setting this to none results in features computed for the entire energy range </span>
+            <span class="n">fingerprint_type</span><span class="o">=</span><span class="s2">&quot;summed_pdos&quot;</span><span class="p">,</span> <span class="c1"># fingerprint type (s,p,d,f, summed_pdos)</span>
+            <span class="n">n_bins</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="mi">3</span><span class="p">,)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the DOS moments df</span>
+<span class="n">batch_dos</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating PDOS moment features:   0%|          | 0/3 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating PDOS moment features:  33%|███▎      | 1/3 [00:00&lt;00:00,  4.46it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating PDOS moment features:  67%|██████▋   | 2/3 [00:00&lt;00:00,  6.05it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating PDOS moment features: 100%|██████████| 3/3 [00:00&lt;00:00,  7.90it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>s_band_center</th>
+      <th>s_band_width</th>
+      <th>s_band_skew</th>
+      <th>s_band_kurtosis</th>
+      <th>s_band_upperband_edge</th>
+      <th>K_s_band_center</th>
+      <th>K_s_band_width</th>
+      <th>K_s_band_skew</th>
+      <th>K_s_band_kurtosis</th>
+      <th>K_s_band_upperband_edge</th>
+      <th>...</th>
+      <th>d_band_center</th>
+      <th>d_band_width</th>
+      <th>d_band_skew</th>
+      <th>d_band_kurtosis</th>
+      <th>d_band_upperband_edge</th>
+      <th>Zn_d_band_center</th>
+      <th>Zn_d_band_width</th>
+      <th>Zn_d_band_skew</th>
+      <th>Zn_d_band_kurtosis</th>
+      <th>Zn_d_band_upperband_edge</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mp-1000</th>
+      <td>-11.2699</td>
+      <td>12.0711</td>
+      <td>-0.2499</td>
+      <td>1.5351</td>
+      <td>-27.0855</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>mp-2176</th>
+      <td>-5.2136</td>
+      <td>5.9110</td>
+      <td>0.3896</td>
+      <td>1.4512</td>
+      <td>-10.4412</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>-6.5245</td>
+      <td>0.7822</td>
+      <td>4.602</td>
+      <td>50.478</td>
+      <td>-6.5368</td>
+      <td>-6.5245</td>
+      <td>0.7822</td>
+      <td>4.602</td>
+      <td>50.478</td>
+      <td>-6.5368</td>
+    </tr>
+    <tr>
+      <th>mp-463</th>
+      <td>-12.2937</td>
+      <td>14.6993</td>
+      <td>0.5956</td>
+      <td>1.5582</td>
+      <td>-26.1631</td>
+      <td>-9.5764</td>
+      <td>17.0466</td>
+      <td>0.0889</td>
+      <td>1.0412</td>
+      <td>-26.1631</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 65 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the DOS fingerprints df</span>
+<span class="n">batch_dos</span><span class="o">.</span><span class="n">get_fingerprints_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating DOS fingerprints:   0%|          | 0/3 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating DOS fingerprints:  33%|███▎      | 1/3 [00:00&lt;00:00,  5.99it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating DOS fingerprints: 100%|██████████| 3/3 [00:00&lt;00:00, 12.05it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating DOS fingerprints: 100%|██████████| 3/3 [00:00&lt;00:00, 10.81it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>DOS_FP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mp-1000</th>
+      <td>([[-28.66463033203125, -28.524270996093747, -2...</td>
+    </tr>
+    <tr>
+      <th>mp-2176</th>
+      <td>([[-13.11592083984375, -12.971902519531252, -1...</td>
+    </tr>
+    <tr>
+      <th>mp-463</th>
+      <td>([[-28.161967734374997, -27.991663203125, -27....</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="batchsummaryfeaturizer">
+<h3>BatchSummaryFeaturizer<a class="headerlink" href="#batchsummaryfeaturizer" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">BatchSummaryFeaturizer</span></code> provides a convenient way to extract summary stats as pandas dataframe from the LOBSTER calculation directory. The summary stats consist of the following:</p>
+<ol class="arabic simple">
+<li><p>ICOHP, bonding, antibonding percent (mean, min, max, standard deviation) of relevant bonds from LobsterPy analysis (Orbital-wise analysis stats data can also be included: Optional)</p></li>
+<li><p>Weighted ICOHP ( ICOOP/ ICOBI: Optional)</p></li>
+<li><p>COHP center, width, skewness, kurtosis, edge (COOP/ COBI: Optional)</p></li>
+<li><p>Ionicity and Madelung energies for the structure based on Mulliken and Loewdin charges</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## Initialize batch summary featurizer (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">summary_features</span> <span class="o">=</span> <span class="n">BatchSummaryFeaturizer</span><span class="p">(</span>
+            <span class="n">path_to_lobster_calcs</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;..&quot;</span> <span class="o">/</span> <span class="s2">&quot;Featurizer_test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Lobster_calcs&quot;</span><span class="p">,</span>
+            <span class="n">bonds</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+            <span class="n">include_cobi_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">include_coop_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">e_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">n_jobs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get summary stats features </span>
+<span class="n">summary_features</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating LobsterPy summary stats:   0%|          | 0/3 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating LobsterPy summary stats:  33%|███▎      | 1/3 [00:05&lt;00:10,  5.38s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating LobsterPy summary stats:  67%|██████▋   | 2/3 [00:06&lt;00:02,  2.94s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating LobsterPy summary stats: 100%|██████████| 3/3 [00:08&lt;00:00,  2.31s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating LobsterPy summary stats: 100%|██████████| 3/3 [00:08&lt;00:00,  2.72s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating COHP/COOP/COBI summary stats:   0%|          | 0/3 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating COHP/COOP/COBI summary stats:  33%|███▎      | 1/3 [00:05&lt;00:11,  5.81s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating COHP/COOP/COBI summary stats:  67%|██████▋   | 2/3 [00:06&lt;00:02,  2.58s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating COHP/COOP/COBI summary stats: 100%|██████████| 3/3 [00:08&lt;00:00,  2.45s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating COHP/COOP/COBI summary stats: 100%|██████████| 3/3 [00:08&lt;00:00,  2.81s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating charge based features:   0%|          | 0/3 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating charge based features:  33%|███▎      | 1/3 [00:01&lt;00:02,  1.28s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating charge based features: 100%|██████████| 3/3 [00:02&lt;00:00,  1.66it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating charge based features: 100%|██████████| 3/3 [00:02&lt;00:00,  1.49it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ICOHP_mean_avg</th>
+      <th>ICOHP_mean_max</th>
+      <th>ICOHP_mean_min</th>
+      <th>ICOHP_mean_std</th>
+      <th>ICOHP_sum_avg</th>
+      <th>ICOHP_sum_max</th>
+      <th>ICOHP_sum_min</th>
+      <th>ICOHP_sum_std</th>
+      <th>bonding_perc_avg</th>
+      <th>bonding_perc_max</th>
+      <th>...</th>
+      <th>Mulliken_mean</th>
+      <th>Mulliken_min</th>
+      <th>Mulliken_max</th>
+      <th>Mulliken_std</th>
+      <th>Ionicity_Mull</th>
+      <th>Loewdin_mean</th>
+      <th>Loewdin_min</th>
+      <th>Loewdin_max</th>
+      <th>Loewdin_std</th>
+      <th>Ionicity_Loew</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mp-1000</th>
+      <td>-0.340000</td>
+      <td>-0.12</td>
+      <td>-0.45</td>
+      <td>0.155563</td>
+      <td>-2.273333</td>
+      <td>-1.42</td>
+      <td>-2.70</td>
+      <td>0.603398</td>
+      <td>0.782397</td>
+      <td>0.78970</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>-1.58</td>
+      <td>1.58</td>
+      <td>1.58</td>
+      <td>0.79</td>
+      <td>0.0</td>
+      <td>-1.49</td>
+      <td>1.49</td>
+      <td>1.49</td>
+      <td>0.745</td>
+    </tr>
+    <tr>
+      <th>mp-2176</th>
+      <td>-1.070000</td>
+      <td>-1.07</td>
+      <td>-1.07</td>
+      <td>0.000000</td>
+      <td>-4.280000</td>
+      <td>-4.28</td>
+      <td>-4.28</td>
+      <td>0.000000</td>
+      <td>0.853140</td>
+      <td>0.85314</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>-1.06</td>
+      <td>1.06</td>
+      <td>1.06</td>
+      <td>0.53</td>
+      <td>0.0</td>
+      <td>-1.08</td>
+      <td>1.08</td>
+      <td>1.08</td>
+      <td>0.540</td>
+    </tr>
+    <tr>
+      <th>mp-463</th>
+      <td>-0.363333</td>
+      <td>-0.29</td>
+      <td>-0.40</td>
+      <td>0.051854</td>
+      <td>-2.760000</td>
+      <td>-2.38</td>
+      <td>-3.52</td>
+      <td>0.537401</td>
+      <td>0.905510</td>
+      <td>0.91315</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>-0.81</td>
+      <td>0.81</td>
+      <td>0.81</td>
+      <td>0.81</td>
+      <td>0.0</td>
+      <td>-0.82</td>
+      <td>0.82</td>
+      <td>0.82</td>
+      <td>0.820</td>
+    </tr>
+  </tbody>
+</table>
+<p>3 rows × 37 columns</p>
+</div></div></div>
+</div>
+</section>
+<section id="batchstructuregraphs">
+<h3>BatchStructureGraphs<a class="headerlink" href="#batchstructuregraphs" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">BatchStructureGraphs</span></code> provides a convenient way to generate structure graph objects with LOBSTER data in the form of pandas dataframe from a set of the LOBSTER calculation directories.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## Initialize batch structure graphs featurizer (Change this cell block type to Code and remove formatting when executing locally)</span>
+<span class="n">batch_sg</span> <span class="o">=</span> <span class="n">BatchStructureGraphs</span><span class="p">(</span><span class="n">path_to_lobster_calcs</span><span class="o">=</span><span class="n">directory</span> <span class="o">/</span> <span class="s2">&quot;..&quot;</span> <span class="o">/</span> <span class="s2">&quot;Featurizer_test_data&quot;</span> <span class="o">/</span> <span class="s2">&quot;Lobster_calcs&quot;</span><span class="p">,</span>
+                                <span class="n">add_additional_data_sg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">which_bonds</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                                <span class="n">n_jobs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                                <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the structure graphs df</span>
+<span class="n">batch_sg</span><span class="o">.</span><span class="n">get_df</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating Structure Graphs:   0%|          | 0/3 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating Structure Graphs:  33%|███▎      | 1/3 [00:05&lt;00:11,  5.82s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating Structure Graphs:  67%|██████▋   | 2/3 [00:06&lt;00:02,  2.69s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating Structure Graphs: 100%|██████████| 3/3 [00:08&lt;00:00,  2.46s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generating Structure Graphs: 100%|██████████| 3/3 [00:08&lt;00:00,  2.84s/it]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>structure_graph</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>mp-1000</th>
+      <td>Structure Graph\nStructure: \nFull Formula (Ba...</td>
+    </tr>
+    <tr>
+      <th>mp-2176</th>
+      <td>Structure Graph\nStructure: \nFull Formula (Zn...</td>
+    </tr>
+    <tr>
+      <th>mp-463</th>
+      <td>Structure Graph\nStructure: \nFull Formula (K1...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Tutorial</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="commandlineinterface.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Command line interface</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-of-analysis-description-class-and-automatic-plotting">Usage of Analysis, Description class and automatic plotting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage-analysis-description">Basic usage : Analysis, Description</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-usage-analysis-description">Advanced usage : Analysis, Description</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#get-lobster-calculation-quality-and-description">Get LOBSTER calculation quality and description</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-plotting-utilities">Using plotting utilities</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-cohps-cobis-coops-from-analysis-object">Plot COHPs / COBIS / COOPs from Analysis object</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-icohps-icobis-icoops-againsts-bond-lengths">Plot ICOHPs / ICOBIS / ICOOPs Againsts bond-lengths</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-dos-from-lobster">Plot DOS from Lobster</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-structure-graph-objects-with-lobster-data">Generate structure graph objects with LOBSTER data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#featurizer-usage-examples-generates-features-from-lobster-data-for-ml-studies">Featurizer usage examples (Generates features from LOBSTER data for ML studies)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchcoxxfingerprint">BatchCoxxFingerprint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchicoxxlistfeaturizer">BatchIcoxxlistFeaturizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchdosfeaturizer">BatchDosFeaturizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchsummaryfeaturizer">BatchSummaryFeaturizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#batchstructuregraphs">BatchStructureGraphs</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Janine George
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, LobsterPy Development Team.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
