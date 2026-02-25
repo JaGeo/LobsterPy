@@ -1084,10 +1084,16 @@ class Analysis:
             if scohp >= 0:
                 pos.append(scohp)
                 en_pos.append(energies_corrected[i])
+            else:
+                pos.append(0)
+                en_pos.append(energies_corrected[i])
 
         for i, scohp in enumerate(cohp_bf):
             if scohp <= 0:
                 neg.append(-1 * scohp)
+                en_neg.append(energies_corrected[i])
+            else:
+                neg.append(0)
                 en_neg.append(energies_corrected[i])
 
         antibonding = integrate_negative(y=neg, x=en_neg)

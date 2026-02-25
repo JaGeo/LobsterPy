@@ -205,15 +205,15 @@ class TestGraph:
         assert graph_cdf_all.sg.graph.nodes(data=True)[1]["properties"]["env"] == "T:4"
 
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["ICOHP"] == -0.62168
-        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["ICOHP_bonding_perc"] == 0.72263
-        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["ICOHP_antibonding_perc"] == 0.27737
+        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["ICOHP_bonding_perc"] == 0.73333
+        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["ICOHP_antibonding_perc"] == 0.26667
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["ICOBI"] == 0.08932
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["ICOOP"] == 0.0148
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[0]["bond_label"] == "29"
 
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["ICOHP"] == -0.62168
-        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["ICOHP_bonding_perc"] == 0.72263
-        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["ICOHP_antibonding_perc"] == 0.27737
+        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["ICOHP_bonding_perc"] == 0.73333
+        assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["ICOHP_antibonding_perc"] == 0.26667
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["ICOBI"] == 0.08932
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["ICOOP"] == 0.0148
         assert graph_cdf_all.sg.graph.get_edge_data(0, 1)[3]["bond_label"] == "63"
