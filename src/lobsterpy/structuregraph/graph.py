@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 from pymatgen.core.structure import Structure
+
 try:
     from pymatgen.analysis.lobster_env import LobsterNeighbors  # type: ignore[attr-defined]
 except ImportError:
