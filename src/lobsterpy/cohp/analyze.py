@@ -25,7 +25,10 @@ from pymatgen.io.lobster import (
     Lobsterout,
     MadelungEnergies,
 )
-from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
+try:
+    from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
+except ImportError:
+    from pymatgen.analysis.lobster_env import LobsterNeighbors  
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from scipy.integrate import trapezoid
