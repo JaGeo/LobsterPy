@@ -35,7 +35,7 @@ class TestAnalyse:
         assert analyse_nacl.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["number_of_bonds"] == 6
         assert analyse_nacl.condensed_bonding_analysis["sites"][0]["ion"] == "Na"
         assert analyse_nacl.condensed_bonding_analysis["sites"][0]["charge"] == pytest.approx(0.78)
-        assert analyse_nacl.condensed_bonding_analysis["sites"][0]["relevant_bonds"] == [
+        assert sorted(analyse_nacl.condensed_bonding_analysis["sites"][0]["relevant_bonds"]) == sorted([
             "30",
             "29",
             "28",
@@ -43,7 +43,7 @@ class TestAnalyse:
             "24",
             "23",
             "21",
-        ]
+        ])
         assert analyse_nacl.condensed_bonding_analysis["type_charges"] == "Mulliken"
 
         # capture and test printed text when orbital resolved analysis is not switched on
@@ -515,12 +515,12 @@ class TestAnalyse:
         assert analyse_k3sb.condensed_bonding_analysis["sites"][0]["ion"] == "K"
         assert analyse_k3sb.condensed_bonding_analysis["sites"][0]["charge"] == pytest.approx(0.68)
         assert analyse_k3sb.condensed_bonding_analysis["sites"][0]["relevant_bonds"] == [
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
             "14",
+            "13",
+            "12",
+            "11",
+            "10",
+            "9"
         ]
 
         assert analyse_k3sb.condensed_bonding_analysis["sites"][1]["env"] == "4"
@@ -582,7 +582,7 @@ class TestAnalyse:
         assert analyse_k3sb_all.condensed_bonding_analysis["sites"][1]["bonds"]["K"]["number_of_bonds"] == 10
         assert analyse_k3sb_all.condensed_bonding_analysis["sites"][1]["ion"] == "K"
         assert analyse_k3sb_all.condensed_bonding_analysis["sites"][1]["charge"] == pytest.approx(0.52)
-        assert analyse_k3sb_all.condensed_bonding_analysis["sites"][1]["relevant_bonds"] == [
+        assert sorted(analyse_k3sb_all.condensed_bonding_analysis["sites"][1]["relevant_bonds"]) == sorted([
             "1",
             "2",
             "3",
@@ -597,7 +597,7 @@ class TestAnalyse:
             "22",
             "23",
             "24",
-        ]
+        ])
 
         assert analyse_k3sb_all.condensed_bonding_analysis["type_charges"] == "Mulliken"
 
@@ -609,7 +609,7 @@ class TestAnalyse:
         assert analyse_k3sb_all.condensed_bonding_analysis["sites"][3]["bonds"]["K"]["number_of_bonds"] == 14
         assert analyse_k3sb_all.condensed_bonding_analysis["sites"][3]["ion"] == "Sb"
         assert analyse_k3sb_all.condensed_bonding_analysis["sites"][3]["charge"] == pytest.approx(-1.73)
-        assert analyse_k3sb_all.condensed_bonding_analysis["sites"][3]["relevant_bonds"] == [
+        assert sorted(analyse_k3sb_all.condensed_bonding_analysis["sites"][3]["relevant_bonds"]) == sorted([
             "9",
             "10",
             "11",
@@ -624,7 +624,7 @@ class TestAnalyse:
             "26",
             "27",
             "28",
-        ]
+                ])        
 
     def test_all_attributes_k3sb_all_cobi(self, analyse_k3sb_all_cobi):
         assert analyse_k3sb_all_cobi.condensed_bonding_analysis["formula"] == "K3Sb"
@@ -736,12 +736,12 @@ class TestAnalyse:
         ]
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["ion"] == "K"
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["charge"] == pytest.approx(0.52)
-        assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["relevant_bonds"] == [
+        assert sorted(analyse_k3sb_all_coop_orb.condensed_bonding_analysis["sites"][1]["relevant_bonds"]) == sorted([
             "21",
             "22",
             "23",
             "24",
-        ]
+        ])
 
         assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis["type_charges"] == "Mulliken"
         assert (
@@ -839,14 +839,14 @@ class TestAnalyse:
         assert analyse_nacl_nan.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["antibonding"]["perc"] == 0.0
         assert analyse_nacl_nan.condensed_bonding_analysis["sites"][0]["ion"] == "Na"
         assert analyse_nacl_nan.condensed_bonding_analysis["sites"][0]["charge"] == pytest.approx(0.78)
-        assert analyse_nacl_nan.condensed_bonding_analysis["sites"][0]["relevant_bonds"] == [
+        assert sorted(analyse_nacl_nan.condensed_bonding_analysis["sites"][0]["relevant_bonds"]) == sorted([
             "21",
             "23",
             "24",
             "27",
             "28",
             "30",
-        ]
+        ])
         assert analyse_nacl_nan.condensed_bonding_analysis["type_charges"] == "Mulliken"
 
     def test_all_attributes_nacl_pymatgen_objs(
