@@ -36,12 +36,13 @@ class TestAnalyse:
         assert analyse_nacl.condensed_bonding_analysis["sites"][0]["ion"] == "Na"
         assert analyse_nacl.condensed_bonding_analysis["sites"][0]["charge"] == pytest.approx(0.78)
         assert analyse_nacl.condensed_bonding_analysis["sites"][0]["relevant_bonds"] == [
-            "21",
-            "23",
-            "24",
-            "27",
-            "28",
             "30",
+            "29",
+            "28",
+            "27",
+            "24",
+            "23",
+            "21",
         ]
         assert analyse_nacl.condensed_bonding_analysis["type_charges"] == "Mulliken"
 
