@@ -25,6 +25,7 @@ from pymatgen.io.lobster import (
     Lobsterout,
     MadelungEnergies,
 )
+
 try:
     from pymatgen.analysis.lobster_env import LobsterNeighbors  # type: ignore[attr-defined]
 except ImportError:
