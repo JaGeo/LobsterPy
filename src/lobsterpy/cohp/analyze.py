@@ -30,7 +30,7 @@ try:
     from pymatgen.analysis.lobster_env import LobsterNeighbors  # type: ignore[attr-defined]
 except ImportError:
     from pymatgen.io.lobster.lobsterenv import LobsterNeighbors  # type: ignore[attr-defined]
-      
+
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from scipy.integrate import trapezoid
@@ -440,7 +440,7 @@ class Analysis:
 
                     for element in self.elements:
                         # get labels and summed cohp objects
-                        try: 
+                        try:
                             labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                                 path_to_cohpcar=self.path_to_cohpcar,
                                 obj_cohpcar=self._completecohp_obj,
@@ -455,10 +455,10 @@ class Analysis:
                                 coxxcar_obj=self._completecohp_obj,
                                 isites=[ice],
                                 onlycation_isites=False,
-                            summed_spin_channels=summed_spins,
-                            per_bond=False,
-                            only_bonds_to=[str(element)],
-                        )
+                                summed_spin_channels=summed_spins,
+                                per_bond=False,
+                                only_bonds_to=[str(element)],
+                            )
 
                         type_labels.append(labels)
                         type_cohps.append(summedcohps)
