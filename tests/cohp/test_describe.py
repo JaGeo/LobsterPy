@@ -277,7 +277,7 @@ class TestDescribe:
             " is from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals, contributing 36.0 and 36.0 percent, respectively."
             " In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution"
             " is from the F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant"
-            " antibonding contribution is found in this bond."
+            " antibonding contribution is found in this bond.",
         ]
         assert describe_cdf_comp_range_coop.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
