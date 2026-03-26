@@ -279,7 +279,6 @@ class TestDescribe:
             "contribution is from the F(2s)-Na(3s) orbital, contributing 68.0 percent,"
             " whereas the maximum antibonding contribution is from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals,"
             " contributing 36.0 and 36.0 percent, respectively.",
-            
         ]
         assert describe_cdf_comp_range_coop.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
