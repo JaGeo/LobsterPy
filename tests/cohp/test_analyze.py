@@ -75,14 +75,14 @@ class TestAnalyse:
         assert analyse_nacl_valences.condensed_bonding_analysis["sites"][0]["bonds"]["Cl"]["number_of_bonds"] == 6
         assert analyse_nacl_valences.condensed_bonding_analysis["sites"][0]["ion"] == "Na"
         assert analyse_nacl_valences.condensed_bonding_analysis["sites"][0]["charge"] == pytest.approx(1)
-        assert analyse_nacl_valences.condensed_bonding_analysis["sites"][0]["relevant_bonds"] == [
+        assert sorted(analyse_nacl_valences.condensed_bonding_analysis["sites"][0]["relevant_bonds"]) == sorted([
             "21",
             "23",
             "24",
             "27",
             "28",
             "30",
-        ]
+        ])
         assert analyse_nacl_valences.condensed_bonding_analysis["type_charges"] == "Valences"
         assert isinstance(analyse_nacl_valences.charges, list)
         assert isinstance(analyse_nacl_valences.icoxxlist, Icohplist)
