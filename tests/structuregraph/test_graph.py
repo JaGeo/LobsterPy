@@ -52,7 +52,7 @@ class TestGraph:
         assert graph_nacl_all.sg.graph.get_edge_data(0, 1)[4]["ICOHP_antibonding_perc"] == 0
         assert graph_nacl_all.sg.graph.get_edge_data(0, 1)[4]["ICOBI"] == pytest.approx(0.08484, 0.001)
         assert graph_nacl_all.sg.graph.get_edge_data(0, 1)[4]["ICOOP"] == pytest.approx(0.02826, 0.001)
-        assert graph_nacl_all.sg.graph.get_edge_data(0, 1)[4]["bond_label"] == "28"
+        assert graph_nacl_all.sg.graph.get_edge_data(0, 1)[4]["bond_label"] == "23"
 
     def test_graph_nacl_cation_anion(self):
         graph_nacl_cation_anion = LobsterGraph(
