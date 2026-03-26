@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.6.0
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## What's Changed
+### 🚀 New Features
+* Drop Python 3.10 and include 3.13
+* Update axis labels by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/427
+* modify bonding and anti integration by @Mofahdi in https://github.com/JaGeo/LobsterPy/pull/430
+### 🐛 Bug Fixes
+* fix import problems due to new pymatgen release by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/433
+### 🔄 Other Changes
+* pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/JaGeo/LobsterPy/pull/425
+* Bump sphinx-toolbox from 4.1.1 to 4.1.2 by @dependabot[bot] in https://github.com/JaGeo/LobsterPy/pull/426
+
+## New Contributors
+* @Mofahdi made their first contribution in https://github.com/JaGeo/LobsterPy/pull/430
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.5.8...v0.6.0
+
+
 ## v0.5.8
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
