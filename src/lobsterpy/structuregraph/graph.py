@@ -11,7 +11,11 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 from pymatgen.core.structure import Structure
-from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
+
+try:
+    from pymatgen.analysis.lobster_env import LobsterNeighbors  # type: ignore[attr-defined]
+except ImportError:
+    from pymatgen.io.lobster.lobsterenv import LobsterNeighbors  # type: ignore[attr-defined]
 from pymatgen.io.lobster.outputs import Charge
 
 from lobsterpy.cohp.analyze import Analysis

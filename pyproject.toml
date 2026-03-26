@@ -17,14 +17,13 @@ authors = [{ name = "Janine George", email = "janine.george@bam.de" }]
 dynamic = ["version"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.11,<3.14"
 dependencies = [
      "pymatgen>=2024.10.22",
      "numpy<3.0.0",
