@@ -274,14 +274,13 @@ class TestDescribe:
             "interaction below EFermi), and 1 F-Na (mean ICOHP: -0.61 eV, 1.587 percent antibonding"
             " interaction below EFermi) bonds.",
             " F-Sb (mean ICOHP: -5.45 eV, 0.0 percent antibonding interaction below EFermi), and 1 F-Na (mean ICOHP:",
-             " -0.61 eV, 1.587 percent antibonding interaction below EFermi) bonds.",
+            " -0.61 eV, 1.587 percent antibonding interaction below EFermi) bonds.",
             "In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution is from the"
             " F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant antibonding contribution is"
             " found in this bond. In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding "
             "contribution is from the F(2s)-Na(3s) orbital, contributing 68.0 percent,"
             " whereas the maximum antibonding contribution is from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals,"
             " contributing 36.0 and 36.0 percent, respectively.",
-            
         ]
         assert describe_cdf_comp_range_coop.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
