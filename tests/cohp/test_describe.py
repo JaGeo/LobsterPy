@@ -273,8 +273,6 @@ class TestDescribe:
             " percent antibonding "
             "interaction below EFermi), and 1 F-Na (mean ICOHP: -0.61 eV, 1.587 percent antibonding"
             " interaction below EFermi) bonds.",
-            " F-Sb (mean ICOHP: -5.45 eV, 0.0 percent antibonding interaction below EFermi), and 1 F-Na (mean ICOHP:",
-             " -0.61 eV, 1.587 percent antibonding interaction below EFermi) bonds.",
             "In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution is from the"
             " F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant antibonding contribution is"
             " found in this bond. In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding "
