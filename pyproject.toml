@@ -47,7 +47,7 @@ dev = ["pre-commit>=2.12.1"]
 tests = ["pytest", "pytest-mock", "pytest-split", "pytest-cov", "types-setuptools"]
 docs = [
     "sphinx-copybutton==0.5.2",
-    "sphinx>=5,<9",
+    "sphinx>=5,<10",
     "sphinx_design==0.7.0",
     "myst-nb==1.4.0",
     "sphinx-book-theme==1.2.0",
