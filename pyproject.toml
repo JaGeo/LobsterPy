@@ -50,7 +50,7 @@ docs = [
     "sphinx>=5,<9",
     "sphinx_design==0.7.0",
     "myst-nb==1.4.0",
-    "sphinx-book-theme==1.1.4",
+    "sphinx-book-theme==1.2.0",
     "sphinx-argparse==0.5.2",
     "sphinx-toolbox==4.1.2",
 ]
