@@ -87,6 +87,9 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 napoleon_use_ivar = True
 
+# temp use the old (Sphinx 8.2 and earlier, class-based) implementation
+autodoc_use_legacy_class_based = True
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
