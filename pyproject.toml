@@ -23,7 +23,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
 ]
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.11,<3.15"
 dependencies = [
      "pymatgen>=2026.3.23",
      "numpy<3.0.0",
