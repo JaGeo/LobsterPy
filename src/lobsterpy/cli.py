@@ -289,8 +289,8 @@ def get_parser() -> argparse.ArgumentParser:
         type=float,
         help="Set y-axis limits for the plots",
     )
-    broadening_group = plotting_group.add_mutually_exclusive_group()
-    broadening_group.add_argument_group("Broadening")
+    # Attach the mutually exclusive broadening options to the plotting parent
+    broadening_group = plotting_parent.add_mutually_exclusive_group()
     broadening_group.add_argument(
         "--fwhm",
         type=float,
