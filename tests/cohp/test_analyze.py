@@ -990,7 +990,7 @@ class TestAnalyse:
                 which_bonds="all",
                 cutoff_icohp=0.1,
             )
-            assert len(w) == 6
+            assert len(w) == 4
 
             assert (
                 str(w[0].message) == "Analysis is deprecated, and will be removed on 2026-06-30\n\n"
@@ -998,7 +998,7 @@ class TestAnalyse:
             )
             assert (
                 str(w[1].message) == "Initialization via path_to_* arguments is being deprecated and will be "
-                "removed on 30-03-2026. Please use Analysis.from_files() or "
+                "removed on 30-06-2026. Please use Analysis.from_files() or "
                 "Analysis.from_directory() instead."
             )
             assert (

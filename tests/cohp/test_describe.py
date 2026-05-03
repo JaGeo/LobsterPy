@@ -214,9 +214,9 @@ class TestDescribe:
         ]
         assert describe_k3sb.text == [
             "The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion interactions: K1, K2.",
-            "K1 has a 6-fold coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, "
+            "K1 has an octahedral (CN=6) coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, "
             "1.163 percent antibonding interaction below EFermi) bonds.",
-            "K2 has a 4-fold coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, "
+            "K2 has a tetrahedral (CN=4) coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, "
             "4.403 percent antibonding interaction below EFermi) bonds.",
         ]
         assert describe_k3sb_all.text == [

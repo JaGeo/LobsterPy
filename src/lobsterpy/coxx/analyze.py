@@ -167,7 +167,7 @@ class Analysis(MSONable):
         if any(v is not None for v in path_args.values()):
             warnings.warn(
                 "Initialization via path_to_* arguments is being deprecated and will be "
-                "removed on 30-03-2026. Please use Analysis.from_files() or "
+                "removed on 30-06-2026. Please use Analysis.from_files() or "
                 "Analysis.from_directory() instead.",
                 DeprecationWarning,
                 stacklevel=2,
