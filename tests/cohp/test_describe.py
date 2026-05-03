@@ -179,18 +179,18 @@ class TestDescribe:
         assert describe_cdf.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
             "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
-            "44.26 percent antibonding interaction below EFermi) bonds.",
+            "38.289 percent antibonding interaction below EFermi) bonds.",
         ]
         assert describe_nacl.text == [
             "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
             "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,"
-            " 3.448 percent antibonding interaction below EFermi) bonds.",
+            " 1.754 percent antibonding interaction below EFermi) bonds.",
         ]
         assert describe_nasbf6.text == [
             "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: "
             "Na1, Sb2.",
             "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
-            "4.071 percent antibonding interaction below EFermi) bonds.",
+            "1.592 percent antibonding interaction below EFermi) bonds.",
             "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
             "0.0 percent antibonding interaction below EFermi) bonds.",
         ]
@@ -215,19 +215,19 @@ class TestDescribe:
         assert describe_k3sb.text == [
             "The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion interactions: K1, K2.",
             "K1 has a 6-fold coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, "
-            "2.299 percent antibonding interaction below EFermi) bonds.",
+            "1.163 percent antibonding interaction below EFermi) bonds.",
             "K2 has a 4-fold coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, "
-            "4.969 percent antibonding interaction below EFermi) bonds.",
+            "4.403 percent antibonding interaction below EFermi) bonds.",
         ]
         assert describe_k3sb_all.text == [
             "The compound K3Sb has 3 symmetry-independent atoms(s) with relevant bonds: K1, K2, Sb4.",
-            "K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.544 percent "
-            "antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 2.299 percent "
+            "K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.219 percent "
+            "antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 1.163 percent "
             "antibonding interaction below EFermi) bonds.",
             "K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 "
-            "percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.969 "
+            "percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.403 "
             "percent antibonding interaction below EFermi) bonds.",
-            "Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 3.731 "
+            "Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 2.771 "
             "percent antibonding interaction below EFermi) bonds.",
         ]
         assert describe_csh_all.text == [
@@ -238,7 +238,7 @@ class TestDescribe:
         assert describe_batio3_orb.text == [
             "The compound BaTiO3 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Ti2.",
             "Ti2 has an octahedral (CN=6) coordination environment. It has 6 Ti-O (mean ICOHP: -3.54 eV, "
-            "1.092 percent antibonding interaction below EFermi) bonds.",
+            "0.985 percent antibonding interaction below EFermi) bonds.",
             "In the 6 Ti-O bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
             "from the Ti(3d)-O(2p) orbital, contributing 88.0 percent, whereas the maximum "
             "antibonding contribution is from the Ti(3p)-O(2p) orbital, contributing 37.0 percent.",
@@ -253,7 +253,7 @@ class TestDescribe:
         ]
         assert describe_nasbf6_orb.text == [
             "The compound NaSbF6 has 3 symmetry-independent atoms(s) with relevant bonds: Na1, Sb2, F3.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 4.071 percent "
+            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 1.592 percent "
             "antibonding interaction below EFermi) bonds.",
             "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from "
             "the Na(3s)-F(2s) orbital, "
@@ -264,19 +264,20 @@ class TestDescribe:
             "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from the "
             "Sb(5p)-F(2s) orbital, contributing 42.0 percent, whereas "
             "no significant antibonding contribution is found in this bond.",
-            "F3 has a linear (CN=2) coordination environment. It has 1 F-Na (mean ICOHP: -0.61 eV, 4.545 percent "
-            "antibonding interaction below EFermi), and 1 F-Sb (mean ICOHP: -5.45 eV, 0.0 percent antibonding "
-            "interaction below EFermi) bonds.",
-            "In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding contribution is from the "
-            "F(2s)-Na(3s) orbital, contributing 68.0 percent, whereas the maximum antibonding contribution is "
-            "from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals, contributing 36.0 and 36.0 percent, respectively. "
-            "In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution is from the "
-            "F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant antibonding contribution "
-            "is found in this bond.",
+            "F3 has a linear (CN=2) coordination environment. It has 1 F-Sb (mean ICOHP: -5.45 eV, 0.0"
+            " percent antibonding "
+            "interaction below EFermi), and 1 F-Na (mean ICOHP: -0.61 eV, 1.587 percent antibonding"
+            " interaction below EFermi) bonds.",
+            "In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution is from the"
+            " F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant antibonding contribution is"
+            " found in this bond. In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding "
+            "contribution is from the F(2s)-Na(3s) orbital, contributing 68.0 percent,"
+            " whereas the maximum antibonding contribution is from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals,"
+            " contributing 36.0 and 36.0 percent, respectively.",
         ]
         assert describe_cdf_comp_range_coop.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOOP: 0.01, 40.984 percent "
+            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOOP: 0.01, 40.0 percent "
             "antibonding interaction below EFermi) bonds.",
         ]
         assert describe_nacl_comp_range_cobi.text == [
@@ -362,7 +363,7 @@ class TestCalcQualityDescribeWarnings:
         actual_warnings = [str(warning.message) for warning in w]
 
         expected_warnings = [
-            "This method is being deprecated and will be removed on 30-03-2026. "
+            "This method is being deprecated and will be removed on 30-06-2026. "
             "Please use `lobsterpy.quality.LobsterCalcQuality.from_files()` or "
             "`lobsterpy.quality.LobsterCalcQuality.from_directory()` instead.",
             "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values",

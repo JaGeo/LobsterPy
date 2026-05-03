@@ -27,7 +27,7 @@ from pymatgen.io.lobster import (
     Lobsterout,
     MadelungEnergies,
 )
-from pymatgen.io.lobster.lobsterenv import LobsterNeighbors
+from pymatgen.analysis.lobster_env import LobsterNeighbors
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from scipy.integrate import trapezoid
@@ -476,7 +476,7 @@ class Analysis(MSONable):
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             path_to_cohpcar=self.path_to_cohpcar,
-                            obj_cohpcar=self.completecoxx_obj,
+                            coxxcar_obj=self.completecoxx_obj,
                             isites=[ice],
                             summed_spin_channels=summed_spins,
                             per_bond=False,
@@ -516,7 +516,7 @@ class Analysis(MSONable):
                         # get labels and summed cohp objects
                         labels, summedcohps = self.chemenv.get_info_cohps_to_neighbors(
                             path_to_cohpcar=self.path_to_cohpcar,
-                            obj_cohpcar=self.completecoxx_obj,
+                            coxxcar_obj=self.completecoxx_obj,
                             isites=[ice],
                             onlycation_isites=False,
                             summed_spin_channels=summed_spins,
@@ -1172,11 +1172,18 @@ class Analysis(MSONable):
             if scohp >= 0:
                 pos.append(scohp)
                 en_pos.append(energies_corrected[i])
+            else:
+                pos.append(0)
+                en_pos.append(energies_corrected[i])
 
         for i, scohp in enumerate(cohp_bf):
             if scohp <= 0:
                 neg.append(-1 * scohp)
                 en_neg.append(energies_corrected[i])
+            else:
+                neg.append(0)
+                en_neg.append(energies_corrected[i])
+
 
         antibonding = integrate_negative(y=neg, x=en_neg)
 
@@ -1664,7 +1671,7 @@ class Analysis(MSONable):
         """
         warnings.warn(
             "This method is being deprecated and will be "
-            "removed on 30-03-2026. Please use `lobsterpy.quality.LobsterCalcQuality.from_files()` or "
+            "removed on 30-06-2026. Please use `lobsterpy.quality.LobsterCalcQuality.from_files()` or "
             "`lobsterpy.quality.LobsterCalcQuality.from_directory()` instead.",
             DeprecationWarning,
             stacklevel=2,

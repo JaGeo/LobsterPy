@@ -246,8 +246,8 @@ class TestFeaturizeLobsterpy:
         assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.380000, abs=1e-05)
         assert df.loc["mp-463", "ICOHP_antibndg_orb_mean_std"] == pytest.approx(0.059600, abs=1e-05)
         assert df.loc["mp-463", "ICOHP_antibndg_orb_sum_avg"] == pytest.approx(-0.714100, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.580000, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.169999, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.590000, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.175, abs=1e-05)
 
     def test_featurize_mp463_cobi(self):
         analysis_kwargs = {
@@ -315,10 +315,10 @@ class TestFeaturizeLobsterpy:
         assert df.loc["mp-463", "ICOBI_bndg_orb_mean_avg"] == pytest.approx(0.0089, abs=1e-05)
         assert df.loc["mp-463", "ICOBI_bndg_orb_sum_max"] == pytest.approx(0.201, abs=1e-05)
         assert df.loc["mp-463", "bonding_orb_perc_min"] == pytest.approx(0.330000, abs=1e-05)
-        assert df.loc["mp-463", "ICOBI_antibndg_orb_mean_std"] == pytest.approx(0.006397, abs=1e-05)
-        assert df.loc["mp-463", "ICOBI_antibndg_orb_sum_avg"] == pytest.approx(0.09635, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.5, abs=1e-05)
-        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.125, abs=1e-05)
+        assert df.loc["mp-463", "ICOBI_antibndg_orb_mean_std"] == pytest.approx(0.0033, abs=1e-05)
+        assert df.loc["mp-463", "ICOBI_antibndg_orb_sum_avg"] == pytest.approx(0.0396, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_max"] == pytest.approx(0.25, abs=1e-05)
+        assert df.loc["mp-463", "antibonding_orb_perc_std"] == pytest.approx(0.0, abs=1e-05)
 
     def test_featurize_mp2176_coop(self):
         analysis_kwargs = {
