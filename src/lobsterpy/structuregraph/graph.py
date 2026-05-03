@@ -103,17 +103,17 @@ class LobsterGraph:
             structure graph object
         """
         if self.add_additional_data_sg:
-            chemenvlobster = LobsterNeighbors(
+            chemenvlobster = LobsterNeighbors.from_files(
                 are_coops=False,
-                filename_icohp=self.path_to_icohplist,
+                icoxxlist_path=self.path_to_icohplist,
                 perc_strength_icohp=self.cutoff_icohp,
-                structure=Structure.from_file(self.path_to_poscar),
+                structure_path=self.path_to_poscar,
                 additional_condition=self.additional_condition,
-                filename_charge=self.path_to_charge,
+                charge_path=self.path_to_charge,
                 add_additional_data_sg=self.add_additional_data_sg,
-                filename_blist_sg1=self.path_to_icobilist,
+                blist_sg1_path=self.path_to_icobilist,
                 id_blist_sg1="ICOBI",
-                filename_blist_sg2=self.path_to_icooplist,
+                blist_sg2_path=self.path_to_icooplist,
                 id_blist_sg2="ICOOP",
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,
@@ -121,13 +121,13 @@ class LobsterGraph:
             )
 
         else:
-            chemenvlobster = LobsterNeighbors(
+            chemenvlobster = LobsterNeighbors.from_files(
                 are_coops=False,
-                filename_icohp=self.path_to_icohplist,
+                icoxxlist_path=self.path_to_icohplist,
                 perc_strength_icohp=self.cutoff_icohp,
-                structure=Structure.from_file(self.path_to_poscar),
+                structure_path=self.path_to_poscar,
                 additional_condition=self.additional_condition,
-                filename_charge=self.path_to_charge,
+                charge_path=self.path_to_charge,
                 add_additional_data_sg=self.add_additional_data_sg,
                 valences_from_charges=True,
                 adapt_extremum_to_add_cond=True,
