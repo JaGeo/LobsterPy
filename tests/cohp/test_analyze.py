@@ -536,7 +536,7 @@ class TestAnalyse:
         assert analyse_k3sb.condensed_bonding_analysis["formula"] == "K3Sb"
         assert analyse_k3sb.condensed_bonding_analysis["max_considered_bond_length"] == pytest.approx(4.28164)
         assert analyse_k3sb.condensed_bonding_analysis["number_of_considered_ions"] == pytest.approx(2)
-        assert analyse_k3sb.condensed_bonding_analysis["sites"][0]["env"] == "6"
+        assert analyse_k3sb.condensed_bonding_analysis["sites"][0]["env"] == "O:6"
         assert float(analyse_k3sb.condensed_bonding_analysis["sites"][0]["bonds"]["Sb"]["ICOHP_sum"]) == pytest.approx(
             -0.84
         )
@@ -555,7 +555,7 @@ class TestAnalyse:
             ]
         )
 
-        assert analyse_k3sb.condensed_bonding_analysis["sites"][1]["env"] == "4"
+        assert analyse_k3sb.condensed_bonding_analysis["sites"][1]["env"] == "T:4"
         assert float(analyse_k3sb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["ICOHP_sum"]) == pytest.approx(
             -1.45
         )
@@ -706,7 +706,7 @@ class TestAnalyse:
             ]
         )
 
-        assert analyse_k3sb_all_cobi.condensed_bonding_analysis["sites"][1]["env"] == "8"
+        assert analyse_k3sb_all_cobi.condensed_bonding_analysis["sites"][1]["env"] == "C:8"
         assert float(
             analyse_k3sb_all_cobi.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["ICOBI_sum"]
         ) == pytest.approx(0.54)

@@ -243,12 +243,7 @@ class Analysis(MSONable):
         self.spg = symmetry_dataset.international
 
         lob_neigh_kwargs = {
-            "filename_icohp": self.path_to_icohplist,
-            "obj_icohp": self.icoxxlist_obj,
-            "structure": self.structure,
             "perc_strength_icohp": self.cutoff_icohp,
-            "filename_charge": self.path_to_charge,
-            "obj_charge": self.charge_obj,
             "valences_from_charges": self.type_charge != "Valences",
             "adapt_extremum_to_add_cond": True,
             "are_cobis": self.are_cobis,
@@ -259,8 +254,21 @@ class Analysis(MSONable):
 
         lob_neigh_kwargs["additional_condition"] = 1 if self.which_bonds == "cation-anion" else 0
 
+        if all([self.icoxxlist_obj, self.structure]):
+            lob_neigh_kwargs["icoxxlist_obj"] = self.icoxxlist_obj
+            lob_neigh_kwargs["structure"] = self.structure
+            lob_neigh_kwargs["charge_obj"] = self.charge_obj
+
+        elif all([self.path_to_icohplist, self.path_to_poscar]):
+            lob_neigh_kwargs["icoxxlist_path"] = self.path_to_icohplist
+            lob_neigh_kwargs["structure_path"] = self.path_to_poscar
+            lob_neigh_kwargs["charge_path"] = self.path_to_charge
+
         try:
-            self.chemenv = LobsterNeighbors(**lob_neigh_kwargs)
+            if lob_neigh_kwargs.get("icoxxlist_obj"):
+                self.chemenv = LobsterNeighbors(**lob_neigh_kwargs)
+            else:
+                self.chemenv = LobsterNeighbors.from_files(**lob_neigh_kwargs)
         except ValueError as err:
             if (
                 str(err) == "min() arg is an empty sequence"
@@ -274,44 +282,11 @@ class Analysis(MSONable):
                 raise err
 
         # determine cations and anions
-        try:
-            self.lse = self.chemenv.get_light_structure_environment(
-                only_cation_environments=(self.which_bonds == "cation-anion")
-            )
-        except ValueError:
-
-            class Lse:
-                """Test class when error was raised."""
-
-                def __init__(self, chemenv, valences=None):
-                    """
-                    Test class when error was raised.
-
-                    :param chemenv: LobsterNeighbors object
-                    :param valences: list of valences
-
-                    """
-                    if valences is None:
-                        self.coordination_environments = []
-                        for coord in chemenv:
-                            if len(coord) > 0:
-                                self.coordination_environments.append([{"ce_symbol": str(len(coord))}])
-                            else:
-                                self.coordination_environments.append([{"ce_symbol": None}])
-                    else:
-                        self.coordination_environments = []
-
-                        for val, coord in zip(valences, chemenv):
-                            if val >= 0.0 and len(coord) > 0:
-                                self.coordination_environments.append([{"ce_symbol": str(len(coord))}])
-                            else:
-                                self.coordination_environments.append([{"ce_symbol": None}])
-
-            if self.which_bonds == "all":
-                self.lse = Lse(self.chemenv.list_coords)
-            elif self.which_bonds == "cation-anion":
-                # make a new list
-                self.lse = Lse(self.chemenv.list_coords, self.chemenv.valences)
+        # try:
+        self.lse = self.chemenv.get_light_structure_environment(
+            only_cation_environments=(self.which_bonds == "cation-anion"),
+            on_error="warn",
+        )
 
     @classmethod
     def from_files(
