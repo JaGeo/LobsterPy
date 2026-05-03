@@ -7,10 +7,10 @@ import warnings
 from pathlib import Path
 
 import pytest
+from pymatgen.analysis.lobster_env import LobsterNeighbors
 from pymatgen.core import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Icohplist, Lobsterin, Lobsterout
-from pymatgen.analysis.lobster_env import LobsterNeighbors
 from pymatgen.io.vasp import Vasprun
 
 from lobsterpy.cohp.analyze import Analysis
@@ -991,7 +991,7 @@ class TestAnalyse:
                 cutoff_icohp=0.1,
             )
             assert len(w) == 6
-            
+
             assert (
                 str(w[0].message) == "Analysis is deprecated, and will be removed on 2026-06-30\n\n"
                 "use `lobsterpy.coxx.analyze.Analysis` instead."

@@ -14,6 +14,7 @@ from typing import Literal
 import numpy as np
 from monty.json import MSONable
 from pymatgen.analysis.bond_valence import BVAnalyzer
+from pymatgen.analysis.lobster_env import LobsterNeighbors
 from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.electronic_structure.core import Spin
@@ -27,7 +28,6 @@ from pymatgen.io.lobster import (
     Lobsterout,
     MadelungEnergies,
 )
-from pymatgen.analysis.lobster_env import LobsterNeighbors
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from scipy.integrate import trapezoid
@@ -1183,7 +1183,6 @@ class Analysis(MSONable):
             else:
                 neg.append(0)
                 en_neg.append(energies_corrected[i])
-
 
         antibonding = integrate_negative(y=neg, x=en_neg)
 

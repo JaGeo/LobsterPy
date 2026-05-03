@@ -10,9 +10,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pathlib import Path
 
-from pymatgen.core.structure import Structure
-
 from pymatgen.analysis.lobster_env import LobsterNeighbors  # type: ignore[attr-defined]
+from pymatgen.core.structure import Structure
 from pymatgen.io.lobster.outputs import Charge
 
 from lobsterpy.coxx.analyze import Analysis
