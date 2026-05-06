@@ -13,7 +13,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Icohplist, Lobsterin, Lobsterout
 from pymatgen.io.vasp import Vasprun
 
-from lobsterpy.cohp.analyze import Analysis
+from lobsterpy.coxx.analyze import Analysis
 from lobsterpy.quality.analyze import LobsterCalcQuality
 
 CurrentDir = Path(__file__).absolute().parent
@@ -1041,6 +1041,20 @@ class TestAnalyse:
                 cutoff_icohp=0.1,
             )
             assert str(w3[2].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
+    
+    def test_msonable(self, analyse_k3sb_all_objs, analyse_nacl_comp_range_orb):
+        msonable_dict = analyse_k3sb_all_objs.as_dict()
+
+        initialize_analysis = Analysis.from_dict(msonable_dict)
+
+        assert analyse_k3sb_all_objs.condensed_bonding_analysis == initialize_analysis.condensed_bonding_analysis
+        assert analyse_k3sb_all_objs.final_dict_bonds == initialize_analysis.final_dict_bonds
+
+        msonable_dict_2 = analyse_nacl_comp_range_orb.as_dict()        
+        initialize_analysis_2 = Analysis.from_dict(msonable_dict_2)
+
+        assert analyse_nacl_comp_range_orb.condensed_bonding_analysis == initialize_analysis_2.condensed_bonding_analysis
+        assert analyse_nacl_comp_range_orb.final_dict_bonds == initialize_analysis_2.final_dict_bonds
 
 
 class TestAnalyseCalcQuality:

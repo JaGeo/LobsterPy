@@ -250,25 +250,24 @@ class Analysis(MSONable):
             "are_coops": self.are_coops,
             "noise_cutoff": self.noise_cutoff,
             "which_charge": self.type_charge,
+            "structure": self.structure,
         }
 
         lob_neigh_kwargs["additional_condition"] = 1 if self.which_bonds == "cation-anion" else 0
 
-        if all([self.icoxxlist_obj, self.structure]):
+        
+        if self.icoxxlist_obj:
             lob_neigh_kwargs["icoxxlist_obj"] = self.icoxxlist_obj
-            lob_neigh_kwargs["structure"] = self.structure
             lob_neigh_kwargs["charge_obj"] = self.charge_obj
-
-        elif all([self.path_to_icohplist, self.path_to_poscar]):
-            lob_neigh_kwargs["icoxxlist_path"] = self.path_to_icohplist
-            lob_neigh_kwargs["structure_path"] = self.path_to_poscar
-            lob_neigh_kwargs["charge_path"] = self.path_to_charge
+        
+        else:
+            lob_neigh_kwargs["icoxxlist_obj"] = Icohplist(filename=self.path_to_icohplist, 
+                                                          are_cobis=self.are_cobis, 
+                                                          are_coops=self.are_coops)
+            lob_neigh_kwargs["charge_obj"] = Charge(filename=self.path_to_charge)
 
         try:
-            if lob_neigh_kwargs.get("icoxxlist_obj"):
-                self.chemenv = LobsterNeighbors(**lob_neigh_kwargs)
-            else:
-                self.chemenv = LobsterNeighbors.from_files(**lob_neigh_kwargs)
+            self.chemenv = LobsterNeighbors(**lob_neigh_kwargs)
         except ValueError as err:
             if (
                 str(err) == "min() arg is an empty sequence"
@@ -415,6 +414,81 @@ class Analysis(MSONable):
             madelung_path=madelung_path if read_madelung_energies else None,
             **kwargs,
         )
+
+    def as_dict(self) -> dict:
+        """
+        Serialize the Analysis object to a dictionary.
+
+        Returns:
+            Dictionary representation of the Analysis object
+        """
+        d = {
+            "structure": self.structure.as_dict() if self.structure else None,
+            "completecoxx_obj": self.completecoxx_obj.as_dict() if self.completecoxx_obj else None,
+            "icoxxlist_obj": self.icoxxlist_obj.as_dict() if self.icoxxlist_obj else None,
+            "charge_obj": self.charge_obj.as_dict() if self.charge_obj else None,
+            "madelung_obj": self.madelung_obj.as_dict() if self.madelung_obj else None,
+            "path_to_poscar": self.path_to_poscar,
+            "path_to_cohpcar": self.path_to_cohpcar,
+            "path_to_icohplist": self.path_to_icohplist,
+            "path_to_charge": self.path_to_charge,
+            "path_to_madelung": self.path_to_madelung,
+            "are_cobis": self.are_cobis,
+            "are_coops": self.are_coops,
+            "cutoff_icohp": self.cutoff_icohp,
+            "noise_cutoff": self.noise_cutoff,
+            "orbital_cutoff": self.orbital_cutoff,
+            "orbital_resolved": self.orbital_resolved,
+            "summed_spins": self.summed_spins,
+            "type_charge": self.type_charge,
+            "which_bonds": self.which_bonds,
+            "start": self.start,
+            "@module": self.__class__.__module__,
+            "@class": self.__class__.__name__,
+        }
+        return d
+
+    @classmethod
+    def from_dict(cls, d: dict) -> Analysis:
+        """
+        Reconstruct an Analysis object from a dictionary.
+
+        This method properly handles deserialization of nested pymatgen objects
+        that have @module and @class keys.
+
+        Args:
+            d: Dictionary representation of the Analysis object
+
+        Returns:
+            Analysis object
+        """
+        d = d.copy()
+        
+        # Remove monty metadata keys
+        d.pop("@module", None)
+        d.pop("@class", None)
+        d.pop("@version", None)
+        
+        # Manually deserialize nested MSONable objects that have @module and @class
+        if d.get("structure") and isinstance(d["structure"], dict) and "@class" in d["structure"]:
+            d["structure"] = Structure.from_dict(d["structure"])
+        
+        if d.get("completecoxx_obj") and isinstance(d["completecoxx_obj"], dict) and "@class" in d["completecoxx_obj"]:
+            d["completecoxx_obj"] = CompleteCohp.from_dict(d["completecoxx_obj"])
+        
+        if d.get("icoxxlist_obj") and isinstance(d["icoxxlist_obj"], dict) and "@class" in d["icoxxlist_obj"]:
+            d["icoxxlist_obj"] = Icohplist.from_dict(d["icoxxlist_obj"])
+        
+        if d.get("charge_obj") and isinstance(d["charge_obj"], dict) and "@class" in d["charge_obj"]:
+            d["charge_obj"] = Charge.from_dict(d["charge_obj"])
+        
+        if d.get("madelung_obj") and isinstance(d["madelung_obj"], dict) and "@class" in d["madelung_obj"]:
+            d["madelung_obj"] = MadelungEnergies.from_dict(d["madelung_obj"])
+        
+        print(d.get("path_to_poscar"))
+        print(d.get("path_to_icohplist"))
+
+        return cls(**d)
 
     def get_information_all_bonds(self, summed_spins: bool = True):
         """

@@ -77,6 +77,21 @@ class Description(MSONable):
         """
         self.analysis_object = analysis_object
         self.set_description()
+    
+    def as_dict(self):
+        """
+        Get a dictionary representation of the Description object.
+
+        Returns:
+            A dictionary containing the condensed bonding analysis and text description.
+        """
+        d = {
+            "analysis_object": self.analysis_object.as_dict(),
+            "@module": self.__class__.__module__,
+            "@class": self.__class__.__name__,
+        }
+
+        return d
 
     def set_description(self):
         """
