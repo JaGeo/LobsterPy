@@ -58,7 +58,6 @@ jobs:
       run: |
         micromamba activate lobpy
         uv pip install --upgrade pip
-        uv pip install git+https://github.com/naik-aakash/pymatgen.git@e8244925a6dceb8a408d8d7d19ac14c1d8bcb05c
         uv pip install --editable '.[tests,featurizer]'
 
     - name: Test with pytest and coverage
