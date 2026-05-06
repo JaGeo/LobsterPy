@@ -1054,3 +1054,58 @@ class TestAnalyse:
             analyse_nacl_comp_range_orb.condensed_bonding_analysis == initialize_analysis_2.condensed_bonding_analysis
         )
         assert analyse_nacl_comp_range_orb.final_dict_bonds == initialize_analysis_2.final_dict_bonds
+
+    def test_from_directory(
+        self,
+        analyse_k3sb_all_objs,
+        analyse_nacl_comp_range_orb,
+        analyse_k3sb_all_coop_orb,
+        analyse_nacl_comp_range_cobi,
+    ):
+
+        directory_k3sb = TestDir / "test_data/K3Sb"
+        analysis_from_dir_k3sb = Analysis.from_directory(
+            directory_k3sb,
+            which_bonds="all",
+            cutoff_icohp=0.1,
+        )
+
+        assert analyse_k3sb_all_objs.condensed_bonding_analysis == analysis_from_dir_k3sb.condensed_bonding_analysis
+        assert analyse_k3sb_all_objs.final_dict_bonds == analysis_from_dir_k3sb.final_dict_bonds
+
+        directory_nacl = TestDir / "test_data/NaCl_comp_range"
+        analysis_from_dir_nacl = Analysis.from_directory(
+            directory_nacl,
+            which_bonds="cation-anion",
+            cutoff_icohp=0.1,
+            orbital_cutoff=0.10,
+            orbital_resolved=True,
+        )
+
+        assert (
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis == analysis_from_dir_nacl.condensed_bonding_analysis
+        )
+        assert analyse_nacl_comp_range_orb.final_dict_bonds == analysis_from_dir_nacl.final_dict_bonds
+
+        # test for cobi
+        analysis_nacl_cobi = Analysis.from_directory(
+            directory_k3sb,
+            analyze_cobis=True,
+            which_bonds="cation-anion",
+            cutoff_icohp=0.1,
+            noise_cutoff=0.001,
+        )
+        assert analysis_nacl_cobi.are_cobis
+        assert analyse_nacl_comp_range_cobi.condensed_bonding_analysis == analysis_nacl_cobi.condensed_bonding_analysis
+
+        # test for coop
+        analysis_k3sb_coop = Analysis.from_directory(
+            directory_k3sb,
+            analyze_coops=True,
+            which_bonds="all",
+            cutoff_icohp=0.1,
+            noise_cutoff=0.001,
+            orbital_resolved=True,
+        )
+        assert analysis_k3sb_coop.are_coops
+        assert analyse_k3sb_all_coop_orb.condensed_bonding_analysis == analysis_k3sb_coop.condensed_bonding_analysis
