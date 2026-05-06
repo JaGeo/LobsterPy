@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
         split: [1, 2, 3, 4, 5]
 
 
@@ -181,6 +181,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install git+https://github.com/naik-aakash/pymatgen.git@e8244925a6dceb8a408d8d7d19ac14c1d8bcb05c
           pip install .[docs,featurizer]
 
       - name: Build

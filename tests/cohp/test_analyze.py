@@ -7,15 +7,9 @@ import warnings
 from pathlib import Path
 
 import pytest
-from pymatgen.core import Structure
+from pymatgen.analysis.lobster_env import LobsterNeighbors
 from pymatgen.electronic_structure.cohp import CompleteCohp
-from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Icohplist, Lobsterin, Lobsterout, MadelungEnergies
-
-try:
-    from pymatgen.analysis.lobster_env import LobsterNeighbors  # type: ignore[attr-defined]
-except ImportError:
-    from pymatgen.io.lobster.lobsterenv import LobsterNeighbors  # type: ignore[attr-defined]
-from pymatgen.io.vasp import Vasprun
+from pymatgen.io.lobster import Icohplist
 
 from lobsterpy.cohp.analyze import Analysis
 
@@ -539,7 +533,7 @@ class TestAnalyse:
         assert analyse_k3sb.condensed_bonding_analysis["formula"] == "K3Sb"
         assert analyse_k3sb.condensed_bonding_analysis["max_considered_bond_length"] == pytest.approx(4.28164)
         assert analyse_k3sb.condensed_bonding_analysis["number_of_considered_ions"] == pytest.approx(2)
-        assert analyse_k3sb.condensed_bonding_analysis["sites"][0]["env"] == "6"
+        assert analyse_k3sb.condensed_bonding_analysis["sites"][0]["env"] == "O:6"
         assert float(analyse_k3sb.condensed_bonding_analysis["sites"][0]["bonds"]["Sb"]["ICOHP_sum"]) == pytest.approx(
             -0.84
         )
@@ -558,7 +552,7 @@ class TestAnalyse:
             ]
         )
 
-        assert analyse_k3sb.condensed_bonding_analysis["sites"][1]["env"] == "4"
+        assert analyse_k3sb.condensed_bonding_analysis["sites"][1]["env"] == "T:4"
         assert float(analyse_k3sb.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["ICOHP_sum"]) == pytest.approx(
             -1.45
         )
@@ -709,7 +703,7 @@ class TestAnalyse:
             ]
         )
 
-        assert analyse_k3sb_all_cobi.condensed_bonding_analysis["sites"][1]["env"] == "8"
+        assert analyse_k3sb_all_cobi.condensed_bonding_analysis["sites"][1]["env"] == "C:8"
         assert float(
             analyse_k3sb_all_cobi.condensed_bonding_analysis["sites"][1]["bonds"]["Sb"]["ICOBI_sum"]
         ) == pytest.approx(0.54)
@@ -975,16 +969,13 @@ class TestAnalyse:
                 which_bonds="cation-anion",
                 cutoff_icohp=0.1,
             )
-        assert (
-            str(err.value) == "Consider switching to an analysis of all bonds and not only cation-anion bonds. "
-            "It looks like no cations are detected."
-        )
+        assert str(err.value) == "No cations detected. Consider analyzing all bonds instead of only cation-anion bonds."
 
     def test_analysis_init_warnings(self, tmp_path):
         # test for warning when using POSCAR
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("once")
-            warnings.filterwarnings("ignore", module="pymatgen")
+            warnings.filterwarnings("ignore", module="spglib")
             source_file = TestDir / "test_data/C/CONTCAR.gz"
             temp_poscar_path = tmp_path / "POSCAR.gz"  # copy CONTCAR as POSCAR
             shutil.copy(source_file, temp_poscar_path)
@@ -996,51 +987,29 @@ class TestAnalyse:
                 which_bonds="all",
                 cutoff_icohp=0.1,
             )
+            assert len(w) == 4
+
             assert (
-                str(w[0].message) == "Falling back to POSCAR, translations between individual "
+                str(w[0].message) == "Analysis is deprecated, and will be removed on 2026-06-30\n\n"
+                "use `lobsterpy.coxx.analyze.Analysis` instead."
+            )
+            assert (
+                str(w[1].message) == "Initialization via path_to_* arguments is being deprecated and will be "
+                "removed on 30-06-2026. Please use Analysis.from_files() or "
+                "Analysis.from_directory() instead."
+            )
+            assert (
+                str(w[2].message) == "Falling back to POSCAR, translations between individual "
                 "atoms may differ from LOBSTER outputs. Please note that "
                 "translations in the LOBSTER outputs are consistent with "
                 "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
                 "written by LOBSTER >=v5)."
             )
 
-        # test for warnings using both objects and paths
-        with warnings.catch_warnings(record=True) as w1:
-            warnings.simplefilter("once")
-            self.analyse_nasi_w1 = Analysis(
-                path_to_poscar=TestDir / "test_data/NaSi/CONTCAR.gz",
-                path_to_cohpcar=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
-                path_to_icohplist=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz",
-                path_to_charge=TestDir / "test_data/NaSi/CHARGE.lobster.gz",
-                path_to_madelung=TestDir / "test_data/NaSi/MadelungEnergies.lobster.gz",
-                which_bonds="all",
-                type_charge="Mulliken",
-                cutoff_icohp=0.1,
-                charge_obj=Charge(filename=TestDir / "test_data/NaSi/CHARGE.lobster.gz"),
-                madelung_obj=MadelungEnergies(filename=TestDir / "test_data/NaSi/MadelungEnergies.lobster.gz"),
-                icohplist_obj=Icohplist(filename=TestDir / "test_data/NaSi/ICOHPLIST.lobster.gz"),
-                completecohp_obj=CompleteCohp.from_file(
-                    filename=TestDir / "test_data/NaSi/COHPCAR.lobster.gz",
-                    structure_file=TestDir / "test_data/NaSi/CONTCAR.gz",
-                    fmt="LOBSTER",
-                ),
-            )
-            assert (
-                str(w1[0].message) == "Both file paths and pymatgen objects for Icohplist, CompleteCohp "
-                "and structure provided; prioritizing corresponding objects and ignoring file paths."
-            )
-            assert (
-                str(w1[1].message) == "Both file path and pymatgen object for MadelungEnergies provided; "
-                "prioritizing object and ignoring file path."
-            )
-            assert (
-                str(w1[2].message) == "Both file path and pymatgen object for Charge provided; "
-                "prioritizing object and ignoring file path."
-            )
-
         # test for warning using Valences
         with warnings.catch_warnings(record=True) as w2:
             warnings.simplefilter("once")
+            warnings.filterwarnings("ignore", module="spglib")
             self.analyse_batio3_w = Analysis(
                 path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
                 path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
@@ -1051,13 +1020,14 @@ class TestAnalyse:
                 cutoff_icohp=0.1,
             )
             assert (
-                str(w2[0].message) == "Using Valences for chemical environment analysis. "
+                str(w2[2].message) == "Using Valences for chemical environment analysis. "
                 "It is recommended to use  'Mulliken' or 'Loewdin' charges."
             )
 
         # test for warning using Loewdin
         with warnings.catch_warnings(record=True) as w3:
             warnings.simplefilter("once")
+            warnings.filterwarnings("ignore", module="spglib")
             self.analyse_batio3_w = Analysis(
                 path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
                 path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
@@ -1067,177 +1037,81 @@ class TestAnalyse:
                 type_charge="Loewdin",
                 cutoff_icohp=0.1,
             )
-            assert str(w3[0].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
+            assert str(w3[2].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
 
-        # test for warning fallback to Valences when charge is None
-        with warnings.catch_warnings(record=True) as w4:
-            warnings.simplefilter("once")
-            self.analyse_c = Analysis(
-                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
-                path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
-                path_to_icohplist=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
-                path_to_charge=None,
-                which_bonds="all",
-                type_charge="Loewdin",
-                cutoff_icohp=0.1,
-            )
-            assert (
-                str(w4[1].message) == "No file path or pymatgen object provided for Charge. "
-                "Using 'Loewdin' charges for chemical environment analysis is not possible. "
-                "Falling back to Valence charges instead."
-            )
+    def test_msonable(self, analyse_k3sb_all_objs, analyse_nacl_comp_range_orb):
+        msonable_dict = analyse_k3sb_all_objs.as_dict()
 
+        initialize_analysis = Analysis.from_dict(msonable_dict)
 
-class TestAnalyseCalcQuality:
-    def test_calc_quality_summary_with_objs(self):
-        charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
-        bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
-        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz")
-        vasprun_obj = Vasprun(
-            filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
-        )
-        doscar = Doscar(
-            doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
-            structure_file=None,
-            structure=structure_obj,
-        )
-        lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
-        lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
+        assert analyse_k3sb_all_objs.condensed_bonding_analysis == initialize_analysis.condensed_bonding_analysis
+        assert analyse_k3sb_all_objs.final_dict_bonds == initialize_analysis.final_dict_bonds
 
-        calc_des_with_objs = Analysis.get_lobster_calc_quality_summary(
-            structure_obj=structure_obj,
-            lobster_completedos_obj=doscar.completedos,
-            charge_obj=charge_obj,
-            bandoverlaps_obj=bandoverlaps_obj,
-            vasprun_obj=vasprun_obj,
-            lobsterin_obj=lobsterin_obj,
-            lobsterout_obj=lobsterout_obj,
-            dos_comparison=True,
-            bva_comp=True,
-            n_bins=256,
-        )
-
-        calc_des_with_paths = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz",
-            potcar_symbols=["K_sv", "Sb"],
-            path_to_charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
-            path_to_doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
-            path_to_vasprun=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz",
-            path_to_bandoverlaps=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz",
-            path_to_lobsterout=TestDir / "test_data" / "K3Sb" / "lobsterout.gz",
-            path_to_lobsterin=TestDir / "test_data" / "K3Sb" / "lobsterin.gz",
-            dos_comparison=True,
-            bva_comp=True,
-            n_bins=256,
-        )
-
-        assert calc_des_with_objs == calc_des_with_paths
-
-    def test_calc_quality_summary_exceptions(self):
-        charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
-        bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
-        structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz")
-        vasprun_obj = Vasprun(
-            filename=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz", parse_eigen=False, parse_potcar_file=False
-        )
-        doscar = Doscar(
-            doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
-            structure_file=None,
-            structure=structure_obj,
-        )
-        lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
-        lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
-
-        with pytest.raises(ValueError) as err_poscar:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=None,
-                structure_obj=None,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
-            )
-
-        assert str(err_poscar.value) == "Please provide path_to_poscar or structure_obj"
-
-        with pytest.raises(ValueError) as err_potcar:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=None,
-                path_to_potcar=None,
-                potcar_symbols=None,
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=None,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
-            )
+        msonable_dict_2 = analyse_nacl_comp_range_orb.as_dict()
+        initialize_analysis_2 = Analysis.from_dict(msonable_dict_2)
 
         assert (
-            str(err_potcar.value) == "Please provide either path_to_potcar or list of "
-            "potcar_symbols or path to vasprun.xml or vasprun object. "
-            "Crucial to identify basis used for projections"
+            analyse_nacl_comp_range_orb.condensed_bonding_analysis == initialize_analysis_2.condensed_bonding_analysis
         )
+        assert analyse_nacl_comp_range_orb.final_dict_bonds == initialize_analysis_2.final_dict_bonds
 
-        with pytest.raises(ValueError) as err_lobsterout:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=None,
-            )
+    @pytest.mark.parametrize(
+        ("fixture_name", "directory", "analysis_kwargs"),
+        [
+            pytest.param(
+                "analyse_k3sb_all_objs",
+                "K3Sb",
+                {
+                    "which_bonds": "all",
+                    "cutoff_icohp": 0.1,
+                },
+                id="k3sb-all-objects",
+            ),
+            pytest.param(
+                "analyse_nacl_comp_range_orb",
+                "NaCl_comp_range",
+                {
+                    "which_bonds": "cation-anion",
+                    "cutoff_icohp": 0.1,
+                    "orbital_cutoff": 0.10,
+                    "orbital_resolved": True,
+                },
+                id="nacl-orbital",
+            ),
+            pytest.param(
+                "analyse_nacl_comp_range_cobi",
+                "NaCl_comp_range",
+                {
+                    "analyze_cobis": True,
+                    "which_bonds": "cation-anion",
+                    "cutoff_icohp": 0.1,
+                    "noise_cutoff": 0.001,
+                },
+                id="nacl-cobi",
+            ),
+            pytest.param(
+                "analyse_k3sb_all_coop_orb",
+                "K3Sb",
+                {
+                    "analyze_coops": True,
+                    "which_bonds": "all",
+                    "cutoff_icohp": 0.1,
+                    "noise_cutoff": 0.001,
+                    "orbital_resolved": True,
+                },
+                id="k3sb-coop-orbital",
+            ),
+        ],
+    )
+    def test_from_directory(self, request, fixture_name, directory, analysis_kwargs):
 
-        assert str(err_lobsterout.value) == "Please provide path_to_lobsterout or lobsterout_obj"
+        reference_analysis = request.getfixturevalue(fixture_name)
+        analysis_from_directory = Analysis.from_directory(TestDir / f"test_data/{directory}", **analysis_kwargs)
 
-        with pytest.raises(ValueError) as err_lobsterin:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=None,
-                lobsterout_obj=lobsterout_obj,
-            )
+        assert reference_analysis.condensed_bonding_analysis == analysis_from_directory.condensed_bonding_analysis
+        assert reference_analysis.final_dict_bonds == analysis_from_directory.final_dict_bonds
 
-        assert str(err_lobsterin.value) == "Please provide path_to_lobsterin or lobsterin_obj"
-
-        with pytest.raises(Exception) as err_charge:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=None,
-                path_to_charge=None,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
-                bva_comp=True,
-            )
-
-        assert str(err_charge.value) == "BVA comparison is requested, thus please provide path_to_charge or charge_obj"
-
-        with pytest.raises(ValueError) as err_doscar:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=None,
-                charge_obj=charge_obj,
-                potcar_symbols=["K_sv", "Sb"],
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=None,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
-                bva_comp=True,
-                dos_comparison=True,
-            )
-
-        assert (
-            str(err_doscar.value)
-            == "Dos comparison is requested, so please provide either path_to_doscar or lobster_completedos_obj"
-        )
+        if analysis_kwargs.get("analyze_cobis"):
+            assert analysis_from_directory.are_cobis
+        if analysis_kwargs.get("analyze_coops"):
+            assert analysis_from_directory.are_coops

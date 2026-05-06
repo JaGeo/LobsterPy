@@ -18,10 +18,9 @@ from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.cohp import Cohp, CompleteCohp
 from pymatgen.io.lobster import Doscar, Icohplist, Lobsterin
 
-from lobsterpy.cohp.analyze import Analysis
-from lobsterpy.cohp.describe import Description
+from lobsterpy.coxx.analyze import Analysis
+from lobsterpy.coxx.describe import Description
 from lobsterpy.featurize.core import FeaturizeIcoxxlist
-from lobsterpy.featurize.utils import get_file_paths
 from lobsterpy.plotting import (
     BWDFPlotter,
     IcohpDistancePlotter,
@@ -30,6 +29,7 @@ from lobsterpy.plotting import (
     PlainDosPlotter,
     get_style_list,
 )
+from lobsterpy.utils import get_file_paths
 
 
 def main() -> None:
@@ -289,8 +289,8 @@ def get_parser() -> argparse.ArgumentParser:
         type=float,
         help="Set y-axis limits for the plots",
     )
-    broadening_group = plotting_group.add_mutually_exclusive_group()
-    broadening_group.add_argument_group("Broadening")
+    # Attach the mutually exclusive broadening options to the plotting parent
+    broadening_group = plotting_parent.add_mutually_exclusive_group()
     broadening_group.add_argument(
         "--fwhm",
         type=float,
