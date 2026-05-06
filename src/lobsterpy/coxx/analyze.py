@@ -484,10 +484,7 @@ class Analysis(MSONable):
         
         if d.get("madelung_obj") and isinstance(d["madelung_obj"], dict) and "@class" in d["madelung_obj"]:
             d["madelung_obj"] = MadelungEnergies.from_dict(d["madelung_obj"])
-        
-        print(d.get("path_to_poscar"))
-        print(d.get("path_to_icohplist"))
-
+            
         return cls(**d)
 
     def get_information_all_bonds(self, summed_spins: bool = True):
