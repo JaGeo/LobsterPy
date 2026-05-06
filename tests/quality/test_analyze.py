@@ -205,6 +205,8 @@ class TestCalcQualityDescribe:
         )
 
         calc_quality_k3sb_des = Description.get_calc_quality_description(calc_quality_K3Sb)
+        calc_quality_k3sb_des_class = LobsterCalcQuality.describe(calc_quality_K3Sb)
+        assert calc_quality_k3sb_des == calc_quality_k3sb_des_class
         assert calc_quality_k3sb_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
@@ -218,17 +220,22 @@ class TestCalcQualityDescribe:
         ]
 
         calc_quality_csh_des = Description.get_calc_quality_description(calc_quality_CsH)
-        assert calc_quality_csh_des == [
-            "The LOBSTER calculation used minimal basis.",
-            "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
-            "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
-            "wave function is not completely orthonormalized. "
-            "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
-            "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
-            "like dos comparisons, charges, charge spillings before using the results for further analysis.",
-            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
-            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
-        ]
+        calc_quality_csh_des_class = LobsterCalcQuality.describe(calc_quality_CsH)
+        assert (
+            calc_quality_csh_des
+            == calc_quality_csh_des_class
+            == [
+                "The LOBSTER calculation used minimal basis.",
+                "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
+                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
+                "wave function is not completely orthonormalized. "
+                "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
+                "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
+                "like dos comparisons, charges, charge spillings before using the results for further analysis.",
+                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+            ]
+        )
 
 
 class TestCalcQualityDescribeWarnings:
