@@ -1089,7 +1089,7 @@ class TestAnalyse:
 
         # test for cobi
         analysis_nacl_cobi = Analysis.from_directory(
-            directory_k3sb,
+            directory_nacl,
             analyze_cobis=True,
             which_bonds="cation-anion",
             cutoff_icohp=0.1,
