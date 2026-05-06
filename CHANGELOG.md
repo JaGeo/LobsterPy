@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.6.1
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+
+## What's Changed
+### 🚀 New Features
+* Refactor analyze, add quality module and deprecate cohp module (replaced by coxx) by @naik-aakash in https://github.com/JaGeo/LobsterPy/pull/428
+* Added python 3.14 support
+### 🔄 Other Changes
+* Fix doc by @JaGeo in https://github.com/JaGeo/LobsterPy/pull/435
+* Bump myst-nb from 1.3.0 to 1.4.0 by @dependabot[bot] in https://github.com/JaGeo/LobsterPy/pull/432
+* pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/JaGeo/LobsterPy/pull/439
+
+
+**Full Changelog**: https://github.com/JaGeo/LobsterPy/compare/v0.6.0...v0.6.1
+
+
 ## v0.6.0
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
