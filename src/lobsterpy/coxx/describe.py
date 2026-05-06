@@ -85,13 +85,11 @@ class Description(MSONable):
         Returns:
             A dictionary containing the condensed bonding analysis and text description.
         """
-        d = {
+        return {
             "analysis_object": self.analysis_object.as_dict(),
             "@module": self.__class__.__module__,
             "@class": self.__class__.__name__,
         }
-
-        return d
 
     def set_description(self):
         """

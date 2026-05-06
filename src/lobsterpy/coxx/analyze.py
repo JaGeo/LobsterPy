@@ -421,7 +421,7 @@ class Analysis(MSONable):
         Returns:
             Dictionary representation of the Analysis object
         """
-        d = {
+        return {
             "structure": self.structure.as_dict() if self.structure else None,
             "completecoxx_obj": self.completecoxx_obj.as_dict() if self.completecoxx_obj else None,
             "icoxxlist_obj": self.icoxxlist_obj.as_dict() if self.icoxxlist_obj else None,
@@ -445,7 +445,6 @@ class Analysis(MSONable):
             "@module": self.__class__.__module__,
             "@class": self.__class__.__name__,
         }
-        return d
 
     @classmethod
     def from_dict(cls, d: dict) -> Analysis:
