@@ -255,15 +255,14 @@ class Analysis(MSONable):
 
         lob_neigh_kwargs["additional_condition"] = 1 if self.which_bonds == "cation-anion" else 0
 
-        
         if self.icoxxlist_obj:
             lob_neigh_kwargs["icoxxlist_obj"] = self.icoxxlist_obj
             lob_neigh_kwargs["charge_obj"] = self.charge_obj
-        
+
         else:
-            lob_neigh_kwargs["icoxxlist_obj"] = Icohplist(filename=self.path_to_icohplist, 
-                                                          are_cobis=self.are_cobis, 
-                                                          are_coops=self.are_coops)
+            lob_neigh_kwargs["icoxxlist_obj"] = Icohplist(
+                filename=self.path_to_icohplist, are_cobis=self.are_cobis, are_coops=self.are_coops
+            )
             lob_neigh_kwargs["charge_obj"] = Charge(filename=self.path_to_charge)
 
         try:
@@ -463,28 +462,28 @@ class Analysis(MSONable):
             Analysis object
         """
         d = d.copy()
-        
+
         # Remove monty metadata keys
         d.pop("@module", None)
         d.pop("@class", None)
         d.pop("@version", None)
-        
+
         # Manually deserialize nested MSONable objects that have @module and @class
         if d.get("structure") and isinstance(d["structure"], dict) and "@class" in d["structure"]:
             d["structure"] = Structure.from_dict(d["structure"])
-        
+
         if d.get("completecoxx_obj") and isinstance(d["completecoxx_obj"], dict) and "@class" in d["completecoxx_obj"]:
             d["completecoxx_obj"] = CompleteCohp.from_dict(d["completecoxx_obj"])
-        
+
         if d.get("icoxxlist_obj") and isinstance(d["icoxxlist_obj"], dict) and "@class" in d["icoxxlist_obj"]:
             d["icoxxlist_obj"] = Icohplist.from_dict(d["icoxxlist_obj"])
-        
+
         if d.get("charge_obj") and isinstance(d["charge_obj"], dict) and "@class" in d["charge_obj"]:
             d["charge_obj"] = Charge.from_dict(d["charge_obj"])
-        
+
         if d.get("madelung_obj") and isinstance(d["madelung_obj"], dict) and "@class" in d["madelung_obj"]:
             d["madelung_obj"] = MadelungEnergies.from_dict(d["madelung_obj"])
-            
+
         return cls(**d)
 
     def get_information_all_bonds(self, summed_spins: bool = True):

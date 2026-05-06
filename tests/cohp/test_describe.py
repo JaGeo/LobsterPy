@@ -285,7 +285,7 @@ class TestDescribe:
             "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOBI: 0.08, 0.0 percent "
             "antibonding interaction below EFermi) bonds.",
         ]
-    
+
     def test_msonable(self, describe_nacl, describe_cdf):
         msonable_dict = describe_nacl.as_dict()
 

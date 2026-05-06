@@ -77,7 +77,7 @@ class Description(MSONable):
         """
         self.analysis_object = analysis_object
         self.set_description()
-    
+
     def as_dict(self):
         """
         Get a dictionary representation of the Description object.
