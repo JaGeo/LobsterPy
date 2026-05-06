@@ -13,7 +13,7 @@ from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Icohplist, Lobsterin, Lobsterout
 from pymatgen.io.vasp import Vasprun
 
-from lobsterpy.coxx.analyze import Analysis
+from lobsterpy.cohp.analyze import Analysis
 from lobsterpy.quality.analyze import LobsterCalcQuality
 
 CurrentDir = Path(__file__).absolute().parent
