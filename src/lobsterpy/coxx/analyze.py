@@ -263,7 +263,7 @@ class Analysis(MSONable):
             lob_neigh_kwargs["icoxxlist_obj"] = Icohplist(
                 filename=self.path_to_icohplist, are_cobis=self.are_cobis, are_coops=self.are_coops
             )
-            lob_neigh_kwargs["charge_obj"] = Charge(filename=self.path_to_charge)
+            lob_neigh_kwargs["charge_obj"] = Charge(filename=self.path_to_charge) if self.path_to_charge else None
 
         try:
             self.chemenv = LobsterNeighbors(**lob_neigh_kwargs)
