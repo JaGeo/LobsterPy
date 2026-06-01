@@ -10,7 +10,7 @@ default_language_version:
   python: python3
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.12
+  rev: v0.15.15
   hooks:
   - id: ruff
     args: [--fix]
@@ -39,7 +39,7 @@ repos:
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.20.2
+  rev: v2.1.0
   hooks:
   - id: mypy
     files: lobsterpy/.*
@@ -55,6 +55,6 @@ repos:
     args: [--ignore-words-list, 'titel,alls,ans,nd,mater,nwo,te,hart,ontop,ist,ot,fo']
     types_or: [python, rst, markdown]
 - repo: https://github.com/RobertCraigie/pyright-python
-  rev: v1.1.409
+  rev: v1.1.410
   hooks:
     - id: pyright
