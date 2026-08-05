@@ -176,112 +176,168 @@ class TestDescribe:
     ):
         assert describe_cdf.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
-            "38.289 percent antibonding interaction below EFermi) bonds.",
+            (
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
+                "38.289 percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_nacl.text == [
             "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,"
-            " 1.754 percent antibonding interaction below EFermi) bonds.",
+            (
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV,"
+                " 1.754 percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_nasbf6.text == [
-            "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: "
-            "Na1, Sb2.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
-            "1.592 percent antibonding interaction below EFermi) bonds.",
-            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
-            "0.0 percent antibonding interaction below EFermi) bonds.",
+            (
+                "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion interactions: "
+                "Na1, Sb2."
+            ),
+            (
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
+                "1.592 percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
+                "0.0 percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_nasbf6_anbd.text == [
-            "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion "
-            "interactions: Na1, Sb2.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
-            "0.0 percent antibonding interaction below EFermi) bonds.",
-            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
-            "0.0 percent antibonding interaction below EFermi) bonds.",
+            (
+                "The compound NaSbF6 has 2 symmetry-independent cation(s) with relevant cation-anion "
+                "interactions: Na1, Sb2."
+            ),
+            (
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, "
+                "0.0 percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, "
+                "0.0 percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_nacl_nan.text == [
             "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, "
-            "0.0 percent antibonding interaction below EFermi) bonds.",
+            (
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOHP: -0.57 eV, "
+                "0.0 percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_cdf_anbd.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
-            "100.0 percent antibonding interaction below EFermi) bonds.",
+            (
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOHP: -0.62 eV, "
+                "100.0 percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_k3sb.text == [
             "The compound K3Sb has 2 symmetry-independent cation(s) with relevant cation-anion interactions: K1, K2.",
-            "K1 has an octahedral (CN=6) coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, "
-            "1.163 percent antibonding interaction below EFermi) bonds.",
-            "K2 has a tetrahedral (CN=4) coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, "
-            "4.403 percent antibonding interaction below EFermi) bonds.",
+            (
+                "K1 has an octahedral (CN=6) coordination environment. It has 6 K-Sb (mean ICOHP: -0.14 eV, "
+                "1.163 percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "K2 has a tetrahedral (CN=4) coordination environment. It has 4 K-Sb (mean ICOHP: -0.36 eV, "
+                "4.403 percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_k3sb_all.text == [
             "The compound K3Sb has 3 symmetry-independent atoms(s) with relevant bonds: K1, K2, Sb4.",
-            "K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.219 percent "
-            "antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 1.163 percent "
-            "antibonding interaction below EFermi) bonds.",
-            "K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 "
-            "percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.403 "
-            "percent antibonding interaction below EFermi) bonds.",
-            "Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 2.771 "
-            "percent antibonding interaction below EFermi) bonds.",
+            (
+                "K1 has a 14-fold coordination environment. It has 8 K-K (mean ICOHP: -0.37 eV, 17.219 percent "
+                "antibonding interaction below EFermi), and 6 K-Sb (mean ICOHP: -0.14 eV, 1.163 percent "
+                "antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "K2 has a 14-fold coordination environment. It has 10 K-K (mean ICOHP: -0.22 eV, 17.073 "
+                "percent antibonding interaction below EFermi), and 4 K-Sb (mean ICOHP: -0.36 eV, 4.403 "
+                "percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "Sb4 has a 14-fold coordination environment. It has 14 Sb-K (mean ICOHP: -0.27 eV, 2.771 "
+                "percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_csh_all.text == [
             "The compound CsH has 1 symmetry-independent atoms(s) with relevant bonds: Cs1.",
-            "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 "
-            "percent antibonding interaction below EFermi) bonds.",
+            (
+                "Cs1 has a 18-fold coordination environment. It has 18 Cs-Cs (mean ICOHP: -0.49 eV, 18.741 "
+                "percent antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_batio3_orb.text == [
             "The compound BaTiO3 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Ti2.",
-            "Ti2 has an octahedral (CN=6) coordination environment. It has 6 Ti-O (mean ICOHP: -3.54 eV, "
-            "0.985 percent antibonding interaction below EFermi) bonds.",
-            "In the 6 Ti-O bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-            "from the Ti(3d)-O(2p) orbital, contributing 88.0 percent, whereas the maximum "
-            "antibonding contribution is from the Ti(3p)-O(2p) orbital, contributing 37.0 percent.",
+            (
+                "Ti2 has an octahedral (CN=6) coordination environment. It has 6 Ti-O (mean ICOHP: -3.54 eV, "
+                "0.985 percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "In the 6 Ti-O bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+                "from the Ti(3d)-O(2p) orbital, contributing 88.0 percent, whereas the maximum "
+                "antibonding contribution is from the Ti(3p)-O(2p) orbital, contributing 37.0 percent."
+            ),
         ]
         assert describe_c_orb.text == [
             "The compound C has 1 symmetry-independent atoms(s) with relevant bonds: C1.",
-            "C1 has a tetrahedral (CN=4) coordination environment. "
-            "It has 4 C-C (mean ICOHP: -9.59 eV, 0.0 percent antibonding interaction below EFermi) bonds.",
-            "In the 4 C-C bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
-            "from the C(2p)-C(2p) orbital, contributing 44.0 percent, whereas no significant "
-            "antibonding contribution is found in this bond.",
+            (
+                "C1 has a tetrahedral (CN=4) coordination environment. "
+                "It has 4 C-C (mean ICOHP: -9.59 eV, 0.0 percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "In the 4 C-C bonds, relative to the summed ICOHPs, the maximum bonding contribution is "
+                "from the C(2p)-C(2p) orbital, contributing 44.0 percent, whereas no significant "
+                "antibonding contribution is found in this bond."
+            ),
         ]
         assert describe_nasbf6_orb.text == [
             "The compound NaSbF6 has 3 symmetry-independent atoms(s) with relevant bonds: Na1, Sb2, F3.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 1.592 percent "
-            "antibonding interaction below EFermi) bonds.",
-            "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from "
-            "the Na(3s)-F(2s) orbital, "
-            "contributing 67.0 percent, whereas the maximum antibonding contribution is from the Na(2p)-F(2s) orbital, "
-            "contributing 38.0 percent.",
-            "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, 0.0 percent "
-            "antibonding interaction below EFermi) bonds.",
-            "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from the "
-            "Sb(5p)-F(2s) orbital, contributing 42.0 percent, whereas "
-            "no significant antibonding contribution is found in this bond.",
-            "F3 has a linear (CN=2) coordination environment. It has 1 F-Sb (mean ICOHP: -5.45 eV, 0.0"
-            " percent antibonding "
-            "interaction below EFermi), and 1 F-Na (mean ICOHP: -0.61 eV, 1.587 percent antibonding"
-            " interaction below EFermi) bonds.",
-            "In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution is from the"
-            " F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant antibonding contribution is"
-            " found in this bond. In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding "
-            "contribution is from the F(2s)-Na(3s) orbital, contributing 68.0 percent,"
-            " whereas the maximum antibonding contribution is from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals,"
-            " contributing 36.0 and 36.0 percent, respectively.",
+            (
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-F (mean ICOHP: -0.61 eV, 1.592 "
+                "percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "In the 6 Na-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from "
+                "the Na(3s)-F(2s) orbital, "
+                "contributing 67.0 percent, whereas the maximum antibonding contribution is from the Na(2p)-F(2s) "
+                "orbital, contributing 38.0 percent."
+            ),
+            (
+                "Sb2 has an octahedral (CN=6) coordination environment. It has 6 Sb-F (mean ICOHP: -5.45 eV, 0.0 "
+                "percent antibonding interaction below EFermi) bonds."
+            ),
+            (
+                "In the 6 Sb-F bonds, relative to the summed ICOHPs, the maximum bonding contribution is from the "
+                "Sb(5p)-F(2s) orbital, contributing 42.0 percent, whereas "
+                "no significant antibonding contribution is found in this bond."
+            ),
+            (
+                "F3 has a linear (CN=2) coordination environment. It has 1 F-Sb (mean ICOHP: -5.45 eV, 0.0"
+                " percent antibonding "
+                "interaction below EFermi), and 1 F-Na (mean ICOHP: -0.61 eV, 1.587 percent antibonding"
+                " interaction below EFermi) bonds."
+            ),
+            (
+                "In the 1 F-Sb bond, relative to the summed ICOHPs, the maximum bonding contribution is from the"
+                " F(2s)-Sb(5p) orbital, contributing 42.0 percent, whereas no significant antibonding contribution is"
+                " found in this bond. In the 1 F-Na bond, relative to the summed ICOHPs, the maximum bonding "
+                "contribution is from the F(2s)-Na(3s) orbital, contributing 68.0 percent,"
+                " whereas the maximum antibonding contribution is from F(2s)-Na(2p) and F(2p)-Na(2p) orbitals,"
+                " contributing 36.0 and 36.0 percent, respectively."
+            ),
         ]
         assert describe_cdf_comp_range_coop.text == [
             "The compound CdF2 has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Cd1.",
-            "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOOP: 0.01, 40.0 percent "
-            "antibonding interaction below EFermi) bonds.",
+            (
+                "Cd1 has a cubic (CN=8) coordination environment. It has 8 Cd-F (mean ICOOP: 0.01, 40.0 percent "
+                "antibonding interaction below EFermi) bonds."
+            ),
         ]
         assert describe_nacl_comp_range_cobi.text == [
             "The compound NaCl has 1 symmetry-independent cation(s) with relevant cation-anion interactions: Na1.",
-            "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOBI: 0.08, 0.0 percent "
-            "antibonding interaction below EFermi) bonds.",
+            (
+                "Na1 has an octahedral (CN=6) coordination environment. It has 6 Na-Cl (mean ICOBI: 0.08, 0.0 percent "
+                "antibonding interaction below EFermi) bonds."
+            ),
         ]
 
     def test_msonable(self, describe_nacl, describe_cdf):

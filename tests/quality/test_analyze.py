@@ -210,13 +210,17 @@ class TestCalcQualityDescribe:
         assert calc_quality_k3sb_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
-            "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
-            "projected wave function is not completely orthonormalized; however, the maximal deviation values "
-            "observed compared to the identity matrix is below the threshold of 0.1.",
+            (
+                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
+                "projected wave function is not completely orthonormalized; however, the maximal deviation values "
+                "observed compared to the identity matrix is below the threshold of 0.1."
+            ),
             "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
             "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
-            "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p,"
-            " summed orbitals are: 0.8532, 0.9481, 0.9275.",
+            (
+                "The Tanimoto index from DOS comparisons in the energy range between -20, 0 eV for s, p,"
+                " summed orbitals are: 0.8532, 0.9481, 0.9275."
+            ),
         ]
 
         calc_quality_csh_des = Description.get_calc_quality_description(calc_quality_CsH)
@@ -227,11 +231,13 @@ class TestCalcQualityDescribe:
             == [
                 "The LOBSTER calculation used minimal basis.",
                 "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
-                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the projected "
-                "wave function is not completely orthonormalized. "
-                "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
-                "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
-                "like dos comparisons, charges, charge spillings before using the results for further analysis.",
+                (
+                    "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
+                    "projected wave function is not completely orthonormalized. "
+                    "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
+                    "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
+                    "like dos comparisons, charges, charge spillings before using the results for further analysis."
+                ),
                 "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
                 "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
             ]
@@ -259,19 +265,29 @@ class TestCalcQualityDescribeWarnings:
         actual_warnings = [str(warning.message) for warning in w]
 
         expected_warnings = [
-            "This method is being deprecated and will be removed on 30-06-2026. "
-            "Please use `lobsterpy.quality.LobsterCalcQuality.from_files()` or "
-            "`lobsterpy.quality.LobsterCalcQuality.from_directory()` instead.",
+            (
+                "This method is being deprecated and will be removed on 30-06-2026. "
+                "Please use `lobsterpy.quality.LobsterCalcQuality.from_files()` or "
+                "`lobsterpy.quality.LobsterCalcQuality.from_directory()` instead."
+            ),
             "Consider using DOSCAR.LSO.lobster, as non LSO DOS from LOBSTER can have negative DOS values",
-            "Minimum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. "
-            "Thus, setting `min_e` to the minimum possible value of -15 eV",
-            "Maximum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. "
-            "Thus, setting `max_e` to the maximum possible value of 5 eV",
-            "Number of bins requested for DOS comparisons is larger than the number of points in the energy interval. "
-            "Thus, setting `n_bins` to 107.",
-            "Input DOS files have very few points in the energy interval and thus comparisons will not be reliable. "
-            "Please rerun the calculations with higher number of DOS points. "
-            "Set NEDOS and COHPSteps tags to >= 2000 in VASP and LOBSTER calculations, respectively.",
+            (
+                "Minimum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. "
+                "Thus, setting `min_e` to the minimum possible value of -15 eV"
+            ),
+            (
+                "Maximum energy range requested for DOS comparisons is not available in VASP or LOBSTER calculation. "
+                "Thus, setting `max_e` to the maximum possible value of 5 eV"
+            ),
+            (
+                "Number of bins requested for DOS comparisons is larger than the number of points in the energy "
+                "interval. Thus, setting `n_bins` to 107."
+            ),
+            (
+                "Input DOS files have very few points in the energy interval and thus comparisons will not be "
+                "reliable. Please rerun the calculations with higher number of DOS points. "
+                "Set NEDOS and COHPSteps tags to >= 2000 in VASP and LOBSTER calculations, respectively."
+            ),
         ]
 
         for actual, expected in zip(actual_warnings, expected_warnings):
@@ -282,10 +298,14 @@ class TestCalcQualityDescribeWarnings:
         assert calc_des == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 2.255 and 12.72 %, respectively.",
-            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
-            "generated during the LOBSTER run.",
-            "The Tanimoto index from DOS comparisons in the energy range between -15, 5 eV for s, p, summed orbitals "
-            "are: 0.6712, 0.8113, 0.8064.",
+            (
+                "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
+                "generated during the LOBSTER run."
+            ),
+            (
+                "The Tanimoto index from DOS comparisons in the energy range between -15, 5 eV for s, p, summed "
+                "orbitals are: 0.6712, 0.8113, 0.8064."
+            ),
         ]
 
         with warnings.catch_warnings(record=True) as w2:
@@ -305,8 +325,10 @@ class TestCalcQualityDescribeWarnings:
         assert calc_des2 == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 0.98 and 8.93 %, respectively.",
-            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
-            "generated during the LOBSTER run.",
+            (
+                "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
+                "generated during the LOBSTER run."
+            ),
             "Oxidation states from BVA analyzer cannot be determined. Thus BVA charge comparison is not conducted.",
         ]
 
@@ -329,12 +351,16 @@ class TestCalcQualityDescribeWarnings:
         calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
 
         assert calc_des3 == [
-            "Consider rerunning the calculation with the minimum basis as well. "
-            "Choosing a larger basis set is only recommended if you see a significant improvement of "
-            "the charge spilling.",
+            (
+                "Consider rerunning the calculation with the minimum basis as well. "
+                "Choosing a larger basis set is only recommended if you see a significant improvement of "
+                "the charge spilling."
+            ),
             "The absolute and total charge spilling for the calculation is 1.48 and 13.99 %, respectively.",
-            "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is generated "
-            "during the LOBSTER run.",
+            (
+                "The projected wave function is completely orthonormalized as no bandOverlaps.lobster file is "
+                "generated during the LOBSTER run."
+            ),
             "The atomic charge signs from Mulliken population analysis do not agree with the bond valence analysis.",
             "The atomic charge signs from Loewdin population analysis do not agree with the bond valence analysis.",
         ]
