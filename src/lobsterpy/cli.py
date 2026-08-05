@@ -382,8 +382,8 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Show integrated cohp/cobi/coop plots.",
     )
-    # Arguments specific to lobsterpy.cohp.analyze.Analysis and
-    # lobsterpy.cohp.describe.Description class
+    # Arguments specific to lobsterpy.coxx.analyze.Analysis and
+    # lobsterpy.coxx.describe.Description class
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Adjustable automatic analysis parameters")
     auto_group.add_argument(
