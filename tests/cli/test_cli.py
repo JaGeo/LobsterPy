@@ -751,10 +751,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-        assert (
-            str(err2.value)
-            == "[Errno 2] No such file or directory: '/home/anaik/Work/Dev_Codes/LobsterPy/tests/CONTCAR'"
-        )
+        assert "[Errno 2] No such file or directory:" in str(err2.value)
 
         # doscar comparison exceptions test
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
