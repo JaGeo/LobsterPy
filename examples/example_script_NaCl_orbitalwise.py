@@ -1,16 +1,19 @@
 import os
+import warnings
 
-from lobsterpy.cohp.analyze import Analysis
-from lobsterpy.cohp.describe import Description
+from lobsterpy.coxx.analyze import Analysis
+from lobsterpy.coxx.describe import Description
+
+warnings.simplefilter("once")
 
 directory = "NaCl"
 
 # Setup analysis dict
-analyse = Analysis(
-    path_to_poscar=os.path.join(directory, "CONTCAR"),
-    path_to_icohplist=os.path.join(directory, "ICOHPLIST.lobster"),
-    path_to_cohpcar=os.path.join(directory, "COHPCAR.lobster"),
-    path_to_charge=os.path.join(directory, "CHARGE.lobster"),
+analyse = Analysis.from_files(
+    structure_path=os.path.join(directory, "CONTCAR"),
+    icoxxlist_path=os.path.join(directory, "ICOHPLIST.lobster"),
+    coxxcar_path=os.path.join(directory, "COHPCAR.lobster"),
+    charge_path=os.path.join(directory, "CHARGE.lobster"),
     which_bonds="all",
     orbital_resolved=True,
     orbital_cutoff=0.05,
