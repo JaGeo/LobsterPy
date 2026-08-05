@@ -6,8 +6,6 @@ from pymatgen.core import Structure
 from pymatgen.io.lobster import Bandoverlaps, Charge, Doscar, Lobsterin, Lobsterout
 from pymatgen.io.vasp import Vasprun
 
-from lobsterpy.cohp.analyze import Analysis
-from lobsterpy.cohp.describe import Description
 from lobsterpy.quality import LobsterCalcQuality
 
 CurrentDir = Path(__file__).absolute().parent
@@ -15,7 +13,7 @@ TestDir = CurrentDir / "../"
 
 
 class TestLobsterCalcQuality:
-    def test_calc_quality_summary_with_objs(self):
+    def test_calc_quality_summary_consistency(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
         bandoverlaps_obj = Bandoverlaps(filename=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz")
         structure_obj = Structure.from_file(filename=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz")
@@ -30,41 +28,44 @@ class TestLobsterCalcQuality:
         lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
         lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
 
-        calc_des_with_objs = Analysis.get_lobster_calc_quality_summary(
-            structure_obj=structure_obj,
-            lobster_completedos_obj=doscar.completedos,
-            charge_obj=charge_obj,
-            bandoverlaps_obj=bandoverlaps_obj,
-            vasprun_obj=vasprun_obj,
-            lobsterin_obj=lobsterin_obj,
-            lobsterout_obj=lobsterout_obj,
-            dos_comparison=True,
-            bva_comp=True,
-            n_bins=256,
-        )
-
-        calc_des_with_paths = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz",
+        calc_quality_with_objs = LobsterCalcQuality(
+            structure=structure_obj,
+            lobster_dos=doscar.completedos,
+            charge=charge_obj,
             potcar_symbols=["K_sv", "Sb"],
-            path_to_charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
-            path_to_doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
-            path_to_vasprun=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz",
-            path_to_bandoverlaps=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz",
-            path_to_lobsterout=TestDir / "test_data" / "K3Sb" / "lobsterout.gz",
-            path_to_lobsterin=TestDir / "test_data" / "K3Sb" / "lobsterin.gz",
-            dos_comparison=True,
-            bva_comp=True,
-            n_bins=256,
+            bandoverlaps=bandoverlaps_obj,
+            vasp_dos=vasprun_obj.complete_dos,
+            lobsterin=lobsterin_obj,
+            lobsterout=lobsterout_obj,
         )
 
-        assert calc_des_with_objs == calc_des_with_paths
+        calc_quality_dict_with_objs = calc_quality_with_objs.get_calculation_quality_summary(
+            dos_comparison=True, bva_comp=True, n_bins=256
+        )
+
+        calc_quality_from_paths = LobsterCalcQuality.from_files(
+            poscar=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz",
+            potcar_symbols=["K_sv", "Sb"],
+            charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
+            doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+            vasprun=TestDir / "test_data" / "K3Sb" / "vasprun.xml.gz",
+            bandoverlaps=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz",
+            lobsterout=TestDir / "test_data" / "K3Sb" / "lobsterout.gz",
+            lobsterin=TestDir / "test_data" / "K3Sb" / "lobsterin.gz",
+        )
+
+        calc_quality_dict_from_paths = calc_quality_from_paths.get_calculation_quality_summary(
+            dos_comparison=True, bva_comp=True, n_bins=256
+        )
+
+        assert calc_quality_dict_with_objs == calc_quality_dict_from_paths
 
         # Test new LobsterCalcQuality class method
-        calc_des_from_dir = LobsterCalcQuality.from_directory(
+        calc_quality_dict_from_dir = LobsterCalcQuality.from_directory(
             path_to_lobster_calc=TestDir / "test_data" / "K3Sb"
         ).get_calculation_quality_summary(dos_comparison=True, bva_comp=True, n_bins=256)
 
-        assert calc_des_with_objs == calc_des_from_dir
+        assert calc_quality_dict_with_objs == calc_quality_dict_from_dir
 
     def test_calc_quality_summary_exceptions(self):
         charge_obj = Charge(filename=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz")
@@ -81,133 +82,83 @@ class TestLobsterCalcQuality:
         lobsterin_obj = Lobsterin.from_file(TestDir / "test_data" / "K3Sb" / "lobsterin.gz")
         lobsterout_obj = Lobsterout(filename=TestDir / "test_data" / "K3Sb" / "lobsterout.gz")
 
-        with pytest.raises(ValueError) as err_poscar:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=None,
-                structure_obj=None,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
-            )
-
-        assert str(err_poscar.value) == "Please provide path_to_poscar or structure_obj"
-
         with pytest.raises(ValueError) as err_potcar:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=None,
-                path_to_potcar=None,
+            self.calc_des = LobsterCalcQuality.from_files(
+                poscar=TestDir / "test_data" / "K3Sb" / "CONTCAR.gz",
+                potcar=None,
                 potcar_symbols=None,
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=None,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
+                doscar=TestDir / "test_data" / "K3Sb" / "DOSCAR.LSO.lobster.gz",
+                charge=TestDir / "test_data" / "K3Sb" / "CHARGE.lobster.gz",
+                bandoverlaps=TestDir / "test_data" / "K3Sb" / "bandOverlaps.lobster.gz",
+                vasprun=None,
+                lobsterin=TestDir / "test_data" / "K3Sb" / "lobsterin.gz",
+                lobsterout=TestDir / "test_data" / "K3Sb" / "lobsterout.gz",
             )
 
         assert (
-            str(err_potcar.value) == "Please provide either path_to_potcar or list of "
-            "potcar_symbols or path to vasprun.xml or vasprun object. "
-            "Crucial to identify basis used for projections"
+            str(err_potcar.value) == "Provide potcar, potcar_symbols, or vasprun.xml to "
+            "identify basis set used for projections"
         )
-
-        with pytest.raises(ValueError) as err_lobsterout:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=None,
-            )
-
-        assert str(err_lobsterout.value) == "Please provide path_to_lobsterout or lobsterout_obj"
-
-        with pytest.raises(ValueError) as err_lobsterin:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=charge_obj,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=None,
-                lobsterout_obj=lobsterout_obj,
-            )
-
-        assert str(err_lobsterin.value) == "Please provide path_to_lobsterin or lobsterin_obj"
 
         with pytest.raises(Exception) as err_charge:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=doscar.completedos,
-                charge_obj=None,
-                path_to_charge=None,
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=vasprun_obj,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
-                bva_comp=True,
-            )
+            self.calc_des = LobsterCalcQuality(
+                structure=structure_obj,
+                lobster_dos=doscar.completedos,
+                charge=None,
+                potcar_symbols=["K_sv", "Sb"],
+                bandoverlaps=bandoverlaps_obj,
+                vasp_dos=vasprun_obj.complete_dos,
+                lobsterin=lobsterin_obj,
+                lobsterout=lobsterout_obj,
+            ).get_calculation_quality_summary(bva_comp=True)
 
-        assert str(err_charge.value) == "BVA comparison is requested, thus please provide path_to_charge or charge_obj"
+        assert str(err_charge.value) == "BVA comparison requested but CHARGE.lobster not provided"
 
         with pytest.raises(ValueError) as err_doscar:  # noqa: PT011
-            self.calc_des = Analysis.get_lobster_calc_quality_summary(
-                structure_obj=structure_obj,
-                lobster_completedos_obj=None,
-                charge_obj=charge_obj,
+            self.calc_des = LobsterCalcQuality(
+                structure=structure_obj,
+                lobster_dos=None,
+                charge=charge_obj,
                 potcar_symbols=["K_sv", "Sb"],
-                bandoverlaps_obj=bandoverlaps_obj,
-                vasprun_obj=None,
-                lobsterin_obj=lobsterin_obj,
-                lobsterout_obj=lobsterout_obj,
-                bva_comp=True,
-                dos_comparison=True,
-            )
+                bandoverlaps=bandoverlaps_obj,
+                vasp_dos=None,
+                lobsterin=lobsterin_obj,
+                lobsterout=lobsterout_obj,
+            ).get_calculation_quality_summary(dos_comparison=True, n_bins=256)
 
-        assert (
-            str(err_doscar.value)
-            == "Dos comparison is requested, so please provide either path_to_doscar or lobster_completedos_obj"
-        )
+        assert str(err_doscar.value) == "DOS comparison requested but DOS data missing"
 
 
 class TestCalcQualityDescribe:
     def test_calc_quality_description_text(self):
-        calc_quality_K3Sb = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
-            path_to_charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
-            path_to_lobsterout=TestDir / "test_data/K3Sb/lobsterout.gz",
-            path_to_lobsterin=TestDir / "test_data/K3Sb/lobsterin.gz",
+        calc_quality_K3Sb = LobsterCalcQuality.from_files(
+            poscar=TestDir / "test_data/K3Sb/CONTCAR.gz",
+            charge=TestDir / "test_data/K3Sb/CHARGE.lobster.gz",
+            lobsterout=TestDir / "test_data/K3Sb/lobsterout.gz",
+            lobsterin=TestDir / "test_data/K3Sb/lobsterin.gz",
             potcar_symbols=["K_sv", "Sb"],
-            path_to_bandoverlaps=TestDir / "test_data/K3Sb/bandOverlaps.lobster.gz",
-            dos_comparison=True,
-            bva_comp=True,
-            path_to_doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",
-            e_range=[-20, 0],
-            path_to_vasprun=TestDir / "test_data/K3Sb/vasprun.xml.gz",
-            n_bins=256,
+            bandoverlaps=TestDir / "test_data/K3Sb/bandOverlaps.lobster.gz",
+            doscar=TestDir / "test_data/K3Sb/DOSCAR.LSO.lobster.gz",
+            vasprun=TestDir / "test_data/K3Sb/vasprun.xml.gz",
         )
 
-        calc_quality_CsH = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=TestDir / "test_data/CsH/CONTCAR.gz",
-            path_to_charge=TestDir / "test_data/CsH/CHARGE.lobster.gz",
-            path_to_lobsterout=TestDir / "test_data/CsH/lobsterout.gz",
-            path_to_lobsterin=TestDir / "test_data/CsH/lobsterin.gz",
+        calc_quality_K3Sb_dict = calc_quality_K3Sb.get_calculation_quality_summary(
+            dos_comparison=True, bva_comp=True, n_bins=256, e_range=[-20, 0]
+        )
+
+        calc_quality_CsH = LobsterCalcQuality.from_files(
+            poscar=TestDir / "test_data/CsH/CONTCAR.gz",
+            charge=TestDir / "test_data/CsH/CHARGE.lobster.gz",
+            lobsterout=TestDir / "test_data/CsH/lobsterout.gz",
+            lobsterin=TestDir / "test_data/CsH/lobsterin.gz",
             potcar_symbols=["Cs_sv", "H"],
-            path_to_bandoverlaps=TestDir / "test_data/CsH/bandOverlaps.lobster.gz",
-            dos_comparison=False,
-            bva_comp=True,
+            bandoverlaps=TestDir / "test_data/CsH/bandOverlaps.lobster.gz",
         )
 
-        calc_quality_k3sb_des = Description.get_calc_quality_description(calc_quality_K3Sb)
-        calc_quality_k3sb_des_class = LobsterCalcQuality.describe(calc_quality_K3Sb)
-        assert calc_quality_k3sb_des == calc_quality_k3sb_des_class
-        assert calc_quality_k3sb_des == [
+        calc_quality_CsH_dict = calc_quality_CsH.get_calculation_quality_summary(dos_comparison=False, bva_comp=True)
+
+        calc_quality_k3sb_des_text = LobsterCalcQuality.describe(calc_quality_K3Sb_dict)
+        assert calc_quality_k3sb_des_text == [
             "The LOBSTER calculation used minimal basis.",
             "The absolute and total charge spilling for the calculation is 0.83 and 6.36 %, respectively.",
             (
@@ -223,44 +174,44 @@ class TestCalcQualityDescribe:
             ),
         ]
 
-        calc_quality_csh_des = Description.get_calc_quality_description(calc_quality_CsH)
-        calc_quality_csh_des_class = LobsterCalcQuality.describe(calc_quality_CsH)
-        assert (
-            calc_quality_csh_des
-            == calc_quality_csh_des_class
-            == [
-                "The LOBSTER calculation used minimal basis.",
-                "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
-                (
-                    "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
-                    "projected wave function is not completely orthonormalized. "
-                    "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
-                    "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
-                    "like dos comparisons, charges, charge spillings before using the results for further analysis."
-                ),
-                "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
-                "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
-            ]
-        )
+        calc_quality_csh_des_text = LobsterCalcQuality.describe(calc_quality_CsH_dict)
+        assert calc_quality_csh_des_text == [
+            "The LOBSTER calculation used minimal basis.",
+            "The absolute and total charge spilling for the calculation is 3.01 and 13.73 %, respectively.",
+            (
+                "The bandOverlaps.lobster file is generated during the LOBSTER run. This indicates that the "
+                "projected wave function is not completely orthonormalized. "
+                "The maximal deviation value from the identity matrix is 0.4285, and there are 0.1822 percent "
+                "k-points above the deviation threshold of 0.1. Please check the results of other quality checks "
+                "like dos comparisons, charges, charge spillings before using the results for further analysis."
+            ),
+            "The atomic charge signs from Mulliken population analysis agree with the bond valence analysis.",
+            "The atomic charge signs from Loewdin population analysis agree with the bond valence analysis.",
+        ]
 
 
 class TestCalcQualityDescribeWarnings:
     def test_warnings(self):
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("once")
-            calc_quality_warnings = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
-                path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
-                path_to_lobsterout=TestDir / "test_data/BaTe_low_quality/lobsterout.gz",
-                path_to_lobsterin=TestDir / "test_data/BaTe_low_quality/lobsterin.gz",
+            calc_quality_obj = LobsterCalcQuality.from_files(
+                poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
+                charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
+                lobsterout=TestDir / "test_data/BaTe_low_quality/lobsterout.gz",
+                lobsterin=TestDir / "test_data/BaTe_low_quality/lobsterin.gz",
                 potcar_symbols=["Ba_sv", "Te"],
-                path_to_doscar=TestDir / "test_data/BaTe_low_quality/DOSCAR.lobster.gz",
-                path_to_vasprun=TestDir / "test_data/BaTe_low_quality/vasprun.xml.gz",
-                e_range=[-50, 60],
-                dos_comparison=True,
-                bva_comp=False,
-                n_bins=500,
+                doscar=TestDir / "test_data/BaTe_low_quality/DOSCAR.lobster.gz",
+                vasprun=TestDir / "test_data/BaTe_low_quality/vasprun.xml.gz",
+                # e_range=[-50, 60],
+                # dos_comparison=True,
+                # bva_comp=False,
+                # n_bins=500,
             )
+
+            calc_quality_warnings = calc_quality_obj.get_calculation_quality_summary(
+                dos_comparison=True, bva_comp=False, n_bins=500, e_range=[-50, 60]
+            )
+
         # messages = []
         actual_warnings = [str(warning.message) for warning in w]
 
@@ -293,7 +244,7 @@ class TestCalcQualityDescribeWarnings:
         for actual, expected in zip(actual_warnings, expected_warnings):
             assert actual == expected
 
-        calc_des = Description.get_calc_quality_description(calc_quality_warnings)
+        calc_des = LobsterCalcQuality.describe(calc_quality_warnings)
 
         assert calc_des == [
             "The LOBSTER calculation used minimal basis.",
@@ -310,17 +261,18 @@ class TestCalcQualityDescribeWarnings:
 
         with warnings.catch_warnings(record=True) as w2:
             warnings.simplefilter("once")
-            calc_quality_warnings2 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/C/CONTCAR.gz",
-                path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
-                path_to_lobsterout=TestDir / "test_data/C/lobsterout.gz",
-                path_to_lobsterin=TestDir / "test_data/C/lobsterin.gz",
+            calc_quality_warnings2_obj = LobsterCalcQuality.from_files(
+                poscar=TestDir / "test_data/C/CONTCAR.gz",
+                charge=TestDir / "test_data/C/CHARGE.lobster.gz",
+                lobsterout=TestDir / "test_data/C/lobsterout.gz",
+                lobsterin=TestDir / "test_data/C/lobsterin.gz",
                 potcar_symbols=["C"],
-                bva_comp=True,
             )
+            calc_quality_warnings2 = calc_quality_warnings2_obj.get_calculation_quality_summary(bva_comp=True)
+
         assert "Oxidation states from BVA analyzer cannot" in str(w2[-1].message)
 
-        calc_des2 = Description.get_calc_quality_description(calc_quality_warnings2)
+        calc_des2 = LobsterCalcQuality.describe(calc_quality_warnings2)
 
         assert calc_des2 == [
             "The LOBSTER calculation used minimal basis.",
@@ -335,20 +287,22 @@ class TestCalcQualityDescribeWarnings:
         with warnings.catch_warnings(record=True) as w3:
             warnings.simplefilter("once")
             warnings.filterwarnings("ignore", module="pymatgen")
-            calc_quality_warnings3 = Analysis.get_lobster_calc_quality_summary(
-                path_to_poscar=TestDir / "test_data/BeTe/CONTCAR.gz",
-                path_to_charge=TestDir / "test_data/BeTe/CHARGE.lobster.gz",
-                path_to_lobsterout=TestDir / "test_data/BeTe/lobsterout.gz",
-                path_to_lobsterin=TestDir / "test_data/BeTe/lobsterin.gz",
+            warnings.filterwarnings("ignore", module="spglib")
+            calc_quality_warnings3_obj = LobsterCalcQuality.from_files(
+                poscar=TestDir / "test_data/BeTe/CONTCAR.gz",
+                charge=TestDir / "test_data/BeTe/CHARGE.lobster.gz",
+                lobsterout=TestDir / "test_data/BeTe/lobsterout.gz",
+                lobsterin=TestDir / "test_data/BeTe/lobsterin.gz",
                 potcar_symbols=["Be_sv", "Te"],
-                bva_comp=True,
             )
+
+            calc_quality_warnings3 = calc_quality_warnings3_obj.get_calculation_quality_summary(bva_comp=True)
         assert (
-            str(w3[1].message) == "Consider rerunning the calc with the minimum basis as well. "
-            "Choosing is larger basis set is recommended if you see a significant "
-            "improvement of the charge spilling and material has non-zero band gap."
+            str(w3[0].message) == "Consider rerunning the calc with the minimum basis as well. "
+            "Choosing a larger basis set is recommended if charge "
+            "spilling significantly improves."
         )
-        calc_des3 = Description.get_calc_quality_description(calc_quality_warnings3)
+        calc_des3 = LobsterCalcQuality.describe(calc_quality_warnings3)
 
         assert calc_des3 == [
             (

@@ -11,7 +11,7 @@ from pymatgen.analysis.lobster_env import LobsterNeighbors
 from pymatgen.electronic_structure.cohp import CompleteCohp
 from pymatgen.io.lobster import Icohplist
 
-from lobsterpy.cohp.analyze import Analysis
+from lobsterpy.coxx.analyze import Analysis
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"
@@ -952,20 +952,20 @@ class TestAnalyse:
 
     def test_exception(self):
         with pytest.raises(ValueError):  # noqa: PT011
-            self.analyse_batao2n1 = Analysis(
-                path_to_poscar=TestDir / "test_data/BaTaO2N1/CONTCAR.gz",
-                path_to_cohpcar=TestDir / "test_data/BaTaO2N1/COHPCAR.lobster.gz",
-                path_to_icohplist=TestDir / "test_data/BaTaO2N1/ICOHPLIST.lobster.gz",
-                path_to_charge=TestDir / "test_data/BaTaO2N1/CHARGE.lobster.gz",
+            self.analyse_batao2n1 = Analysis.from_files(
+                structure_path=TestDir / "test_data/BaTaO2N1/CONTCAR.gz",
+                coxxcar_path=TestDir / "test_data/BaTaO2N1/COHPCAR.lobster.gz",
+                icoxxlist_path=TestDir / "test_data/BaTaO2N1/ICOHPLIST.lobster.gz",
+                charge_path=TestDir / "test_data/BaTaO2N1/CHARGE.lobster.gz",
                 which_bonds="cation_cation",
                 cutoff_icohp=0.1,
             )
         with pytest.raises(ValueError) as err:  # noqa: PT011
-            self.analyse_c = Analysis(
-                path_to_poscar=TestDir / "test_data/C/CONTCAR.gz",
-                path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
-                path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
-                path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
+            self.analyse_c = Analysis.from_files(
+                structure_path=TestDir / "test_data/C/CONTCAR.gz",
+                coxxcar_path=TestDir / "test_data/C/COHPCAR.lobster.gz",
+                icoxxlist_path=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
+                charge_path=TestDir / "test_data/C/CHARGE.lobster.gz",
                 which_bonds="cation-anion",
                 cutoff_icohp=0.1,
             )
@@ -979,27 +979,18 @@ class TestAnalyse:
             source_file = TestDir / "test_data/C/CONTCAR.gz"
             temp_poscar_path = tmp_path / "POSCAR.gz"  # copy CONTCAR as POSCAR
             shutil.copy(source_file, temp_poscar_path)
-            self.analyse_c = Analysis(
-                path_to_poscar=temp_poscar_path,
-                path_to_cohpcar=TestDir / "test_data/C/COHPCAR.lobster.gz",
-                path_to_icohplist=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
-                path_to_charge=TestDir / "test_data/C/CHARGE.lobster.gz",
+            self.analyse_c = Analysis.from_files(
+                structure_path=temp_poscar_path,
+                coxxcar_path=TestDir / "test_data/C/COHPCAR.lobster.gz",
+                icoxxlist_path=TestDir / "test_data/C/ICOHPLIST.lobster.gz",
+                charge_path=TestDir / "test_data/C/CHARGE.lobster.gz",
                 which_bonds="all",
                 cutoff_icohp=0.1,
             )
-            assert len(w) == 4
+            assert len(w) == 2
 
             assert (
-                str(w[0].message) == "Analysis is deprecated, and will be removed on 2026-06-30\n\n"
-                "use `lobsterpy.coxx.analyze.Analysis` instead."
-            )
-            assert (
-                str(w[1].message) == "Initialization via path_to_* arguments is being deprecated and will be "
-                "removed on 30-06-2026. Please use Analysis.from_files() or "
-                "Analysis.from_directory() instead."
-            )
-            assert (
-                str(w[2].message) == "Falling back to POSCAR, translations between individual "
+                str(w[0].message) == "Falling back to POSCAR, translations between individual "
                 "atoms may differ from LOBSTER outputs. Please note that "
                 "translations in the LOBSTER outputs are consistent with "
                 "CONTCAR (also with POSCAR.lobster.vasp or POSCAR.vasp : "
@@ -1010,17 +1001,17 @@ class TestAnalyse:
         with warnings.catch_warnings(record=True) as w2:
             warnings.simplefilter("once")
             warnings.filterwarnings("ignore", module="spglib")
-            self.analyse_batio3_w = Analysis(
-                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
-                path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
-                path_to_icohplist=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
-                path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
+            self.analyse_batio3_w = Analysis.from_files(
+                structure_path=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
+                coxxcar_path=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
+                icoxxlist_path=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
+                charge_path=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
                 which_bonds="all",
                 type_charge="Valences",
                 cutoff_icohp=0.1,
             )
             assert (
-                str(w2[2].message) == "Using Valences for chemical environment analysis. "
+                str(w2[0].message) == "Using Valences for chemical environment analysis. "
                 "It is recommended to use  'Mulliken' or 'Loewdin' charges."
             )
 
@@ -1028,16 +1019,16 @@ class TestAnalyse:
         with warnings.catch_warnings(record=True) as w3:
             warnings.simplefilter("once")
             warnings.filterwarnings("ignore", module="spglib")
-            self.analyse_batio3_w = Analysis(
-                path_to_poscar=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
-                path_to_cohpcar=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
-                path_to_icohplist=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
-                path_to_charge=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
+            self.analyse_batio3_w = Analysis.from_files(
+                structure_path=TestDir / "test_data/BaTe_low_quality/POSCAR.lobster.vasp.gz",
+                coxxcar_path=TestDir / "test_data/BaTe_low_quality/COHPCAR.lobster.gz",
+                icoxxlist_path=TestDir / "test_data/BaTe_low_quality/ICOHPLIST.lobster.gz",
+                charge_path=TestDir / "test_data/BaTe_low_quality/CHARGE.lobster.gz",
                 which_bonds="all",
                 type_charge="Loewdin",
                 cutoff_icohp=0.1,
             )
-            assert str(w3[2].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
+            assert str(w3[0].message) == "Support for Loewdin charges is currently experimental. Use with caution!"
 
     def test_msonable(self, analyse_k3sb_all_objs, analyse_nacl_comp_range_orb):
         msonable_dict = analyse_k3sb_all_objs.as_dict()

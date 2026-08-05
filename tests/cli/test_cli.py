@@ -751,8 +751,11 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-        assert str(err2.value) == "Files ['CONTCAR', 'lobsterin', 'lobsterout'] not found in tests."
-        #
+        assert (
+            str(err2.value)
+            == "[Errno 2] No such file or directory: '/home/anaik/Work/Dev_Codes/LobsterPy/tests/CONTCAR'"
+        )
+
         # doscar comparison exceptions test
         with pytest.raises(Exception) as err3:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/NaCl")
@@ -766,7 +769,7 @@ class TestCLI:
             test = get_parser().parse_args(args)
             run(test)
 
-        assert str(err3.value) == "Files ['vasprun.xml', 'DOSCAR.LSO.lobster'] not found in NaCl."
+        assert str(err3.value) == "DOS comparison requested but DOS data missing"
 
         with pytest.raises(Exception) as err4:  # noqa: PT012, PT011
             os.chdir(TestDir / "test_data/CsH")

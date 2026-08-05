@@ -3,7 +3,7 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from lobsterpy.cohp.describe import Description
+from lobsterpy.coxx.describe import Description
 
 CurrentDir = Path(__file__).absolute().parent
 TestDir = CurrentDir / "../"

@@ -9,7 +9,7 @@ from plotly.io import read_json
 from pymatgen.electronic_structure.cohp import Cohp
 from pymatgen.electronic_structure.core import Spin
 
-from lobsterpy.cohp.describe import Description
+from lobsterpy.coxx.describe import Description
 from lobsterpy.plotting import (
     BWDFPlotter,
     IcohpDistancePlotter,

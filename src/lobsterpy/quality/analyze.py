@@ -257,8 +257,8 @@ class LobsterCalcQuality:
         try:
             bva = BVAnalyzer()
             bva_oxi = ["POS" if v >= 0 else "NEG" for v in bva.get_valences(self.structure)]
-            mull = ["POS" if v >= 0 else "NEG" for v in self.charge.Mulliken]
-            loew = ["POS" if v >= 0 else "NEG" for v in self.charge.Loewdin]
+            mull = ["POS" if v >= 0 else "NEG" for v in self.charge.mulliken]
+            loew = ["POS" if v >= 0 else "NEG" for v in self.charge.loewdin]
 
             return {
                 "charge_comparisons": {
