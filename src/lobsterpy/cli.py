@@ -29,6 +29,7 @@ from lobsterpy.plotting import (
     PlainDosPlotter,
     get_style_list,
 )
+from lobsterpy.quality import LobsterCalcQuality
 from lobsterpy.utils import get_file_paths
 
 
@@ -381,8 +382,8 @@ def get_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Show integrated cohp/cobi/coop plots.",
     )
-    # Arguments specific to lobsterpy.cohp.analyze.Analysis and
-    # lobsterpy.cohp.describe.Description class
+    # Arguments specific to lobsterpy.coxx.analyze.Analysis and
+    # lobsterpy.coxx.describe.Description class
     auto_parent = argparse.ArgumentParser(add_help=False)
     auto_group = auto_parent.add_argument_group("Adjustable automatic analysis parameters")
     auto_group.add_argument(
@@ -941,11 +942,11 @@ def run(args):
     if args.action in ["description", "plot-automatic", "plot-automatic-ia"]:
         which_bonds = "all" if args.allbonds else "cation-anion"
 
-        analyse = Analysis(
-            path_to_poscar=args.structure,
-            path_to_charge=args.charge,
-            path_to_cohpcar=args.cohpcar,
-            path_to_icohplist=args.icohplist,
+        analyse = Analysis.from_files(
+            structure_path=args.structure,
+            charge_path=args.charge,
+            coxxcar_path=args.cohpcar,
+            icoxxlist_path=args.icohplist,
             which_bonds=which_bonds,
             are_coops=args.coops,
             are_cobis=args.cobis,
@@ -1301,67 +1302,19 @@ def run(args):
                 raise ValueError('please use "--overwrite" if you would like to overwrite existing lobster inputs')
 
     if args.action in ["description-quality"]:
-        # Check for .gz files exist for default values and update accordingly
-        req_files = get_file_paths(
-            path_to_lobster_calc=Path.cwd(), requested_files=["structure", "lobsterin", "lobsterout"]
+        calc_quality = LobsterCalcQuality.from_directory(
+            path_to_lobster_calc=Path.cwd(),
         )
-        for arg_name in req_files:
-            setattr(args, arg_name, req_files[arg_name])
 
-        optional_files = {
-            "bandoverlaps": "bandOverlaps.lobster",
-            "potcar": "POTCAR",
-            "vasprun": "vasprun.xml",
-        }
-
-        for arg_name in optional_files:
-            file_path = getattr(args, arg_name)
-            if not file_path.exists():
-                gz_file_path = file_path.with_name(zpath(file_path.name))
-                if gz_file_path.exists():
-                    setattr(args, arg_name, gz_file_path)
-
-        bva_comp = args.bvacomp
-
-        if bva_comp:
-            bva_files = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["charge"])
-            for arg_name in bva_files:
-                setattr(args, arg_name, bva_files[arg_name])
-
-        dos_comparison = args.doscomp
-
-        if dos_comparison:
-            if "DOSCAR.LSO.lobster" in args.doscar.name:
-                dos_files = get_file_paths(
-                    path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=True
-                )
-            else:
-                dos_files = get_file_paths(
-                    path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=False
-                )
-            for arg_name in dos_files:
-                setattr(args, arg_name, dos_files[arg_name])
-
-        potcar_file_path = args.potcar
-
-        quality_dict = Analysis.get_lobster_calc_quality_summary(
-            path_to_poscar=args.structure,
-            path_to_charge=args.charge,
-            path_to_lobsterout=args.lobsterout,
-            path_to_lobsterin=args.lobsterin,
-            path_to_potcar=None if not potcar_file_path.exists() else potcar_file_path,
-            potcar_symbols=args.potcarsymbols,
-            path_to_bandoverlaps=args.bandoverlaps,
-            dos_comparison=dos_comparison,
-            bva_comp=bva_comp,
-            path_to_doscar=args.doscar,
+        quality_dict = calc_quality.get_calculation_quality_summary(
+            dos_comparison=args.doscomp,
+            bva_comp=args.bvacomp,
             e_range=args.erange,
             n_bins=args.nbins,
-            path_to_vasprun=args.vasprun,
         )
 
-        quality_text = Description.get_calc_quality_description(quality_dict)
-        Description.write_calc_quality_description(quality_text)
+        quality_text = calc_quality.describe(quality_dict)
+        calc_quality.print_description(quality_text)
 
         if args.file_calc_quality_json is not None:
             with open(args.file_calc_quality_json, "w") as fd:

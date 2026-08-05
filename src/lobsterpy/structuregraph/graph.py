@@ -142,12 +142,12 @@ class LobsterGraph:
         )
 
         # Initialize automating bonding analysis from Lobsterpy based on ICOHP
-        analyze = Analysis(
-            path_to_charge=self.path_to_charge,
-            path_to_cohpcar=self.path_to_cohpcar,
-            path_to_poscar=self.path_to_poscar,
-            path_to_icohplist=self.path_to_icohplist,
-            path_to_madelung=self.path_to_madelung,
+        analyze = Analysis.from_files(
+            charge_path=self.path_to_charge,
+            coxxcar_path=self.path_to_cohpcar,
+            structure_path=self.path_to_poscar,
+            icoxxlist_path=self.path_to_icohplist,
+            madelung_path=self.path_to_madelung,
             which_bonds=self.which_bonds,
             cutoff_icohp=self.cutoff_icohp,
         )

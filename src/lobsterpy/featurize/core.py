@@ -326,10 +326,10 @@ class FeaturizeLobsterpy:
             )
             default_kwargs.update(
                 {
-                    "path_to_poscar": str(file_paths.get("structure")),
-                    "path_to_icohplist": str(file_paths.get("icobilist")),
-                    "path_to_cohpcar": str(file_paths.get("cobicar")),
-                    "path_to_charge": str(file_paths.get("charge")),
+                    "structure_path": str(file_paths.get("structure")),
+                    "icoxxlist_path": str(file_paths.get("icobilist")),
+                    "coxxcar_path": str(file_paths.get("cobicar")),
+                    "charge_path": str(file_paths.get("charge")),
                 }
             )
 
@@ -340,10 +340,10 @@ class FeaturizeLobsterpy:
             )
             default_kwargs.update(
                 {
-                    "path_to_poscar": str(file_paths.get("structure")),
-                    "path_to_icohplist": str(file_paths.get("icooplist")),
-                    "path_to_cohpcar": str(file_paths.get("coopcar")),
-                    "path_to_charge": str(file_paths.get("charge")),
+                    "structure_path": str(file_paths.get("structure")),
+                    "icoxxlist_path": str(file_paths.get("icooplist")),
+                    "coxxcar_path": str(file_paths.get("coopcar")),
+                    "charge_path": str(file_paths.get("charge")),
                 }
             )
         else:
@@ -353,15 +353,15 @@ class FeaturizeLobsterpy:
             )
             default_kwargs.update(
                 {
-                    "path_to_poscar": str(file_paths.get("structure")),
-                    "path_to_icohplist": str(file_paths.get("icohplist")),
-                    "path_to_cohpcar": str(file_paths.get("cohpcar")),
-                    "path_to_charge": str(file_paths.get("charge")),
+                    "structure_path": str(file_paths.get("structure")),
+                    "icoxxlist_path": str(file_paths.get("icohplist")),
+                    "coxxcar_path": str(file_paths.get("cohpcar")),
+                    "charge_path": str(file_paths.get("charge")),
                 }
             )
 
         try:
-            analyse = Analysis(**default_kwargs)
+            analyse = Analysis.from_files(**default_kwargs)
             type_pop = analyse._get_pop_type()
 
             data = {bond_type: {"lobsterpy_data": analyse.condensed_bonding_analysis}}

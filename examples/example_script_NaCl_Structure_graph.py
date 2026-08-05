@@ -1,4 +1,7 @@
+import warnings
 from lobsterpy.structuregraph.graph import LobsterGraph
+
+warnings.simplefilter("once")
 
 graph_NaCl_all = LobsterGraph(
     path_to_poscar="./NaCl_comp_range/CONTCAR.gz",
