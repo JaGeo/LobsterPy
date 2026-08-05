@@ -1302,49 +1302,6 @@ def run(args):
                 raise ValueError('please use "--overwrite" if you would like to overwrite existing lobster inputs')
 
     if args.action in ["description-quality"]:
-        # # Check for .gz files exist for default values and update accordingly
-        # req_files = get_file_paths(
-        #     path_to_lobster_calc=Path.cwd(), requested_files=["structure", "lobsterin", "lobsterout"]
-        # )
-        # for arg_name in req_files:
-        #     setattr(args, arg_name, req_files[arg_name])
-
-        # optional_files = {
-        #     "bandoverlaps": "bandOverlaps.lobster",
-        #     "potcar": "POTCAR",
-        #     "vasprun": "vasprun.xml",
-        # }
-
-        # for arg_name in optional_files:
-        #     file_path = getattr(args, arg_name)
-        #     if not file_path.exists():
-        #         gz_file_path = file_path.with_name(zpath(file_path.name))
-        #         if gz_file_path.exists():
-        #             setattr(args, arg_name, gz_file_path)
-
-        # bva_comp = args.bvacomp
-
-        # if bva_comp:
-        #     bva_files = get_file_paths(path_to_lobster_calc=Path.cwd(), requested_files=["charge"])
-        #     for arg_name in bva_files:
-        #         setattr(args, arg_name, bva_files[arg_name])
-
-        # dos_comparison = args.doscomp
-
-        # if dos_comparison:
-        #     if "DOSCAR.LSO.lobster" in args.doscar.name:
-        #         dos_files = get_file_paths(
-        #             path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=True
-        #         )
-        #     else:
-        #         dos_files = get_file_paths(
-        #             path_to_lobster_calc=Path.cwd(), requested_files=["vasprun", "doscar"], use_lso_dos=False
-        #         )
-        #     for arg_name in dos_files:
-        #         setattr(args, arg_name, dos_files[arg_name])
-
-        # potcar_file_path = args.potcar
-
         calc_quality = LobsterCalcQuality.from_directory(
             path_to_lobster_calc=Path.cwd(),
         )
